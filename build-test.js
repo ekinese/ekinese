@@ -19,7 +19,7 @@ function stripPhp(s) {
 }
 function pattern(file) { return stripBlocks(stripPhp(read('patterns/' + file))).trim(); }
 
-const { diamantenVerkopen } = require('./demo-content.js');
+const { diamantenVerkopen, productPage } = require('./demo-content.js');
 
 const header = stripBlocks(read('parts/header.html')).trim();
 const footer = stripBlocks(read('parts/footer.html')).trim();
@@ -31,7 +31,7 @@ const pages = {
 	edelstenen:  { label: 'Edelstenen',        html: pattern('blueprint-edelstenen.php') },
 	horloges:    { label: 'Horloges',          html: pattern('blueprint-horloges.php') },
 	verkoop:     { label: 'Verkoop-Blaupause', html: pattern('blueprint-verkoop.php') },
-	product:     { label: 'Produktseite',      html: pattern('product-page.php') }
+	product:     { label: '★ Produkt: Krugerrand', html: productPage }
 };
 
 // Mock-Daten = Struktur aus inc/setup.php

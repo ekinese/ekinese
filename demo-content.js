@@ -280,4 +280,118 @@ const diamantenVerkopen = `
 </div>
 `;
 
-module.exports = { diamantenVerkopen };
+/* =====================================================================
+   PRODUKTSEITE (4. Ebene) – konkretes Produkt: "Gouden Krugerrand"
+   Hero benennt das Produkt + Calculator ist via data-preset direkt auf
+   Goud/Munt vorbelegt (der Kunde muss nichts suchen).
+   ===================================================================== */
+const krugerSpecs = [
+	'Zuiverheid: 22 karaat (91,67% goud)',
+	'Gewicht: 1 troy ounce (31,1 gram)',
+	'Herkomst: Zuid-Afrika',
+	'Wereldwijd erkende beleggingsmunt'
+];
+const krugerFaqs = [
+	['Wat is mijn Krugerrand waard?','De waarde volgt uit het actuele goudgewicht (1 oz fijn goud) maal de dagkoers. Gebruik de rekentool hiernaast voor een directe indicatie.'],
+	['Koopt XGOUD ook halve of kwart Krugerrands?','Ja. Wij kopen alle formaten: 1 oz, 1/2 oz, 1/4 oz en 1/10 oz.'],
+	['Krijg ik de volledige goudwaarde?','U ontvangt een eerlijke, transparante prijs op basis van de actuele spotkoers, minus een kleine marge waarvan een deel naar het goede doel gaat.'],
+	['Hoe snel word ik uitbetaald?','Bij akkoord betalen wij direct uit — per bankoverschrijving of contant ter plaatse.']
+];
+
+const productPage = `
+<div class="xg-blueprint">
+
+<div class="xg-charity-ticker">
+	<span class="xg-charity-ticker-label">XGOUD heeft deze maand aan goede doelen gegeven:</span>
+	<span class="xg-charity-ticker-amount">€65.168,36</span>
+	<div class="xg-charity-ticker-projects">
+		<span>Maatschappelijk werk</span><span>Kinderdagverblijven</span><span>Vrouwenopvang</span><span>Sportcentra</span><span>Scholen</span>
+	</div>
+</div>
+
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="xg-grid-2" style="align-items:center;gap:50px">
+		<div>
+			<div class="hero-kicker">GOUDEN MUNT VERKOPEN</div>
+			<h1>Krugerrand verkopen</h1>
+			<p class="hero-lead">Verkoop uw gouden Krugerrand tegen de actuele dagkoers. Bereken hiernaast direct uw waarde — de rekentool staat al ingesteld op deze munt.</p>
+			<ul class="xg-diamond-list">
+				${krugerSpecs.map(s => `<li>${s}</li>`).join('')}
+			</ul>
+		</div>
+		<div class="xg-calc" data-mode="compact" data-preset='{"type":"metal","form":{"metal":"goud","form":"munt","purity":"22"}}'></div>
+	</div>
+</div></section>
+
+<section><div class="xg-container">
+	<div class="xg-market-content">
+		<h2>Hoe bepalen wij de waarde van uw Krugerrand?</h2>
+		<p>Een Krugerrand bevat exact één troy ounce (31,1 gram) fijn goud. De waarde volgt rechtstreeks uit de actuele goudkoers — transparant en marktconform.</p>
+		<div class="xg-formula-box">
+			<div class="xg-formula-title">Prijsopbouw</div>
+			<div class="xg-formula">Goudgewicht (oz) × spotkoers − marge</div>
+			<div class="xg-formula-note">Wij volgen de koers van Swiss Forex. Een vast deel van de marge gaat naar een goed doel in uw stad.</div>
+		</div>
+	</div>
+</div></section>
+
+<section class="xg-price-section"><div class="xg-container">
+	<h2>Indicatieve inkoopprijzen per formaat</h2>
+	<p>De prijs is afhankelijk van de actuele goudkoers. Onderstaande bedragen zijn indicatief.</p>
+	<div class="xg-table-wrapper">
+		<table class="xg-price-table">
+			<thead><tr><th>Formaat</th><th>Goudgewicht</th><th>Indicatie</th></tr></thead>
+			<tbody>
+				<tr><td>1 oz Krugerrand</td><td>31,1 g</td><td>± € 2.100</td></tr>
+				<tr><td>1/2 oz Krugerrand</td><td>15,55 g</td><td>± € 1.050</td></tr>
+				<tr><td>1/4 oz Krugerrand</td><td>7,78 g</td><td>± € 525</td></tr>
+				<tr><td>1/10 oz Krugerrand</td><td>3,11 g</td><td>± € 210</td></tr>
+			</tbody>
+		</table>
+	</div>
+</div></section>
+
+<section><div class="xg-container">
+	<div class="xg-steps-content">
+		<h2>Zo verkoopt u uw Krugerrand</h2>
+		<p>In een paar minuten van munt naar geld — veilig en transparant.</p>
+	</div>
+	<div class="xg-grid-4">
+		<div class="xg-step-card"><div class="xg-step-number">1</div><h3>Bereken</h3><p>Vul het gewicht in de rekentool in voor een directe indicatie.</p></div>
+		<div class="xg-step-card"><div class="xg-step-number">2</div><h3>Afspraak</h3><p>Kies een bezoek aan huis, een vestiging of de ophaalservice.</p></div>
+		<div class="xg-step-card"><div class="xg-step-number">3</div><h3>Taxatie</h3><p>Onze expert verifieert uw munt en bevestigt het bod.</p></div>
+		<div class="xg-step-card"><div class="xg-step-number">4</div><h3>Uitbetaling</h3><p>Direct uitbetaald — per bank of contant.</p></div>
+	</div>
+</div></section>
+
+<section><div class="xg-container">
+	<div class="xg-faq">
+		<h2>Veelgestelde vragen</h2>
+		<div class="xg-faq-list">
+			${krugerFaqs.map(f => `<div class="xg-faq-item"><div class="xg-faq-question">${f[0]}</div><div class="xg-faq-answer"><p>${f[1]}</p></div></div>`).join('')}
+		</div>
+	</div>
+</div></section>
+
+<section><div class="xg-container">
+	<div class="xg-grid-2">
+		<div class="xg-final-cta-content">
+			<h2>Klaar om uw Krugerrand te verkopen?</h2>
+			<p>Bereken uw waarde of maak direct een afspraak met een van onze experts.</p>
+		</div>
+		<div class="xg-final-cta-box">
+			<h3>Start vandaag nog</h3>
+			<div class="xg-final-list">
+				<div class="xg-final-item">✓ Actuele dagkoers</div>
+				<div class="xg-final-item">✓ Directe uitbetaling</div>
+				<div class="xg-final-item">✓ 100% verzekerd</div>
+			</div>
+			<a class="xg-final-btn" href="#">Maak een afspraak</a>
+		</div>
+	</div>
+</div></section>
+
+</div>
+`;
+
+module.exports = { diamantenVerkopen, productPage };

@@ -133,6 +133,21 @@
 			checkout: { step: 0, data: {}, service: null, payout: null, charity: null }
 		};
 
+		/*
+		 * Preset (Deep-Link für Produktseiten): data-preset='{"type":"metal",
+		 * "form":{"metal":"goud","form":"munt","purity":"22"}}'.
+		 * Der Wizard startet dann direkt bei diesem Produkt (Schritt "Details"),
+		 * statt beim Typ-Picker – der Kunde muss nichts suchen.
+		 */
+		var presetRaw = root.getAttribute('data-preset');
+		if (presetRaw) {
+			try {
+				var preset = JSON.parse(presetRaw);
+				if (preset.type) state.type = preset.type;
+				if (preset.form) state.form = preset.form;
+			} catch (e) {}
+		}
+
 		// Grundgerüst
 		root.innerHTML = '';
 		var head = h('div', 'xg-calc-head');
