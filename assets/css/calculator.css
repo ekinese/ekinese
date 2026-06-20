@@ -570,15 +570,17 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 .xg-calc[data-mode="compact"] .xg-calc-pstep-lbl { display: none; }
 .xg-calc[data-mode="compact"] .xg-calc-opts { grid-template-columns: 1fr; }
 
-/* Hero-Split 40/60 */
+/* Hero-Split 50/50 */
 .xg-hero-split {
-	display: grid; grid-template-columns: 40% 60%; gap: 50px;
-	align-items: center; max-width: 1300px; margin: 0 auto;
+	display: grid; grid-template-columns: 1fr 1fr; gap: 50px;
+	align-items: center; max-width: 1340px; margin: 0 auto;
 	padding: 60px 40px;
 }
 .xg-hero-split-text h1 { font-size: 50px; line-height: 1.05; color: var(--xc-ink); margin: 0 0 20px; letter-spacing: -1px; }
 .xg-hero-split-text p { font-size: 18px; line-height: 1.7; color: var(--xc-ink-soft); margin: 0; }
 .xg-hero-split-calc { display: flex; justify-content: flex-end; }
+/* Im Hero füllt der kompakte Calculator die ganze 50%-Spalte. */
+.xg-hero-split-calc .xg-calc[data-mode="compact"] { max-width: 100%; width: 100%; }
 
 /* =========================================================
    RESPONSIVE

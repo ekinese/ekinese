@@ -19,10 +19,13 @@ function stripPhp(s) {
 }
 function pattern(file) { return stripBlocks(stripPhp(read('patterns/' + file))).trim(); }
 
+const { diamantenVerkopen } = require('./demo-content.js');
+
 const header = stripBlocks(read('parts/header.html')).trim();
 const footer = stripBlocks(read('parts/footer.html')).trim();
 
 const pages = {
+	diamanten:   { label: '★ Diamanten (klaar)', html: diamantenVerkopen },
 	hero:        { label: 'Hero + Calculator', html: pattern('hero-calculator.php') },
 	edelmetalen: { label: 'Edelmetalen',       html: pattern('blueprint-edelmetalen.php') },
 	edelstenen:  { label: 'Edelstenen',        html: pattern('blueprint-edelstenen.php') },
