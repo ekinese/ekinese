@@ -18,3 +18,4 @@ define( 'EKINESE_VERSION', wp_get_theme()->get( 'Version' ) );
 require_once get_theme_file_path( 'inc/setup.php' );
 require_once get_theme_file_path( 'inc/patterns.php' );
 require_once get_theme_file_path( 'inc/block-styles.php' );
+require_once get_theme_file_path( 'inc/taxonomies.php' );

@@ -1,0 +1,25 @@
+<!-- wp:template-part {"slug":"header","tagName":"header","area":"header"} /-->
+
+<!-- wp:group {"tagName":"main","layout":{"type":"constrained"}} -->
+<main class="wp-block-group">
+
+	<!-- wp:group {"className":"category-intro","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group category-intro">
+		<!-- wp:query-title {"type":"archive","level":1} /-->
+		<!-- wp:term-description /-->
+	</div>
+	<!-- /wp:group -->
+
+	<!--
+	  BLAUPAUSE: gilt für alle 4 Ebenen der Verkoop-Taxonomie
+	  (Hauptkategorie, Produktgruppe, Untertyp, Produkt). Inhalt pro Term
+	  kommt aus Term-Meta (siehe inc/taxonomies.php), nicht aus diesem
+	  Template – Felder/Texte können sich ändern, ohne dass hier etwas
+	  angepasst werden muss.
+	-->
+	<!-- wp:pattern {"slug":"ekinese/blueprint-category"} /-->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer","area":"footer"} /-->
