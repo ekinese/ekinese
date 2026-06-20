@@ -594,8 +594,19 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 @media (max-width: 560px) {
 	.xg-calc-opts, .xg-calc-opts.cols-3 { grid-template-columns: 1fr; }
 	.xg-calc-grid { grid-template-columns: 1fr; }
-	.xg-calc-price { font-size: 34px; }
+	.xg-calc-price { font-size: 32px; }
 	.xg-calc-pstep-lbl { display: none; }
+	.xg-calc-head { flex-wrap: wrap; gap: 8px; padding: 12px 16px; }
+	.xg-calc-stage { padding: 8px 16px 20px; }
+	.xg-calc-progress { padding: 16px 16px 4px; }
+	.xg-calc-panel-head { flex-wrap: wrap; }
+	.xg-calc-panel-title { font-size: 18px; }
+	.xg-calc-next-wrap { flex-direction: column; }
+	.xg-calc-range-top { flex-wrap: wrap; }
+	.xg-calc-range-top .xg-calc-input { width: 100%; }
+	.xg-calc-tab { font-size: 12px; padding: 12px 6px; }
+	/* Resultat-Preis (von–bis) nicht abschneiden */
+	.xg-calc-price { word-break: break-word; }
 }
 
 /* Reduced motion */

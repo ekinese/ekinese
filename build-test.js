@@ -41,8 +41,8 @@ const calcData = {
 		platina:{'850':0.850,'900':0.900,'950':0.950,'999':0.999},
 		palladium:{'500':0.500,'950':0.950,'999':0.999}
 	},
-	purity_labels: {'800':'80,0 %','835':'83,5 %','850':'85,0 %','900':'90,0 %','925':'Sterling 92,5 %','950':'95,0 %','999':'Fein 99,9 %','500':'50,0 %'},
-	conditions: { nieuw:{label:'Neuwertig',factor:1.00}, zeer_goed:{label:'Sehr gut',factor:0.99}, goed:{label:'Gut',factor:0.98}, voldoende:{label:'Befriedigend',factor:0.96} },
+	purity_labels: {'800':'80,0 %','835':'83,5 %','850':'85,0 %','900':'90,0 %','925':'Sterling 92,5%','950':'95,0 %','999':'Fijn 99,9%','500':'50,0 %'},
+	conditions: { nieuw:{label:'Nieuwstaat',factor:1.00}, zeer_goed:{label:'Zeer goed',factor:0.99}, goed:{label:'Goed',factor:0.98}, voldoende:{label:'Voldoende',factor:0.96} },
 	jewelry_tiers: [{min:0,bonus:0},{min:50,bonus:0.02},{min:100,bonus:0.04},{min:250,bonus:0.06}],
 	diamond_base: {
 		color:{D:1.00,E:0.95,F:0.90,G:0.82,H:0.74,I:0.66,J:0.58,K:0.48},
@@ -50,25 +50,25 @@ const calcData = {
 		cut:{Excellent:1.00,'Very Good':0.95,Good:0.88,Fair:0.78,Poor:0.65},
 		fluor:{None:1.00,Faint:0.98,Medium:0.94,Strong:0.88}, anchor:9000
 	},
-	labs: ['GIA','IGI','HRD','Kein Zertifikat'],
-	gem_base: { robijn:{label:'Robijn (Rubin)',anchor:3500}, saffier:{label:'Saffier (Saphir)',anchor:2200}, smaragd:{label:'Smaragd',anchor:2800} },
+	labs: ['GIA','IGI','HRD','Geen certificaat'],
+	gem_base: { robijn:{label:'Robijn',anchor:3500}, saffier:{label:'Saffier',anchor:2200}, smaragd:{label:'Smaragd',anchor:2800} },
 	watches: {
 		rolex:{label:'Rolex',models:{'Submariner':11000,'Datejust':7500,'GMT-Master II':14000}},
 		omega:{label:'Omega',models:{'Speedmaster':5500,'Seamaster':4200}},
 		patek:{label:'Patek Philippe',models:{'Nautilus':38000,'Calatrava':18000}},
 		cartier:{label:'Cartier',models:{'Santos':6500,'Tank':4800}}
 	},
-	watch_conditions: { nieuw:{label:'Neuwertig',factor:1.00}, zeer_goed:{label:'Sehr gut',factor:0.90}, goed:{label:'Gut',factor:0.78}, voldoende:{label:'Befriedigend',factor:0.65}, service:{label:'Restaurierungsbedarf',factor:0.50} },
-	watch_extras: { box:{label:'Originalbox',bonus:0.03}, papers:{label:'Zertifikat/Papiere',bonus:0.05} },
-	watch_metals: ['Edelstahl','Gelbgold','Weißgold','Roségold','Platin','Stahl/Gold','Titan'],
-	watch_bracelets: ['Edelstahlband','Lederband','Kautschuk','Gold-Band','NATO/Textil'],
-	watch_dials: ['Schwarz','Weiß','Silber','Blau','Grün','Champagner','Grau','Sonstige'],
+	watch_conditions: { nieuw:{label:'Nieuwstaat',factor:1.00}, zeer_goed:{label:'Zeer goed',factor:0.90}, goed:{label:'Goed',factor:0.78}, voldoende:{label:'Voldoende',factor:0.65}, service:{label:'Revisie nodig',factor:0.50} },
+	watch_extras: { box:{label:'Originele doos',bonus:0.03}, papers:{label:'Certificaat/papieren',bonus:0.05} },
+	watch_metals: ['Staal','Geelgoud','Witgoud','Roségoud','Platina','Staal/Goud','Titanium'],
+	watch_bracelets: ['Stalen band','Leren band','Rubber','Gouden band','NATO/Textiel'],
+	watch_dials: ['Zwart','Wit','Zilver','Blauw','Groen','Champagne','Grijs','Overige'],
 	charity_projects: [
-		{id:'social',label:'Sozialarbeit',weight:0.25,recipients:['Stichting Buurtwerk Amsterdam','Sociaal Steunpunt Rotterdam','Voedselbank Den Haag']},
-		{id:'kindergarten',label:'Kindergärten',weight:0.20,recipients:['Kinderopvang De Zonnebloem','KDV Het Speelkwartier','Peuterspeelzaal Pippeloentje']},
-		{id:'shelter',label:'Frauenhäuser',weight:0.25,recipients:['Blijf Groep Amsterdam','Vrouwenopvang Rotterdam','Veilig Thuis Utrecht']},
-		{id:'sport',label:'Sportzentren',weight:0.15,recipients:['Sportclub Jeugd Eindhoven','Buurtsport Tilburg','Zwemvereniging De Dolfijn']},
-		{id:'school',label:'Schulen',weight:0.15,recipients:['Basisschool De Regenboog','OBS Het Kompas','Vrije School Zutphen','Montessori Amsterdam']}
+		{id:'social',label:'Maatschappelijk werk',weight:0.25,recipients:['Stichting Buurtwerk Amsterdam','Sociaal Steunpunt Rotterdam','Voedselbank Den Haag']},
+		{id:'kindergarten',label:'Kinderdagverblijven',weight:0.20,recipients:['Kinderopvang De Zonnebloem','KDV Het Speelkwartier','Peuterspeelzaal Pippeloentje']},
+		{id:'shelter',label:'Vrouwenopvang',weight:0.25,recipients:['Blijf Groep Amsterdam','Vrouwenopvang Rotterdam','Veilig Thuis Utrecht']},
+		{id:'sport',label:'Sportcentra',weight:0.15,recipients:['Sportclub Jeugd Eindhoven','Buurtsport Tilburg','Zwemvereniging De Dolfijn']},
+		{id:'school',label:'Scholen',weight:0.15,recipients:['Basisschool De Regenboog','OBS Het Kompas','Vrije School Zutphen','Montessori Amsterdam']}
 	],
 	currency: 'EUR'
 };
@@ -98,7 +98,7 @@ const js = [
 ].map(read).join('\n;\n');
 
 const html = `<!DOCTYPE html>
-<html lang="de" data-theme="light">
+<html lang="nl" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -136,7 +136,7 @@ ${footer}
 
 <div class="tst-toolbar">
 	${nav}
-	<button class="tst-tab tst-fill" id="tstFill">Demo-Text ein/aus</button>
+	<button class="tst-tab tst-fill" id="tstFill">Demo-tekst aan/uit</button>
 </div>
 
 <script>
@@ -157,17 +157,18 @@ document.querySelectorAll('.tst-tab[data-go]').forEach(function (b) {
 	});
 });
 
-/* Demo-Text in leere Gutenberg-Blöcke (nur zum Sichtbarmachen der Struktur) */
+/* Demo-Text (Nederlands) in leere Gutenberg-Blöcke – standardmäßig AN,
+   damit die Klassen/Struktur sofort sichtbar sind. */
 var FILLED = false;
 var SAMPLE = {
 	H1: 'Goud verkopen tegen de beste prijs',
-	H2: 'Waarom XGOUD de juiste keuze is',
-	H3: 'Transparant, snel en eerlijk',
+	H2: 'Waarom kiezen voor XGOUD?',
+	H3: 'Eerlijk, snel en transparant',
 	H4: 'Vertrouwd sinds 2009',
-	P: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+	P: 'Bij XGOUD krijgt u een eerlijke prijs voor uw goud, diamanten en horloges. Transparant, veilig en met persoonlijke aandacht voor elke transactie.'
 };
-document.getElementById('tstFill').addEventListener('click', function () {
-	FILLED = !FILLED;
+function applyFill(on) {
+	FILLED = on;
 	document.querySelectorAll('.tst-page').forEach(function (page) {
 		page.querySelectorAll('h1,h2,h3,h4,p,li,th,td,.wp-block-button__link').forEach(function (el) {
 			if (el.closest('.xg-calc')) return; // Calculator nie überschreiben
@@ -175,14 +176,16 @@ document.getElementById('tstFill').addEventListener('click', function () {
 				if (!el.textContent.trim()) {
 					el.dataset.tstFilled = '1';
 					var t = el.tagName;
-					el.textContent = SAMPLE[t] || (t === 'LI' ? 'Menupunt' : (t === 'TH' ? 'Kolom' : (t === 'TD' ? 'Waarde' : 'Knop')));
+					el.textContent = SAMPLE[t] || (t === 'LI' ? 'Navigatie-item' : (t === 'TH' ? 'Kolom' : (t === 'TD' ? 'Waarde' : 'Bekijk meer')));
 				}
 			} else if (el.dataset.tstFilled) {
 				el.textContent = ''; delete el.dataset.tstFilled;
 			}
 		});
 	});
-});
+}
+document.getElementById('tstFill').addEventListener('click', function () { applyFill(!FILLED); });
+applyFill(true); // Demo-Text beim Laden direkt anzeigen
 </script>
 </body>
 </html>`;

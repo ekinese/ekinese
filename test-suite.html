@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="light">
+<html lang="nl" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -182,6 +182,42 @@ html, body,
 [data-theme="dark"] a.xg-btn-outline,
 [data-theme="dark"] .xg-btn-outline .wp-block-button__link {
 	border-color: #f3efe8; color: #f3efe8 !important;
+}
+
+/* =====================================================================
+   CHARITY-TICKER  (globale Komponente: "XGOUD gaf deze maand …")
+   Gold-Akzent für den Betrag, passt sich Day/Dark automatisch an.
+   ===================================================================== */
+.xg-charity-ticker {
+	display: flex; align-items: center; justify-content: center;
+	gap: 16px 20px; flex-wrap: wrap; text-align: center;
+	padding: 14px 24px;
+	background: var(--white, #fff);
+	border-top: 1px solid var(--line, #e3ddd0);
+	border-bottom: 1px solid var(--line, #e3ddd0);
+}
+.xg-charity-ticker-label { font-size: 13px; font-weight: 600; color: var(--ink-soft, #6b665c); }
+.xg-charity-ticker-amount {
+	display: inline-flex; align-items: center; gap: 7px;
+	font-size: 20px; font-weight: 800; letter-spacing: -.3px;
+	color: var(--gold, #c8a24a);
+}
+.xg-charity-ticker-amount::before {
+	content: '♥'; font-size: 15px; color: var(--gold, #c8a24a);
+}
+.xg-charity-ticker-projects { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.xg-charity-ticker-projects span {
+	font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+	color: var(--ink-soft, #6b665c);
+	padding: 5px 11px; border: 1px solid var(--line, #e3ddd0); border-radius: 30px;
+	transition: border-color .2s, color .2s;
+}
+.xg-charity-ticker-projects span:hover { border-color: var(--gold, #c8a24a); color: var(--gold, #c8a24a); }
+
+@media (max-width: 600px) {
+	.xg-charity-ticker { gap: 8px 12px; padding: 12px 16px; }
+	.xg-charity-ticker-label { font-size: 12px; }
+	.xg-charity-ticker-amount { font-size: 18px; }
 }
 
 /* Reduced motion */
@@ -3308,8 +3344,19 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 @media (max-width: 560px) {
 	.xg-calc-opts, .xg-calc-opts.cols-3 { grid-template-columns: 1fr; }
 	.xg-calc-grid { grid-template-columns: 1fr; }
-	.xg-calc-price { font-size: 34px; }
+	.xg-calc-price { font-size: 32px; }
 	.xg-calc-pstep-lbl { display: none; }
+	.xg-calc-head { flex-wrap: wrap; gap: 8px; padding: 12px 16px; }
+	.xg-calc-stage { padding: 8px 16px 20px; }
+	.xg-calc-progress { padding: 16px 16px 4px; }
+	.xg-calc-panel-head { flex-wrap: wrap; }
+	.xg-calc-panel-title { font-size: 18px; }
+	.xg-calc-next-wrap { flex-direction: column; }
+	.xg-calc-range-top { flex-wrap: wrap; }
+	.xg-calc-range-top .xg-calc-input { width: 100%; }
+	.xg-calc-tab { font-size: 12px; padding: 12px 6px; }
+	/* Resultat-Preis (von–bis) nicht abschneiden */
+	.xg-calc-price { word-break: break-word; }
 }
 
 /* Reduced motion */
@@ -3592,7 +3639,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h3 class="xgoud-toc-title">Inhaltsverzeichnis</h3>
+<h3 class="xgoud-toc-title">Inhoudsopgave</h3>
 
 
 
@@ -3621,7 +3668,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Warum bei uns?</h2>
+<h2 class="xg-section-title">Waarom XGOUD?</h2>
 
 
 
@@ -3735,7 +3782,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h3 class="xg-expert-box-title">Unser Experte</h3>
+<h3 class="xg-expert-box-title">Onze expert</h3>
 
 
 
@@ -3753,7 +3800,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Warum können Sie uns vertrauen?</h2>
+<h2 class="xg-section-title">Waarom kunt u ons vertrouwen?</h2>
 
 
 
@@ -3817,7 +3864,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Ablauf</h2>
+<h2 class="xg-section-title">Zo werkt het</h2>
 
 
 
@@ -3901,7 +3948,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Aktuelle Spot-Preise</h2>
+<h2 class="xg-section-title">Actuele spotprijzen</h2>
 
 
 
@@ -3947,7 +3994,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Wie wird der Preis berechnet?</h2>
+<h2 class="xg-section-title">Hoe wordt de prijs berekend?</h2>
 
 
 
@@ -3980,7 +4027,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Ankaufspreise (nach Gewicht & Reinheit)</h2>
+<h2 class="xg-section-title">Inkoopprijzen (naar gewicht & zuiverheid)</h2>
 
 
 
@@ -4086,7 +4133,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Bewertungen</h2>
+<h2 class="xg-section-title">Beoordelingen</h2>
 
 
 
@@ -4101,7 +4148,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Weitere Informationen</h2>
+<h2 class="xg-section-title">Meer informatie</h2>
 
 
 
@@ -4156,7 +4203,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Häufig gestellte Fragen</h2>
+<h2 class="xg-section-title">Veelgestelde vragen</h2>
 
 
 
@@ -4323,7 +4370,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h3 class="xgoud-toc-title">Inhaltsverzeichnis</h3>
+<h3 class="xgoud-toc-title">Inhoudsopgave</h3>
 
 
 
@@ -4352,7 +4399,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Warum bei uns?</h2>
+<h2 class="xg-section-title">Waarom XGOUD?</h2>
 
 
 
@@ -4466,7 +4513,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h3 class="xg-expert-box-title">Unser Experte</h3>
+<h3 class="xg-expert-box-title">Onze expert</h3>
 
 
 
@@ -4484,7 +4531,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Warum können Sie uns vertrauen?</h2>
+<h2 class="xg-section-title">Waarom kunt u ons vertrouwen?</h2>
 
 
 
@@ -4548,7 +4595,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Ablauf</h2>
+<h2 class="xg-section-title">Zo werkt het</h2>
 
 
 
@@ -4632,7 +4679,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Die 4 C's (Edelsteine)</h2>
+<h2 class="xg-section-title">De 4 C's</h2>
 
 
 
@@ -4665,7 +4712,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Ankaufspreise</h2>
+<h2 class="xg-section-title">Inkoopprijzen</h2>
 
 
 
@@ -4705,7 +4752,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Rapaport-Informationen</h2>
+<h2 class="xg-section-title">Rapaport-informatie</h2>
 
 
 
@@ -4723,7 +4770,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Zertifizierung (GIA, HRD, IGI)</h2>
+<h2 class="xg-section-title">Certificering (GIA, HRD, IGI)</h2>
 
 
 
@@ -4807,7 +4854,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Bewertungen</h2>
+<h2 class="xg-section-title">Beoordelingen</h2>
 
 
 
@@ -4822,7 +4869,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Weitere Informationen</h2>
+<h2 class="xg-section-title">Meer informatie</h2>
 
 
 
@@ -4877,7 +4924,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Häufig gestellte Fragen</h2>
+<h2 class="xg-section-title">Veelgestelde vragen</h2>
 
 
 
@@ -5044,7 +5091,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h3 class="xgoud-toc-title">Inhaltsverzeichnis</h3>
+<h3 class="xgoud-toc-title">Inhoudsopgave</h3>
 
 
 
@@ -5073,7 +5120,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Warum bei uns?</h2>
+<h2 class="xg-section-title">Waarom XGOUD?</h2>
 
 
 
@@ -5187,7 +5234,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h3 class="xg-expert-box-title">Unser Experte</h3>
+<h3 class="xg-expert-box-title">Onze expert</h3>
 
 
 
@@ -5205,7 +5252,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Warum können Sie uns vertrauen?</h2>
+<h2 class="xg-section-title">Waarom kunt u ons vertrouwen?</h2>
 
 
 
@@ -5269,7 +5316,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Ablauf</h2>
+<h2 class="xg-section-title">Zo werkt het</h2>
 
 
 
@@ -5353,7 +5400,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Authentifizierung – So erkennen Sie echte Uhren</h2>
+<h2 class="xg-section-title">Authenticatie – zo herkent u echte horloges</h2>
 
 
 
@@ -5399,7 +5446,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Uhrengeschichte & Marken</h2>
+<h2 class="xg-section-title">Horlogegeschiedenis & merken</h2>
 
 
 
@@ -5458,7 +5505,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Ankaufspreise nach Zustand & Marke</h2>
+<h2 class="xg-section-title">Inkoopprijzen naar staat & merk</h2>
 
 
 
@@ -5498,7 +5545,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Vintage & aktuelle Trends</h2>
+<h2 class="xg-section-title">Vintage & actuele trends</h2>
 
 
 
@@ -5610,7 +5657,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Bewertungen</h2>
+<h2 class="xg-section-title">Beoordelingen</h2>
 
 
 
@@ -5625,7 +5672,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Weitere Informationen</h2>
+<h2 class="xg-section-title">Meer informatie</h2>
 
 
 
@@ -5680,7 +5727,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Häufig gestellte Fragen</h2>
+<h2 class="xg-section-title">Veelgestelde vragen</h2>
 
 
 
@@ -5847,7 +5894,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h3 class="xgoud-toc-title">Inhaltsverzeichnis</h3>
+<h3 class="xgoud-toc-title">Inhoudsopgave</h3>
 
 
 
@@ -5876,7 +5923,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Warum bei uns?</h2>
+<h2 class="xg-section-title">Waarom XGOUD?</h2>
 
 
 
@@ -5990,7 +6037,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h3 class="xg-expert-box-title">Unser Experte</h3>
+<h3 class="xg-expert-box-title">Onze expert</h3>
 
 
 
@@ -6008,7 +6055,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Warum können Sie uns vertrauen?</h2>
+<h2 class="xg-section-title">Waarom kunt u ons vertrouwen?</h2>
 
 
 
@@ -6072,7 +6119,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Ablauf</h2>
+<h2 class="xg-section-title">Zo werkt het</h2>
 
 
 
@@ -6156,7 +6203,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Marktinformation</h2>
+<h2 class="xg-section-title">Marktinformatie</h2>
 
 
 
@@ -6229,7 +6276,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Rapaport-Informationen</h2>
+<h2 class="xg-section-title">Rapaport-informatie</h2>
 
 
 
@@ -6247,7 +6294,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Zertifizierung</h2>
+<h2 class="xg-section-title">Certificering</h2>
 
 
 
@@ -6331,7 +6378,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Bewertungen</h2>
+<h2 class="xg-section-title">Beoordelingen</h2>
 
 
 
@@ -6346,7 +6393,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Weitere Informationen</h2>
+<h2 class="xg-section-title">Meer informatie</h2>
 
 
 
@@ -6401,7 +6448,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Häufig gestellte Fragen</h2>
+<h2 class="xg-section-title">Veelgestelde vragen</h2>
 
 
 
@@ -6549,14 +6596,14 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 <!-- CHARITY-TICKER -->
 
 <div class="xg-charity-ticker">
-	<span class="xg-charity-ticker-label">XGOUD hat diesen Monat für Charity gegeben:</span>
+	<span class="xg-charity-ticker-label">XGOUD heeft deze maand aan goede doelen gegeven:</span>
 	<span class="xg-charity-ticker-amount" data-xg-charity-total>€65.168,36</span>
 	<div class="xg-charity-ticker-projects">
-		<span>Sozialarbeit</span>
-		<span>Kindergärten</span>
-		<span>Frauenhäuser</span>
-		<span>Sportzentren</span>
-		<span>Schulen</span>
+		<span>Maatschappelijk werk</span>
+		<span>Kinderdagverblijven</span>
+		<span>Vrouwenopvang</span>
+		<span>Sportcentra</span>
+		<span>Scholen</span>
 	</div>
 </div>
 
@@ -6577,7 +6624,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Termin vereinbaren</h2>
+<h2 class="xg-section-title">Afspraak maken</h2>
 
 
 
@@ -6597,7 +6644,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Über dieses Produkt</h2>
+<h2 class="xg-section-title">Over dit product</h2>
 
 
 
@@ -6616,7 +6663,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 
 
-<h2 class="xg-section-title">Häufig gestellte Fragen</h2>
+<h2 class="xg-section-title">Veelgestelde vragen</h2>
 
 
 
@@ -6877,7 +6924,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 <div class="tst-toolbar">
 	<button class="tst-tab active" data-go="hero">Hero + Calculator</button><button class="tst-tab" data-go="edelmetalen">Edelmetalen</button><button class="tst-tab" data-go="edelstenen">Edelstenen</button><button class="tst-tab" data-go="horloges">Horloges</button><button class="tst-tab" data-go="verkoop">Verkoop-Blaupause</button><button class="tst-tab" data-go="product">Produktseite</button>
-	<button class="tst-tab tst-fill" id="tstFill">Demo-Text ein/aus</button>
+	<button class="tst-tab tst-fill" id="tstFill">Demo-tekst aan/uit</button>
 </div>
 
 <script>
@@ -6940,25 +6987,25 @@ window.XG_CALC_DATA = {
   "835": "83,5 %",
   "850": "85,0 %",
   "900": "90,0 %",
-  "925": "Sterling 92,5 %",
+  "925": "Sterling 92,5%",
   "950": "95,0 %",
-  "999": "Fein 99,9 %"
+  "999": "Fijn 99,9%"
  },
  "conditions": {
   "nieuw": {
-   "label": "Neuwertig",
+   "label": "Nieuwstaat",
    "factor": 1
   },
   "zeer_goed": {
-   "label": "Sehr gut",
+   "label": "Zeer goed",
    "factor": 0.99
   },
   "goed": {
-   "label": "Gut",
+   "label": "Goed",
    "factor": 0.98
   },
   "voldoende": {
-   "label": "Befriedigend",
+   "label": "Voldoende",
    "factor": 0.96
   }
  },
@@ -7023,15 +7070,15 @@ window.XG_CALC_DATA = {
   "GIA",
   "IGI",
   "HRD",
-  "Kein Zertifikat"
+  "Geen certificaat"
  ],
  "gem_base": {
   "robijn": {
-   "label": "Robijn (Rubin)",
+   "label": "Robijn",
    "anchor": 3500
   },
   "saffier": {
-   "label": "Saffier (Saphir)",
+   "label": "Saffier",
    "anchor": 2200
   },
   "smaragd": {
@@ -7072,66 +7119,66 @@ window.XG_CALC_DATA = {
  },
  "watch_conditions": {
   "nieuw": {
-   "label": "Neuwertig",
+   "label": "Nieuwstaat",
    "factor": 1
   },
   "zeer_goed": {
-   "label": "Sehr gut",
+   "label": "Zeer goed",
    "factor": 0.9
   },
   "goed": {
-   "label": "Gut",
+   "label": "Goed",
    "factor": 0.78
   },
   "voldoende": {
-   "label": "Befriedigend",
+   "label": "Voldoende",
    "factor": 0.65
   },
   "service": {
-   "label": "Restaurierungsbedarf",
+   "label": "Revisie nodig",
    "factor": 0.5
   }
  },
  "watch_extras": {
   "box": {
-   "label": "Originalbox",
+   "label": "Originele doos",
    "bonus": 0.03
   },
   "papers": {
-   "label": "Zertifikat/Papiere",
+   "label": "Certificaat/papieren",
    "bonus": 0.05
   }
  },
  "watch_metals": [
-  "Edelstahl",
-  "Gelbgold",
-  "Weißgold",
-  "Roségold",
-  "Platin",
-  "Stahl/Gold",
-  "Titan"
+  "Staal",
+  "Geelgoud",
+  "Witgoud",
+  "Roségoud",
+  "Platina",
+  "Staal/Goud",
+  "Titanium"
  ],
  "watch_bracelets": [
-  "Edelstahlband",
-  "Lederband",
-  "Kautschuk",
-  "Gold-Band",
-  "NATO/Textil"
+  "Stalen band",
+  "Leren band",
+  "Rubber",
+  "Gouden band",
+  "NATO/Textiel"
  ],
  "watch_dials": [
-  "Schwarz",
-  "Weiß",
-  "Silber",
-  "Blau",
-  "Grün",
-  "Champagner",
-  "Grau",
-  "Sonstige"
+  "Zwart",
+  "Wit",
+  "Zilver",
+  "Blauw",
+  "Groen",
+  "Champagne",
+  "Grijs",
+  "Overige"
  ],
  "charity_projects": [
   {
    "id": "social",
-   "label": "Sozialarbeit",
+   "label": "Maatschappelijk werk",
    "weight": 0.25,
    "recipients": [
     "Stichting Buurtwerk Amsterdam",
@@ -7141,7 +7188,7 @@ window.XG_CALC_DATA = {
   },
   {
    "id": "kindergarten",
-   "label": "Kindergärten",
+   "label": "Kinderdagverblijven",
    "weight": 0.2,
    "recipients": [
     "Kinderopvang De Zonnebloem",
@@ -7151,7 +7198,7 @@ window.XG_CALC_DATA = {
   },
   {
    "id": "shelter",
-   "label": "Frauenhäuser",
+   "label": "Vrouwenopvang",
    "weight": 0.25,
    "recipients": [
     "Blijf Groep Amsterdam",
@@ -7161,7 +7208,7 @@ window.XG_CALC_DATA = {
   },
   {
    "id": "sport",
-   "label": "Sportzentren",
+   "label": "Sportcentra",
    "weight": 0.15,
    "recipients": [
     "Sportclub Jeugd Eindhoven",
@@ -7171,7 +7218,7 @@ window.XG_CALC_DATA = {
   },
   {
    "id": "school",
-   "label": "Schulen",
+   "label": "Scholen",
    "weight": 0.15,
    "recipients": [
     "Basisschool De Regenboog",
@@ -7943,8 +7990,8 @@ window.XG_CALC_DATA = {
 		root.appendChild(head);
 
 		var tabs = h('div', 'xg-calc-tabs');
-		var tabCalc = h('button', 'xg-calc-tab active', ICON.search + ' Berechnen');
-		var tabCart = h('button', 'xg-calc-tab', ICON.cart + ' <span>Auswahl</span> <span class="xg-calc-tab-badge" style="display:none">0</span>');
+		var tabCalc = h('button', 'xg-calc-tab active', ICON.search + ' Berekenen');
+		var tabCart = h('button', 'xg-calc-tab', ICON.cart + ' <span>Selectie</span> <span class="xg-calc-tab-badge" style="display:none">0</span>');
 		tabs.appendChild(tabCalc); tabs.appendChild(tabCart);
 		root.appendChild(tabs);
 
@@ -7959,7 +8006,7 @@ window.XG_CALC_DATA = {
 
 		/* ---------- LIVE / THEME ---------- */
 		function liveBlock() {
-			var b = h('div', 'xg-calc-live', '<span class="xg-calc-live-dot"></span> Live-Preise');
+			var b = h('div', 'xg-calc-live', '<span class="xg-calc-live-dot"></span> Live prijzen');
 			var t = h('span', 'xg-calc-live-time');
 			function tick() {
 				var d = new Date();
@@ -7992,10 +8039,10 @@ window.XG_CALC_DATA = {
 			progress.innerHTML = '';
 			var steps, idx;
 			if (state.view === 'checkout') {
-				steps = ['Daten', 'Service', 'Auszahlung', 'Charity', 'Fertig'];
+				steps = ['Gegevens', 'Service', 'Uitbetaling', 'Goede doel', 'Klaar'];
 				idx = state.checkout.step;
 			} else {
-				steps = ['Produkt', 'Details', 'Resultat'];
+				steps = ['Product', 'Details', 'Resultaat'];
 				idx = !state.type ? 0 : (state.result ? 2 : 1);
 			}
 			var line = h('div', 'xg-calc-prog-line');
@@ -8057,14 +8104,14 @@ window.XG_CALC_DATA = {
 		// Step 1: Produkt-Typ
 		function renderTypePicker() {
 			var p = h('div', 'xg-calc-panel');
-			p.appendChild(panelHead('Was möchten Sie verkaufen?', 'Wählen Sie eine Kategorie – wir führen Sie zum Preis.'));
+			p.appendChild(panelHead('Wat wilt u verkopen?', 'Kies een categorie – wij leiden u naar de prijs.'));
 			p.appendChild(findBox());
 
 			var types = [
-				{ k: 'metal',   t: 'Edelmetall', d: 'Gold, Silber, Platin, Palladium' },
-				{ k: 'diamond', t: 'Diamant',    d: 'Lose Steine & Schmuck' },
-				{ k: 'gem',     t: 'Edelstein',  d: 'Rubin, Saphir, Smaragd' },
-				{ k: 'watch',   t: 'Uhr',        d: 'Luxusuhren aller Marken' }
+				{ k: 'metal',   t: 'Edelmetaal', d: 'Goud, zilver, platina, palladium' },
+				{ k: 'diamond', t: 'Diamant',    d: 'Losse stenen & sieraden' },
+				{ k: 'gem',     t: 'Edelsteen',  d: 'Robijn, saffier, smaragd' },
+				{ k: 'watch',   t: 'Horloge',    d: 'Luxe horloges van alle merken' }
 			];
 			var grid = h('div', 'xg-calc-opts');
 			types.forEach(function (ty) {
@@ -8079,8 +8126,8 @@ window.XG_CALC_DATA = {
 		// Step 2: Details (geführt – Leitwert als Karten, Rest kompakt)
 		function renderDetails() {
 			var p = h('div', 'xg-calc-panel');
-			var titles = { metal: 'Ihr Edelmetall', diamond: 'Ihr Diamant', gem: 'Ihr Edelstein', watch: 'Ihre Uhr' };
-			p.appendChild(panelHead(titles[state.type], 'Angaben ergänzen – der Preis berechnet sich live.', true));
+			var titles = { metal: 'Uw edelmetaal', diamond: 'Uw diamant', gem: 'Uw edelsteen', watch: 'Uw horloge' };
+			p.appendChild(panelHead(titles[state.type], 'Vul de gegevens aan – de prijs wordt live berekend.', true));
 
 			var body = h('div');
 			if (state.type === 'metal') buildMetal(body);
@@ -8090,7 +8137,7 @@ window.XG_CALC_DATA = {
 			p.appendChild(body);
 
 			var actions = h('div', 'xg-calc-next-wrap');
-			var btn = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Preis berechnen');
+			var btn = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Prijs berekenen');
 			btn.addEventListener('click', function () {
 				var r = compute();
 				if (r) { state.result = r; render(); }
@@ -8196,22 +8243,22 @@ window.XG_CALC_DATA = {
 				if (state.form.metal === k) c.classList.add('selected');
 				cards.appendChild(c);
 			});
-			wrap.appendChild(field('Metall', cards, true));
+			wrap.appendChild(field('Metaal', cards, true));
 			if (!state.form.metal) return;
 
 			var grid = h('div', 'xg-calc-grid');
 			// Form
-			grid.appendChild(field('Form', seg('form', [['barren', 'Barren'], ['munt', 'Münze'], ['sieraad', 'Schmuck']])));
+			grid.appendChild(field('Vorm', seg('form', [['barren', 'Baar'], ['munt', 'Munt'], ['sieraad', 'Sieraad']])));
 
 			// Reinheit: Gold → Karat, sonst → Legierung
 			var purEntries = Object.keys(DATA.metal_purities[state.form.metal]).map(function (key) {
 				var lbl = (state.form.metal === 'goud') ? (key + ' karaat') : (key + ' (' + DATA.purity_labels[key] + ')');
 				return [key, lbl];
 			});
-			var purLabel = (state.form.metal === 'goud') ? 'Karat' : 'Legierung';
+			var purLabel = (state.form.metal === 'goud') ? 'Karaat' : 'Legering';
 			grid.appendChild(field(purLabel, sel('purity', purEntries)));
 
-			_metalCondField = field('Zustand', sel('condition', Object.keys(DATA.conditions).map(function (k) { return [k, DATA.conditions[k].label]; })));
+			_metalCondField = field('Staat', sel('condition', Object.keys(DATA.conditions).map(function (k) { return [k, DATA.conditions[k].label]; })));
 			grid.appendChild(_metalCondField);
 			wrap.appendChild(grid);
 			// Gewicht als Range-Slider (volle Breite, leicht bedienbar).
@@ -8223,13 +8270,13 @@ window.XG_CALC_DATA = {
 		function buildDiamond(wrap) {
 			var b = DATA.diamond_base;
 			var grid = h('div', 'xg-calc-grid');
-			grid.appendChild(field('Karatgewicht', rangeNum('carat', 0, 10, 0.01, 'ct', 1), true));
-			grid.appendChild(field('Farbe', sel('color', Object.keys(b.color).map(function (k) { return [k, k]; }))));
-			grid.appendChild(field('Reinheit', sel('clarity', Object.keys(b.clarity).map(function (k) { return [k, k]; }))));
-			grid.appendChild(field('Schliff', sel('cut', Object.keys(b.cut).map(function (k) { return [k, k]; }))));
-			grid.appendChild(field('Fluoreszenz', sel('fluor', Object.keys(b.fluor).map(function (k) { return [k, k]; }))));
-			grid.appendChild(field('Labor', sel('lab', DATA.labs.map(function (l) { return [l, l]; }))));
-			grid.appendChild(field('Zertifikatsnummer', text('cert', 'optional'), true, 'optional'));
+			grid.appendChild(field('Karaatgewicht', rangeNum('carat', 0, 10, 0.01, 'ct', 1), true));
+			grid.appendChild(field('Kleur', sel('color', Object.keys(b.color).map(function (k) { return [k, k]; }))));
+			grid.appendChild(field('Zuiverheid', sel('clarity', Object.keys(b.clarity).map(function (k) { return [k, k]; }))));
+			grid.appendChild(field('Slijpvorm', sel('cut', Object.keys(b.cut).map(function (k) { return [k, k]; }))));
+			grid.appendChild(field('Fluorescentie', sel('fluor', Object.keys(b.fluor).map(function (k) { return [k, k]; }))));
+			grid.appendChild(field('Laboratorium', sel('lab', DATA.labs.map(function (l) { return [l, l]; }))));
+			grid.appendChild(field('Certificaatnummer', text('cert', 'optioneel'), true, 'optioneel'));
 			wrap.appendChild(grid);
 		}
 
@@ -8241,14 +8288,14 @@ window.XG_CALC_DATA = {
 				if (state.form.gem === k) c.classList.add('selected');
 				cards.appendChild(c);
 			});
-			wrap.appendChild(field('Edelstein', cards, true));
+			wrap.appendChild(field('Edelsteen', cards, true));
 			if (!state.form.gem) return;
 
 			var grid = h('div', 'xg-calc-grid');
-			grid.appendChild(field('Karatgewicht', rangeNum('carat', 0, 10, 0.01, 'ct', 1), true));
-			grid.appendChild(field('Qualität', sel('quality', [['5', 'Exzellent'], ['4', 'Sehr gut'], ['3', 'Gut'], ['2', 'Mittel'], ['1', 'Einfach']])));
-			grid.appendChild(field('Labor', sel('lab', DATA.labs.map(function (l) { return [l, l]; }))));
-			grid.appendChild(field('Zertifikatsnummer', text('cert', 'optional'), true, 'optional'));
+			grid.appendChild(field('Karaatgewicht', rangeNum('carat', 0, 10, 0.01, 'ct', 1), true));
+			grid.appendChild(field('Kwaliteit', sel('quality', [['5', 'Uitstekend'], ['4', 'Zeer goed'], ['3', 'Goed'], ['2', 'Gemiddeld'], ['1', 'Eenvoudig']])));
+			grid.appendChild(field('Laboratorium', sel('lab', DATA.labs.map(function (l) { return [l, l]; }))));
+			grid.appendChild(field('Certificaatnummer', text('cert', 'optioneel'), true, 'optioneel'));
 			wrap.appendChild(grid);
 		}
 
@@ -8260,21 +8307,21 @@ window.XG_CALC_DATA = {
 				if (state.form.brand === k) c.classList.add('selected');
 				cards.appendChild(c);
 			});
-			wrap.appendChild(field('Marke', cards, true));
+			wrap.appendChild(field('Merk', cards, true));
 			if (!state.form.brand) return;
 
 			var grid = h('div', 'xg-calc-grid');
-			grid.appendChild(field('Modell', sel('model', Object.keys(DATA.watches[state.form.brand].models).map(function (m) { return [m, m]; }))));
-			grid.appendChild(field('Zustand', sel('condition', Object.keys(DATA.watch_conditions).map(function (k) { return [k, DATA.watch_conditions[k].label]; }))));
-			grid.appendChild(field('Gehäuse-Metall', sel('wmetal', DATA.watch_metals.map(function (m) { return [m, m]; }))));
-			grid.appendChild(field('Armbandtyp', sel('bracelet', DATA.watch_bracelets.map(function (m) { return [m, m]; }))));
-			grid.appendChild(field('Baujahr', num('year', 'z.B. 2015', '1'), false, 'erleichtert die Suche'));
-			grid.appendChild(field('Zifferblatt', sel('dial', DATA.watch_dials.map(function (m) { return [m, m]; }))));
-			grid.appendChild(field('Edition', text('edition', 'z.B. Limited / Standard'), true));
+			grid.appendChild(field('Model', sel('model', Object.keys(DATA.watches[state.form.brand].models).map(function (m) { return [m, m]; }))));
+			grid.appendChild(field('Staat', sel('condition', Object.keys(DATA.watch_conditions).map(function (k) { return [k, DATA.watch_conditions[k].label]; }))));
+			grid.appendChild(field('Kast-metaal', sel('wmetal', DATA.watch_metals.map(function (m) { return [m, m]; }))));
+			grid.appendChild(field('Bandtype', sel('bracelet', DATA.watch_bracelets.map(function (m) { return [m, m]; }))));
+			grid.appendChild(field('Bouwjaar', num('year', 'bijv. 2015', '1'), false, 'maakt zoeken makkelijker'));
+			grid.appendChild(field('Wijzerplaat', sel('dial', DATA.watch_dials.map(function (m) { return [m, m]; }))));
+			grid.appendChild(field('Editie', text('edition', 'bijv. Limited / Standaard'), true));
 			var pills = h('div', 'xg-calc-pills');
 			pills.appendChild(pill('box', DATA.watch_extras.box.label));
 			pills.appendChild(pill('papers', DATA.watch_extras.papers.label));
-			grid.appendChild(field('Zubehör', pills, true));
+			grid.appendChild(field('Accessoires', pills, true));
 			wrap.appendChild(grid);
 		}
 
@@ -8286,14 +8333,14 @@ window.XG_CALC_DATA = {
 
 			var top = h('div', 'xg-calc-result-top');
 			top.appendChild(h('span', 'xg-calc-result-type', typeLabel()));
-			top.appendChild(h('span', 'xg-calc-badge ' + (r.indicative ? 'ind' : 'fix'), r.indicative ? 'Preisindikation' : 'Festpreis'));
+			top.appendChild(h('span', 'xg-calc-badge ' + (r.indicative ? 'ind' : 'fix'), r.indicative ? 'Prijsindicatie' : 'Vaste prijs'));
 			res.appendChild(top);
 
 			var price = h('div', 'xg-calc-price');
 			res.appendChild(price);
 			res.appendChild(h('div', 'xg-calc-price-note', r.indicative
-				? 'Unverbindliche Indikation. Endpreis nach Begutachtung.'
-				: 'Fester Ankaufspreis auf Basis aktueller Spot-Preise.'));
+				? 'Vrijblijvende indicatie. Eindprijs na taxatie.'
+				: 'Vaste inkoopprijs op basis van actuele spotprijzen.'));
 
 			// Count-up
 			if (r.indicative) {
@@ -8305,23 +8352,23 @@ window.XG_CALC_DATA = {
 			}
 
 			var brk = h('div', 'xg-calc-break');
-			brk.appendChild(breakRow('Marktpreis', euro2(r.market)));
+			brk.appendChild(breakRow('Marktprijs', euro2(r.market)));
 			brk.appendChild(breakRow('Marge', pct(r.marginPct) + ' · ' + euro2(r.marginAbs)));
-			brk.appendChild(breakRow('Differenz Markt ↔ Ankauf', euro2(r.market - r.low)));
+			brk.appendChild(breakRow('Verschil markt ↔ inkoop', euro2(r.market - r.low)));
 			res.appendChild(brk);
 
 			// Charity prominent
 			var ch = h('div', 'xg-calc-charity');
-			ch.appendChild(h('div', 'xg-calc-charity-head', ICON.heart + ' Davon für den guten Zweck'));
+			ch.appendChild(h('div', 'xg-calc-charity-head', ICON.heart + ' Hiervan naar het goede doel'));
 			ch.appendChild(h('div', 'xg-calc-charity-amt', euro2(r.charity)));
-			ch.appendChild(h('div', 'xg-calc-charity-txt', 'In jeder Marge steckt ein fester Charity-Anteil. Den Empfänger wählen Sie später selbst.'));
+			ch.appendChild(h('div', 'xg-calc-charity-txt', 'In elke marge zit een vast deel voor het goede doel. De ontvanger kiest u later zelf.'));
 			res.appendChild(ch);
 
-			var add = h('button', 'xg-calc-btn xg-calc-btn-primary', ICON.cart + ' Zur Auswahl hinzufügen');
+			var add = h('button', 'xg-calc-btn xg-calc-btn-primary', ICON.cart + ' Aan selectie toevoegen');
 			add.addEventListener('click', function () { addToCart(r); });
 			res.appendChild(add);
 			res.appendChild(h('div', '', '<div style="height:10px"></div>'));
-			var again = h('button', 'xg-calc-btn xg-calc-btn-ghost', 'Weiteres Produkt berechnen');
+			var again = h('button', 'xg-calc-btn xg-calc-btn-ghost', 'Nog een product berekenen');
 			again.addEventListener('click', function () { state.type = null; state.form = {}; state.result = null; render(); });
 			res.appendChild(again);
 
@@ -8330,7 +8377,7 @@ window.XG_CALC_DATA = {
 		}
 		function breakRow(l, v, cls) { return h('div', 'xg-calc-break-row' + (cls ? ' ' + cls : ''), '<span>' + l + '</span><b>' + v + '</b>'); }
 
-		function typeLabel() { return { metal: 'Edelmetall', diamond: 'Diamant', gem: 'Edelstein', watch: 'Uhr' }[state.type]; }
+		function typeLabel() { return { metal: 'Edelmetaal', diamond: 'Diamant', gem: 'Edelsteen', watch: 'Horloge' }[state.type]; }
 		function specLabel() {
 			var f = state.form;
 			if (state.type === 'metal') return (DATA.metals[f.metal] ? DATA.metals[f.metal].label : '') + ' · ' + (f.weight || 0) + ' g';
@@ -8356,8 +8403,8 @@ window.XG_CALC_DATA = {
 		function renderCart() {
 			var wrap = h('div', 'xg-calc-cart');
 			if (!state.cart.length) {
-				wrap.appendChild(h('div', 'xg-calc-cart-empty', ICON.cart + '<p>Noch keine Produkte ausgewählt.</p>'));
-				var back = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Produkt berechnen');
+				wrap.appendChild(h('div', 'xg-calc-cart-empty', ICON.cart + '<p>Nog geen producten geselecteerd.</p>'));
+				var back = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Product berekenen');
 				back.addEventListener('click', function () { state.view = 'calc'; render(); });
 				wrap.appendChild(back);
 				setPanel(wrap); return;
@@ -8381,13 +8428,13 @@ window.XG_CALC_DATA = {
 
 			var sum = h('div', 'xg-calc-cart-sum');
 			var r1 = h('div', 'xg-calc-cart-sum-row total');
-			r1.innerHTML = '<span>Geschätzter Ankaufswert</span><b>' + (totalLow === totalHigh ? euro(totalLow) : euro(totalLow) + ' – ' + euro(totalHigh)) + '</b>';
+			r1.innerHTML = '<span>Geschatte inkoopwaarde</span><b>' + (totalLow === totalHigh ? euro(totalLow) : euro(totalLow) + ' – ' + euro(totalHigh)) + '</b>';
 			sum.appendChild(r1);
 			wrap.appendChild(sum);
 
 			// Charity GROSS + Aufschlüsselung wer/wieviel
 			var ch = h('div', 'xg-calc-cart-charity');
-			ch.appendChild(h('div', 'xg-calc-cart-charity-top', ICON.heart + ' Ihr Beitrag für den guten Zweck'));
+			ch.appendChild(h('div', 'xg-calc-cart-charity-top', ICON.heart + ' Uw bijdrage aan het goede doel'));
 			ch.appendChild(h('div', 'xg-calc-cart-charity-amt', euro2(totalCharity)));
 			var list = h('div', 'xg-calc-cart-charity-list');
 			var palette = ['#AE1E1E', '#1f9d55', '#c8a24a', '#3a6ea5', '#7a4fa3'];
@@ -8400,13 +8447,13 @@ window.XG_CALC_DATA = {
 				list.appendChild(line);
 			});
 			ch.appendChild(list);
-			ch.appendChild(h('div', 'xg-calc-charity-txt', '<div style="font-size:12px;color:var(--xc-ink-soft);margin-top:10px">Im nächsten Schritt können Sie gezielt eine Einrichtung in Ihrer Stadt wählen.</div>'));
+			ch.appendChild(h('div', 'xg-calc-charity-txt', '<div style="font-size:12px;color:var(--xc-ink-soft);margin-top:10px">In de volgende stap kiest u gericht een instelling in uw stad.</div>'));
 			wrap.appendChild(ch);
 
 			var actions = h('div', 'xg-calc-cart-actions');
-			var go = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Termin vereinbaren & verkaufen');
+			var go = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Afspraak maken & verkopen');
 			go.addEventListener('click', function () { state.view = 'checkout'; state.checkout.step = 0; render(); });
-			var more = h('button', 'xg-calc-btn xg-calc-btn-ghost', 'Weiteres Produkt hinzufügen');
+			var more = h('button', 'xg-calc-btn xg-calc-btn-ghost', 'Nog een product toevoegen');
 			more.addEventListener('click', function () { state.view = 'calc'; render(); });
 			actions.appendChild(go); actions.appendChild(more);
 			wrap.appendChild(actions);
@@ -8431,15 +8478,15 @@ window.XG_CALC_DATA = {
 
 		// 1) Daten
 		function checkoutData(node) {
-			coHead(node, 'Ihre Kontaktdaten', 'Damit wir Ihren Termin bestätigen können.');
+			coHead(node, 'Uw contactgegevens', 'Zodat wij uw afspraak kunnen bevestigen.');
 			var grid = h('div', 'xg-calc-grid');
-			grid.appendChild(field('Vorname', coInput('first')));
-			grid.appendChild(field('Nachname', coInput('last')));
-			grid.appendChild(field('E-Mail', coInput('email', 'email')));
-			grid.appendChild(field('Telefon', coInput('phone', 'tel')));
-			grid.appendChild(field('Stadt', coInput('city'), true));
+			grid.appendChild(field('Voornaam', coInput('first')));
+			grid.appendChild(field('Achternaam', coInput('last')));
+			grid.appendChild(field('E-mail', coInput('email', 'email')));
+			grid.appendChild(field('Telefoon', coInput('phone', 'tel')));
+			grid.appendChild(field('Stad', coInput('city'), true));
 			node.appendChild(grid);
-			coNav(node, null, 'Weiter', function () { state.checkout.step = 1; render(); });
+			coNav(node, null, 'Verder', function () { state.checkout.step = 1; render(); });
 		}
 		function coInput(name, type) {
 			var i = h('input', 'xg-calc-input'); i.type = type || 'text';
@@ -8450,12 +8497,12 @@ window.XG_CALC_DATA = {
 
 		// 2) Service
 		function checkoutService(node) {
-			coHead(node, 'Wie möchten Sie verkaufen?', 'Wählen Sie die für Sie bequemste Option.');
+			coHead(node, 'Hoe wilt u verkopen?', 'Kies de voor u makkelijkste optie.');
 			var svc = h('div', 'xg-calc-svc');
 			[
-				{ k: 'home', i: ICON.home, t: 'Hausbesuch', d: 'Unser Experte kommt zu Ihnen (kostenlos & versichert).' },
-				{ k: 'office', i: ICON.office, t: 'In einer Filiale', d: 'Besuchen Sie eines unserer Büros.' },
-				{ k: 'pickup', i: ICON.truck, t: 'Abhol-Service', d: 'Versicherte Abholung per Kurier.' }
+				{ k: 'home', i: ICON.home, t: 'Bezoek aan huis', d: 'Onze expert komt naar u toe (gratis & verzekerd).' },
+				{ k: 'office', i: ICON.office, t: 'In een vestiging', d: 'Bezoek een van onze kantoren.' },
+				{ k: 'pickup', i: ICON.truck, t: 'Ophaalservice', d: 'Verzekerde ophaling per koerier.' }
 			].forEach(function (s) {
 				var card = optCard(s.i, s.t, s.d, function () { state.checkout.service = s.k; state.checkout.step = 2; render(); });
 				if (state.checkout.service === s.k) card.classList.add('selected');
@@ -8467,11 +8514,11 @@ window.XG_CALC_DATA = {
 
 		// 3) Auszahlung
 		function checkoutPayout(node) {
-			coHead(node, 'Auszahlungsart', 'Wie möchten Sie Ihr Geld erhalten?');
+			coHead(node, 'Uitbetaling', 'Hoe wilt u uw geld ontvangen?');
 			var grid = h('div', 'xg-calc-opts');
 			[
-				{ k: 'bank', t: 'Banküberweisung', d: 'Direkt auf Ihr Konto.' },
-				{ k: 'cash', t: 'Barauszahlung', d: 'Sofort vor Ort (bis Limit).' }
+				{ k: 'bank', t: 'Bankoverschrijving', d: 'Direct op uw rekening.' },
+				{ k: 'cash', t: 'Contante uitbetaling', d: 'Direct ter plaatse (tot limiet).' }
 			].forEach(function (pp) {
 				var card = optCardMini(pp.t + ' — ' + pp.d, function () { state.checkout.payout = pp.k; state.checkout.step = 3; render(); });
 				if (state.checkout.payout === pp.k) card.classList.add('selected');
@@ -8483,14 +8530,14 @@ window.XG_CALC_DATA = {
 
 		// 4) Charity-Empfänger gezielt wählen
 		function checkoutCharity(node) {
-			coHead(node, 'Wohin soll Ihr Beitrag gehen?', 'Wählen Sie eine konkrete Einrichtung – gerne in Ihrer Stadt.');
+			coHead(node, 'Waar gaat uw bijdrage naartoe?', 'Kies een concrete instelling – het liefst in uw stad.');
 			var totalCharity = state.cart.reduce(function (a, b) { return a + b.charity; }, 0);
-			node.appendChild(h('div', 'xg-calc-charity', ICON.heart + ' <b style="color:var(--xc-red)"> ' + euro2(totalCharity) + '</b> fließen an die gewählte Einrichtung.'));
+			node.appendChild(h('div', 'xg-calc-charity', ICON.heart + ' <b style="color:var(--xc-red)"> ' + euro2(totalCharity) + '</b> gaat naar de gekozen instelling.'));
 
 			var typeSel = sel2('charity_type', DATA.charity_projects.map(function (p) { return [p.id, p.label]; }), function (v) { fillRecipients(v); });
-			node.appendChild(field('Bereich', typeSel, true));
+			node.appendChild(field('Gebied', typeSel, true));
 
-			var recipientWrap = field('Einrichtung', h('select', 'xg-calc-input'), true);
+			var recipientWrap = field('Instelling', h('select', 'xg-calc-input'), true);
 			node.appendChild(recipientWrap);
 			function fillRecipients(typeId) {
 				var prj = DATA.charity_projects.filter(function (p) { return p.id === typeId; })[0];
@@ -8502,7 +8549,7 @@ window.XG_CALC_DATA = {
 			}
 			fillRecipients(DATA.charity_projects[0].id);
 
-			coNav(node, function () { state.checkout.step = 2; render(); }, 'Termin anfragen', function () { state.checkout.step = 4; render(); });
+			coNav(node, function () { state.checkout.step = 2; render(); }, 'Afspraak aanvragen', function () { state.checkout.step = 4; render(); });
 		}
 		function sel2(name, entries, onchange) {
 			var s = h('select', 'xg-calc-input'); s.name = name;
@@ -8515,18 +8562,18 @@ window.XG_CALC_DATA = {
 		function checkoutThanks(node) {
 			var t = h('div', 'xg-calc-thanks');
 			t.appendChild(h('div', 'xg-calc-thanks-check', ICON.check));
-			t.appendChild(h('h3', '', 'Vielen Dank!'));
+			t.appendChild(h('h3', '', 'Hartelijk dank!'));
 			var name = state.checkout.data.first || '';
-			t.appendChild(h('p', '', 'Ihr Terminversuch ist bei uns eingegangen' + (name ? ', ' + name : '') + '. Sie erhalten in Kürze eine Bestätigungs-E-Mail mit allen Details.'));
+			t.appendChild(h('p', '', 'Uw afspraakverzoek is bij ons binnengekomen' + (name ? ', ' + name : '') + '. U ontvangt binnenkort een bevestigingsmail met alle details.'));
 			var ch = state.checkout.charity;
-			if (ch) t.appendChild(h('p', '', '<span style="color:var(--xc-red);font-weight:700">♥</span> Ihr Beitrag geht an: <b>' + ch.recipient + '</b>'));
+			if (ch) t.appendChild(h('p', '', '<span style="color:var(--xc-red);font-weight:700">♥</span> Uw bijdrage gaat naar: <b>' + ch.recipient + '</b>'));
 
 			// Übergabe an Backend (später: POST → wp_xg_appointments)
 			document.dispatchEvent(new CustomEvent('xg:appointment-submit', {
 				detail: { cart: state.cart, checkout: state.checkout }
 			}));
 
-			var done = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Neue Berechnung starten');
+			var done = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Nieuwe berekening starten');
 			done.style.marginTop = '20px'; done.style.maxWidth = '280px'; done.style.marginLeft = 'auto'; done.style.marginRight = 'auto';
 			done.addEventListener('click', function () {
 				state.cart = []; state.type = null; state.form = {}; state.result = null;
@@ -8539,7 +8586,7 @@ window.XG_CALC_DATA = {
 
 		function coNav(node, back, nextLabel, nextFn) {
 			var wrap = h('div', 'xg-calc-next-wrap');
-			if (back) { var b = h('button', 'xg-calc-btn xg-calc-btn-ghost', '← Zurück'); b.addEventListener('click', back); wrap.appendChild(b); }
+			if (back) { var b = h('button', 'xg-calc-btn xg-calc-btn-ghost', '← Terug'); b.addEventListener('click', back); wrap.appendChild(b); }
 			if (nextLabel) { var n = h('button', 'xg-calc-btn xg-calc-btn-primary', nextLabel); n.addEventListener('click', nextFn); wrap.appendChild(n); }
 			node.appendChild(wrap);
 		}
@@ -8552,7 +8599,7 @@ window.XG_CALC_DATA = {
 			if (sub) left.appendChild(h('div', 'xg-calc-panel-sub', sub));
 			head.appendChild(left);
 			if (showBack) {
-				var b = h('button', 'xg-calc-back', '← Zurück');
+				var b = h('button', 'xg-calc-back', '← Terug');
 				b.addEventListener('click', function () {
 					if (checkout) { state.view = 'cart'; render(); }
 					else { state.type = null; state.form = {}; state.result = null; render(); }
@@ -8563,7 +8610,7 @@ window.XG_CALC_DATA = {
 		}
 		function findBox() {
 			var box = h('div', 'xg-calc-find', ICON.search);
-			var inp = h('input'); inp.type = 'text'; inp.placeholder = 'Produkt suchen (z.B. Rolex, Diamant, Goud)…';
+			var inp = h('input'); inp.type = 'text'; inp.placeholder = 'Product zoeken (bijv. Rolex, diamant, goud)…';
 			box.appendChild(inp);
 			inp.addEventListener('input', function () {
 				var q = inp.value.toLowerCase();
@@ -8621,17 +8668,18 @@ document.querySelectorAll('.tst-tab[data-go]').forEach(function (b) {
 	});
 });
 
-/* Demo-Text in leere Gutenberg-Blöcke (nur zum Sichtbarmachen der Struktur) */
+/* Demo-Text (Nederlands) in leere Gutenberg-Blöcke – standardmäßig AN,
+   damit die Klassen/Struktur sofort sichtbar sind. */
 var FILLED = false;
 var SAMPLE = {
 	H1: 'Goud verkopen tegen de beste prijs',
-	H2: 'Waarom XGOUD de juiste keuze is',
-	H3: 'Transparant, snel en eerlijk',
+	H2: 'Waarom kiezen voor XGOUD?',
+	H3: 'Eerlijk, snel en transparant',
 	H4: 'Vertrouwd sinds 2009',
-	P: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+	P: 'Bij XGOUD krijgt u een eerlijke prijs voor uw goud, diamanten en horloges. Transparant, veilig en met persoonlijke aandacht voor elke transactie.'
 };
-document.getElementById('tstFill').addEventListener('click', function () {
-	FILLED = !FILLED;
+function applyFill(on) {
+	FILLED = on;
 	document.querySelectorAll('.tst-page').forEach(function (page) {
 		page.querySelectorAll('h1,h2,h3,h4,p,li,th,td,.wp-block-button__link').forEach(function (el) {
 			if (el.closest('.xg-calc')) return; // Calculator nie überschreiben
@@ -8639,14 +8687,16 @@ document.getElementById('tstFill').addEventListener('click', function () {
 				if (!el.textContent.trim()) {
 					el.dataset.tstFilled = '1';
 					var t = el.tagName;
-					el.textContent = SAMPLE[t] || (t === 'LI' ? 'Menupunt' : (t === 'TH' ? 'Kolom' : (t === 'TD' ? 'Waarde' : 'Knop')));
+					el.textContent = SAMPLE[t] || (t === 'LI' ? 'Navigatie-item' : (t === 'TH' ? 'Kolom' : (t === 'TD' ? 'Waarde' : 'Bekijk meer')));
 				}
 			} else if (el.dataset.tstFilled) {
 				el.textContent = ''; delete el.dataset.tstFilled;
 			}
 		});
 	});
-});
+}
+document.getElementById('tstFill').addEventListener('click', function () { applyFill(!FILLED); });
+applyFill(true); // Demo-Text beim Laden direkt anzeigen
 </script>
 </body>
 </html>

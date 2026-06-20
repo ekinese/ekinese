@@ -141,8 +141,8 @@
 		root.appendChild(head);
 
 		var tabs = h('div', 'xg-calc-tabs');
-		var tabCalc = h('button', 'xg-calc-tab active', ICON.search + ' Berechnen');
-		var tabCart = h('button', 'xg-calc-tab', ICON.cart + ' <span>Auswahl</span> <span class="xg-calc-tab-badge" style="display:none">0</span>');
+		var tabCalc = h('button', 'xg-calc-tab active', ICON.search + ' Berekenen');
+		var tabCart = h('button', 'xg-calc-tab', ICON.cart + ' <span>Selectie</span> <span class="xg-calc-tab-badge" style="display:none">0</span>');
 		tabs.appendChild(tabCalc); tabs.appendChild(tabCart);
 		root.appendChild(tabs);
 
@@ -157,7 +157,7 @@
 
 		/* ---------- LIVE / THEME ---------- */
 		function liveBlock() {
-			var b = h('div', 'xg-calc-live', '<span class="xg-calc-live-dot"></span> Live-Preise');
+			var b = h('div', 'xg-calc-live', '<span class="xg-calc-live-dot"></span> Live prijzen');
 			var t = h('span', 'xg-calc-live-time');
 			function tick() {
 				var d = new Date();
@@ -190,10 +190,10 @@
 			progress.innerHTML = '';
 			var steps, idx;
 			if (state.view === 'checkout') {
-				steps = ['Daten', 'Service', 'Auszahlung', 'Charity', 'Fertig'];
+				steps = ['Gegevens', 'Service', 'Uitbetaling', 'Goede doel', 'Klaar'];
 				idx = state.checkout.step;
 			} else {
-				steps = ['Produkt', 'Details', 'Resultat'];
+				steps = ['Product', 'Details', 'Resultaat'];
 				idx = !state.type ? 0 : (state.result ? 2 : 1);
 			}
 			var line = h('div', 'xg-calc-prog-line');
@@ -255,14 +255,14 @@
 		// Step 1: Produkt-Typ
 		function renderTypePicker() {
 			var p = h('div', 'xg-calc-panel');
-			p.appendChild(panelHead('Was möchten Sie verkaufen?', 'Wählen Sie eine Kategorie – wir führen Sie zum Preis.'));
+			p.appendChild(panelHead('Wat wilt u verkopen?', 'Kies een categorie – wij leiden u naar de prijs.'));
 			p.appendChild(findBox());
 
 			var types = [
-				{ k: 'metal',   t: 'Edelmetall', d: 'Gold, Silber, Platin, Palladium' },
-				{ k: 'diamond', t: 'Diamant',    d: 'Lose Steine & Schmuck' },
-				{ k: 'gem',     t: 'Edelstein',  d: 'Rubin, Saphir, Smaragd' },
-				{ k: 'watch',   t: 'Uhr',        d: 'Luxusuhren aller Marken' }
+				{ k: 'metal',   t: 'Edelmetaal', d: 'Goud, zilver, platina, palladium' },
+				{ k: 'diamond', t: 'Diamant',    d: 'Losse stenen & sieraden' },
+				{ k: 'gem',     t: 'Edelsteen',  d: 'Robijn, saffier, smaragd' },
+				{ k: 'watch',   t: 'Horloge',    d: 'Luxe horloges van alle merken' }
 			];
 			var grid = h('div', 'xg-calc-opts');
 			types.forEach(function (ty) {
@@ -277,8 +277,8 @@
 		// Step 2: Details (geführt – Leitwert als Karten, Rest kompakt)
 		function renderDetails() {
 			var p = h('div', 'xg-calc-panel');
-			var titles = { metal: 'Ihr Edelmetall', diamond: 'Ihr Diamant', gem: 'Ihr Edelstein', watch: 'Ihre Uhr' };
-			p.appendChild(panelHead(titles[state.type], 'Angaben ergänzen – der Preis berechnet sich live.', true));
+			var titles = { metal: 'Uw edelmetaal', diamond: 'Uw diamant', gem: 'Uw edelsteen', watch: 'Uw horloge' };
+			p.appendChild(panelHead(titles[state.type], 'Vul de gegevens aan – de prijs wordt live berekend.', true));
 
 			var body = h('div');
 			if (state.type === 'metal') buildMetal(body);
@@ -288,7 +288,7 @@
 			p.appendChild(body);
 
 			var actions = h('div', 'xg-calc-next-wrap');
-			var btn = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Preis berechnen');
+			var btn = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Prijs berekenen');
 			btn.addEventListener('click', function () {
 				var r = compute();
 				if (r) { state.result = r; render(); }
@@ -394,22 +394,22 @@
 				if (state.form.metal === k) c.classList.add('selected');
 				cards.appendChild(c);
 			});
-			wrap.appendChild(field('Metall', cards, true));
+			wrap.appendChild(field('Metaal', cards, true));
 			if (!state.form.metal) return;
 
 			var grid = h('div', 'xg-calc-grid');
 			// Form
-			grid.appendChild(field('Form', seg('form', [['barren', 'Barren'], ['munt', 'Münze'], ['sieraad', 'Schmuck']])));
+			grid.appendChild(field('Vorm', seg('form', [['barren', 'Baar'], ['munt', 'Munt'], ['sieraad', 'Sieraad']])));
 
 			// Reinheit: Gold → Karat, sonst → Legierung
 			var purEntries = Object.keys(DATA.metal_purities[state.form.metal]).map(function (key) {
 				var lbl = (state.form.metal === 'goud') ? (key + ' karaat') : (key + ' (' + DATA.purity_labels[key] + ')');
 				return [key, lbl];
 			});
-			var purLabel = (state.form.metal === 'goud') ? 'Karat' : 'Legierung';
+			var purLabel = (state.form.metal === 'goud') ? 'Karaat' : 'Legering';
 			grid.appendChild(field(purLabel, sel('purity', purEntries)));
 
-			_metalCondField = field('Zustand', sel('condition', Object.keys(DATA.conditions).map(function (k) { return [k, DATA.conditions[k].label]; })));
+			_metalCondField = field('Staat', sel('condition', Object.keys(DATA.conditions).map(function (k) { return [k, DATA.conditions[k].label]; })));
 			grid.appendChild(_metalCondField);
 			wrap.appendChild(grid);
 			// Gewicht als Range-Slider (volle Breite, leicht bedienbar).
@@ -421,13 +421,13 @@
 		function buildDiamond(wrap) {
 			var b = DATA.diamond_base;
 			var grid = h('div', 'xg-calc-grid');
-			grid.appendChild(field('Karatgewicht', rangeNum('carat', 0, 10, 0.01, 'ct', 1), true));
-			grid.appendChild(field('Farbe', sel('color', Object.keys(b.color).map(function (k) { return [k, k]; }))));
-			grid.appendChild(field('Reinheit', sel('clarity', Object.keys(b.clarity).map(function (k) { return [k, k]; }))));
-			grid.appendChild(field('Schliff', sel('cut', Object.keys(b.cut).map(function (k) { return [k, k]; }))));
-			grid.appendChild(field('Fluoreszenz', sel('fluor', Object.keys(b.fluor).map(function (k) { return [k, k]; }))));
-			grid.appendChild(field('Labor', sel('lab', DATA.labs.map(function (l) { return [l, l]; }))));
-			grid.appendChild(field('Zertifikatsnummer', text('cert', 'optional'), true, 'optional'));
+			grid.appendChild(field('Karaatgewicht', rangeNum('carat', 0, 10, 0.01, 'ct', 1), true));
+			grid.appendChild(field('Kleur', sel('color', Object.keys(b.color).map(function (k) { return [k, k]; }))));
+			grid.appendChild(field('Zuiverheid', sel('clarity', Object.keys(b.clarity).map(function (k) { return [k, k]; }))));
+			grid.appendChild(field('Slijpvorm', sel('cut', Object.keys(b.cut).map(function (k) { return [k, k]; }))));
+			grid.appendChild(field('Fluorescentie', sel('fluor', Object.keys(b.fluor).map(function (k) { return [k, k]; }))));
+			grid.appendChild(field('Laboratorium', sel('lab', DATA.labs.map(function (l) { return [l, l]; }))));
+			grid.appendChild(field('Certificaatnummer', text('cert', 'optioneel'), true, 'optioneel'));
 			wrap.appendChild(grid);
 		}
 
@@ -439,14 +439,14 @@
 				if (state.form.gem === k) c.classList.add('selected');
 				cards.appendChild(c);
 			});
-			wrap.appendChild(field('Edelstein', cards, true));
+			wrap.appendChild(field('Edelsteen', cards, true));
 			if (!state.form.gem) return;
 
 			var grid = h('div', 'xg-calc-grid');
-			grid.appendChild(field('Karatgewicht', rangeNum('carat', 0, 10, 0.01, 'ct', 1), true));
-			grid.appendChild(field('Qualität', sel('quality', [['5', 'Exzellent'], ['4', 'Sehr gut'], ['3', 'Gut'], ['2', 'Mittel'], ['1', 'Einfach']])));
-			grid.appendChild(field('Labor', sel('lab', DATA.labs.map(function (l) { return [l, l]; }))));
-			grid.appendChild(field('Zertifikatsnummer', text('cert', 'optional'), true, 'optional'));
+			grid.appendChild(field('Karaatgewicht', rangeNum('carat', 0, 10, 0.01, 'ct', 1), true));
+			grid.appendChild(field('Kwaliteit', sel('quality', [['5', 'Uitstekend'], ['4', 'Zeer goed'], ['3', 'Goed'], ['2', 'Gemiddeld'], ['1', 'Eenvoudig']])));
+			grid.appendChild(field('Laboratorium', sel('lab', DATA.labs.map(function (l) { return [l, l]; }))));
+			grid.appendChild(field('Certificaatnummer', text('cert', 'optioneel'), true, 'optioneel'));
 			wrap.appendChild(grid);
 		}
 
@@ -458,21 +458,21 @@
 				if (state.form.brand === k) c.classList.add('selected');
 				cards.appendChild(c);
 			});
-			wrap.appendChild(field('Marke', cards, true));
+			wrap.appendChild(field('Merk', cards, true));
 			if (!state.form.brand) return;
 
 			var grid = h('div', 'xg-calc-grid');
-			grid.appendChild(field('Modell', sel('model', Object.keys(DATA.watches[state.form.brand].models).map(function (m) { return [m, m]; }))));
-			grid.appendChild(field('Zustand', sel('condition', Object.keys(DATA.watch_conditions).map(function (k) { return [k, DATA.watch_conditions[k].label]; }))));
-			grid.appendChild(field('Gehäuse-Metall', sel('wmetal', DATA.watch_metals.map(function (m) { return [m, m]; }))));
-			grid.appendChild(field('Armbandtyp', sel('bracelet', DATA.watch_bracelets.map(function (m) { return [m, m]; }))));
-			grid.appendChild(field('Baujahr', num('year', 'z.B. 2015', '1'), false, 'erleichtert die Suche'));
-			grid.appendChild(field('Zifferblatt', sel('dial', DATA.watch_dials.map(function (m) { return [m, m]; }))));
-			grid.appendChild(field('Edition', text('edition', 'z.B. Limited / Standard'), true));
+			grid.appendChild(field('Model', sel('model', Object.keys(DATA.watches[state.form.brand].models).map(function (m) { return [m, m]; }))));
+			grid.appendChild(field('Staat', sel('condition', Object.keys(DATA.watch_conditions).map(function (k) { return [k, DATA.watch_conditions[k].label]; }))));
+			grid.appendChild(field('Kast-metaal', sel('wmetal', DATA.watch_metals.map(function (m) { return [m, m]; }))));
+			grid.appendChild(field('Bandtype', sel('bracelet', DATA.watch_bracelets.map(function (m) { return [m, m]; }))));
+			grid.appendChild(field('Bouwjaar', num('year', 'bijv. 2015', '1'), false, 'maakt zoeken makkelijker'));
+			grid.appendChild(field('Wijzerplaat', sel('dial', DATA.watch_dials.map(function (m) { return [m, m]; }))));
+			grid.appendChild(field('Editie', text('edition', 'bijv. Limited / Standaard'), true));
 			var pills = h('div', 'xg-calc-pills');
 			pills.appendChild(pill('box', DATA.watch_extras.box.label));
 			pills.appendChild(pill('papers', DATA.watch_extras.papers.label));
-			grid.appendChild(field('Zubehör', pills, true));
+			grid.appendChild(field('Accessoires', pills, true));
 			wrap.appendChild(grid);
 		}
 
@@ -484,14 +484,14 @@
 
 			var top = h('div', 'xg-calc-result-top');
 			top.appendChild(h('span', 'xg-calc-result-type', typeLabel()));
-			top.appendChild(h('span', 'xg-calc-badge ' + (r.indicative ? 'ind' : 'fix'), r.indicative ? 'Preisindikation' : 'Festpreis'));
+			top.appendChild(h('span', 'xg-calc-badge ' + (r.indicative ? 'ind' : 'fix'), r.indicative ? 'Prijsindicatie' : 'Vaste prijs'));
 			res.appendChild(top);
 
 			var price = h('div', 'xg-calc-price');
 			res.appendChild(price);
 			res.appendChild(h('div', 'xg-calc-price-note', r.indicative
-				? 'Unverbindliche Indikation. Endpreis nach Begutachtung.'
-				: 'Fester Ankaufspreis auf Basis aktueller Spot-Preise.'));
+				? 'Vrijblijvende indicatie. Eindprijs na taxatie.'
+				: 'Vaste inkoopprijs op basis van actuele spotprijzen.'));
 
 			// Count-up
 			if (r.indicative) {
@@ -503,23 +503,23 @@
 			}
 
 			var brk = h('div', 'xg-calc-break');
-			brk.appendChild(breakRow('Marktpreis', euro2(r.market)));
+			brk.appendChild(breakRow('Marktprijs', euro2(r.market)));
 			brk.appendChild(breakRow('Marge', pct(r.marginPct) + ' · ' + euro2(r.marginAbs)));
-			brk.appendChild(breakRow('Differenz Markt ↔ Ankauf', euro2(r.market - r.low)));
+			brk.appendChild(breakRow('Verschil markt ↔ inkoop', euro2(r.market - r.low)));
 			res.appendChild(brk);
 
 			// Charity prominent
 			var ch = h('div', 'xg-calc-charity');
-			ch.appendChild(h('div', 'xg-calc-charity-head', ICON.heart + ' Davon für den guten Zweck'));
+			ch.appendChild(h('div', 'xg-calc-charity-head', ICON.heart + ' Hiervan naar het goede doel'));
 			ch.appendChild(h('div', 'xg-calc-charity-amt', euro2(r.charity)));
-			ch.appendChild(h('div', 'xg-calc-charity-txt', 'In jeder Marge steckt ein fester Charity-Anteil. Den Empfänger wählen Sie später selbst.'));
+			ch.appendChild(h('div', 'xg-calc-charity-txt', 'In elke marge zit een vast deel voor het goede doel. De ontvanger kiest u later zelf.'));
 			res.appendChild(ch);
 
-			var add = h('button', 'xg-calc-btn xg-calc-btn-primary', ICON.cart + ' Zur Auswahl hinzufügen');
+			var add = h('button', 'xg-calc-btn xg-calc-btn-primary', ICON.cart + ' Aan selectie toevoegen');
 			add.addEventListener('click', function () { addToCart(r); });
 			res.appendChild(add);
 			res.appendChild(h('div', '', '<div style="height:10px"></div>'));
-			var again = h('button', 'xg-calc-btn xg-calc-btn-ghost', 'Weiteres Produkt berechnen');
+			var again = h('button', 'xg-calc-btn xg-calc-btn-ghost', 'Nog een product berekenen');
 			again.addEventListener('click', function () { state.type = null; state.form = {}; state.result = null; render(); });
 			res.appendChild(again);
 
@@ -528,7 +528,7 @@
 		}
 		function breakRow(l, v, cls) { return h('div', 'xg-calc-break-row' + (cls ? ' ' + cls : ''), '<span>' + l + '</span><b>' + v + '</b>'); }
 
-		function typeLabel() { return { metal: 'Edelmetall', diamond: 'Diamant', gem: 'Edelstein', watch: 'Uhr' }[state.type]; }
+		function typeLabel() { return { metal: 'Edelmetaal', diamond: 'Diamant', gem: 'Edelsteen', watch: 'Horloge' }[state.type]; }
 		function specLabel() {
 			var f = state.form;
 			if (state.type === 'metal') return (DATA.metals[f.metal] ? DATA.metals[f.metal].label : '') + ' · ' + (f.weight || 0) + ' g';
@@ -554,8 +554,8 @@
 		function renderCart() {
 			var wrap = h('div', 'xg-calc-cart');
 			if (!state.cart.length) {
-				wrap.appendChild(h('div', 'xg-calc-cart-empty', ICON.cart + '<p>Noch keine Produkte ausgewählt.</p>'));
-				var back = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Produkt berechnen');
+				wrap.appendChild(h('div', 'xg-calc-cart-empty', ICON.cart + '<p>Nog geen producten geselecteerd.</p>'));
+				var back = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Product berekenen');
 				back.addEventListener('click', function () { state.view = 'calc'; render(); });
 				wrap.appendChild(back);
 				setPanel(wrap); return;
@@ -579,13 +579,13 @@
 
 			var sum = h('div', 'xg-calc-cart-sum');
 			var r1 = h('div', 'xg-calc-cart-sum-row total');
-			r1.innerHTML = '<span>Geschätzter Ankaufswert</span><b>' + (totalLow === totalHigh ? euro(totalLow) : euro(totalLow) + ' – ' + euro(totalHigh)) + '</b>';
+			r1.innerHTML = '<span>Geschatte inkoopwaarde</span><b>' + (totalLow === totalHigh ? euro(totalLow) : euro(totalLow) + ' – ' + euro(totalHigh)) + '</b>';
 			sum.appendChild(r1);
 			wrap.appendChild(sum);
 
 			// Charity GROSS + Aufschlüsselung wer/wieviel
 			var ch = h('div', 'xg-calc-cart-charity');
-			ch.appendChild(h('div', 'xg-calc-cart-charity-top', ICON.heart + ' Ihr Beitrag für den guten Zweck'));
+			ch.appendChild(h('div', 'xg-calc-cart-charity-top', ICON.heart + ' Uw bijdrage aan het goede doel'));
 			ch.appendChild(h('div', 'xg-calc-cart-charity-amt', euro2(totalCharity)));
 			var list = h('div', 'xg-calc-cart-charity-list');
 			var palette = ['#AE1E1E', '#1f9d55', '#c8a24a', '#3a6ea5', '#7a4fa3'];
@@ -598,13 +598,13 @@
 				list.appendChild(line);
 			});
 			ch.appendChild(list);
-			ch.appendChild(h('div', 'xg-calc-charity-txt', '<div style="font-size:12px;color:var(--xc-ink-soft);margin-top:10px">Im nächsten Schritt können Sie gezielt eine Einrichtung in Ihrer Stadt wählen.</div>'));
+			ch.appendChild(h('div', 'xg-calc-charity-txt', '<div style="font-size:12px;color:var(--xc-ink-soft);margin-top:10px">In de volgende stap kiest u gericht een instelling in uw stad.</div>'));
 			wrap.appendChild(ch);
 
 			var actions = h('div', 'xg-calc-cart-actions');
-			var go = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Termin vereinbaren & verkaufen');
+			var go = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Afspraak maken & verkopen');
 			go.addEventListener('click', function () { state.view = 'checkout'; state.checkout.step = 0; render(); });
-			var more = h('button', 'xg-calc-btn xg-calc-btn-ghost', 'Weiteres Produkt hinzufügen');
+			var more = h('button', 'xg-calc-btn xg-calc-btn-ghost', 'Nog een product toevoegen');
 			more.addEventListener('click', function () { state.view = 'calc'; render(); });
 			actions.appendChild(go); actions.appendChild(more);
 			wrap.appendChild(actions);
@@ -629,15 +629,15 @@
 
 		// 1) Daten
 		function checkoutData(node) {
-			coHead(node, 'Ihre Kontaktdaten', 'Damit wir Ihren Termin bestätigen können.');
+			coHead(node, 'Uw contactgegevens', 'Zodat wij uw afspraak kunnen bevestigen.');
 			var grid = h('div', 'xg-calc-grid');
-			grid.appendChild(field('Vorname', coInput('first')));
-			grid.appendChild(field('Nachname', coInput('last')));
-			grid.appendChild(field('E-Mail', coInput('email', 'email')));
-			grid.appendChild(field('Telefon', coInput('phone', 'tel')));
-			grid.appendChild(field('Stadt', coInput('city'), true));
+			grid.appendChild(field('Voornaam', coInput('first')));
+			grid.appendChild(field('Achternaam', coInput('last')));
+			grid.appendChild(field('E-mail', coInput('email', 'email')));
+			grid.appendChild(field('Telefoon', coInput('phone', 'tel')));
+			grid.appendChild(field('Stad', coInput('city'), true));
 			node.appendChild(grid);
-			coNav(node, null, 'Weiter', function () { state.checkout.step = 1; render(); });
+			coNav(node, null, 'Verder', function () { state.checkout.step = 1; render(); });
 		}
 		function coInput(name, type) {
 			var i = h('input', 'xg-calc-input'); i.type = type || 'text';
@@ -648,12 +648,12 @@
 
 		// 2) Service
 		function checkoutService(node) {
-			coHead(node, 'Wie möchten Sie verkaufen?', 'Wählen Sie die für Sie bequemste Option.');
+			coHead(node, 'Hoe wilt u verkopen?', 'Kies de voor u makkelijkste optie.');
 			var svc = h('div', 'xg-calc-svc');
 			[
-				{ k: 'home', i: ICON.home, t: 'Hausbesuch', d: 'Unser Experte kommt zu Ihnen (kostenlos & versichert).' },
-				{ k: 'office', i: ICON.office, t: 'In einer Filiale', d: 'Besuchen Sie eines unserer Büros.' },
-				{ k: 'pickup', i: ICON.truck, t: 'Abhol-Service', d: 'Versicherte Abholung per Kurier.' }
+				{ k: 'home', i: ICON.home, t: 'Bezoek aan huis', d: 'Onze expert komt naar u toe (gratis & verzekerd).' },
+				{ k: 'office', i: ICON.office, t: 'In een vestiging', d: 'Bezoek een van onze kantoren.' },
+				{ k: 'pickup', i: ICON.truck, t: 'Ophaalservice', d: 'Verzekerde ophaling per koerier.' }
 			].forEach(function (s) {
 				var card = optCard(s.i, s.t, s.d, function () { state.checkout.service = s.k; state.checkout.step = 2; render(); });
 				if (state.checkout.service === s.k) card.classList.add('selected');
@@ -665,11 +665,11 @@
 
 		// 3) Auszahlung
 		function checkoutPayout(node) {
-			coHead(node, 'Auszahlungsart', 'Wie möchten Sie Ihr Geld erhalten?');
+			coHead(node, 'Uitbetaling', 'Hoe wilt u uw geld ontvangen?');
 			var grid = h('div', 'xg-calc-opts');
 			[
-				{ k: 'bank', t: 'Banküberweisung', d: 'Direkt auf Ihr Konto.' },
-				{ k: 'cash', t: 'Barauszahlung', d: 'Sofort vor Ort (bis Limit).' }
+				{ k: 'bank', t: 'Bankoverschrijving', d: 'Direct op uw rekening.' },
+				{ k: 'cash', t: 'Contante uitbetaling', d: 'Direct ter plaatse (tot limiet).' }
 			].forEach(function (pp) {
 				var card = optCardMini(pp.t + ' — ' + pp.d, function () { state.checkout.payout = pp.k; state.checkout.step = 3; render(); });
 				if (state.checkout.payout === pp.k) card.classList.add('selected');
@@ -681,14 +681,14 @@
 
 		// 4) Charity-Empfänger gezielt wählen
 		function checkoutCharity(node) {
-			coHead(node, 'Wohin soll Ihr Beitrag gehen?', 'Wählen Sie eine konkrete Einrichtung – gerne in Ihrer Stadt.');
+			coHead(node, 'Waar gaat uw bijdrage naartoe?', 'Kies een concrete instelling – het liefst in uw stad.');
 			var totalCharity = state.cart.reduce(function (a, b) { return a + b.charity; }, 0);
-			node.appendChild(h('div', 'xg-calc-charity', ICON.heart + ' <b style="color:var(--xc-red)"> ' + euro2(totalCharity) + '</b> fließen an die gewählte Einrichtung.'));
+			node.appendChild(h('div', 'xg-calc-charity', ICON.heart + ' <b style="color:var(--xc-red)"> ' + euro2(totalCharity) + '</b> gaat naar de gekozen instelling.'));
 
 			var typeSel = sel2('charity_type', DATA.charity_projects.map(function (p) { return [p.id, p.label]; }), function (v) { fillRecipients(v); });
-			node.appendChild(field('Bereich', typeSel, true));
+			node.appendChild(field('Gebied', typeSel, true));
 
-			var recipientWrap = field('Einrichtung', h('select', 'xg-calc-input'), true);
+			var recipientWrap = field('Instelling', h('select', 'xg-calc-input'), true);
 			node.appendChild(recipientWrap);
 			function fillRecipients(typeId) {
 				var prj = DATA.charity_projects.filter(function (p) { return p.id === typeId; })[0];
@@ -700,7 +700,7 @@
 			}
 			fillRecipients(DATA.charity_projects[0].id);
 
-			coNav(node, function () { state.checkout.step = 2; render(); }, 'Termin anfragen', function () { state.checkout.step = 4; render(); });
+			coNav(node, function () { state.checkout.step = 2; render(); }, 'Afspraak aanvragen', function () { state.checkout.step = 4; render(); });
 		}
 		function sel2(name, entries, onchange) {
 			var s = h('select', 'xg-calc-input'); s.name = name;
@@ -713,18 +713,18 @@
 		function checkoutThanks(node) {
 			var t = h('div', 'xg-calc-thanks');
 			t.appendChild(h('div', 'xg-calc-thanks-check', ICON.check));
-			t.appendChild(h('h3', '', 'Vielen Dank!'));
+			t.appendChild(h('h3', '', 'Hartelijk dank!'));
 			var name = state.checkout.data.first || '';
-			t.appendChild(h('p', '', 'Ihr Terminversuch ist bei uns eingegangen' + (name ? ', ' + name : '') + '. Sie erhalten in Kürze eine Bestätigungs-E-Mail mit allen Details.'));
+			t.appendChild(h('p', '', 'Uw afspraakverzoek is bij ons binnengekomen' + (name ? ', ' + name : '') + '. U ontvangt binnenkort een bevestigingsmail met alle details.'));
 			var ch = state.checkout.charity;
-			if (ch) t.appendChild(h('p', '', '<span style="color:var(--xc-red);font-weight:700">♥</span> Ihr Beitrag geht an: <b>' + ch.recipient + '</b>'));
+			if (ch) t.appendChild(h('p', '', '<span style="color:var(--xc-red);font-weight:700">♥</span> Uw bijdrage gaat naar: <b>' + ch.recipient + '</b>'));
 
 			// Übergabe an Backend (später: POST → wp_xg_appointments)
 			document.dispatchEvent(new CustomEvent('xg:appointment-submit', {
 				detail: { cart: state.cart, checkout: state.checkout }
 			}));
 
-			var done = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Neue Berechnung starten');
+			var done = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Nieuwe berekening starten');
 			done.style.marginTop = '20px'; done.style.maxWidth = '280px'; done.style.marginLeft = 'auto'; done.style.marginRight = 'auto';
 			done.addEventListener('click', function () {
 				state.cart = []; state.type = null; state.form = {}; state.result = null;
@@ -737,7 +737,7 @@
 
 		function coNav(node, back, nextLabel, nextFn) {
 			var wrap = h('div', 'xg-calc-next-wrap');
-			if (back) { var b = h('button', 'xg-calc-btn xg-calc-btn-ghost', '← Zurück'); b.addEventListener('click', back); wrap.appendChild(b); }
+			if (back) { var b = h('button', 'xg-calc-btn xg-calc-btn-ghost', '← Terug'); b.addEventListener('click', back); wrap.appendChild(b); }
 			if (nextLabel) { var n = h('button', 'xg-calc-btn xg-calc-btn-primary', nextLabel); n.addEventListener('click', nextFn); wrap.appendChild(n); }
 			node.appendChild(wrap);
 		}
@@ -750,7 +750,7 @@
 			if (sub) left.appendChild(h('div', 'xg-calc-panel-sub', sub));
 			head.appendChild(left);
 			if (showBack) {
-				var b = h('button', 'xg-calc-back', '← Zurück');
+				var b = h('button', 'xg-calc-back', '← Terug');
 				b.addEventListener('click', function () {
 					if (checkout) { state.view = 'cart'; render(); }
 					else { state.type = null; state.form = {}; state.result = null; render(); }
@@ -761,7 +761,7 @@
 		}
 		function findBox() {
 			var box = h('div', 'xg-calc-find', ICON.search);
-			var inp = h('input'); inp.type = 'text'; inp.placeholder = 'Produkt suchen (z.B. Rolex, Diamant, Goud)…';
+			var inp = h('input'); inp.type = 'text'; inp.placeholder = 'Product zoeken (bijv. Rolex, diamant, goud)…';
 			box.appendChild(inp);
 			inp.addEventListener('input', function () {
 				var q = inp.value.toLowerCase();

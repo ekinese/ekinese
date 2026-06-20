@@ -60,7 +60,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":3,"className":"xgoud-toc-title"} -->
-<h3 class="xgoud-toc-title">Inhaltsverzeichnis</h3>
+<h3 class="xgoud-toc-title">Inhoudsopgave</h3>
 <!-- /wp:heading -->
 
 <!-- wp:html -->
@@ -89,7 +89,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":2,"className":"xg-section-title"} -->
-<h2 class="xg-section-title">Warum bei uns?</h2>
+<h2 class="xg-section-title">Waarom XGOUD?</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->
@@ -203,7 +203,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":3,"className":"xg-expert-box-title"} -->
-<h3 class="xg-expert-box-title">Unser Experte</h3>
+<h3 class="xg-expert-box-title">Onze expert</h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"className":"xg-expert-box-text"} -->
@@ -221,7 +221,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":2,"className":"xg-section-title"} -->
-<h2 class="xg-section-title">Warum können Sie uns vertrauen?</h2>
+<h2 class="xg-section-title">Waarom kunt u ons vertrouwen?</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->
@@ -285,7 +285,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":2,"className":"xg-section-title"} -->
-<h2 class="xg-section-title">Ablauf</h2>
+<h2 class="xg-section-title">Zo werkt het</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->
@@ -369,7 +369,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":2,"className":"xg-section-title"} -->
-<h2 class="xg-section-title">Marktinformation</h2>
+<h2 class="xg-section-title">Marktinformatie</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
@@ -442,7 +442,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":2,"className":"xg-section-title"} -->
-<h2 class="xg-section-title">Rapaport-Informationen</h2>
+<h2 class="xg-section-title">Rapaport-informatie</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
@@ -460,7 +460,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":2,"className":"xg-section-title"} -->
-<h2 class="xg-section-title">Zertifizierung</h2>
+<h2 class="xg-section-title">Certificering</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
@@ -544,7 +544,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":2,"className":"xg-section-title"} -->
-<h2 class="xg-section-title">Bewertungen</h2>
+<h2 class="xg-section-title">Beoordelingen</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->
@@ -559,7 +559,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":2,"className":"xg-section-title"} -->
-<h2 class="xg-section-title">Weitere Informationen</h2>
+<h2 class="xg-section-title">Meer informatie</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->
@@ -614,7 +614,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":2,"className":"xg-section-title"} -->
-<h2 class="xg-section-title">Häufig gestellte Fragen</h2>
+<h2 class="xg-section-title">Veelgestelde vragen</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->

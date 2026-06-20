@@ -217,16 +217,16 @@ function ekinese_calculator_data() {
 			'835' => '83,5 %',
 			'850' => '85,0 %',
 			'900' => '90,0 %',
-			'925' => 'Sterling 92,5 %',
+			'925' => 'Sterling 92,5%',
 			'950' => '95,0 %',
-			'999' => 'Fein 99,9 %',
+			'999' => 'Fijn 99,9%',
 			'500' => '50,0 %',
 		),
 		'conditions' => array(
-			'nieuw'     => array( 'label' => 'Neuwertig',    'factor' => 1.00 ),
-			'zeer_goed' => array( 'label' => 'Sehr gut',     'factor' => 0.99 ),
-			'goed'      => array( 'label' => 'Gut',          'factor' => 0.98 ),
-			'voldoende' => array( 'label' => 'Befriedigend', 'factor' => 0.96 ),
+			'nieuw'     => array( 'label' => 'Nieuwstaat',    'factor' => 1.00 ),
+			'zeer_goed' => array( 'label' => 'Zeer goed',     'factor' => 0.99 ),
+			'goed'      => array( 'label' => 'Goed',          'factor' => 0.98 ),
+			'voldoende' => array( 'label' => 'Voldoende', 'factor' => 0.96 ),
 		),
 		'jewelry_tiers' => array(
 			array( 'min' => 0,   'bonus' => 0.00 ),
@@ -255,11 +255,11 @@ function ekinese_calculator_data() {
 			'anchor'  => 9000,
 		),
 		// Zertifizierungs-Labore für Diamanten & Edelsteine.
-		'labs' => array( 'GIA', 'IGI', 'HRD', 'Kein Zertifikat' ),
+		'labs' => array( 'GIA', 'IGI', 'HRD', 'Geen certificaat' ),
 		// wp_xg_gemstones – Basis €/ct.
 		'gem_base' => array(
-			'robijn'  => array( 'label' => 'Robijn (Rubin)',   'anchor' => 3500 ),
-			'saffier' => array( 'label' => 'Saffier (Saphir)', 'anchor' => 2200 ),
+			'robijn'  => array( 'label' => 'Robijn',   'anchor' => 3500 ),
+			'saffier' => array( 'label' => 'Saffier', 'anchor' => 2200 ),
 			'smaragd' => array( 'label' => 'Smaragd',          'anchor' => 2800 ),
 		),
 		// wp_xg_watches – Marktpreis € (Mock; später eigene DB, ~25 Marken).
@@ -270,20 +270,20 @@ function ekinese_calculator_data() {
 			'cartier' => array( 'label' => 'Cartier', 'models' => array( 'Santos' => 6500, 'Tank' => 4800 ) ),
 		),
 		'watch_conditions' => array(
-			'nieuw'     => array( 'label' => 'Neuwertig',           'factor' => 1.00 ),
-			'zeer_goed' => array( 'label' => 'Sehr gut',            'factor' => 0.90 ),
-			'goed'      => array( 'label' => 'Gut',                 'factor' => 0.78 ),
-			'voldoende' => array( 'label' => 'Befriedigend',        'factor' => 0.65 ),
-			'service'   => array( 'label' => 'Restaurierungsbedarf','factor' => 0.50 ),
+			'nieuw'     => array( 'label' => 'Nieuwstaat',           'factor' => 1.00 ),
+			'zeer_goed' => array( 'label' => 'Zeer goed',            'factor' => 0.90 ),
+			'goed'      => array( 'label' => 'Goed',                 'factor' => 0.78 ),
+			'voldoende' => array( 'label' => 'Voldoende',        'factor' => 0.65 ),
+			'service'   => array( 'label' => 'Revisie nodig','factor' => 0.50 ),
 		),
 		'watch_extras' => array(
-			'box'    => array( 'label' => 'Originalbox',        'bonus' => 0.03 ),
-			'papers' => array( 'label' => 'Zertifikat/Papiere', 'bonus' => 0.05 ),
+			'box'    => array( 'label' => 'Originele doos',        'bonus' => 0.03 ),
+			'papers' => array( 'label' => 'Certificaat/papieren', 'bonus' => 0.05 ),
 		),
 		// Uhren-Detailfelder (nicht preisrelevant im Mock, erleichtern die Suche/Bewertung).
-		'watch_metals'    => array( 'Edelstahl', 'Gelbgold', 'Weißgold', 'Roségold', 'Platin', 'Stahl/Gold', 'Titan' ),
-		'watch_bracelets' => array( 'Edelstahlband', 'Lederband', 'Kautschuk', 'Gold-Band', 'NATO/Textil' ),
-		'watch_dials'     => array( 'Schwarz', 'Weiß', 'Silber', 'Blau', 'Grün', 'Champagner', 'Grau', 'Sonstige' ),
+		'watch_metals'    => array( 'Staal', 'Geelgoud', 'Witgoud', 'Roségoud', 'Platina', 'Staal/Goud', 'Titanium' ),
+		'watch_bracelets' => array( 'Stalen band', 'Leren band', 'Rubber', 'Gouden band', 'NATO/Textiel' ),
+		'watch_dials'     => array( 'Zwart', 'Wit', 'Zilver', 'Blauw', 'Groen', 'Champagne', 'Grijs', 'Overige' ),
 		/*
 		 * wp_xg_charity – Bereiche mit konkreten Empfängern + Verteilungsgewicht.
 		 * Die Empfänger sind später pro Stadt aus einer eigenen DB befüllbar
@@ -292,31 +292,31 @@ function ekinese_calculator_data() {
 		'charity_projects' => array(
 			array(
 				'id'         => 'social',
-				'label'      => 'Sozialarbeit',
+				'label'      => 'Maatschappelijk werk',
 				'weight'     => 0.25,
 				'recipients' => array( 'Stichting Buurtwerk Amsterdam', 'Sociaal Steunpunt Rotterdam', 'Voedselbank Den Haag' ),
 			),
 			array(
 				'id'         => 'kindergarten',
-				'label'      => 'Kindergärten',
+				'label'      => 'Kinderdagverblijven',
 				'weight'     => 0.20,
 				'recipients' => array( 'Kinderopvang De Zonnebloem', 'KDV Het Speelkwartier', 'Peuterspeelzaal Pippeloentje' ),
 			),
 			array(
 				'id'         => 'shelter',
-				'label'      => 'Frauenhäuser',
+				'label'      => 'Vrouwenopvang',
 				'weight'     => 0.25,
 				'recipients' => array( 'Blijf Groep Amsterdam', 'Vrouwenopvang Rotterdam', 'Veilig Thuis Utrecht' ),
 			),
 			array(
 				'id'         => 'sport',
-				'label'      => 'Sportzentren',
+				'label'      => 'Sportcentra',
 				'weight'     => 0.15,
 				'recipients' => array( 'Sportclub Jeugd Eindhoven', 'Buurtsport Tilburg', 'Zwemvereniging De Dolfijn' ),
 			),
 			array(
 				'id'         => 'school',
-				'label'      => 'Schulen',
+				'label'      => 'Scholen',
 				'weight'     => 0.15,
 				'recipients' => array( 'Basisschool De Regenboog', 'OBS Het Kompas', 'Vrije School Zutphen', 'Montessori Amsterdam' ),
 			),

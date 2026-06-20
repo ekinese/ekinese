@@ -42,14 +42,14 @@
 <!-- CHARITY-TICKER -->
 <!-- wp:html -->
 <div class="xg-charity-ticker">
-	<span class="xg-charity-ticker-label">XGOUD hat diesen Monat für Charity gegeben:</span>
+	<span class="xg-charity-ticker-label">XGOUD heeft deze maand aan goede doelen gegeven:</span>
 	<span class="xg-charity-ticker-amount" data-xg-charity-total>€65.168,36</span>
 	<div class="xg-charity-ticker-projects">
-		<span>Sozialarbeit</span>
-		<span>Kindergärten</span>
-		<span>Frauenhäuser</span>
-		<span>Sportzentren</span>
-		<span>Schulen</span>
+		<span>Maatschappelijk werk</span>
+		<span>Kinderdagverblijven</span>
+		<span>Vrouwenopvang</span>
+		<span>Sportcentra</span>
+		<span>Scholen</span>
 	</div>
 </div>
 <!-- /wp:html -->
@@ -70,7 +70,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":2,"className":"xg-section-title"} -->
-<h2 class="xg-section-title">Termin vereinbaren</h2>
+<h2 class="xg-section-title">Afspraak maken</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
@@ -90,7 +90,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":2,"className":"xg-section-title"} -->
-<h2 class="xg-section-title">Über dieses Produkt</h2>
+<h2 class="xg-section-title">Over dit product</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
@@ -109,7 +109,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":2,"className":"xg-section-title"} -->
-<h2 class="xg-section-title">Häufig gestellte Fragen</h2>
+<h2 class="xg-section-title">Veelgestelde vragen</h2>
 <!-- /wp:heading -->
 
 <!-- wp:html -->

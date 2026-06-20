@@ -177,6 +177,42 @@ html, body,
 	border-color: #f3efe8; color: #f3efe8 !important;
 }
 
+/* =====================================================================
+   CHARITY-TICKER  (globale Komponente: "XGOUD gaf deze maand …")
+   Gold-Akzent für den Betrag, passt sich Day/Dark automatisch an.
+   ===================================================================== */
+.xg-charity-ticker {
+	display: flex; align-items: center; justify-content: center;
+	gap: 16px 20px; flex-wrap: wrap; text-align: center;
+	padding: 14px 24px;
+	background: var(--white, #fff);
+	border-top: 1px solid var(--line, #e3ddd0);
+	border-bottom: 1px solid var(--line, #e3ddd0);
+}
+.xg-charity-ticker-label { font-size: 13px; font-weight: 600; color: var(--ink-soft, #6b665c); }
+.xg-charity-ticker-amount {
+	display: inline-flex; align-items: center; gap: 7px;
+	font-size: 20px; font-weight: 800; letter-spacing: -.3px;
+	color: var(--gold, #c8a24a);
+}
+.xg-charity-ticker-amount::before {
+	content: '♥'; font-size: 15px; color: var(--gold, #c8a24a);
+}
+.xg-charity-ticker-projects { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.xg-charity-ticker-projects span {
+	font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+	color: var(--ink-soft, #6b665c);
+	padding: 5px 11px; border: 1px solid var(--line, #e3ddd0); border-radius: 30px;
+	transition: border-color .2s, color .2s;
+}
+.xg-charity-ticker-projects span:hover { border-color: var(--gold, #c8a24a); color: var(--gold, #c8a24a); }
+
+@media (max-width: 600px) {
+	.xg-charity-ticker { gap: 8px 12px; padding: 12px 16px; }
+	.xg-charity-ticker-label { font-size: 12px; }
+	.xg-charity-ticker-amount { font-size: 18px; }
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
 	html, body, [class^="xg-"], [class^="footer"] { transition: none !important; }
