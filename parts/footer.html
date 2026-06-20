@@ -1,17 +1,135 @@
-<!-- wp:group {"tagName":"footer","className":"site-footer","style":{"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60"}}},"backgroundColor":"surface","layout":{"type":"constrained"}} -->
-<footer class="wp-block-group site-footer has-surface-background-color has-background" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60)">
-	<!-- wp:group {"align":"wide","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between"}} -->
-	<div class="wp-block-group alignwide">
-		<!-- wp:paragraph -->
-		<p>© <!-- wp:post-date /--> Ekinese. Alle Rechte vorbehalten.</p>
-		<!-- /wp:paragraph -->
+<!-- wp:html -->
+<!-- ===== FOOTER WRAP ===== -->
+<div class="xg-footer-wrap" id="xgFooterWrap">
+  <div class="footer-blur-overlay" id="ftBlurOv"></div>
 
-		<!-- wp:navigation {"overlayMenu":"never","layout":{"type":"flex","flexWrap":"nowrap"}} /-->
-	</div>
-	<!-- /wp:group -->
-</footer>
-<!-- /wp:group -->
+  <!-- Footer ticker -->
+  <div class="ft-wrap">
+    <div class="ft-ticker">
+      <div class="ft-live">
+        <div class="ft-live-row"><span class="ft-live-sq"></span>LIVE</div>
+        <div><span class="ft-live-time-label">Marktupdate </span><span class="ft-live-time" id="ftTime">--:--:--</span></div>
+      </div>
+      <div class="ft-vp">
+        <div class="ft-track" id="ftTrack"></div>
+      </div>
+      <div class="ft-lbma">
+        <strong>LBMA</strong>
+        <span id="ftDate">--</span>
+      </div>
+    </div>
+  </div>
 
-<!--
-  PLATZHALTER: Ersetze den Inhalt durch deinen fertigen Footer.
--->
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__top">
+
+      <div class="footer__col footer__brand">
+        <div class="footer__logo">
+          <span class="footer__logo-x">X</span><span class="footer__logo-goud">GOUD</span>
+          <div class="footer__logo-sub">EDELMETAAL INKOOP</div>
+        </div>
+        <p class="footer__desc">XGOUD is gespecialiseerd in de inkoop van goud, zilver en andere edelmetalen tegen eerlijke, marktconforme prijzen.</p>
+        <div class="footer__stars">
+          <svg viewBox="0 0 24 24" class="fstar"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+          <svg viewBox="0 0 24 24" class="fstar"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+          <svg viewBox="0 0 24 24" class="fstar"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+          <svg viewBox="0 0 24 24" class="fstar"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+          <svg viewBox="0 0 24 24" class="fstar"><defs><linearGradient id="hg"><stop offset="80%" stop-color="currentColor"/><stop offset="80%" stop-color="transparent"/></linearGradient></defs><path fill="url(#hg)" stroke="currentColor" stroke-width=".5" d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+        </div>
+        <div class="footer__tp-label">Trustpilot</div>
+        <div class="footer__rating-text"><strong>4,8 / 5</strong> &nbsp;Gebaseerd op duizenden beoordelingen</div>
+        <div class="footer__review-badges">
+          <span class="review-badge">
+            <svg viewBox="0 0 24 24" class="review-badge__icon review-badge__icon--tp"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+            Trustpilot
+          </span>
+          <span class="review-badge">
+            <svg viewBox="0 0 48 48" class="review-badge__icon" style="width:18px;height:18px"><path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h11.8c-.5 2.7-2 4.9-4.3 6.5v5.4h7C42.5 37 45.1 31.3 45.1 24.5z"/><path fill="#34A853" d="M24 46c5.9 0 10.8-2 14.5-5.4l-7-5.4c-2 1.4-4.5 2.2-7.5 2.2-5.8 0-10.7-3.9-12.4-9.1H3.4v5.6C7.1 41.5 14.9 46 24 46z"/><path fill="#FBBC05" d="M11.6 28.3c-.4-1.4-.7-2.8-.7-4.3s.3-2.9.7-4.3v-5.6H3.4C1.9 17 1 20.4 1 24s.9 7 2.4 9.9z"/><path fill="#EA4335" d="M24 9.5c3.3 0 6.1 1.1 8.4 3.3l6.2-6.2C34.8 3 29.9 1 24 1 14.9 1 7.1 5.5 3.4 14.1l8.2 5.6C13.3 13.4 18.2 9.5 24 9.5z"/></svg>
+            Google Reviews
+          </span>
+        </div>
+      </div>
+
+      <div class="footer__col">
+        <h4 class="footer__heading">CONTACT</h4>
+        <a class="footer__contact-row" href="tel:0850603009">
+          <svg class="footer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5c0-1.1.9-2 2-2h2.2c.6 0 1.1.4 1.2 1l1 4c.1.5-.1 1-.5 1.3L7.4 10.8c1.4 2.9 3.8 5.3 6.8 6.8l1.5-1.5c.3-.4.8-.5 1.3-.4l4 1c.6.1 1 .6 1 1.2V20c0 1.1-.9 2-2 2h-1C9.6 22 2 14.4 2 6V5z"/></svg>
+          <span><strong>085 - 060 30 09</strong><small>Ma-Vr 09:00–18:00 / Za 09:00–16:00</small></span>
+        </a>
+        <a class="footer__contact-row" href="mailto:info@xgoud.nl">
+          <svg class="footer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
+          <span><strong>info@xgoud.nl</strong><small>Wij reageren binnen 24 uur</small></span>
+        </a>
+        <a class="footer__contact-row" href="#">
+          <svg class="footer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
+          <span><strong>Hoofdkantoor</strong><small>Piuslaan 26, 5614 CM Eindhoven</small></span>
+        </a>
+        <div class="footer__socials">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 8.5h2V5h-2c-2.2 0-4 1.8-4 4v2H9v3.5h2V21h3.5v-6.5H17l.5-3.5h-3V9c0-.6.4-1 .5-.5z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="8" y1="11" x2="8" y2="16"/><circle cx="8" cy="8" r=".6"/><path d="M12 16v-3a2 2 0 0 1 4 0v3"/><line x1="12" y1="11" x2="12" y2="16"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="12" rx="4"/><path d="M11 9.5l4 2.5-4 2.5z" fill="currentColor" stroke="none"/></svg></a>
+        </div>
+      </div>
+
+      <nav class="footer__col">
+        <h4 class="footer__heading">DIENSTEN</h4>
+        <a class="footer__link" href="#">Goud verkopen</a>
+        <a class="footer__link" href="#">Zilver verkopen</a>
+        <a class="footer__link" href="#">Diamanten verkopen</a>
+        <a class="footer__link" href="#">Luxe horloges verkopen</a>
+        <a class="footer__link" href="#">Edelstenen verkopen</a>
+        <a class="footer__link" href="#">Munten verkopen</a>
+        <a class="footer__link" href="#">Taxatie aan huis</a>
+        <a class="footer__link" href="#">Zakelijk verkopen</a>
+      </nav>
+
+      <nav class="footer__col">
+        <h4 class="footer__heading">LOCATIES</h4>
+        <a class="footer__link footer__link--plain" href="#">Amsterdam</a>
+        <a class="footer__link footer__link--plain" href="#">Rotterdam</a>
+        <a class="footer__link footer__link--plain" href="#">Eindhoven</a>
+        <a class="footer__link footer__link--plain" href="#">Antwerpen</a>
+        <a class="footer__link footer__link--plain" href="#">Utrecht</a>
+        <a class="footer__link footer__link--plain" href="#">Brussel</a>
+        <a class="footer__link footer__link--plain" href="#">Den Haag</a>
+        <a class="footer__link footer__link--accent" href="#">Alle vestigingen →</a>
+      </nav>
+
+      <nav class="footer__col">
+        <h4 class="footer__heading">OVER XGOUD</h4>
+        <a class="footer__link footer__link--plain" href="#">Over ons</a>
+        <a class="footer__link footer__link--plain" href="#">Werkwijze</a>
+        <a class="footer__link footer__link--plain" href="#">Nieuws</a>
+        <a class="footer__link footer__link--plain" href="#">Vacatures</a>
+        <a class="footer__link footer__link--plain" href="#">Reviews</a>
+        <a class="footer__link footer__link--plain" href="#">Contact</a>
+        <div class="footer__trust-box">
+          <svg class="footer__trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/></svg>
+          <div><strong>Veilig en betrouwbaar</strong><p>Uw waardevolle spullen zijn bij ons in veilige handen.</p></div>
+        </div>
+      </nav>
+
+    </div>
+    <div class="footer__bottom">
+      <div class="footer__bottom-left">
+        <span>© 2026 XGOUD</span><span class="footer__divider">|</span><span>Alle rechten voorbehouden</span>
+      </div>
+      <div class="footer__bottom-links">
+        <a href="#">Privacyverklaring</a>
+        <a href="#">Cookiebeleid</a>
+        <a href="#">Algemene voorwaarden</a>
+        <a href="#">Sitemap</a>
+      </div>
+      <div class="footer__bottom-partners">
+        <span class="partner-logo">UMICORE</span>
+        <span class="partner-logo" style="font-style:italic">C. Hafner</span>
+        <span class="partner-logo" style="font-size:11px">HEIMERLE+MEULE</span>
+        <span class="partner-logo" style="letter-spacing:1px">DEGUSSA</span>
+        <span class="partner-logo" style="font-size:11px">Royal Canadian Mint</span>
+      </div>
+    </div>
+  </footer>
+</div>
+<!-- /wp:html -->

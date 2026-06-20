@@ -49,5 +49,27 @@ function ekinese_enqueue_assets() {
 			(string) filemtime( $main_css )
 		);
 	}
+
+	// Header & Footer System (eigenständige Komponente: Ticker, Mega-Menu, Suche).
+	$hf_css = get_theme_file_path( 'assets/css/header-footer.css' );
+	if ( file_exists( $hf_css ) ) {
+		wp_enqueue_style(
+			'ekinese-header-footer',
+			get_theme_file_uri( 'assets/css/header-footer.css' ),
+			array(),
+			(string) filemtime( $hf_css )
+		);
+	}
+
+	$hf_js = get_theme_file_path( 'assets/js/header-footer.js' );
+	if ( file_exists( $hf_js ) ) {
+		wp_enqueue_script(
+			'ekinese-header-footer',
+			get_theme_file_uri( 'assets/js/header-footer.js' ),
+			array(),
+			(string) filemtime( $hf_js ),
+			true // im Footer laden
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'ekinese_enqueue_assets' );

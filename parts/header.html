@@ -1,23 +1,189 @@
-<!-- wp:group {"tagName":"header","className":"site-header","layout":{"type":"constrained"}} -->
-<header class="wp-block-group site-header">
-	<!-- wp:group {"align":"wide","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"}} -->
-	<div class="wp-block-group alignwide">
-		<!-- wp:site-logo {"width":48} /-->
+<!-- wp:html -->
+<!-- Blur overlay -->
+<div class="xg-blur-overlay" id="xgBlurOverlay"></div>
 
-		<!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap"}} -->
-		<div class="wp-block-group">
-			<!-- wp:site-title {"level":0} /-->
-		</div>
-		<!-- /wp:group -->
+<!-- Full-screen search -->
+<div class="xg-search-ov" id="xgSearchOv">
+  <button class="xg-search-ov-close" id="xgSearchClose">&#x2715;</button>
+  <div class="xg-search-box">
+    <span class="xg-search-box-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+    </span>
+    <input type="text" id="xgSearchInput" placeholder="Zoek metaal, product, categorie…" autocomplete="off">
+  </div>
+  <div class="xg-search-results" id="xgSearchResults">
+    <div class="xg-sr-section">
+      <div class="xg-sr-label">Populair</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg></span>Goud verkopen</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg></span>Goudprijs vandaag</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg></span>Gouden ring taxatie</div>
+    </div>
+    <div class="xg-sr-section">
+      <div class="xg-sr-label">Categorieën</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg></span>Edelmetalen</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg></span>Edelstenen</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg></span>Horloges</div>
+    </div>
+    <div class="xg-sr-section">
+      <div class="xg-sr-label">Recent</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Krugerrand</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Zilver baren</div>
+    </div>
+  </div>
+</div>
 
-		<!-- wp:navigation {"layout":{"type":"flex","setCascadingProperties":true,"justifyContent":"right"}} /-->
-	</div>
-	<!-- /wp:group -->
-</header>
-<!-- /wp:group -->
+<!-- ===== HEADER SYSTEM ===== -->
+<div id="xg-header-system">
 
-<!--
-  PLATZHALTER: Ersetze den Inhalt dieses Template-Parts durch deinen fertigen Header.
-  Du kannst ihn im Site-Editor unter "Design → Editor → Vorlagenteile → Header" bearbeiten,
-  oder den Block-Markup hier direkt einfügen.
--->
+  <!-- TOPBAR -->
+  <div class="xg-topbar">
+    <div class="xg-topbar-inner">
+      <div class="xg-live">
+        <div class="xg-live-row">
+          <span class="xg-live-dot"></span>
+          LIVE PRIJZEN
+        </div>
+        <div class="xg-live-time">Bijgewerkt: <strong id="xgTime">--:--</strong></div>
+      </div>
+      <div class="xg-ticker-vp">
+        <div class="xg-ticker-track" id="xgTrack"></div>
+      </div>
+      <div class="xg-topbar-lbma">
+        <strong>LBMA</strong>
+        <span id="xgDate">--</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="xg-header" id="xgHeader">
+    <div class="xg-header-inner">
+
+      <div class="xg-logo"><a href="/">X<span>GOUD</span></a></div>
+
+      <nav class="xg-nav">
+        <ul>
+          <li class="xg-nav-item" data-menu="edelmetalen">Edelmetalen</li>
+          <li class="xg-nav-item" data-menu="edelstenen">Edelstenen</li>
+          <li class="xg-nav-item" data-menu="horloges">Horloges</li>
+          <li class="xg-nav-item" data-menu="dagprijzen">Dagprijzen</li>
+          <li class="xg-nav-item" data-menu="service">Service</li>
+          <li class="xg-nav-item" data-menu="overons">Over Ons</li>
+        </ul>
+      </nav>
+
+      <div class="xg-actions">
+        <button class="xg-search-btn" id="xgSearchBtn" title="Zoeken">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        </button>
+
+        <div class="xg-trust">
+          <div class="xg-trust-stars">★★★★★</div>
+          <div class="xg-trust-sub">Trustpilot</div>
+          <div class="xg-trust-tip">
+            <div class="xg-trust-tip-stars">★★★★★</div>
+            <div class="xg-trust-tip-brand">Trustpilot</div>
+            <div class="xg-trust-tip-score">4,8</div>
+            <div class="xg-trust-tip-max">op 5 — 2.400+ beoordelingen</div>
+            <div class="xg-trust-tip-hr"></div>
+            <div class="xg-trust-tip-text">Klanten waarderen onze eerlijke prijzen, snelle uitbetaling en persoonlijke aanpak.</div>
+            <a href="/reviews/">Bekijk alle beoordelingen →</a>
+          </div>
+        </div>
+
+        <div class="xg-phone">
+          085 060 3009
+          <div class="xg-phone-tip">
+            <div class="xg-phone-tip-top">
+              <div class="xg-phone-tip-label">Direct contact</div>
+              <div class="xg-phone-tip-num">085 060 3009</div>
+              <div class="xg-phone-tip-hours">Ma – Vr &nbsp; 09:00 – 17:30<br>Za &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10:00 – 16:00</div>
+            </div>
+            <a href="https://wa.me/31850603009" class="xg-phone-link" target="_blank">
+              <span class="xg-phone-link-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 3.5A12 12 0 0 0 3.5 20.5L2 22l1.7-1.7A12 12 0 1 0 20.5 3.5z"/><path d="M9 10.5c.5 1 1.5 2.5 3 3.5l1-1c.3-.3.8-.3 1.1 0l1.8 1.8a.75.75 0 0 1 0 1C14.5 17 11 16 9 14s-3-5.5-1.8-6.8a.75.75 0 0 1 1 0l1.8 1.8c.3.3.3.8 0 1.1z"/></svg>
+              </span>
+              <span>WhatsApp<span class="xg-phone-link-sub">Stuur een bericht</span></span>
+            </a>
+            <a href="mailto:info@xgoud.nl" class="xg-phone-link">
+              <span class="xg-phone-link-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
+              </span>
+              <span>info@xgoud.nl<span class="xg-phone-link-sub">Stuur een e-mail</span></span>
+            </a>
+            <a href="/vestigingen/" class="xg-phone-link">
+              <span class="xg-phone-link-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
+              </span>
+              <span>40+ vestigingen<span class="xg-phone-link-sub">Vind een locatie</span></span>
+            </a>
+          </div>
+        </div>
+
+        <a href="/afspraak/" class="xg-cta">Plan afspraak</a>
+
+        <button class="xg-mobile-toggle" id="xgMobToggle" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MEGA MENU -->
+  <div class="xg-mega" id="xgMega">
+    <div class="xg-mega-inner">
+      <div id="xgMegaContent" class="xg-mega-content"></div>
+      <aside class="xg-sidebar">
+        <div class="xg-sb-stars">★★★★★</div>
+        <div class="xg-sb-tp">Trustpilot</div>
+        <div class="xg-sb-score">4,8</div>
+        <div class="xg-sb-text">Gebaseerd op 2.400+ beoordelingen</div>
+        <div class="xg-sb-hr"></div>
+        <ul class="xg-sb-list">
+          <li>40+ vestigingen</li>
+          <li>Gratis taxatie</li>
+          <li>Direct uitbetaald</li>
+          <li>Persoonlijk advies</li>
+        </ul>
+        <a href="/afspraak/" class="xg-sb-cta">Plan afspraak</a>
+      </aside>
+    </div>
+  </div>
+
+  <!-- MOBILE MENU -->
+  <div class="xg-mobile-menu" id="xgMobMenu">
+    <div class="xg-mob-header">
+      <div class="xg-mob-logo">X<span>GOUD</span></div>
+      <button class="xg-mob-close" id="xgMobClose">&#x2715;</button>
+    </div>
+    <div class="xg-mob-top">
+      <div class="xg-mob-stars">★★★★★</div>
+      <a href="tel:0850603009" class="xg-mob-phone">085 060 3009</a>
+      <a href="/afspraak/" class="xg-mob-cta">Plan afspraak</a>
+    </div>
+    <nav class="xg-mob-nav">
+      <a href="/edelmetalen/">Edelmetalen <span>›</span></a>
+      <a href="/edelstenen/">Edelstenen <span>›</span></a>
+      <a href="/horloges/">Horloges <span>›</span></a>
+      <a href="/dagprijzen/">Dagprijzen <span>›</span></a>
+      <a href="/service/">Service <span>›</span></a>
+      <a href="/over-ons/">Over Ons <span>›</span></a>
+    </nav>
+    <div class="xg-mob-contact">
+      <a href="https://wa.me/31850603009">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 3.5A12 12 0 0 0 3.5 20.5L2 22l1.7-1.7A12 12 0 1 0 20.5 3.5z"/></svg>
+        WhatsApp
+      </a>
+      <a href="mailto:info@xgoud.nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
+        info@xgoud.nl
+      </a>
+      <a href="/vestigingen/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
+        Vestigingen
+      </a>
+    </div>
+  </div>
+
+</div><!-- /header system -->
+<!-- /wp:html -->
