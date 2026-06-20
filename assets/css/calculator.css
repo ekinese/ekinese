@@ -1,0 +1,260 @@
+/* =====================================================================
+   XGOUD Smart Calculator
+   Performance-first: keine externen Fonts/Icons, nur System-Stack.
+   Farbschema identisch zur Blaupause (#D0AC4B Gold, #111 Schwarz).
+   ===================================================================== */
+
+.xg-calc {
+	max-width: 1100px;
+	margin: 0 auto;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	color: #111;
+}
+
+.xg-calc * { box-sizing: border-box; }
+
+/* ---- Produkttyp-Auswahl ---- */
+.xg-calc-types {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-bottom: 30px;
+}
+
+.xg-calc-type-btn {
+	flex: 1 1 auto;
+	min-width: 120px;
+	padding: 16px 20px;
+	background: #fff;
+	border: 1px solid #e0e0e0;
+	border-radius: 0;
+	font-size: 15px;
+	font-weight: 600;
+	color: #555;
+	cursor: pointer;
+	transition: .2s ease;
+}
+
+.xg-calc-type-btn:hover { border-color: #D0AC4B; color: #111; }
+
+.xg-calc-type-btn.active {
+	background: #111;
+	border-color: #111;
+	color: #D0AC4B;
+}
+
+/* ---- Layout: Felder + Resultat ---- */
+.xg-calc-body {
+	display: grid;
+	grid-template-columns: 1.3fr 1fr;
+	gap: 30px;
+	align-items: start;
+}
+
+.xg-calc-fields {
+	background: #fff;
+	padding: 30px;
+	border: 1px solid #eee;
+}
+
+.xg-calc-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 18px;
+}
+
+.xg-calc-field { display: flex; flex-direction: column; }
+
+.xg-calc-label {
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	color: #888;
+	margin-bottom: 6px;
+}
+
+.xg-calc-input {
+	height: 48px;
+	padding: 0 14px;
+	border: 1px solid #ddd;
+	border-radius: 0;
+	font-size: 15px;
+	background: #fafafa;
+	color: #111;
+	transition: border-color .2s;
+}
+
+.xg-calc-input:focus {
+	outline: none;
+	border-color: #D0AC4B;
+	background: #fff;
+}
+
+select.xg-calc-input { cursor: pointer; }
+
+.xg-calc-checks { display: flex; flex-direction: column; gap: 8px; padding-top: 4px; }
+.xg-calc-check { font-size: 14px; color: #333; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+
+/* ---- Resultat-Karte ---- */
+.xg-calc-result-card {
+	background: #111;
+	color: #fff;
+	padding: 30px;
+	position: sticky;
+	top: 20px;
+}
+
+.xg-calc-result-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.xg-calc-result-type {
+	font-size: 13px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	color: #D0AC4B;
+	font-weight: 700;
+}
+
+.xg-calc-badge {
+	font-size: 11px;
+	padding: 4px 10px;
+	background: rgba(208,172,75,.15);
+	color: #D0AC4B;
+	border: 1px solid rgba(208,172,75,.4);
+}
+.xg-calc-badge-fix { background: rgba(76,175,80,.15); color: #7ed184; border-color: rgba(76,175,80,.4); }
+
+.xg-calc-payout {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 20px 0;
+	border-bottom: 1px solid rgba(255,255,255,.1);
+	margin-bottom: 18px;
+}
+.xg-calc-payout-label { font-size: 13px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+.xg-calc-payout-value { font-size: 34px; font-weight: 800; color: #D0AC4B; line-height: 1.1; }
+
+.xg-calc-breakdown { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.xg-calc-break-row {
+	display: flex;
+	justify-content: space-between;
+	font-size: 14px;
+	color: #ccc;
+}
+.xg-calc-break-row span:last-child { font-weight: 600; color: #fff; }
+.xg-calc-diff span:last-child { color: #ff9c9c; }
+.xg-calc-charity span:last-child { color: #ff8ab4; }
+
+.xg-calc-charity-pick { margin-bottom: 20px; }
+.xg-calc-charity-pick .xg-calc-label { color: #aaa; }
+.xg-calc-charity-pick .xg-calc-input { background: #1c1c1c; border-color: #333; color: #fff; }
+
+.xg-calc-actions .xg-btn-gold,
+.xg-calc-actions button {
+	width: 100%;
+	height: 54px;
+	background: #D0AC4B;
+	color: #111;
+	border: none;
+	font-weight: 700;
+	font-size: 15px;
+	cursor: pointer;
+	transition: background .2s;
+}
+.xg-calc-actions button:hover { background: #c39d3a; }
+
+/* ---- Warenkorb ---- */
+.xg-calc-cart {
+	margin-top: 30px;
+	background: #fff;
+	border: 1px solid #eee;
+	padding: 25px;
+}
+.xg-calc-cart-empty { color: #999; font-size: 14px; margin: 0; }
+.xg-calc-cart-title { font-size: 18px; margin: 0 0 16px; color: #111; }
+
+.xg-calc-cart-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 14px 0;
+	border-bottom: 1px solid #f0f0f0;
+}
+.xg-calc-cart-info { display: flex; flex-direction: column; gap: 2px; }
+.xg-calc-cart-info strong { font-size: 15px; }
+.xg-calc-cart-info span { color: #D0AC4B; font-weight: 700; }
+.xg-calc-cart-info small { color: #999; font-size: 12px; }
+
+.xg-calc-cart-del {
+	width: 32px; height: 32px;
+	border: 1px solid #ddd; background: #fff;
+	color: #999; cursor: pointer; font-size: 14px;
+	transition: .2s;
+}
+.xg-calc-cart-del:hover { border-color: #e57373; color: #e57373; }
+
+.xg-calc-cart-total {
+	padding: 16px 0;
+	font-size: 14px;
+	color: #555;
+	text-align: right;
+}
+.xg-calc-cart-total strong { color: #111; }
+
+.xg-calc-to-planner {
+	width: 100%;
+	height: 54px;
+	background: #111;
+	color: #D0AC4B;
+	border: none;
+	font-weight: 700;
+	font-size: 15px;
+	cursor: pointer;
+	margin-top: 10px;
+	transition: .2s;
+}
+.xg-calc-to-planner:hover { background: #000; }
+
+/* ---- Charity-Ticker ---- */
+.xg-charity-ticker {
+	background: linear-gradient(135deg, #111 0%, #2a2a2a 100%);
+	color: #fff;
+	padding: 18px 24px;
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	flex-wrap: wrap;
+	justify-content: center;
+	text-align: center;
+}
+.xg-charity-ticker-amount {
+	font-size: 22px;
+	font-weight: 800;
+	color: #D0AC4B;
+}
+.xg-charity-ticker-label { font-size: 14px; color: #ccc; }
+.xg-charity-ticker-projects {
+	display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+}
+.xg-charity-ticker-projects span {
+	font-size: 12px;
+	color: #aaa;
+	padding: 4px 10px;
+	border: 1px solid rgba(255,255,255,.15);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 860px) {
+	.xg-calc-body { grid-template-columns: 1fr; }
+	.xg-calc-result-card { position: static; }
+}
+@media (max-width: 520px) {
+	.xg-calc-grid { grid-template-columns: 1fr; }
+	.xg-calc-payout-value { font-size: 28px; }
+}

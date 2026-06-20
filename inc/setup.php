@@ -93,5 +93,140 @@ function ekinese_enqueue_assets() {
 			true // im Footer laden
 		);
 	}
+
+	// Smart Calculator (Wertberechnung + Verkauf + Charity).
+	$calc_css = get_theme_file_path( 'assets/css/calculator.css' );
+	if ( file_exists( $calc_css ) ) {
+		wp_enqueue_style(
+			'ekinese-calculator',
+			get_theme_file_uri( 'assets/css/calculator.css' ),
+			array(),
+			(string) filemtime( $calc_css )
+		);
+	}
+
+	$calc_js = get_theme_file_path( 'assets/js/calculator.js' );
+	if ( file_exists( $calc_js ) ) {
+		wp_enqueue_script(
+			'ekinese-calculator',
+			get_theme_file_uri( 'assets/js/calculator.js' ),
+			array(),
+			(string) filemtime( $calc_js ),
+			true // im Footer laden
+		);
+
+		/*
+		 * Preis-/Margen-Daten an den Calculator übergeben.
+		 *
+		 * AKTUELL: Mock-Daten (siehe ekinese_calculator_data()).
+		 * SPÄTER:  Diese Funktion liest aus den Cron-gecachten DB-Tabellen
+		 *          (Swiss Forex / iDex) + wp_xg_margins. Das JS bleibt
+		 *          unverändert – nur die Datenquelle wechselt.
+		 */
+		wp_localize_script( 'ekinese-calculator', 'XG_CALC_DATA', ekinese_calculator_data() );
+	}
 }
 add_action( 'wp_enqueue_scripts', 'ekinese_enqueue_assets' );
+
+/**
+ * Daten-Provider für den Smart Calculator.
+ *
+ * MOCK-PHASE: Statische Beispielwerte, deren Struktur exakt den späteren
+ * DB-Tabellen entspricht. Sobald der Cron-Cache (Swiss Forex / iDex) und
+ * das Margen-Admin stehen, liefert diese Funktion die echten Werte –
+ * das Frontend (calculator.js) muss dafür NICHT angepasst werden.
+ *
+ * @return array
+ */
+function ekinese_calculator_data() {
+	return array(
+		// wp_xg_margins – später LIVE im Admin editierbar.
+		'margins'   => array(
+			'metal'         => 0.08,
+			'diamond_range' => 0.10,
+			'gem_range'     => 0.12,
+			'watch_range'   => 0.10,
+			'charity_share' => 0.05,
+		),
+		// wp_xg_metals – Spotpreis €/g (Mock; später Swiss Forex Cron-Cache).
+		'metals'    => array(
+			'goud'      => array( 'label' => 'Goud',      'spot' => 62.50 ),
+			'zilver'    => array( 'label' => 'Zilver',    'spot' => 0.78 ),
+			'platina'   => array( 'label' => 'Platina',   'spot' => 28.90 ),
+			'palladium' => array( 'label' => 'Palladium', 'spot' => 30.10 ),
+		),
+		'purities'  => array(
+			'8'  => 0.333,
+			'14' => 0.585,
+			'18' => 0.750,
+			'21' => 0.875,
+			'22' => 0.916,
+			'24' => 0.999,
+		),
+		'conditions' => array(
+			'nieuw'     => array( 'label' => 'Neuwertig',    'factor' => 1.00 ),
+			'zeer_goed' => array( 'label' => 'Sehr gut',     'factor' => 0.99 ),
+			'goed'      => array( 'label' => 'Gut',          'factor' => 0.98 ),
+			'voldoende' => array( 'label' => 'Befriedigend', 'factor' => 0.96 ),
+		),
+		'jewelry_tiers' => array(
+			array( 'min' => 0,   'bonus' => 0.00 ),
+			array( 'min' => 50,  'bonus' => 0.02 ),
+			array( 'min' => 100, 'bonus' => 0.04 ),
+			array( 'min' => 250, 'bonus' => 0.06 ),
+		),
+		// wp_xg_diamonds – iDex-Basis (Mock-Matrix).
+		'diamond_base' => array(
+			'color'   => array(
+				'D' => 1.00, 'E' => 0.95, 'F' => 0.90, 'G' => 0.82,
+				'H' => 0.74, 'I' => 0.66, 'J' => 0.58, 'K' => 0.48,
+			),
+			'clarity' => array(
+				'FL' => 1.00, 'IF' => 0.95, 'VVS1' => 0.90, 'VVS2' => 0.86,
+				'VS1' => 0.80, 'VS2' => 0.74, 'SI1' => 0.64, 'SI2' => 0.54,
+				'I1' => 0.40, 'I2' => 0.30, 'I3' => 0.20,
+			),
+			'cut'     => array(
+				'Excellent' => 1.00, 'Very Good' => 0.95, 'Good' => 0.88,
+				'Fair' => 0.78, 'Poor' => 0.65,
+			),
+			'fluor'   => array(
+				'None' => 1.00, 'Faint' => 0.98, 'Medium' => 0.94, 'Strong' => 0.88,
+			),
+			'anchor'  => 9000,
+		),
+		// wp_xg_gemstones – Basis €/ct.
+		'gem_base' => array(
+			'robijn'  => array( 'label' => 'Robijn (Rubin)',   'anchor' => 3500 ),
+			'saffier' => array( 'label' => 'Saffier (Saphir)', 'anchor' => 2200 ),
+			'smaragd' => array( 'label' => 'Smaragd',          'anchor' => 2800 ),
+		),
+		// wp_xg_watches – Marktpreis € (Mock; später eigene DB, ~25 Marken).
+		'watches' => array(
+			'rolex'   => array( 'label' => 'Rolex',   'models' => array( 'Submariner' => 11000, 'Datejust' => 7500, 'GMT-Master II' => 14000 ) ),
+			'omega'   => array( 'label' => 'Omega',   'models' => array( 'Speedmaster' => 5500, 'Seamaster' => 4200 ) ),
+			'patek'   => array( 'label' => 'Patek Philippe', 'models' => array( 'Nautilus' => 38000, 'Calatrava' => 18000 ) ),
+			'cartier' => array( 'label' => 'Cartier', 'models' => array( 'Santos' => 6500, 'Tank' => 4800 ) ),
+		),
+		'watch_conditions' => array(
+			'nieuw'     => array( 'label' => 'Neuwertig',           'factor' => 1.00 ),
+			'zeer_goed' => array( 'label' => 'Sehr gut',            'factor' => 0.90 ),
+			'goed'      => array( 'label' => 'Gut',                 'factor' => 0.78 ),
+			'voldoende' => array( 'label' => 'Befriedigend',        'factor' => 0.65 ),
+			'service'   => array( 'label' => 'Restaurierungsbedarf','factor' => 0.50 ),
+		),
+		'watch_extras' => array(
+			'box'    => array( 'label' => 'Originalbox',        'bonus' => 0.03 ),
+			'papers' => array( 'label' => 'Zertifikat/Papiere', 'bonus' => 0.05 ),
+		),
+		// wp_xg_charity – Projekte.
+		'charity_projects' => array(
+			array( 'id' => 'social',       'label' => 'Sozialarbeit' ),
+			array( 'id' => 'kindergarten', 'label' => 'Kindergärten' ),
+			array( 'id' => 'shelter',      'label' => 'Frauenhäuser' ),
+			array( 'id' => 'sport',        'label' => 'Sportzentren' ),
+			array( 'id' => 'school',       'label' => 'Schulen' ),
+		),
+		'currency' => 'EUR',
+	);
+}

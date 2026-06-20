@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>XGOUD Smart Calculator – Live-Vorschau</title>
+	<link rel="stylesheet" href="assets/css/calculator.css">
+	<style>
+		body { margin: 0; background: #efefef; padding: 40px 20px; font-family: -apple-system, sans-serif; }
+		.preview-head { text-align: center; margin-bottom: 30px; }
+		.preview-head h1 { color: #111; }
+		.preview-head p { color: #777; }
+		.xg-section-title { font-size: 28px; color: #111; text-align: center; margin: 0 0 30px; }
+		.xg-calc-section { padding: 30px 0; }
+		.xg-btn-gold { display:inline-flex; align-items:center; justify-content:center; height:54px; padding:0 30px; background:#D0AC4B; color:#111; border:none; font-weight:700; cursor:pointer; }
+	</style>
+</head>
+<body>
+
+<div class="preview-head">
+	<h1>🧮 XGOUD Smart Calculator</h1>
+	<p>Live-Vorschau mit Mock-Daten · Wähle einen Produkttyp und teste die Berechnung</p>
+</div>
+
+<!-- Charity-Ticker -->
+<div class="xg-charity-ticker" style="max-width:1100px;margin:0 auto 30px;">
+	<span class="xg-charity-ticker-label">XGOUD hat diesen Monat für Charity gegeben:</span>
+	<span class="xg-charity-ticker-amount">€65.168,36</span>
+	<div class="xg-charity-ticker-projects">
+		<span>Sozialarbeit</span>
+		<span>Kindergärten</span>
+		<span>Frauenhäuser</span>
+		<span>Sportzentren</span>
+		<span>Schulen</span>
+	</div>
+</div>
+
+<!-- Calculator -->
+<section class="xg-calc-section">
+	<div class="xg-calc">
+		<div class="xg-calc-types"></div>
+		<div class="xg-calc-body">
+			<div class="xg-calc-fields"></div>
+			<div class="xg-calc-result"></div>
+		</div>
+		<div class="xg-calc-cart"></div>
+	</div>
+</section>
+
+<script src="assets/js/calculator.js"></script>
+</body>
+</html>
