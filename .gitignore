@@ -13,3 +13,6 @@ Thumbs.db
 
 # WordPress-spezifisch (falls Theme in größeres Repo wandert)
 wp-config.php
+
+# Development/Preview Tools
+blueprint-preview.html
