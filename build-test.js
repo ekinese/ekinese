@@ -81,32 +81,47 @@ const sections = Object.keys(pages).map((k, i) =>
 	`<section class="tst-page" data-page="${k}"${i===0?'':' hidden'}>${pages[k].html}</section>`
 ).join('\n');
 
+// Assets INLINE einbetten → eine einzige portable Datei (funktioniert auch
+// allein im Downloads-Ordner, ohne assets/-Verzeichnis daneben).
+const css = [
+	'assets/css/theme.css',
+	'assets/css/header-footer.css',
+	'assets/css/blueprint.css',
+	'assets/css/calculator.css'
+].map(read).join('\n\n');
+
+const js = [
+	'assets/js/theme.js',
+	'assets/js/header-footer.js',
+	'assets/js/blueprint.js',
+	'assets/js/calculator.js'
+].map(read).join('\n;\n');
+
 const html = `<!DOCTYPE html>
 <html lang="de" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>XGOUD – Test-Suite (alle Seiten)</title>
-<link rel="stylesheet" href="assets/css/theme.css">
-<link rel="stylesheet" href="assets/css/header-footer.css">
-<link rel="stylesheet" href="assets/css/blueprint.css">
-<link rel="stylesheet" href="assets/css/calculator.css">
 <style>
-	.tst-toolbar {
-		position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
-		z-index: 100002; display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
-		background: var(--white,#fff); border: 1px solid var(--line,#ddd);
-		box-shadow: 0 12px 40px rgba(0,0,0,.2); padding: 8px; border-radius: 40px; max-width: 94vw;
-	}
-	.tst-tab {
-		border: none; background: transparent; cursor: pointer;
-		font: 700 12px Arial, sans-serif; letter-spacing: .5px;
-		color: var(--ink-soft,#666); padding: 8px 14px; border-radius: 30px;
-		transition: background .2s, color .2s;
-	}
-	.tst-tab:hover { color: var(--red,#AE1E1E); }
-	.tst-tab.active { background: var(--red,#AE1E1E); color: #fff; }
-	.tst-fill { margin-left: 6px; }
+${css}
+
+/* ---- Test-Toolbar ---- */
+.tst-toolbar {
+	position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+	z-index: 100002; display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+	background: var(--white,#fff); border: 1px solid var(--line,#ddd);
+	box-shadow: 0 12px 40px rgba(0,0,0,.2); padding: 8px; border-radius: 40px; max-width: 94vw;
+}
+.tst-tab {
+	border: none; background: transparent; cursor: pointer;
+	font: 700 12px Arial, sans-serif; letter-spacing: .5px;
+	color: var(--ink-soft,#666); padding: 8px 14px; border-radius: 30px;
+	transition: background .2s, color .2s;
+}
+.tst-tab:hover { color: var(--red,#AE1E1E); }
+.tst-tab.active { background: var(--red,#AE1E1E); color: #fff; }
+.tst-fill { margin-left: 6px; }
 </style>
 </head>
 <body>
@@ -127,10 +142,9 @@ ${footer}
 <script>
 window.XG_CALC_DATA = ${JSON.stringify(calcData, null, 1)};
 </script>
-<script src="assets/js/theme.js"></script>
-<script src="assets/js/header-footer.js"></script>
-<script src="assets/js/blueprint.js"></script>
-<script src="assets/js/calculator.js"></script>
+<script>
+${js}
+</script>
 <script>
 /* Seiten-Umschaltung */
 document.querySelectorAll('.tst-tab[data-go]').forEach(function (b) {
@@ -174,4 +188,5 @@ document.getElementById('tstFill').addEventListener('click', function () {
 </html>`;
 
 fs.writeFileSync('test-suite.html', html);
-console.log('test-suite.html geschrieben (' + (html.length / 1024).toFixed(0) + ' KB)');
+console.log('test-suite.html geschrieben (' + (html.length / 1024).toFixed(0) + ' KB) – vollständig eigenständig');
+
