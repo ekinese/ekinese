@@ -71,5 +71,27 @@ function ekinese_enqueue_assets() {
 			true // im Footer laden
 		);
 	}
+
+	// Blueprint Styles & Interaktivität (für Verkoof-Landingpages).
+	$bp_css = get_theme_file_path( 'assets/css/blueprint.css' );
+	if ( file_exists( $bp_css ) ) {
+		wp_enqueue_style(
+			'ekinese-blueprint',
+			get_theme_file_uri( 'assets/css/blueprint.css' ),
+			array(),
+			(string) filemtime( $bp_css )
+		);
+	}
+
+	$bp_js = get_theme_file_path( 'assets/js/blueprint.js' );
+	if ( file_exists( $bp_js ) ) {
+		wp_enqueue_script(
+			'ekinese-blueprint',
+			get_theme_file_uri( 'assets/js/blueprint.js' ),
+			array(),
+			(string) filemtime( $bp_js ),
+			true // im Footer laden
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'ekinese_enqueue_assets' );
