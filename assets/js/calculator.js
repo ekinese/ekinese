@@ -168,16 +168,21 @@
 			return b;
 		}
 		function themeToggle() {
-			var wrap = h('div', 'xg-calc-theme');
-			var sun = h('span', 'xc-on', '☀'); var moon = h('span', '', '☾');
-			wrap.appendChild(sun); wrap.appendChild(moon);
-			wrap.addEventListener('click', function () {
-				var host = document.documentElement;
-				var dark = host.getAttribute('data-theme') === 'dark';
-				host.setAttribute('data-theme', dark ? 'light' : 'dark');
-				sun.classList.toggle('xc-on', dark); moon.classList.toggle('xc-on', !dark);
-			});
-			return wrap;
+			// Nutzt den globalen XGOUD-Switch (Sync + Persistenz über theme.js).
+			var host = h('div');
+			host.setAttribute('data-xg-theme-toggle', '');
+			if (window.XGTheme && window.XGTheme.mount) {
+				window.XGTheme.mount(host);
+			} else {
+				// Fallback: einfacher Toggle, falls theme.js nicht geladen ist.
+				var b = h('button', '', '◐'); b.type = 'button';
+				b.addEventListener('click', function () {
+					var d = document.documentElement;
+					d.setAttribute('data-theme', d.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+				});
+				host.appendChild(b);
+			}
+			return host;
 		}
 
 		/* ---------- PROGRESS ---------- */
@@ -327,6 +332,31 @@
 			i.addEventListener('input', function () { state.form[name] = i.value; });
 			return i;
 		}
+		// Range-Slider + Zahleneingabe kombiniert (erleichtert die Eingabe).
+		function rangeNum(name, min, max, step, unit, def) {
+			var wrap = h('div', 'xg-calc-range');
+			var top = h('div', 'xg-calc-range-top');
+			var input = h('input', 'xg-calc-input'); input.type = 'number'; input.min = min; input.max = max; input.step = step;
+			var bubble = h('div', 'xg-calc-range-bubble');
+			var slider = h('input', 'xg-calc-slider'); slider.type = 'range'; slider.min = min; slider.max = max; slider.step = step;
+			var val = (def != null) ? def : min;
+			function fill() { var p = (val - min) / (max - min) * 100; slider.style.backgroundSize = p + '% 100%'; }
+			function set(v, fromSlider) {
+				if (isNaN(v)) v = 0;
+				if (v > max) v = max; if (v < min) v = min;
+				val = v; state.form[name] = v;
+				bubble.innerHTML = (Math.round(v * 100) / 100) + ' <small>' + unit + '</small>';
+				if (!fromSlider) slider.value = v;
+				input.value = v; fill();
+			}
+			slider.addEventListener('input', function () { set(parseFloat(slider.value), true); });
+			input.addEventListener('input', function () { set(parseFloat(input.value), false); });
+			top.appendChild(input); top.appendChild(bubble);
+			wrap.appendChild(top); wrap.appendChild(slider);
+			wrap.appendChild(h('div', 'xg-calc-range-scale', '<span>' + min + ' ' + unit + '</span><span>' + max + ' ' + unit + '</span>'));
+			set(val, false);
+			return wrap;
+		}
 		function seg(name, entries) {
 			var wrap = h('div', 'xg-calc-seg');
 			entries.forEach(function (e, i) {
@@ -379,11 +409,11 @@
 			var purLabel = (state.form.metal === 'goud') ? 'Karat' : 'Legierung';
 			grid.appendChild(field(purLabel, sel('purity', purEntries)));
 
-			grid.appendChild(field('Gewicht', num('weight', 'in Gramm'), false, 'g'));
-
 			_metalCondField = field('Zustand', sel('condition', Object.keys(DATA.conditions).map(function (k) { return [k, DATA.conditions[k].label]; })));
 			grid.appendChild(_metalCondField);
 			wrap.appendChild(grid);
+			// Gewicht als Range-Slider (volle Breite, leicht bedienbar).
+			wrap.appendChild(field('Gewicht', rangeNum('weight', 0, 1000, 1, 'g', 0), true));
 			refreshMetalCond();
 		}
 
@@ -391,7 +421,7 @@
 		function buildDiamond(wrap) {
 			var b = DATA.diamond_base;
 			var grid = h('div', 'xg-calc-grid');
-			grid.appendChild(field('Karatgewicht', num('carat', 'ct', '0.01'), false, 'ct'));
+			grid.appendChild(field('Karatgewicht', rangeNum('carat', 0, 10, 0.01, 'ct', 1), true));
 			grid.appendChild(field('Farbe', sel('color', Object.keys(b.color).map(function (k) { return [k, k]; }))));
 			grid.appendChild(field('Reinheit', sel('clarity', Object.keys(b.clarity).map(function (k) { return [k, k]; }))));
 			grid.appendChild(field('Schliff', sel('cut', Object.keys(b.cut).map(function (k) { return [k, k]; }))));
@@ -413,7 +443,7 @@
 			if (!state.form.gem) return;
 
 			var grid = h('div', 'xg-calc-grid');
-			grid.appendChild(field('Karatgewicht', num('carat', 'ct', '0.01'), false, 'ct'));
+			grid.appendChild(field('Karatgewicht', rangeNum('carat', 0, 10, 0.01, 'ct', 1), true));
 			grid.appendChild(field('Qualität', sel('quality', [['5', 'Exzellent'], ['4', 'Sehr gut'], ['3', 'Gut'], ['2', 'Mittel'], ['1', 'Einfach']])));
 			grid.appendChild(field('Labor', sel('lab', DATA.labs.map(function (l) { return [l, l]; }))));
 			grid.appendChild(field('Zertifikatsnummer', text('cert', 'optional'), true, 'optional'));

@@ -1,0 +1,184 @@
+/* =====================================================================
+   XGOUD – Theme-System (Day ↔ Dark)
+   Dark-Mode dreht die Markenfarbe von ROT auf GOLD.
+   header-footer.css ist bereits voll tokenisiert → wir überschreiben
+   hier nur die Tokens für [data-theme="dark"].
+   ===================================================================== */
+
+/* Sanfter Übergang beim Umschalten (nur Farben, performant). */
+html, body,
+.xg-topbar, .xg-header, .xg-mega, .footer, .ft-wrap, .xg-drop, .ft-dropup,
+.xg-blueprint, .xg-calc, [class^="xg-"], [class^="footer"] {
+	transition: background-color .35s ease, color .35s ease, border-color .35s ease;
+}
+
+/* ---------------------------------------------------------------
+   GOLD-HIGHLIGHT  (in BEIDEN Modi: Rot bleibt primär, Gold als
+   edler Akzent für Werte/Charity/Premium-Details)
+--------------------------------------------------------------- */
+:root {
+	--gold:      #c8a24a;
+	--gold-soft: rgba(200,162,74,.12);
+}
+
+/* ---------------------------------------------------------------
+   DARK TOKENS  (Rot BLEIBT Rot – nur aufgehellt; Flächen dunkel)
+   Gold ergänzt als Highlight, ersetzt Rot NICHT.
+--------------------------------------------------------------- */
+[data-theme="dark"] {
+	--red:       #e7483f;   /* Rot bleibt – auf Dunkel aufgehellt */
+	--red-dark:  #c5392f;
+	--red-soft:  rgba(231,72,63,.13);
+	--ink:       #f3efe8;   /* Text hell */
+	--ink-soft:  #a8a294;
+	--cream:     #141312;   /* Seiten-Hintergrund */
+	--line:      #34302b;   /* Linien */
+	--white:     #1d1b19;   /* vormals weiße Flächen */
+	--green:     #34c172;
+	--up:        #34c172;
+	--down:      #e0625c;
+	--neutral:   #8a847a;
+	--shadow:    0 18px 50px rgba(0,0,0,.5);
+	--gold:      #d9b65f;   /* Gold im Dark etwas heller */
+	--gold-soft: rgba(217,182,95,.14);
+}
+
+/* Bilder/Logos etwas entsättigen für ruhigeres Dark-UI (optional) */
+[data-theme="dark"] .partner-logo { opacity: .7; }
+
+/* =====================================================================
+   THEME-SWITCH (modern, gleitender Knopf, Sonne/Mond)
+   ===================================================================== */
+.xg-theme-switch {
+	position: relative;
+	border: none; background: none; padding: 0; cursor: pointer;
+	display: inline-flex; align-items: center;
+	-webkit-tap-highlight-color: transparent;
+}
+.xg-theme-track {
+	position: relative;
+	width: 60px; height: 30px;
+	border-radius: 30px;
+	background: var(--line, #e3ddd0);
+	border: 1px solid var(--line, #e3ddd0);
+	display: flex; align-items: center; justify-content: space-between;
+	padding: 0 7px;
+	transition: background .35s ease, border-color .35s ease;
+	overflow: hidden;
+}
+.xg-theme-switch.is-dark .xg-theme-track {
+	background: #2a2622;
+	border-color: #3a352f;
+}
+.xg-theme-ico {
+	position: relative; z-index: 2;
+	width: 16px; height: 16px;
+	display: flex; align-items: center; justify-content: center;
+	transition: opacity .3s ease, color .3s ease;
+}
+.xg-theme-ico svg { width: 14px; height: 14px; display: block; }
+.xg-theme-ico.sun  { color: #c8a24a; opacity: 1; }
+.xg-theme-ico.moon { color: #9a948a; opacity: .6; }
+.xg-theme-switch.is-dark .xg-theme-ico.sun  { opacity: .5; color: #8a847a; }
+.xg-theme-switch.is-dark .xg-theme-ico.moon { opacity: 1; color: #d9b65f; }
+
+.xg-theme-knob {
+	position: absolute; top: 50%; left: 3px;
+	width: 24px; height: 24px;
+	transform: translateY(-50%);
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 2px 6px rgba(0,0,0,.25);
+	transition: left .35s cubic-bezier(.4,0,.2,1), background .35s ease;
+	z-index: 1;
+}
+.xg-theme-switch.is-dark .xg-theme-knob {
+	left: 31px;
+	background: #d9b65f;
+}
+
+/* =====================================================================
+   DARK-OVERRIDES  ·  Blueprint-Seiten (Diamant/Edelmetalen/…)
+   Blueprint nutzt Gold bereits als Akzent → wir machen nur die
+   Flächen dunkel und den Text hell, Gold bleibt Gold.
+   ===================================================================== */
+[data-theme="dark"] .xg-blueprint { background: #141312; }
+[data-theme="dark"] body { background: #141312; }
+
+[data-theme="dark"] .xg-hero-v2,
+[data-theme="dark"] .xgoud-toc-wrapper,
+[data-theme="dark"] .xg-why-section,
+[data-theme="dark"] .xg-trust-cards-section,
+[data-theme="dark"] .xg-steps-section,
+[data-theme="dark"] .xg-market-content,
+[data-theme="dark"] .xg-price-table-section,
+[data-theme="dark"] .xg-rapaport-section,
+[data-theme="dark"] .xg-certification-section,
+[data-theme="dark"] .xg-eeat-section,
+[data-theme="dark"] .xg-form-section,
+[data-theme="dark"] .xg-trustpilot-section,
+[data-theme="dark"] .xg-internal-links-section,
+[data-theme="dark"] .xg-faq-section,
+[data-theme="dark"] .xg-spot-price-section,
+[data-theme="dark"] .xg-price-formula-section,
+[data-theme="dark"] .xg-watch-authentication-section,
+[data-theme="dark"] .xg-watch-history-section,
+[data-theme="dark"] .xg-vintage-trends-section {
+	background: #141312;
+}
+
+[data-theme="dark"] .xgoud-toc,
+[data-theme="dark"] .xg-c-card,
+[data-theme="dark"] .xg-trust-card,
+[data-theme="dark"] .xg-step-card,
+[data-theme="dark"] .xg-formula-box,
+[data-theme="dark"] .xg-author-card,
+[data-theme="dark"] .xg-link-card,
+[data-theme="dark"] .xg-faq-item,
+[data-theme="dark"] .xg-spot-price-card,
+[data-theme="dark"] .xg-auth-card,
+[data-theme="dark"] .xg-brand-card,
+[data-theme="dark"] .xg-trend-card {
+	background: #1d1b19;
+	border-color: #34302b;
+}
+
+[data-theme="dark"] .xg-hero-title,
+[data-theme="dark"] .xg-section-title,
+[data-theme="dark"] .xgoud-toc-title,
+[data-theme="dark"] .xg-c-card-title,
+[data-theme="dark"] .xg-trust-card-title,
+[data-theme="dark"] .xg-step-title,
+[data-theme="dark"] .xg-link-card-title,
+[data-theme="dark"] .xg-faq-q-text,
+[data-theme="dark"] .xg-blueprint h1,
+[data-theme="dark"] .xg-blueprint h2,
+[data-theme="dark"] .xg-blueprint h3 {
+	color: #f3efe8;
+}
+
+[data-theme="dark"] .xg-hero-lead,
+[data-theme="dark"] .xg-c-card-text,
+[data-theme="dark"] .xg-trust-card-text,
+[data-theme="dark"] .xg-step-text,
+[data-theme="dark"] .xg-faq-a-text,
+[data-theme="dark"] .xg-expert-box-text,
+[data-theme="dark"] .xg-blueprint p {
+	color: #a8a294;
+}
+
+/* Tabellen im Dark-Mode */
+[data-theme="dark"] .xg-price-table th { background: #262320; color: #f3efe8; }
+[data-theme="dark"] .xg-price-table td { background: #1d1b19; color: #cfc9bd; border-color: #34302b; }
+
+/* Outline-Button im Dark-Mode lesbar halten */
+[data-theme="dark"] a.xg-btn-outline,
+[data-theme="dark"] .xg-btn-outline .wp-block-button__link {
+	border-color: #f3efe8; color: #f3efe8 !important;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+	html, body, [class^="xg-"], [class^="footer"] { transition: none !important; }
+	.xg-theme-knob, .xg-theme-track, .xg-theme-ico { transition: none !important; }
+}

@@ -1,0 +1,3921 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XGOUD – Test-Suite (alle Seiten)</title>
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/header-footer.css">
+<link rel="stylesheet" href="assets/css/blueprint.css">
+<link rel="stylesheet" href="assets/css/calculator.css">
+<style>
+	.tst-toolbar {
+		position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+		z-index: 100002; display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+		background: var(--white,#fff); border: 1px solid var(--line,#ddd);
+		box-shadow: 0 12px 40px rgba(0,0,0,.2); padding: 8px; border-radius: 40px; max-width: 94vw;
+	}
+	.tst-tab {
+		border: none; background: transparent; cursor: pointer;
+		font: 700 12px Arial, sans-serif; letter-spacing: .5px;
+		color: var(--ink-soft,#666); padding: 8px 14px; border-radius: 30px;
+		transition: background .2s, color .2s;
+	}
+	.tst-tab:hover { color: var(--red,#AE1E1E); }
+	.tst-tab.active { background: var(--red,#AE1E1E); color: #fff; }
+	.tst-fill { margin-left: 6px; }
+</style>
+</head>
+<body>
+
+<!-- Blur overlay -->
+<div class="xg-blur-overlay" id="xgBlurOverlay"></div>
+
+<!-- Full-screen search -->
+<div class="xg-search-ov" id="xgSearchOv">
+  <button class="xg-search-ov-close" id="xgSearchClose">&#x2715;</button>
+  <div class="xg-search-box">
+    <span class="xg-search-box-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+    </span>
+    <input type="text" id="xgSearchInput" placeholder="Zoek metaal, product, categorie…" autocomplete="off">
+  </div>
+  <div class="xg-search-results" id="xgSearchResults">
+    <div class="xg-sr-section">
+      <div class="xg-sr-label">Populair</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg></span>Goud verkopen</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg></span>Goudprijs vandaag</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg></span>Gouden ring taxatie</div>
+    </div>
+    <div class="xg-sr-section">
+      <div class="xg-sr-label">Categorieën</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg></span>Edelmetalen</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg></span>Edelstenen</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg></span>Horloges</div>
+    </div>
+    <div class="xg-sr-section">
+      <div class="xg-sr-label">Recent</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Krugerrand</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Zilver baren</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HEADER SYSTEM ===== -->
+<div id="xg-header-system">
+
+  <!-- TOPBAR -->
+  <div class="xg-topbar">
+    <div class="xg-topbar-inner">
+      <div class="xg-live">
+        <div class="xg-live-row">
+          <span class="xg-live-dot"></span>
+          LIVE PRIJZEN
+        </div>
+        <div class="xg-live-time">Bijgewerkt: <strong id="xgTime">--:--</strong></div>
+      </div>
+      <div class="xg-ticker-vp">
+        <div class="xg-ticker-track" id="xgTrack"></div>
+      </div>
+      <div class="xg-topbar-lbma">
+        <strong>LBMA</strong>
+        <span id="xgDate">--</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="xg-header" id="xgHeader">
+    <div class="xg-header-inner">
+
+      <div class="xg-logo"><a href="/">X<span>GOUD</span></a></div>
+
+      <nav class="xg-nav">
+        <ul>
+          <li class="xg-nav-item" data-menu="edelmetalen">Edelmetalen</li>
+          <li class="xg-nav-item" data-menu="edelstenen">Edelstenen</li>
+          <li class="xg-nav-item" data-menu="horloges">Horloges</li>
+          <li class="xg-nav-item" data-menu="dagprijzen">Dagprijzen</li>
+          <li class="xg-nav-item" data-menu="service">Service</li>
+          <li class="xg-nav-item" data-menu="overons">Over Ons</li>
+        </ul>
+      </nav>
+
+      <div class="xg-actions">
+        <button class="xg-search-btn" id="xgSearchBtn" title="Zoeken">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        </button>
+
+        <div class="xg-trust">
+          <div class="xg-trust-stars">★★★★★</div>
+          <div class="xg-trust-sub">Trustpilot</div>
+          <div class="xg-trust-tip">
+            <div class="xg-trust-tip-stars">★★★★★</div>
+            <div class="xg-trust-tip-brand">Trustpilot</div>
+            <div class="xg-trust-tip-score">4,8</div>
+            <div class="xg-trust-tip-max">op 5 — 2.400+ beoordelingen</div>
+            <div class="xg-trust-tip-hr"></div>
+            <div class="xg-trust-tip-text">Klanten waarderen onze eerlijke prijzen, snelle uitbetaling en persoonlijke aanpak.</div>
+            <a href="/reviews/">Bekijk alle beoordelingen →</a>
+          </div>
+        </div>
+
+        <div class="xg-phone">
+          085 060 3009
+          <div class="xg-phone-tip">
+            <div class="xg-phone-tip-top">
+              <div class="xg-phone-tip-label">Direct contact</div>
+              <div class="xg-phone-tip-num">085 060 3009</div>
+              <div class="xg-phone-tip-hours">Ma – Vr &nbsp; 09:00 – 17:30<br>Za &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10:00 – 16:00</div>
+            </div>
+            <a href="https://wa.me/31850603009" class="xg-phone-link" target="_blank">
+              <span class="xg-phone-link-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 3.5A12 12 0 0 0 3.5 20.5L2 22l1.7-1.7A12 12 0 1 0 20.5 3.5z"/><path d="M9 10.5c.5 1 1.5 2.5 3 3.5l1-1c.3-.3.8-.3 1.1 0l1.8 1.8a.75.75 0 0 1 0 1C14.5 17 11 16 9 14s-3-5.5-1.8-6.8a.75.75 0 0 1 1 0l1.8 1.8c.3.3.3.8 0 1.1z"/></svg>
+              </span>
+              <span>WhatsApp<span class="xg-phone-link-sub">Stuur een bericht</span></span>
+            </a>
+            <a href="mailto:info@xgoud.nl" class="xg-phone-link">
+              <span class="xg-phone-link-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
+              </span>
+              <span>info@xgoud.nl<span class="xg-phone-link-sub">Stuur een e-mail</span></span>
+            </a>
+            <a href="/vestigingen/" class="xg-phone-link">
+              <span class="xg-phone-link-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
+              </span>
+              <span>40+ vestigingen<span class="xg-phone-link-sub">Vind een locatie</span></span>
+            </a>
+          </div>
+        </div>
+
+        <div class="xg-theme-host" data-xg-theme-toggle></div>
+
+        <a href="/afspraak/" class="xg-cta">Plan afspraak</a>
+
+        <button class="xg-mobile-toggle" id="xgMobToggle" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MEGA MENU -->
+  <div class="xg-mega" id="xgMega">
+    <div class="xg-mega-inner">
+      <div id="xgMegaContent" class="xg-mega-content"></div>
+      <aside class="xg-sidebar">
+        <div class="xg-sb-stars">★★★★★</div>
+        <div class="xg-sb-tp">Trustpilot</div>
+        <div class="xg-sb-score">4,8</div>
+        <div class="xg-sb-text">Gebaseerd op 2.400+ beoordelingen</div>
+        <div class="xg-sb-hr"></div>
+        <ul class="xg-sb-list">
+          <li>40+ vestigingen</li>
+          <li>Gratis taxatie</li>
+          <li>Direct uitbetaald</li>
+          <li>Persoonlijk advies</li>
+        </ul>
+        <a href="/afspraak/" class="xg-sb-cta">Plan afspraak</a>
+      </aside>
+    </div>
+  </div>
+
+  <!-- MOBILE MENU -->
+  <div class="xg-mobile-menu" id="xgMobMenu">
+    <div class="xg-mob-header">
+      <div class="xg-mob-logo">X<span>GOUD</span></div>
+      <button class="xg-mob-close" id="xgMobClose">&#x2715;</button>
+    </div>
+    <div class="xg-mob-top">
+      <div class="xg-mob-stars">★★★★★</div>
+      <a href="tel:0850603009" class="xg-mob-phone">085 060 3009</a>
+      <a href="/afspraak/" class="xg-mob-cta">Plan afspraak</a>
+    </div>
+    <nav class="xg-mob-nav">
+      <a href="/edelmetalen/">Edelmetalen <span>›</span></a>
+      <a href="/edelstenen/">Edelstenen <span>›</span></a>
+      <a href="/horloges/">Horloges <span>›</span></a>
+      <a href="/dagprijzen/">Dagprijzen <span>›</span></a>
+      <a href="/service/">Service <span>›</span></a>
+      <a href="/over-ons/">Over Ons <span>›</span></a>
+    </nav>
+    <div class="xg-mob-contact">
+      <a href="https://wa.me/31850603009">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 3.5A12 12 0 0 0 3.5 20.5L2 22l1.7-1.7A12 12 0 1 0 20.5 3.5z"/></svg>
+        WhatsApp
+      </a>
+      <a href="mailto:info@xgoud.nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
+        info@xgoud.nl
+      </a>
+      <a href="/vestigingen/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
+        Vestigingen
+      </a>
+    </div>
+  </div>
+
+</div><!-- /header system -->
+
+<main>
+<section class="tst-page" data-page="hero"><section class="xg-hero-split">
+	<div class="xg-hero-split-text">
+
+
+
+<h1></h1>
+
+
+
+<p></p>
+
+
+
+	</div>
+	<div class="xg-hero-split-calc">
+		<div class="xg-calc" data-mode="compact"></div>
+	</div>
+</section></section>
+<section class="tst-page" data-page="edelmetalen" hidden><div class="xg-hero-v2">
+	<div class="xg-hero-background">
+		<svg class="xg-hero-blob" viewBox="0 0 1440 600" preserveAspectRatio="none"><path d="M0,300 Q360,100 720,250 T1440,300 L1440,600 L0,600 Z" fill="rgba(215,143,65,0.1)"/></svg>
+	</div>
+	<div class="xg-hero-container">
+		<div class="xg-hero-content">
+
+
+
+<h4 class="xg-hero-kicker"></h4>
+
+
+
+<h1 class="xg-hero-title"></h1>
+
+
+
+<p class="xg-hero-lead"></p>
+
+
+
+		</div>
+		<div class="xg-hero-buttons">
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div>
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-outline"></a></div>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xgoud-toc-wrapper">
+	<div class="xgoud-toc">
+
+
+
+<h3 class="xgoud-toc-title">Inhaltsverzeichnis</h3>
+
+
+
+		<div class="xgoud-toc-grid">
+
+
+
+<ul class="xgoud-toc-list">
+	<li></li>
+	<li></li>
+	<li></li>
+	<li></li>
+	<li></li>
+</ul>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-why-section">
+	<div class="xg-why-container">
+
+
+
+<h2 class="xg-section-title">Warum bei uns?</h2>
+
+
+
+		<div class="xg-why-grid">
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xgoud-cta-modern">
+	<div class="xgoud-cta-modern-content">
+
+
+
+<h2></h2>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-expert-box">
+	<div class="xg-expert-box-container">
+
+
+
+<h3 class="xg-expert-box-title">Unser Experte</h3>
+
+
+
+<p class="xg-expert-box-text"></p>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-trust-cards-section">
+	<div class="xg-trust-cards-container">
+
+
+
+<h2 class="xg-section-title">Warum können Sie uns vertrauen?</h2>
+
+
+
+		<div class="xg-trust-cards-grid">
+
+
+
+			<div class="xg-trust-card">
+
+
+
+<h3 class="xg-trust-card-title"></h3>
+
+
+
+<p class="xg-trust-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-trust-card">
+
+
+
+<h3 class="xg-trust-card-title"></h3>
+
+
+
+<p class="xg-trust-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-trust-card">
+
+
+
+<h3 class="xg-trust-card-title"></h3>
+
+
+
+<p class="xg-trust-card-text"></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-steps-section">
+	<div class="xg-steps-container">
+
+
+
+<h2 class="xg-section-title">Ablauf</h2>
+
+
+
+		<div class="xg-steps-grid">
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">1</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">2</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">3</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">4</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-spot-price-section">
+	<div class="xg-spot-price-container">
+
+
+
+<h2 class="xg-section-title">Aktuelle Spot-Preise</h2>
+
+
+
+<p></p>
+
+
+
+		<div class="xg-spot-price-grid">
+			<div class="xg-spot-price-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+			<div class="xg-spot-price-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-price-formula-section">
+	<div class="xg-price-formula-container">
+
+
+
+<h2 class="xg-section-title">Wie wird der Preis berechnet?</h2>
+
+
+
+<p></p>
+
+
+
+		<div class="xg-formula-box">
+			<div class="xg-formula-content">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-price-table-section">
+	<div class="xg-price-table-container">
+
+
+
+<h2 class="xg-section-title">Ankaufspreise (nach Gewicht & Reinheit)</h2>
+
+
+
+<figure class="wp-block-table">
+	<table class="xg-price-table">
+		<thead>
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</figure>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-eeat-section">
+	<div class="xg-eeat-container">
+
+
+
+<h2 class="xg-section-title">E-E-A-T</h2>
+
+
+
+		<div class="xg-eeat-grid">
+
+
+
+			<div class="xg-author-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-author-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-form-section">
+	<div class="xg-form-container">
+
+
+
+<h2></h2>
+
+
+
+<p></p>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-trustpilot-section">
+	<div class="xg-trustpilot-container">
+
+
+
+<h2 class="xg-section-title">Bewertungen</h2>
+
+
+
+		<div class="xg-trustpilot-embed"></div>
+	</div>
+</div>
+
+
+
+<div class="xg-internal-links-section">
+	<div class="xg-internal-links-container">
+
+
+
+<h2 class="xg-section-title">Weitere Informationen</h2>
+
+
+
+		<div class="xg-links-grid">
+
+
+
+			<div class="xg-link-card">
+
+
+
+<h3 class="xg-link-card-title"></h3>
+
+
+
+			</div>
+
+
+
+			<div class="xg-link-card">
+
+
+
+<h3 class="xg-link-card-title"></h3>
+
+
+
+			</div>
+
+
+
+			<div class="xg-link-card">
+
+
+
+<h3 class="xg-link-card-title"></h3>
+
+
+
+			</div>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-faq-section">
+	<div class="xg-faq-container">
+
+
+
+<h2 class="xg-section-title">Häufig gestellte Fragen</h2>
+
+
+
+		<div class="xg-faq-list">
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-final-cta-box">
+	<div class="xg-final-cta-content">
+
+
+
+<h2></h2>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div>
+
+
+
+	</div>
+</div></section>
+<section class="tst-page" data-page="edelstenen" hidden><div class="xg-hero-v2">
+	<div class="xg-hero-background">
+		<svg class="xg-hero-blob" viewBox="0 0 1440 600" preserveAspectRatio="none"><path d="M0,300 Q360,100 720,250 T1440,300 L1440,600 L0,600 Z" fill="rgba(215,143,65,0.1)"/></svg>
+	</div>
+	<div class="xg-hero-container">
+		<div class="xg-hero-content">
+
+
+
+<h4 class="xg-hero-kicker"></h4>
+
+
+
+<h1 class="xg-hero-title"></h1>
+
+
+
+<p class="xg-hero-lead"></p>
+
+
+
+		</div>
+		<div class="xg-hero-buttons">
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div>
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-outline"></a></div>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xgoud-toc-wrapper">
+	<div class="xgoud-toc">
+
+
+
+<h3 class="xgoud-toc-title">Inhaltsverzeichnis</h3>
+
+
+
+		<div class="xgoud-toc-grid">
+
+
+
+<ul class="xgoud-toc-list">
+	<li></li>
+	<li></li>
+	<li></li>
+	<li></li>
+	<li></li>
+</ul>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-why-section">
+	<div class="xg-why-container">
+
+
+
+<h2 class="xg-section-title">Warum bei uns?</h2>
+
+
+
+		<div class="xg-why-grid">
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xgoud-cta-modern">
+	<div class="xgoud-cta-modern-content">
+
+
+
+<h2></h2>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-expert-box">
+	<div class="xg-expert-box-container">
+
+
+
+<h3 class="xg-expert-box-title">Unser Experte</h3>
+
+
+
+<p class="xg-expert-box-text"></p>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-trust-cards-section">
+	<div class="xg-trust-cards-container">
+
+
+
+<h2 class="xg-section-title">Warum können Sie uns vertrauen?</h2>
+
+
+
+		<div class="xg-trust-cards-grid">
+
+
+
+			<div class="xg-trust-card">
+
+
+
+<h3 class="xg-trust-card-title"></h3>
+
+
+
+<p class="xg-trust-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-trust-card">
+
+
+
+<h3 class="xg-trust-card-title"></h3>
+
+
+
+<p class="xg-trust-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-trust-card">
+
+
+
+<h3 class="xg-trust-card-title"></h3>
+
+
+
+<p class="xg-trust-card-text"></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-steps-section">
+	<div class="xg-steps-container">
+
+
+
+<h2 class="xg-section-title">Ablauf</h2>
+
+
+
+		<div class="xg-steps-grid">
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">1</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">2</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">3</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">4</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-market-content">
+	<div class="xg-market-content-container">
+
+
+
+<h2 class="xg-section-title">Die 4 C's (Edelsteine)</h2>
+
+
+
+<p></p>
+
+
+
+		<div class="xg-formula-box">
+			<div class="xg-formula-content">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-price-table-section">
+	<div class="xg-price-table-container">
+
+
+
+<h2 class="xg-section-title">Ankaufspreise</h2>
+
+
+
+<figure class="wp-block-table">
+	<table class="xg-price-table">
+		<thead>
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</figure>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-rapaport-section">
+	<div class="xg-rapaport-container">
+
+
+
+<h2 class="xg-section-title">Rapaport-Informationen</h2>
+
+
+
+<p></p>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-certification-section">
+	<div class="xg-certification-container">
+
+
+
+<h2 class="xg-section-title">Zertifizierung (GIA, HRD, IGI)</h2>
+
+
+
+<p></p>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-eeat-section">
+	<div class="xg-eeat-container">
+
+
+
+<h2 class="xg-section-title">E-E-A-T</h2>
+
+
+
+		<div class="xg-eeat-grid">
+
+
+
+			<div class="xg-author-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-author-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-form-section">
+	<div class="xg-form-container">
+
+
+
+<h2></h2>
+
+
+
+<p></p>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-trustpilot-section">
+	<div class="xg-trustpilot-container">
+
+
+
+<h2 class="xg-section-title">Bewertungen</h2>
+
+
+
+		<div class="xg-trustpilot-embed"></div>
+	</div>
+</div>
+
+
+
+<div class="xg-internal-links-section">
+	<div class="xg-internal-links-container">
+
+
+
+<h2 class="xg-section-title">Weitere Informationen</h2>
+
+
+
+		<div class="xg-links-grid">
+
+
+
+			<div class="xg-link-card">
+
+
+
+<h3 class="xg-link-card-title"></h3>
+
+
+
+			</div>
+
+
+
+			<div class="xg-link-card">
+
+
+
+<h3 class="xg-link-card-title"></h3>
+
+
+
+			</div>
+
+
+
+			<div class="xg-link-card">
+
+
+
+<h3 class="xg-link-card-title"></h3>
+
+
+
+			</div>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-faq-section">
+	<div class="xg-faq-container">
+
+
+
+<h2 class="xg-section-title">Häufig gestellte Fragen</h2>
+
+
+
+		<div class="xg-faq-list">
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-final-cta-box">
+	<div class="xg-final-cta-content">
+
+
+
+<h2></h2>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div>
+
+
+
+	</div>
+</div></section>
+<section class="tst-page" data-page="horloges" hidden><div class="xg-hero-v2">
+	<div class="xg-hero-background">
+		<svg class="xg-hero-blob" viewBox="0 0 1440 600" preserveAspectRatio="none"><path d="M0,300 Q360,100 720,250 T1440,300 L1440,600 L0,600 Z" fill="rgba(215,143,65,0.1)"/></svg>
+	</div>
+	<div class="xg-hero-container">
+		<div class="xg-hero-content">
+
+
+
+<h4 class="xg-hero-kicker"></h4>
+
+
+
+<h1 class="xg-hero-title"></h1>
+
+
+
+<p class="xg-hero-lead"></p>
+
+
+
+		</div>
+		<div class="xg-hero-buttons">
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div>
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-outline"></a></div>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xgoud-toc-wrapper">
+	<div class="xgoud-toc">
+
+
+
+<h3 class="xgoud-toc-title">Inhaltsverzeichnis</h3>
+
+
+
+		<div class="xgoud-toc-grid">
+
+
+
+<ul class="xgoud-toc-list">
+	<li></li>
+	<li></li>
+	<li></li>
+	<li></li>
+	<li></li>
+</ul>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-why-section">
+	<div class="xg-why-container">
+
+
+
+<h2 class="xg-section-title">Warum bei uns?</h2>
+
+
+
+		<div class="xg-why-grid">
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xgoud-cta-modern">
+	<div class="xgoud-cta-modern-content">
+
+
+
+<h2></h2>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-expert-box">
+	<div class="xg-expert-box-container">
+
+
+
+<h3 class="xg-expert-box-title">Unser Experte</h3>
+
+
+
+<p class="xg-expert-box-text"></p>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-trust-cards-section">
+	<div class="xg-trust-cards-container">
+
+
+
+<h2 class="xg-section-title">Warum können Sie uns vertrauen?</h2>
+
+
+
+		<div class="xg-trust-cards-grid">
+
+
+
+			<div class="xg-trust-card">
+
+
+
+<h3 class="xg-trust-card-title"></h3>
+
+
+
+<p class="xg-trust-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-trust-card">
+
+
+
+<h3 class="xg-trust-card-title"></h3>
+
+
+
+<p class="xg-trust-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-trust-card">
+
+
+
+<h3 class="xg-trust-card-title"></h3>
+
+
+
+<p class="xg-trust-card-text"></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-steps-section">
+	<div class="xg-steps-container">
+
+
+
+<h2 class="xg-section-title">Ablauf</h2>
+
+
+
+		<div class="xg-steps-grid">
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">1</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">2</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">3</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">4</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-watch-authentication-section">
+	<div class="xg-watch-authentication-container">
+
+
+
+<h2 class="xg-section-title">Authentifizierung – So erkennen Sie echte Uhren</h2>
+
+
+
+<p></p>
+
+
+
+		<div class="xg-auth-grid">
+			<div class="xg-auth-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+			<div class="xg-auth-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-watch-history-section">
+	<div class="xg-watch-history-container">
+
+
+
+<h2 class="xg-section-title">Uhrengeschichte & Marken</h2>
+
+
+
+<p></p>
+
+
+
+		<div class="xg-brands-grid">
+			<div class="xg-brand-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+			<div class="xg-brand-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+			<div class="xg-brand-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-price-table-section">
+	<div class="xg-price-table-container">
+
+
+
+<h2 class="xg-section-title">Ankaufspreise nach Zustand & Marke</h2>
+
+
+
+<figure class="wp-block-table">
+	<table class="xg-price-table">
+		<thead>
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</figure>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-vintage-trends-section">
+	<div class="xg-vintage-trends-container">
+
+
+
+<h2 class="xg-section-title">Vintage & aktuelle Trends</h2>
+
+
+
+<p></p>
+
+
+
+		<div class="xg-trends-grid">
+			<div class="xg-trend-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+			<div class="xg-trend-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-eeat-section">
+	<div class="xg-eeat-container">
+
+
+
+<h2 class="xg-section-title">E-E-A-T</h2>
+
+
+
+		<div class="xg-eeat-grid">
+
+
+
+			<div class="xg-author-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-author-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-form-section">
+	<div class="xg-form-container">
+
+
+
+<h2></h2>
+
+
+
+<p></p>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-trustpilot-section">
+	<div class="xg-trustpilot-container">
+
+
+
+<h2 class="xg-section-title">Bewertungen</h2>
+
+
+
+		<div class="xg-trustpilot-embed"></div>
+	</div>
+</div>
+
+
+
+<div class="xg-internal-links-section">
+	<div class="xg-internal-links-container">
+
+
+
+<h2 class="xg-section-title">Weitere Informationen</h2>
+
+
+
+		<div class="xg-links-grid">
+
+
+
+			<div class="xg-link-card">
+
+
+
+<h3 class="xg-link-card-title"></h3>
+
+
+
+			</div>
+
+
+
+			<div class="xg-link-card">
+
+
+
+<h3 class="xg-link-card-title"></h3>
+
+
+
+			</div>
+
+
+
+			<div class="xg-link-card">
+
+
+
+<h3 class="xg-link-card-title"></h3>
+
+
+
+			</div>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-faq-section">
+	<div class="xg-faq-container">
+
+
+
+<h2 class="xg-section-title">Häufig gestellte Fragen</h2>
+
+
+
+		<div class="xg-faq-list">
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-final-cta-box">
+	<div class="xg-final-cta-content">
+
+
+
+<h2></h2>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div>
+
+
+
+	</div>
+</div></section>
+<section class="tst-page" data-page="verkoop" hidden><div class="xg-hero-v2">
+	<div class="xg-hero-background">
+		<svg class="xg-hero-blob" viewBox="0 0 1440 600" preserveAspectRatio="none"><path d="M0,300 Q360,100 720,250 T1440,300 L1440,600 L0,600 Z" fill="rgba(215,143,65,0.1)"/></svg>
+	</div>
+	<div class="xg-hero-container">
+		<div class="xg-hero-content">
+
+
+
+<h4 class="xg-hero-kicker"></h4>
+
+
+
+<h1 class="xg-hero-title"></h1>
+
+
+
+<p class="xg-hero-lead"></p>
+
+
+
+		</div>
+		<div class="xg-hero-buttons">
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div>
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-outline"></a></div>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xgoud-toc-wrapper">
+	<div class="xgoud-toc">
+
+
+
+<h3 class="xgoud-toc-title">Inhaltsverzeichnis</h3>
+
+
+
+		<div class="xgoud-toc-grid">
+
+
+
+<ul class="xgoud-toc-list">
+	<li></li>
+	<li></li>
+	<li></li>
+	<li></li>
+	<li></li>
+</ul>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-why-section">
+	<div class="xg-why-container">
+
+
+
+<h2 class="xg-section-title">Warum bei uns?</h2>
+
+
+
+		<div class="xg-why-grid">
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-c-card">
+				<div class="xg-c-card-icon">
+					<svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/></svg>
+				</div>
+
+
+
+<h3 class="xg-c-card-title"></h3>
+
+
+
+<p class="xg-c-card-text"></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xgoud-cta-modern">
+	<div class="xgoud-cta-modern-content">
+
+
+
+<h2></h2>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-expert-box">
+	<div class="xg-expert-box-container">
+
+
+
+<h3 class="xg-expert-box-title">Unser Experte</h3>
+
+
+
+<p class="xg-expert-box-text"></p>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-trust-cards-section">
+	<div class="xg-trust-cards-container">
+
+
+
+<h2 class="xg-section-title">Warum können Sie uns vertrauen?</h2>
+
+
+
+		<div class="xg-trust-cards-grid">
+
+
+
+			<div class="xg-trust-card">
+
+
+
+<h3 class="xg-trust-card-title"></h3>
+
+
+
+<p class="xg-trust-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-trust-card">
+
+
+
+<h3 class="xg-trust-card-title"></h3>
+
+
+
+<p class="xg-trust-card-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-trust-card">
+
+
+
+<h3 class="xg-trust-card-title"></h3>
+
+
+
+<p class="xg-trust-card-text"></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-steps-section">
+	<div class="xg-steps-container">
+
+
+
+<h2 class="xg-section-title">Ablauf</h2>
+
+
+
+		<div class="xg-steps-grid">
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">1</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">2</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">3</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-step-card">
+				<div class="xg-step-number">4</div>
+
+
+
+<h3 class="xg-step-title"></h3>
+
+
+
+<p class="xg-step-text"></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-market-content">
+	<div class="xg-market-content-container">
+
+
+
+<h2 class="xg-section-title">Marktinformation</h2>
+
+
+
+<p></p>
+
+
+
+		<div class="xg-formula-box">
+			<div class="xg-formula-content">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-price-table-section">
+	<div class="xg-price-table-container">
+
+
+
+<h2 class="xg-section-title">Preistabelle</h2>
+
+
+
+<figure class="wp-block-table">
+	<table class="xg-price-table">
+		<thead>
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</figure>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-rapaport-section">
+	<div class="xg-rapaport-container">
+
+
+
+<h2 class="xg-section-title">Rapaport-Informationen</h2>
+
+
+
+<p></p>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-certification-section">
+	<div class="xg-certification-container">
+
+
+
+<h2 class="xg-section-title">Zertifizierung</h2>
+
+
+
+<p></p>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-eeat-section">
+	<div class="xg-eeat-container">
+
+
+
+<h2 class="xg-section-title">E-E-A-T</h2>
+
+
+
+		<div class="xg-eeat-grid">
+
+
+
+			<div class="xg-author-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+
+
+
+			<div class="xg-author-card">
+
+
+
+<h3></h3>
+
+
+
+<p></p>
+
+
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-form-section">
+	<div class="xg-form-container">
+
+
+
+<h2></h2>
+
+
+
+<p></p>
+
+
+
+	</div>
+</div>
+
+
+
+<div class="xg-trustpilot-section">
+	<div class="xg-trustpilot-container">
+
+
+
+<h2 class="xg-section-title">Bewertungen</h2>
+
+
+
+		<div class="xg-trustpilot-embed"></div>
+	</div>
+</div>
+
+
+
+<div class="xg-internal-links-section">
+	<div class="xg-internal-links-container">
+
+
+
+<h2 class="xg-section-title">Weitere Informationen</h2>
+
+
+
+		<div class="xg-links-grid">
+
+
+
+			<div class="xg-link-card">
+
+
+
+<h3 class="xg-link-card-title"></h3>
+
+
+
+			</div>
+
+
+
+			<div class="xg-link-card">
+
+
+
+<h3 class="xg-link-card-title"></h3>
+
+
+
+			</div>
+
+
+
+			<div class="xg-link-card">
+
+
+
+<h3 class="xg-link-card-title"></h3>
+
+
+
+			</div>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-faq-section">
+	<div class="xg-faq-container">
+
+
+
+<h2 class="xg-section-title">Häufig gestellte Fragen</h2>
+
+
+
+		<div class="xg-faq-list">
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="xg-final-cta-box">
+	<div class="xg-final-cta-content">
+
+
+
+<h2></h2>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div>
+
+
+
+	</div>
+</div></section>
+<section class="tst-page" data-page="product" hidden><div class="xg-hero-v2">
+	<div class="xg-hero-container">
+		<div class="xg-hero-content">
+
+
+
+<h4 class="xg-hero-kicker"></h4>
+
+
+
+<h1 class="xg-hero-title"></h1>
+
+
+
+<p class="xg-hero-lead"></p>
+
+
+
+		</div>
+	</div>
+</div>
+
+
+<!-- CHARITY-TICKER -->
+
+<div class="xg-charity-ticker">
+	<span class="xg-charity-ticker-label">XGOUD hat diesen Monat für Charity gegeben:</span>
+	<span class="xg-charity-ticker-amount" data-xg-charity-total>€65.168,36</span>
+	<div class="xg-charity-ticker-projects">
+		<span>Sozialarbeit</span>
+		<span>Kindergärten</span>
+		<span>Frauenhäuser</span>
+		<span>Sportzentren</span>
+		<span>Schulen</span>
+	</div>
+</div>
+
+
+<!-- SMART CALCULATOR (Wizard – JS baut die Schritte selbst auf) -->
+
+<section class="xg-calc-section" style="padding:50px 20px;">
+	<div class="xg-calc-shell">
+		<div class="xg-calc" data-mode="full"></div>
+	</div>
+</section>
+
+
+<!-- TERMINPLANER-ANKER (Backend folgt) -->
+
+<section class="xg-planner">
+	<div class="xg-planner-container">
+
+
+
+<h2 class="xg-section-title">Termin vereinbaren</h2>
+
+
+
+<p></p>
+
+
+
+		<div class="xg-planner-mount" data-xg-planner></div>
+	</div>
+</section>
+
+
+<!-- PRODUKT-BESCHREIBUNG -->
+
+<div class="xg-market-content">
+	<div class="xg-market-content-container">
+
+
+
+<h2 class="xg-section-title">Über dieses Produkt</h2>
+
+
+
+<p></p>
+
+
+
+	</div>
+</div>
+
+
+<!-- FAQ -->
+
+<div class="xg-faq-section">
+	<div class="xg-faq-container">
+
+
+
+<h2 class="xg-section-title">Häufig gestellte Fragen</h2>
+
+
+
+		<div class="xg-faq-list">
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+
+
+
+			<div class="xg-faq-item">
+				<div class="xg-faq-question">
+
+
+
+<h3 class="xg-faq-q-text"></h3>
+
+
+
+				</div>
+				<div class="xg-faq-answer">
+
+
+
+<p class="xg-faq-a-text"></p>
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- FINAL CTA -->
+
+<div class="xg-final-cta-box">
+	<div class="xg-final-cta-content">
+
+
+
+<h2></h2>
+
+
+
+<p></p>
+
+
+
+<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div>
+
+
+
+	</div>
+</div></section>
+</main>
+
+<!-- ===== FOOTER WRAP ===== -->
+<div class="xg-footer-wrap" id="xgFooterWrap">
+  <div class="footer-blur-overlay" id="ftBlurOv"></div>
+
+  <!-- Footer ticker -->
+  <div class="ft-wrap">
+    <div class="ft-ticker">
+      <div class="ft-live">
+        <div class="ft-live-row"><span class="ft-live-sq"></span>LIVE</div>
+        <div><span class="ft-live-time-label">Marktupdate </span><span class="ft-live-time" id="ftTime">--:--:--</span></div>
+      </div>
+      <div class="ft-vp">
+        <div class="ft-track" id="ftTrack"></div>
+      </div>
+      <div class="ft-lbma">
+        <strong>LBMA</strong>
+        <span id="ftDate">--</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__top">
+
+      <div class="footer__col footer__brand">
+        <div class="footer__logo">
+          <span class="footer__logo-x">X</span><span class="footer__logo-goud">GOUD</span>
+          <div class="footer__logo-sub">EDELMETAAL INKOOP</div>
+        </div>
+        <p class="footer__desc">XGOUD is gespecialiseerd in de inkoop van goud, zilver en andere edelmetalen tegen eerlijke, marktconforme prijzen.</p>
+        <div class="footer__stars">
+          <svg viewBox="0 0 24 24" class="fstar"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+          <svg viewBox="0 0 24 24" class="fstar"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+          <svg viewBox="0 0 24 24" class="fstar"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+          <svg viewBox="0 0 24 24" class="fstar"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+          <svg viewBox="0 0 24 24" class="fstar"><defs><linearGradient id="hg"><stop offset="80%" stop-color="currentColor"/><stop offset="80%" stop-color="transparent"/></linearGradient></defs><path fill="url(#hg)" stroke="currentColor" stroke-width=".5" d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+        </div>
+        <div class="footer__tp-label">Trustpilot</div>
+        <div class="footer__rating-text"><strong>4,8 / 5</strong> &nbsp;Gebaseerd op duizenden beoordelingen</div>
+        <div class="footer__review-badges">
+          <span class="review-badge">
+            <svg viewBox="0 0 24 24" class="review-badge__icon review-badge__icon--tp"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+            Trustpilot
+          </span>
+          <span class="review-badge">
+            <svg viewBox="0 0 48 48" class="review-badge__icon" style="width:18px;height:18px"><path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h11.8c-.5 2.7-2 4.9-4.3 6.5v5.4h7C42.5 37 45.1 31.3 45.1 24.5z"/><path fill="#34A853" d="M24 46c5.9 0 10.8-2 14.5-5.4l-7-5.4c-2 1.4-4.5 2.2-7.5 2.2-5.8 0-10.7-3.9-12.4-9.1H3.4v5.6C7.1 41.5 14.9 46 24 46z"/><path fill="#FBBC05" d="M11.6 28.3c-.4-1.4-.7-2.8-.7-4.3s.3-2.9.7-4.3v-5.6H3.4C1.9 17 1 20.4 1 24s.9 7 2.4 9.9z"/><path fill="#EA4335" d="M24 9.5c3.3 0 6.1 1.1 8.4 3.3l6.2-6.2C34.8 3 29.9 1 24 1 14.9 1 7.1 5.5 3.4 14.1l8.2 5.6C13.3 13.4 18.2 9.5 24 9.5z"/></svg>
+            Google Reviews
+          </span>
+        </div>
+      </div>
+
+      <div class="footer__col">
+        <h4 class="footer__heading">CONTACT</h4>
+        <a class="footer__contact-row" href="tel:0850603009">
+          <svg class="footer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5c0-1.1.9-2 2-2h2.2c.6 0 1.1.4 1.2 1l1 4c.1.5-.1 1-.5 1.3L7.4 10.8c1.4 2.9 3.8 5.3 6.8 6.8l1.5-1.5c.3-.4.8-.5 1.3-.4l4 1c.6.1 1 .6 1 1.2V20c0 1.1-.9 2-2 2h-1C9.6 22 2 14.4 2 6V5z"/></svg>
+          <span><strong>085 - 060 30 09</strong><small>Ma-Vr 09:00–18:00 / Za 09:00–16:00</small></span>
+        </a>
+        <a class="footer__contact-row" href="mailto:info@xgoud.nl">
+          <svg class="footer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
+          <span><strong>info@xgoud.nl</strong><small>Wij reageren binnen 24 uur</small></span>
+        </a>
+        <a class="footer__contact-row" href="#">
+          <svg class="footer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
+          <span><strong>Hoofdkantoor</strong><small>Piuslaan 26, 5614 CM Eindhoven</small></span>
+        </a>
+        <div class="footer__socials">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 8.5h2V5h-2c-2.2 0-4 1.8-4 4v2H9v3.5h2V21h3.5v-6.5H17l.5-3.5h-3V9c0-.6.4-1 .5-.5z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="8" y1="11" x2="8" y2="16"/><circle cx="8" cy="8" r=".6"/><path d="M12 16v-3a2 2 0 0 1 4 0v3"/><line x1="12" y1="11" x2="12" y2="16"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="12" rx="4"/><path d="M11 9.5l4 2.5-4 2.5z" fill="currentColor" stroke="none"/></svg></a>
+        </div>
+      </div>
+
+      <nav class="footer__col">
+        <h4 class="footer__heading">DIENSTEN</h4>
+        <a class="footer__link" href="#">Goud verkopen</a>
+        <a class="footer__link" href="#">Zilver verkopen</a>
+        <a class="footer__link" href="#">Diamanten verkopen</a>
+        <a class="footer__link" href="#">Luxe horloges verkopen</a>
+        <a class="footer__link" href="#">Edelstenen verkopen</a>
+        <a class="footer__link" href="#">Munten verkopen</a>
+        <a class="footer__link" href="#">Taxatie aan huis</a>
+        <a class="footer__link" href="#">Zakelijk verkopen</a>
+      </nav>
+
+      <nav class="footer__col">
+        <h4 class="footer__heading">LOCATIES</h4>
+        <a class="footer__link footer__link--plain" href="#">Amsterdam</a>
+        <a class="footer__link footer__link--plain" href="#">Rotterdam</a>
+        <a class="footer__link footer__link--plain" href="#">Eindhoven</a>
+        <a class="footer__link footer__link--plain" href="#">Antwerpen</a>
+        <a class="footer__link footer__link--plain" href="#">Utrecht</a>
+        <a class="footer__link footer__link--plain" href="#">Brussel</a>
+        <a class="footer__link footer__link--plain" href="#">Den Haag</a>
+        <a class="footer__link footer__link--accent" href="#">Alle vestigingen →</a>
+      </nav>
+
+      <nav class="footer__col">
+        <h4 class="footer__heading">OVER XGOUD</h4>
+        <a class="footer__link footer__link--plain" href="#">Over ons</a>
+        <a class="footer__link footer__link--plain" href="#">Werkwijze</a>
+        <a class="footer__link footer__link--plain" href="#">Nieuws</a>
+        <a class="footer__link footer__link--plain" href="#">Vacatures</a>
+        <a class="footer__link footer__link--plain" href="#">Reviews</a>
+        <a class="footer__link footer__link--plain" href="#">Contact</a>
+        <div class="footer__trust-box">
+          <svg class="footer__trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/></svg>
+          <div><strong>Veilig en betrouwbaar</strong><p>Uw waardevolle spullen zijn bij ons in veilige handen.</p></div>
+        </div>
+      </nav>
+
+    </div>
+    <div class="footer__bottom">
+      <div class="footer__bottom-left">
+        <span>© 2026 XGOUD</span><span class="footer__divider">|</span><span>Alle rechten voorbehouden</span>
+      </div>
+      <div class="footer__bottom-links">
+        <a href="#">Privacyverklaring</a>
+        <a href="#">Cookiebeleid</a>
+        <a href="#">Algemene voorwaarden</a>
+        <a href="#">Sitemap</a>
+      </div>
+      <div class="footer__bottom-partners">
+        <span class="partner-logo">UMICORE</span>
+        <span class="partner-logo" style="font-style:italic">C. Hafner</span>
+        <span class="partner-logo" style="font-size:11px">HEIMERLE+MEULE</span>
+        <span class="partner-logo" style="letter-spacing:1px">DEGUSSA</span>
+        <span class="partner-logo" style="font-size:11px">Royal Canadian Mint</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div class="tst-toolbar">
+	<button class="tst-tab active" data-go="hero">Hero + Calculator</button><button class="tst-tab" data-go="edelmetalen">Edelmetalen</button><button class="tst-tab" data-go="edelstenen">Edelstenen</button><button class="tst-tab" data-go="horloges">Horloges</button><button class="tst-tab" data-go="verkoop">Verkoop-Blaupause</button><button class="tst-tab" data-go="product">Produktseite</button>
+	<button class="tst-tab tst-fill" id="tstFill">Demo-Text ein/aus</button>
+</div>
+
+<script>
+window.XG_CALC_DATA = {
+ "margins": {
+  "metal": 0.08,
+  "diamond_range": 0.1,
+  "gem_range": 0.12,
+  "watch_range": 0.1,
+  "charity_share": 0.05
+ },
+ "metals": {
+  "goud": {
+   "label": "Goud",
+   "spot": 62.5
+  },
+  "zilver": {
+   "label": "Zilver",
+   "spot": 0.78
+  },
+  "platina": {
+   "label": "Platina",
+   "spot": 28.9
+  },
+  "palladium": {
+   "label": "Palladium",
+   "spot": 30.1
+  }
+ },
+ "metal_purities": {
+  "goud": {
+   "8": 0.333,
+   "14": 0.585,
+   "18": 0.75,
+   "21": 0.875,
+   "22": 0.916,
+   "24": 0.999
+  },
+  "zilver": {
+   "800": 0.8,
+   "835": 0.835,
+   "925": 0.925,
+   "999": 0.999
+  },
+  "platina": {
+   "850": 0.85,
+   "900": 0.9,
+   "950": 0.95,
+   "999": 0.999
+  },
+  "palladium": {
+   "500": 0.5,
+   "950": 0.95,
+   "999": 0.999
+  }
+ },
+ "purity_labels": {
+  "500": "50,0 %",
+  "800": "80,0 %",
+  "835": "83,5 %",
+  "850": "85,0 %",
+  "900": "90,0 %",
+  "925": "Sterling 92,5 %",
+  "950": "95,0 %",
+  "999": "Fein 99,9 %"
+ },
+ "conditions": {
+  "nieuw": {
+   "label": "Neuwertig",
+   "factor": 1
+  },
+  "zeer_goed": {
+   "label": "Sehr gut",
+   "factor": 0.99
+  },
+  "goed": {
+   "label": "Gut",
+   "factor": 0.98
+  },
+  "voldoende": {
+   "label": "Befriedigend",
+   "factor": 0.96
+  }
+ },
+ "jewelry_tiers": [
+  {
+   "min": 0,
+   "bonus": 0
+  },
+  {
+   "min": 50,
+   "bonus": 0.02
+  },
+  {
+   "min": 100,
+   "bonus": 0.04
+  },
+  {
+   "min": 250,
+   "bonus": 0.06
+  }
+ ],
+ "diamond_base": {
+  "color": {
+   "D": 1,
+   "E": 0.95,
+   "F": 0.9,
+   "G": 0.82,
+   "H": 0.74,
+   "I": 0.66,
+   "J": 0.58,
+   "K": 0.48
+  },
+  "clarity": {
+   "FL": 1,
+   "IF": 0.95,
+   "VVS1": 0.9,
+   "VVS2": 0.86,
+   "VS1": 0.8,
+   "VS2": 0.74,
+   "SI1": 0.64,
+   "SI2": 0.54,
+   "I1": 0.4,
+   "I2": 0.3,
+   "I3": 0.2
+  },
+  "cut": {
+   "Excellent": 1,
+   "Very Good": 0.95,
+   "Good": 0.88,
+   "Fair": 0.78,
+   "Poor": 0.65
+  },
+  "fluor": {
+   "None": 1,
+   "Faint": 0.98,
+   "Medium": 0.94,
+   "Strong": 0.88
+  },
+  "anchor": 9000
+ },
+ "labs": [
+  "GIA",
+  "IGI",
+  "HRD",
+  "Kein Zertifikat"
+ ],
+ "gem_base": {
+  "robijn": {
+   "label": "Robijn (Rubin)",
+   "anchor": 3500
+  },
+  "saffier": {
+   "label": "Saffier (Saphir)",
+   "anchor": 2200
+  },
+  "smaragd": {
+   "label": "Smaragd",
+   "anchor": 2800
+  }
+ },
+ "watches": {
+  "rolex": {
+   "label": "Rolex",
+   "models": {
+    "Submariner": 11000,
+    "Datejust": 7500,
+    "GMT-Master II": 14000
+   }
+  },
+  "omega": {
+   "label": "Omega",
+   "models": {
+    "Speedmaster": 5500,
+    "Seamaster": 4200
+   }
+  },
+  "patek": {
+   "label": "Patek Philippe",
+   "models": {
+    "Nautilus": 38000,
+    "Calatrava": 18000
+   }
+  },
+  "cartier": {
+   "label": "Cartier",
+   "models": {
+    "Santos": 6500,
+    "Tank": 4800
+   }
+  }
+ },
+ "watch_conditions": {
+  "nieuw": {
+   "label": "Neuwertig",
+   "factor": 1
+  },
+  "zeer_goed": {
+   "label": "Sehr gut",
+   "factor": 0.9
+  },
+  "goed": {
+   "label": "Gut",
+   "factor": 0.78
+  },
+  "voldoende": {
+   "label": "Befriedigend",
+   "factor": 0.65
+  },
+  "service": {
+   "label": "Restaurierungsbedarf",
+   "factor": 0.5
+  }
+ },
+ "watch_extras": {
+  "box": {
+   "label": "Originalbox",
+   "bonus": 0.03
+  },
+  "papers": {
+   "label": "Zertifikat/Papiere",
+   "bonus": 0.05
+  }
+ },
+ "watch_metals": [
+  "Edelstahl",
+  "Gelbgold",
+  "Weißgold",
+  "Roségold",
+  "Platin",
+  "Stahl/Gold",
+  "Titan"
+ ],
+ "watch_bracelets": [
+  "Edelstahlband",
+  "Lederband",
+  "Kautschuk",
+  "Gold-Band",
+  "NATO/Textil"
+ ],
+ "watch_dials": [
+  "Schwarz",
+  "Weiß",
+  "Silber",
+  "Blau",
+  "Grün",
+  "Champagner",
+  "Grau",
+  "Sonstige"
+ ],
+ "charity_projects": [
+  {
+   "id": "social",
+   "label": "Sozialarbeit",
+   "weight": 0.25,
+   "recipients": [
+    "Stichting Buurtwerk Amsterdam",
+    "Sociaal Steunpunt Rotterdam",
+    "Voedselbank Den Haag"
+   ]
+  },
+  {
+   "id": "kindergarten",
+   "label": "Kindergärten",
+   "weight": 0.2,
+   "recipients": [
+    "Kinderopvang De Zonnebloem",
+    "KDV Het Speelkwartier",
+    "Peuterspeelzaal Pippeloentje"
+   ]
+  },
+  {
+   "id": "shelter",
+   "label": "Frauenhäuser",
+   "weight": 0.25,
+   "recipients": [
+    "Blijf Groep Amsterdam",
+    "Vrouwenopvang Rotterdam",
+    "Veilig Thuis Utrecht"
+   ]
+  },
+  {
+   "id": "sport",
+   "label": "Sportzentren",
+   "weight": 0.15,
+   "recipients": [
+    "Sportclub Jeugd Eindhoven",
+    "Buurtsport Tilburg",
+    "Zwemvereniging De Dolfijn"
+   ]
+  },
+  {
+   "id": "school",
+   "label": "Schulen",
+   "weight": 0.15,
+   "recipients": [
+    "Basisschool De Regenboog",
+    "OBS Het Kompas",
+    "Vrije School Zutphen",
+    "Montessori Amsterdam"
+   ]
+  }
+ ],
+ "currency": "EUR"
+};
+</script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/header-footer.js"></script>
+<script src="assets/js/blueprint.js"></script>
+<script src="assets/js/calculator.js"></script>
+<script>
+/* Seiten-Umschaltung */
+document.querySelectorAll('.tst-tab[data-go]').forEach(function (b) {
+	b.addEventListener('click', function () {
+		document.querySelectorAll('.tst-tab[data-go]').forEach(function (x) { x.classList.remove('active'); });
+		b.classList.add('active');
+		var go = b.getAttribute('data-go');
+		document.querySelectorAll('.tst-page').forEach(function (p) { p.hidden = (p.getAttribute('data-page') !== go); });
+		window.scrollTo(0, 0);
+	});
+});
+
+/* Demo-Text in leere Gutenberg-Blöcke (nur zum Sichtbarmachen der Struktur) */
+var FILLED = false;
+var SAMPLE = {
+	H1: 'Goud verkopen tegen de beste prijs',
+	H2: 'Waarom XGOUD de juiste keuze is',
+	H3: 'Transparant, snel en eerlijk',
+	H4: 'Vertrouwd sinds 2009',
+	P: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+};
+document.getElementById('tstFill').addEventListener('click', function () {
+	FILLED = !FILLED;
+	document.querySelectorAll('.tst-page').forEach(function (page) {
+		page.querySelectorAll('h1,h2,h3,h4,p,li,th,td,.wp-block-button__link').forEach(function (el) {
+			if (el.closest('.xg-calc')) return; // Calculator nie überschreiben
+			if (FILLED) {
+				if (!el.textContent.trim()) {
+					el.dataset.tstFilled = '1';
+					var t = el.tagName;
+					el.textContent = SAMPLE[t] || (t === 'LI' ? 'Menupunt' : (t === 'TH' ? 'Kolom' : (t === 'TD' ? 'Waarde' : 'Knop')));
+				}
+			} else if (el.dataset.tstFilled) {
+				el.textContent = ''; delete el.dataset.tstFilled;
+			}
+		});
+	});
+});
+</script>
+</body>
+</html>

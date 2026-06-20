@@ -50,6 +50,29 @@ function ekinese_enqueue_assets() {
 		);
 	}
 
+	// Theme-System (Day/Dark-Switch, Rot primär + Gold-Highlight). Lädt VOR
+	// header-footer.css, damit die Dark-Token-Overrides greifen. theme.js im
+	// <head>, damit data-theme früh gesetzt wird (kein Flash/FOUC).
+	$theme_css = get_theme_file_path( 'assets/css/theme.css' );
+	if ( file_exists( $theme_css ) ) {
+		wp_enqueue_style(
+			'ekinese-theme',
+			get_theme_file_uri( 'assets/css/theme.css' ),
+			array(),
+			(string) filemtime( $theme_css )
+		);
+	}
+	$theme_js = get_theme_file_path( 'assets/js/theme.js' );
+	if ( file_exists( $theme_js ) ) {
+		wp_enqueue_script(
+			'ekinese-theme',
+			get_theme_file_uri( 'assets/js/theme.js' ),
+			array(),
+			(string) filemtime( $theme_js ),
+			false // im <head> laden (FOUC vermeiden)
+		);
+	}
+
 	// Header & Footer System (eigenständige Komponente: Ticker, Mega-Menu, Suche).
 	$hf_css = get_theme_file_path( 'assets/css/header-footer.css' );
 	if ( file_exists( $hf_css ) ) {
@@ -110,7 +133,7 @@ function ekinese_enqueue_assets() {
 		wp_enqueue_script(
 			'ekinese-calculator',
 			get_theme_file_uri( 'assets/js/calculator.js' ),
-			array(),
+			array( 'ekinese-theme' ),
 			(string) filemtime( $calc_js ),
 			true // im Footer laden
 		);
