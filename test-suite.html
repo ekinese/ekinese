@@ -105,80 +105,73 @@ html, body,
 }
 
 /* =====================================================================
-   DARK-OVERRIDES  ·  Blueprint-Seiten (Diamant/Edelmetalen/…)
-   Blueprint nutzt Gold bereits als Akzent → wir machen nur die
-   Flächen dunkel und den Text hell, Gold bleibt Gold.
+   DARK-OVERRIDES  ·  Blueprint-Seiten (echte Klassen aus blueprint.css)
+   Gold-Akzent bleibt; nur Flächen dunkel + Text hell.
    ===================================================================== */
-[data-theme="dark"] .xg-blueprint { background: #141312; }
 [data-theme="dark"] body { background: #141312; }
+[data-theme="dark"] .xg-blueprint { background: #141312; }
 
-[data-theme="dark"] .xg-hero-v2,
-[data-theme="dark"] .xgoud-toc-wrapper,
-[data-theme="dark"] .xg-why-section,
-[data-theme="dark"] .xg-trust-cards-section,
-[data-theme="dark"] .xg-steps-section,
-[data-theme="dark"] .xg-market-content,
-[data-theme="dark"] .xg-price-table-section,
-[data-theme="dark"] .xg-rapaport-section,
-[data-theme="dark"] .xg-certification-section,
-[data-theme="dark"] .xg-eeat-section,
-[data-theme="dark"] .xg-form-section,
-[data-theme="dark"] .xg-trustpilot-section,
-[data-theme="dark"] .xg-internal-links-section,
-[data-theme="dark"] .xg-faq-section,
-[data-theme="dark"] .xg-spot-price-section,
-[data-theme="dark"] .xg-price-formula-section,
-[data-theme="dark"] .xg-watch-authentication-section,
-[data-theme="dark"] .xg-watch-history-section,
-[data-theme="dark"] .xg-vintage-trends-section {
-	background: #141312;
-}
-
-[data-theme="dark"] .xgoud-toc,
+/* Weiße Karten → dunkel */
+[data-theme="dark"] .xg-benefit,
 [data-theme="dark"] .xg-c-card,
 [data-theme="dark"] .xg-trust-card,
 [data-theme="dark"] .xg-step-card,
 [data-theme="dark"] .xg-formula-box,
+[data-theme="dark"] .xg-market-box,
+[data-theme="dark"] .xg-rapaport-box,
 [data-theme="dark"] .xg-author-card,
 [data-theme="dark"] .xg-link-card,
 [data-theme="dark"] .xg-faq-item,
-[data-theme="dark"] .xg-spot-price-card,
-[data-theme="dark"] .xg-auth-card,
-[data-theme="dark"] .xg-brand-card,
-[data-theme="dark"] .xg-trend-card {
+[data-theme="dark"] .xg-final-cta-box,
+[data-theme="dark"] .xg-review-card,
+[data-theme="dark"] .xg-price-table {
 	background: #1d1b19;
 	border-color: #34302b;
 }
 
-[data-theme="dark"] .xg-hero-title,
-[data-theme="dark"] .xg-section-title,
-[data-theme="dark"] .xgoud-toc-title,
-[data-theme="dark"] .xg-c-card-title,
-[data-theme="dark"] .xg-trust-card-title,
-[data-theme="dark"] .xg-step-title,
-[data-theme="dark"] .xg-link-card-title,
-[data-theme="dark"] .xg-faq-q-text,
+/* Cremefarbene Flächen */
+[data-theme="dark"] .xgoud-cta-modern { background: #241f17; border-color: #3a3325; }
+[data-theme="dark"] .xgoud-toc-item:hover { background: #1d1b19; }
+[data-theme="dark"] .xgoud-toc-grid,
+[data-theme="dark"] .xgoud-toc-item,
+[data-theme="dark"] .xgoud-toc-item .title { border-color: #34302b; }
+
+/* Überschriften → hell (Attribut-Selektor schlägt blueprint.css-Spezifität) */
 [data-theme="dark"] .xg-blueprint h1,
 [data-theme="dark"] .xg-blueprint h2,
-[data-theme="dark"] .xg-blueprint h3 {
+[data-theme="dark"] .xg-blueprint h3,
+[data-theme="dark"] .xgoud-toc-item .title,
+[data-theme="dark"] .xg-b-title,
+[data-theme="dark"] .xg-author-role,
+[data-theme="dark"] .xg-trustpilot-rating,
+[data-theme="dark"] .xg-update-date {
 	color: #f3efe8;
 }
 
-[data-theme="dark"] .xg-hero-lead,
-[data-theme="dark"] .xg-c-card-text,
-[data-theme="dark"] .xg-trust-card-text,
-[data-theme="dark"] .xg-step-text,
-[data-theme="dark"] .xg-faq-a-text,
-[data-theme="dark"] .xg-expert-box-text,
-[data-theme="dark"] .xg-blueprint p {
+/* Fließtext → gedämpft hell */
+[data-theme="dark"] .xg-blueprint p,
+[data-theme="dark"] .xg-blueprint li,
+[data-theme="dark"] .xg-intro,
+[data-theme="dark"] .hero-lead,
+[data-theme="dark"] .xgoud-subtitle,
+[data-theme="dark"] .xg-trustpilot-count,
+[data-theme="dark"] .xg-author-company {
 	color: #a8a294;
 }
 
-/* Tabellen im Dark-Mode */
-[data-theme="dark"] .xg-price-table th { background: #262320; color: #f3efe8; }
-[data-theme="dark"] .xg-price-table td { background: #1d1b19; color: #cfc9bd; border-color: #34302b; }
+/* CTA-Modern Text bleibt lesbar */
+[data-theme="dark"] .xgoud-cta-content h2 { color: #f3efe8; }
+[data-theme="dark"] .xgoud-subtitle { color: #c9c2b5; }
 
-/* Outline-Button im Dark-Mode lesbar halten */
+/* FAQ-Frage hell */
+[data-theme="dark"] .xg-faq-question { color: #f3efe8; }
+
+/* Preistabelle */
+[data-theme="dark"] .xg-price-table th { background: #2a2620; color: #f3efe8; }
+[data-theme="dark"] .xg-price-table td { color: #cfc9bd; border-color: #34302b; }
+[data-theme="dark"] .xg-price-table tr:hover { background: #211e1a; }
+
+/* Outline-Button lesbar halten */
 [data-theme="dark"] a.xg-btn-outline,
 [data-theme="dark"] .xg-btn-outline .wp-block-button__link {
 	border-color: #f3efe8; color: #f3efe8 !important;
@@ -1203,6 +1196,24 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
 .xg-blueprint section,
 .xg-blueprint .xg-section {
     padding: 40px 0;
+}
+
+/* Layout-Container & Karten-Grids (ersetzen die alten Page-Builder-Wrapper) */
+.xg-blueprint .xg-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+.xg-blueprint .xg-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+.xg-blueprint .xg-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+.xg-blueprint .xg-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
+@media (max-width: 991px) {
+    .xg-blueprint .xg-grid-3, .xg-blueprint .xg-grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 767px) {
+    .xg-blueprint .xg-grid-2,
+    .xg-blueprint .xg-grid-3,
+    .xg-blueprint .xg-grid-4 { grid-template-columns: 1fr; }
 }
 
 /* =========================
@@ -3580,6 +3591,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 <main>
 <section class="tst-page" data-page="diamanten">
 <div class="xg-blueprint">
+
 <div class="xg-charity-ticker">
 	<span class="xg-charity-ticker-label">XGOUD heeft deze maand aan goede doelen gegeven:</span>
 	<span class="xg-charity-ticker-amount">€65.168,36</span>
@@ -3588,129 +3600,99 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 	</div>
 </div>
 
-<div class="xg-hero-v2">
-	<div class="xg-hero-background">
-		<svg class="xg-hero-blob" viewBox="0 0 1440 600" preserveAspectRatio="none"><path d="M0,300 Q360,100 720,250 T1440,300 L1440,600 L0,600 Z" fill="rgba(208,172,75,0.10)"/></svg>
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">DIAMANTEN VERKOPEN</div>
+	<h1>Verkoop uw diamanten tegen de hoogste dagprijs</h1>
+	<p class="hero-lead">Bij XGOUD krijgt u een eerlijke, transparante taxatie op basis van de actuele Rapaport-prijslijst. Gratis, vrijblijvend en met directe uitbetaling.</p>
+	<div class="xg-hero-buttons">
+		<a class="xg-btn-gold" href="#">Bereken uw waarde</a>
+		<a class="xg-btn-outline" href="#">Maak een afspraak</a>
 	</div>
-	<div class="xg-hero-container">
-		<div class="xg-hero-content">
-			<h4 class="xg-hero-kicker">DIAMANTEN VERKOPEN</h4>
-			<h1 class="xg-hero-title">Verkoop uw diamanten tegen de hoogste dagprijs</h1>
-			<p class="xg-hero-lead">Bij XGOUD krijgt u een eerlijke, transparante taxatie op basis van de actuele Rapaport-prijslijst. Gratis, vrijblijvend en met directe uitbetaling.</p>
-		</div>
-		<div class="xg-hero-buttons">
-			<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold" href="#">Bereken uw waarde</a></div>
-			<div class="wp-block-button"><a class="wp-block-button__link xg-btn-outline" href="#">Maak een afspraak</a></div>
-		</div>
-	</div>
-</div>
+</div></section>
 
-<div class="xgoud-toc-wrapper">
+<section><div class="xg-container">
 	<div class="xgoud-toc">
-		<h3 class="xgoud-toc-title">Inhoudsopgave</h3>
+		<div class="xgoud-toc-header"><p>Alles wat u moet weten over het verkopen van uw diamanten — overzichtelijk op een rij.</p></div>
 		<div class="xgoud-toc-grid">
-			<ul class="xgoud-toc-list">
-				<li><a href="#">Waarom XGOUD</a></li>
-				<li><a href="#">De 4 C's</a></li>
-				<li><a href="#">Zo werkt het</a></li>
-				<li><a href="#">Inkoopprijzen</a></li>
-				<li><a href="#">Rapaport</a></li>
-				<li><a href="#">Veelgestelde vragen</a></li>
+			<a class="xgoud-toc-item" href="#"><span class="nr">01</span><span class="title">Waarom XGOUD</span><span class="arrow">›</span></a><a class="xgoud-toc-item" href="#"><span class="nr">02</span><span class="title">De 4 C's</span><span class="arrow">›</span></a><a class="xgoud-toc-item" href="#"><span class="nr">03</span><span class="title">Onze experts</span><span class="arrow">›</span></a><a class="xgoud-toc-item" href="#"><span class="nr">04</span><span class="title">Zo werkt het</span><span class="arrow">›</span></a><a class="xgoud-toc-item" href="#"><span class="nr">05</span><span class="title">Inkoopprijzen</span><span class="arrow">›</span></a><a class="xgoud-toc-item" href="#"><span class="nr">06</span><span class="title">Veelgestelde vragen</span><span class="arrow">›</span></a>
+		</div>
+	</div>
+</div></section>
+
+<section><div class="xg-container">
+	<div class="xg-why">
+		<div class="xg-eyebrow">WAAROM XGOUD</div>
+		<h2>Waarom uw diamant verkopen bij XGOUD?</h2>
+		<p class="xg-intro">Met meer dan 20 jaar ervaring, GIA-gecertificeerde experts en taxaties volgens de Rapaport-standaard bent u verzekerd van een eerlijke prijs en een betrouwbare afhandeling.</p>
+		<div class="xg-benefits">
+			<div class="xg-benefit"><span class="xg-b-num">01</span><span class="xg-b-title">Rapaport-prijzen</span><p>Wij taxeren volgens de internationale Rapaport-prijslijst — de wereldwijde standaard. Zo weet u zeker dat u een eerlijke prijs ontvangt.</p></div><div class="xg-benefit"><span class="xg-b-num">02</span><span class="xg-b-title">Gratis taxatie</span><p>Onze gecertificeerde experts taxeren uw diamant gratis en vrijblijvend, ter plaatse of bij u thuis.</p></div><div class="xg-benefit"><span class="xg-b-num">03</span><span class="xg-b-title">Directe uitbetaling</span><p>Akkoord met ons bod? U ontvangt uw geld direct per bankoverschrijving of contant.</p></div><div class="xg-benefit"><span class="xg-b-num">04</span><span class="xg-b-title">Discreet & verzekerd</span><p>Elke transactie verloopt discreet, veilig en volledig verzekerd. Uw vertrouwen staat voorop.</p></div>
+		</div>
+	</div>
+</div></section>
+
+<section class="xg-row-3"><div class="xg-container">
+	<h2 class="xg-section-title">De 4 C's — zo bepalen wij de waarde</h2>
+	<div class="xg-grid-4">
+		<div class="xg-c-card"><h3>Carat</h3><p>Het karaatgewicht bepaalt de massa van de diamant. Hoe hoger het gewicht, hoe zeldzamer en waardevoller — bij gelijke kwaliteit.</p></div><div class="xg-c-card"><h3>Color</h3><p>Kleur wordt beoordeeld van D (kleurloos) tot Z. Hoe kleurlozer de diamant, hoe hoger doorgaans de waarde.</p></div><div class="xg-c-card"><h3>Clarity</h3><p>Zuiverheid loopt van FL (flawless) tot I3. Minder insluitsels betekent een hogere zuiverheid en waarde.</p></div><div class="xg-c-card"><h3>Cut</h3><p>De slijpvorm bepaalt de schittering. Een excellent geslepen diamant reflecteert het licht optimaal.</p></div>
+	</div>
+</div></section>
+
+<section><div class="xg-container">
+	<div class="xgoud-cta-modern">
+		<div class="xgoud-cta-image" style="background:#ead9bd"></div>
+		<div class="xgoud-cta-content">
+			<h2>Benieuwd naar de <span>waarde</span> van uw diamant?</h2>
+			<p class="xgoud-subtitle">Gebruik onze rekentool of maak direct een afspraak met een van onze diamantexperts. Gratis en vrijblijvend.</p>
+			<a class="cta-button" href="#">Bereken nu uw waarde</a>
+			<div class="cta-offices">Of bezoek een van onze 40+ vestigingen in Nederland.</div>
+		</div>
+	</div>
+</div></section>
+
+<section><div class="xg-container">
+	<div class="xg-grid-2" style="align-items:start">
+		<div class="xg-expert-box">
+			<h2>Onze diamantexpert</h2>
+			<p>Met meer dan 20 jaar ervaring in de diamanthandel taxeert onze GIA-gecertificeerde gemmoloog elke steen nauwkeurig op kleur, zuiverheid, slijpvorm en karaatgewicht.</p>
+			<ul class="xg-diamond-list">
+				<li>Persoonlijke en deskundige beoordeling</li>
+				<li>Taxatie volgens internationale normen</li>
+				<li>Eerlijk en onderbouwd bod</li>
 			</ul>
 		</div>
-	</div>
-</div>
-
-<div class="xg-why-section">
-	<div class="xg-why-container">
-		<h2 class="xg-section-title">Waarom uw diamant verkopen bij XGOUD?</h2>
-		<div class="xg-why-grid">
-			
-			<div class="xg-c-card">
-				<div class="xg-c-card-icon"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><circle cx="24" cy="24" r="20"/><path d="M16 24l6 6 12-12"/></svg></div>
-				<h3 class="xg-c-card-title">Rapaport-prijzen</h3>
-				<p class="xg-c-card-text">Wij taxeren volgens de internationale Rapaport-prijslijst — de wereldwijde standaard voor diamantprijzen. Zo weet u zeker dat u een eerlijke prijs ontvangt.</p>
-			</div>
-			<div class="xg-c-card">
-				<div class="xg-c-card-icon"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><circle cx="24" cy="24" r="20"/><path d="M16 24l6 6 12-12"/></svg></div>
-				<h3 class="xg-c-card-title">Gratis taxatie</h3>
-				<p class="xg-c-card-text">Onze gecertificeerde experts taxeren uw diamant gratis en geheel vrijblijvend, ter plaatse of bij u thuis.</p>
-			</div>
-			<div class="xg-c-card">
-				<div class="xg-c-card-icon"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><circle cx="24" cy="24" r="20"/><path d="M16 24l6 6 12-12"/></svg></div>
-				<h3 class="xg-c-card-title">Directe uitbetaling</h3>
-				<p class="xg-c-card-text">Akkoord met ons bod? U ontvangt uw geld direct per bankoverschrijving of contant.</p>
-			</div>
-			<div class="xg-c-card">
-				<div class="xg-c-card-icon"><svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><circle cx="24" cy="24" r="20"/><path d="M16 24l6 6 12-12"/></svg></div>
-				<h3 class="xg-c-card-title">Discreet & verzekerd</h3>
-				<p class="xg-c-card-text">Elke transactie verloopt discreet, veilig en volledig verzekerd. Uw vertrouwen staat voorop.</p>
-			</div>
+		<div class="xg-trust-grid">
+			<div class="xg-trust-card"><div class="xg-trust-icon">◆</div><h3>GIA-gecertificeerd</h3><p>Onze taxateurs werken volgens de strengste internationale normen van het GIA.</p></div><div class="xg-trust-card"><div class="xg-trust-icon">◆</div><h3>Rapaport-basis</h3><p>Elke taxatie is gebaseerd op de actuele, wereldwijd erkende Rapaport-prijslijst.</p></div><div class="xg-trust-card"><div class="xg-trust-icon">◆</div><h3>100% verzekerd</h3><p>Uw diamant is tijdens het hele proces volledig verzekerd en veilig.</p></div><div class="xg-trust-card"><div class="xg-trust-icon">◆</div><h3>20+ jaar ervaring</h3><p>Decennia aan kennis van de diamantmarkt staan tot uw beschikking.</p></div>
 		</div>
 	</div>
-</div>
+</div></section>
 
-<div class="xgoud-cta-modern">
-	<div class="xgoud-cta-modern-content">
-		<h2>Benieuwd naar de waarde van uw diamant?</h2>
-		<p>Gebruik onze rekentool of maak direct een afspraak met een van onze diamantexperts.</p>
-		<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold" href="#">Bereken nu uw waarde</a></div>
+<section><div class="xg-container">
+	<div class="xg-steps-content">
+		<h2>Zo werkt het</h2>
+		<p>In vier eenvoudige stappen verkoopt u uw diamant — snel, veilig en transparant.</p>
 	</div>
-</div>
-
-<div class="xg-expert-box">
-	<div class="xg-expert-box-container">
-		<h3 class="xg-expert-box-title">Onze diamantexpert</h3>
-		<p class="xg-expert-box-text">Met meer dan 20 jaar ervaring in de diamanthandel taxeert onze GIA-gecertificeerde gemmoloog elke steen nauwkeurig op kleur, zuiverheid, slijpvorm en karaatgewicht. U krijgt altijd een eerlijke, onderbouwde waardebepaling.</p>
+	<div class="xg-grid-4">
+		<div class="xg-step-card"><div class="xg-step-number">1</div><h3>Aanmelden</h3><p>Bereken online een indicatie of maak direct een afspraak met een expert.</p></div><div class="xg-step-card"><div class="xg-step-number">2</div><h3>Taxatie</h3><p>Onze gemmoloog beoordeelt uw diamant op de 4 C's en het certificaat.</p></div><div class="xg-step-card"><div class="xg-step-number">3</div><h3>Bod & akkoord</h3><p>U ontvangt een transparant bod op basis van de Rapaport-prijslijst.</p></div><div class="xg-step-card"><div class="xg-step-number">4</div><h3>Uitbetaling</h3><p>Bij akkoord betalen wij direct uit — per bank of contant ter plaatse.</p></div>
 	</div>
-</div>
+</div></section>
 
-<div class="xg-market-content">
-	<div class="xg-market-content-container">
-		<h2 class="xg-section-title">De 4 C's — zo bepalen wij de waarde</h2>
-		<p>De waarde van een diamant wordt internationaal bepaald aan de hand van vier criteria: Carat (gewicht), Color (kleur), Clarity (zuiverheid) en Cut (slijpvorm). Samen vormen zij de basis voor elke taxatie.</p>
+<section><div class="xg-container">
+	<div class="xg-market-content">
+		<h2>De diamantmarkt</h2>
+		<p>Diamantprijzen worden internationaal bepaald door vraag, aanbod en kwaliteit. Wij volgen dagelijks de markt zodat u altijd een actuele, eerlijke prijs krijgt.</p>
 		<div class="xg-formula-box">
-			<div class="xg-formula-content">
-				<h3>Carat · Color · Clarity · Cut</h3>
-				<p>Een diamant van 1,00 ct met kleur D en zuiverheid IF (intern flawless) en een excellent geslepen vorm behaalt de hoogste waarde. Elke afwijking in een van de C's beïnvloedt de uiteindelijke prijs.</p>
-			</div>
+			<div class="xg-formula-title">Prijsopbouw</div>
+			<div class="xg-formula">Rapaport-prijs × kwaliteitsfactor − marge</div>
+			<div class="xg-formula-note">De kwaliteitsfactor volgt uit de 4 C's. De marge dekt onze dienstverlening en een vast deel gaat naar het goede doel.</div>
 		</div>
 	</div>
-</div>
+</div></section>
 
-<div class="xg-steps-section">
-	<div class="xg-steps-container">
-		<h2 class="xg-section-title">Zo werkt het — in 4 stappen</h2>
-		<div class="xg-steps-grid">
-			
-			<div class="xg-step-card">
-				<div class="xg-step-number">1</div>
-				<h3 class="xg-step-title">Aanmelden</h3>
-				<p class="xg-step-text">Bereken online een indicatie of maak direct een afspraak.</p>
-			</div>
-			<div class="xg-step-card">
-				<div class="xg-step-number">2</div>
-				<h3 class="xg-step-title">Taxatie</h3>
-				<p class="xg-step-text">Onze expert beoordeelt uw diamant op de 4 C's.</p>
-			</div>
-			<div class="xg-step-card">
-				<div class="xg-step-number">3</div>
-				<h3 class="xg-step-title">Bod & akkoord</h3>
-				<p class="xg-step-text">U ontvangt een transparant bod op basis van Rapaport.</p>
-			</div>
-			<div class="xg-step-card">
-				<div class="xg-step-number">4</div>
-				<h3 class="xg-step-title">Uitbetaling</h3>
-				<p class="xg-step-text">Bij akkoord betalen wij direct uit — per bank of contant.</p>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="xg-price-table-section">
-	<div class="xg-price-table-container">
-		<h2 class="xg-section-title">Indicatieve inkoopprijzen</h2>
-		<figure class="wp-block-table"><table class="xg-price-table">
+<section class="xg-price-section"><div class="xg-container">
+	<h2>Indicatieve inkoopprijzen</h2>
+	<p>Onderstaande bedragen zijn indicatief. De definitieve prijs volgt na taxatie en is afhankelijk van het certificaat.</p>
+	<div class="xg-table-wrapper">
+		<table class="xg-price-table">
 			<thead><tr><th>Karaatgewicht</th><th>Kwaliteit</th><th>Indicatie (van–tot)</th></tr></thead>
 			<tbody>
 				<tr><td>0,50 ct</td><td>G / VS1 / Excellent</td><td>€ 900 – € 1.300</td></tr>
@@ -3718,73 +3700,117 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 				<tr><td>1,50 ct</td><td>E / VS2 / Very Good</td><td>€ 8.000 – € 10.500</td></tr>
 				<tr><td>2,00 ct</td><td>D / IF / Excellent</td><td>€ 22.000 – € 28.000</td></tr>
 			</tbody>
-		</table></figure>
-		<p style="font-size:13px;color:#888;margin-top:10px">Indicatieve bedragen. De definitieve prijs volgt na taxatie en is afhankelijk van het GIA-certificaat.</p>
+		</table>
 	</div>
-</div>
+</div></section>
 
-<div class="xg-rapaport-section">
-	<div class="xg-rapaport-container">
-		<h2 class="xg-section-title">Wat is de Rapaport-prijslijst?</h2>
-		<p>De Rapaport Diamond Report is sinds 1978 de internationale referentie voor diamantprijzen. De lijst wordt wekelijks bijgewerkt en wordt wereldwijd door de handel gebruikt. Door volgens Rapaport te taxeren, garanderen wij u een marktconforme en eerlijke prijs — volledig transparant.</p>
-	</div>
-</div>
-
-<div class="xg-certification-section">
-	<div class="xg-certification-container">
-		<h2 class="xg-section-title">Certificering: GIA, IGI & HRD</h2>
-		<p>Een diamant met certificaat van GIA, IGI of HRD laat zich nauwkeuriger taxeren en levert doorgaans meer op. Heeft u geen certificaat? Geen probleem — onze gemmoloog beoordeelt uw steen ter plaatse volgens dezelfde internationale criteria.</p>
-	</div>
-</div>
-
-<div class="xg-eeat-section">
-	<div class="xg-eeat-container">
-		<h2 class="xg-section-title">Expertise waar u op kunt vertrouwen</h2>
-		<div class="xg-eeat-grid">
-			<div class="xg-author-card">
-				<h3>GIA-gecertificeerd gemmoloog</h3>
-				<p>Onze taxateurs zijn opgeleid en gecertificeerd volgens de strengste internationale normen van het Gemological Institute of America.</p>
+<section><div class="xg-container">
+	<div class="xg-grid-2">
+		<div class="xg-rapaport-left-column">
+			<div class="xg-rapaport-left">
+				<h2>Wat is de Rapaport-prijslijst?</h2>
+				<p>De Rapaport Diamond Report is sinds 1978 de internationale referentie voor diamantprijzen. De lijst wordt wekelijks bijgewerkt en wereldwijd door de handel gebruikt.</p>
+				<p>Door volgens Rapaport te taxeren, garanderen wij u een marktconforme en eerlijke prijs — volledig transparant.</p>
 			</div>
-			<div class="xg-author-card">
-				<h3>20+ jaar in de diamanthandel</h3>
-				<p>Met decennia ervaring in inkoop en taxatie kent ons team de markt door en door — uw diamant is bij ons in vertrouwde handen.</p>
+		</div>
+		<div class="xg-rapaport-right-column">
+			<div class="xg-rapaport-box">
+				<div class="xg-rapaport-item">Wekelijks bijgewerkte, internationaal erkende prijsreferentie.</div><div class="xg-rapaport-item">Transparante en marktconforme waardebepaling.</div><div class="xg-rapaport-item">Sinds 1978 de standaard in de diamanthandel.</div><div class="xg-rapaport-item">Gebruikt door handelaren wereldwijd.</div>
 			</div>
 		</div>
 	</div>
-</div>
+</div></section>
 
-<div class="xg-faq-section">
-	<div class="xg-faq-container">
-		<h2 class="xg-section-title">Veelgestelde vragen</h2>
+<section><div class="xg-container">
+	<div class="xg-cert-section">
+		<div class="xg-cert-content">
+			<h2>Certificering: GIA, IGI & HRD</h2>
+			<p>Een diamant met certificaat laat zich nauwkeuriger taxeren en levert doorgaans meer op. Geen certificaat? Onze gemmoloog beoordeelt uw steen ter plaatse.</p>
+			<ul class="xg-cert-list">
+				<li>GIA — Gemological Institute of America</li>
+				<li>IGI — International Gemological Institute</li>
+				<li>HRD — Hoge Raad voor Diamant (Antwerpen)</li>
+			</ul>
+		</div>
+		<div class="xg-cert-image" style="background:#ead9bd;min-height:360px"></div>
+	</div>
+</div></section>
+
+<section><div class="xg-container">
+	<div class="xg-eeat-content">
+		<h2>Expertise waar u op kunt vertrouwen</h2>
+		<p>Onze taxaties worden uitgevoerd door gecertificeerde specialisten met jarenlange ervaring in de internationale diamanthandel.</p>
+	</div>
+	<div class="xg-author-row">
+		<div class="xg-author-card">
+			<h2>Daniël Visser</h2>
+			<div class="xg-author-role">GIA-gecertificeerd gemmoloog</div>
+			<div class="xg-author-company">XGOUD Diamantexpertise</div>
+			<a class="xg-author-website" href="#">xgoud.nl</a>
+			<p>Daniël taxeert al meer dan 20 jaar diamanten volgens de strengste internationale normen en begeleidt klanten persoonlijk bij elke verkoop.</p>
+		</div>
+		<div class="xg-author-card">
+			<h2>Lisa Bakker</h2>
+			<div class="xg-author-role">Senior taxateur edelstenen</div>
+			<div class="xg-author-company">XGOUD Diamantexpertise</div>
+			<a class="xg-author-website" href="#">xgoud.nl</a>
+			<p>Lisa is gespecialiseerd in kleurstenen en diamanten en staat bekend om haar nauwkeurige, eerlijke beoordelingen.</p>
+		</div>
+	</div>
+</div></section>
+
+<section><div class="xg-container">
+	<div class="xg-trustpilot-row">
+		<div class="xg-trustpilot-score">
+			<h2>Wat onze klanten zeggen</h2>
+			<div class="xg-trustpilot-stars">★★★★★</div>
+			<div class="xg-trustpilot-rating">4,8</div>
+			<div class="xg-trustpilot-count">op basis van 2.400+ beoordelingen</div>
+			<div class="xg-trustpilot-brand">Trustpilot</div>
+		</div>
+		<div class="xg-trustpilot-reviews">
+			<div class="xg-review-card"><div class="xg-review-stars">★★★★★</div><p>Snelle en eerlijke taxatie. Direct uitbetaald, precies zoals afgesproken.</p><span>— Anna K.</span></div><div class="xg-review-card"><div class="xg-review-stars">★★★★★</div><p>Zeer professioneel en discreet. Een betere prijs dan ik elders kreeg.</p><span>— Mark V.</span></div><div class="xg-review-card"><div class="xg-review-stars">★★★★★</div><p>Persoonlijk advies en een transparant bod op basis van Rapaport. Aanrader.</p><span>— Sophie D.</span></div>
+		</div>
+	</div>
+</div></section>
+
+<section><div class="xg-container">
+	<div class="xg-links-content">
+		<h2>Meer informatie</h2>
+		<p>Ontdek wat u nog meer bij XGOUD kunt verkopen.</p>
+	</div>
+	<div class="xg-links-grid">
+		<a class="xg-link-card" href="#"><div class="xg-link-content"><h3>Goud verkopen</h3><p>Bekijk onze actuele inkoopprijzen voor goud per gram.</p></div><span>›</span></a><a class="xg-link-card" href="#"><div class="xg-link-content"><h3>Horloges verkopen</h3><p>Verkoop uw luxe horloge tegen een eerlijke dagprijs.</p></div><span>›</span></a><a class="xg-link-card" href="#"><div class="xg-link-content"><h3>Onze vestigingen</h3><p>Vind een XGOUD-kantoor bij u in de buurt.</p></div><span>›</span></a>
+	</div>
+</div></section>
+
+<section><div class="xg-container">
+	<div class="xg-faq">
+		<h2>Veelgestelde vragen</h2>
 		<div class="xg-faq-list">
-			
-			<div class="xg-faq-item">
-				<div class="xg-faq-question"><h3 class="xg-faq-q-text">Heb ik een certificaat nodig om mijn diamant te verkopen?</h3></div>
-				<div class="xg-faq-answer"><p class="xg-faq-a-text">Nee. Een GIA-, IGI- of HRD-certificaat helpt bij een nauwkeurige taxatie, maar onze gemmoloog kan uw diamant ook zonder certificaat volledig beoordelen.</p></div>
-			</div>
-			<div class="xg-faq-item">
-				<div class="xg-faq-question"><h3 class="xg-faq-q-text">Hoe wordt de prijs van mijn diamant bepaald?</h3></div>
-				<div class="xg-faq-answer"><p class="xg-faq-a-text">Wij taxeren op basis van de 4 C's en de actuele Rapaport-prijslijst, de internationale standaard voor diamantprijzen.</p></div>
-			</div>
-			<div class="xg-faq-item">
-				<div class="xg-faq-question"><h3 class="xg-faq-q-text">Is de taxatie echt gratis?</h3></div>
-				<div class="xg-faq-answer"><p class="xg-faq-a-text">Ja, de taxatie is volledig gratis en vrijblijvend. U beslist daarna zelf of u verkoopt.</p></div>
-			</div>
-			<div class="xg-faq-item">
-				<div class="xg-faq-question"><h3 class="xg-faq-q-text">Wanneer ontvang ik mijn geld?</h3></div>
-				<div class="xg-faq-answer"><p class="xg-faq-a-text">Bij akkoord betalen wij direct uit — per bankoverschrijving of contant ter plaatse.</p></div>
-			</div>
+			<div class="xg-faq-item"><div class="xg-faq-question">Heb ik een certificaat nodig om mijn diamant te verkopen?</div><div class="xg-faq-answer"><p>Nee. Een GIA-, IGI- of HRD-certificaat helpt bij een nauwkeurige taxatie, maar onze gemmoloog kan uw diamant ook zonder certificaat volledig beoordelen.</p></div></div><div class="xg-faq-item"><div class="xg-faq-question">Hoe wordt de prijs van mijn diamant bepaald?</div><div class="xg-faq-answer"><p>Wij taxeren op basis van de 4 C's en de actuele Rapaport-prijslijst, de internationale standaard voor diamantprijzen.</p></div></div><div class="xg-faq-item"><div class="xg-faq-question">Is de taxatie echt gratis?</div><div class="xg-faq-answer"><p>Ja, de taxatie is volledig gratis en vrijblijvend. U beslist daarna zelf of u verkoopt.</p></div></div><div class="xg-faq-item"><div class="xg-faq-question">Wanneer ontvang ik mijn geld?</div><div class="xg-faq-answer"><p>Bij akkoord betalen wij direct uit — per bankoverschrijving of contant ter plaatse.</p></div></div>
 		</div>
 	</div>
-</div>
+</div></section>
 
-<div class="xg-final-cta-box">
-	<div class="xg-final-cta-content">
-		<h2>Klaar om uw diamant te verkopen?</h2>
-		<p>Maak vandaag nog een afspraak of bereken direct online een indicatie van uw waarde.</p>
-		<div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold" href="#">Start uw verkoop</a></div>
+<section><div class="xg-container">
+	<div class="xg-grid-2">
+		<div class="xg-final-cta-content">
+			<h2>Klaar om uw diamant te verkopen?</h2>
+			<p>Maak vandaag nog een afspraak of bereken direct online een indicatie van uw waarde.</p>
+		</div>
+		<div class="xg-final-cta-box">
+			<h3>Start vandaag nog</h3>
+			<div class="xg-final-list">
+				<div class="xg-final-item">✓ Gratis &amp; vrijblijvende taxatie</div>
+				<div class="xg-final-item">✓ Directe uitbetaling</div>
+				<div class="xg-final-item">✓ 100% verzekerd &amp; discreet</div>
+			</div>
+			<a class="xg-final-btn" href="#">Maak een afspraak</a>
+		</div>
 	</div>
-</div>
+</div></section>
+
 </div>
 </section>
 <section class="tst-page" data-page="hero" hidden><section class="xg-hero-split">

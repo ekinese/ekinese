@@ -98,80 +98,73 @@ html, body,
 }
 
 /* =====================================================================
-   DARK-OVERRIDES  ·  Blueprint-Seiten (Diamant/Edelmetalen/…)
-   Blueprint nutzt Gold bereits als Akzent → wir machen nur die
-   Flächen dunkel und den Text hell, Gold bleibt Gold.
+   DARK-OVERRIDES  ·  Blueprint-Seiten (echte Klassen aus blueprint.css)
+   Gold-Akzent bleibt; nur Flächen dunkel + Text hell.
    ===================================================================== */
-[data-theme="dark"] .xg-blueprint { background: #141312; }
 [data-theme="dark"] body { background: #141312; }
+[data-theme="dark"] .xg-blueprint { background: #141312; }
 
-[data-theme="dark"] .xg-hero-v2,
-[data-theme="dark"] .xgoud-toc-wrapper,
-[data-theme="dark"] .xg-why-section,
-[data-theme="dark"] .xg-trust-cards-section,
-[data-theme="dark"] .xg-steps-section,
-[data-theme="dark"] .xg-market-content,
-[data-theme="dark"] .xg-price-table-section,
-[data-theme="dark"] .xg-rapaport-section,
-[data-theme="dark"] .xg-certification-section,
-[data-theme="dark"] .xg-eeat-section,
-[data-theme="dark"] .xg-form-section,
-[data-theme="dark"] .xg-trustpilot-section,
-[data-theme="dark"] .xg-internal-links-section,
-[data-theme="dark"] .xg-faq-section,
-[data-theme="dark"] .xg-spot-price-section,
-[data-theme="dark"] .xg-price-formula-section,
-[data-theme="dark"] .xg-watch-authentication-section,
-[data-theme="dark"] .xg-watch-history-section,
-[data-theme="dark"] .xg-vintage-trends-section {
-	background: #141312;
-}
-
-[data-theme="dark"] .xgoud-toc,
+/* Weiße Karten → dunkel */
+[data-theme="dark"] .xg-benefit,
 [data-theme="dark"] .xg-c-card,
 [data-theme="dark"] .xg-trust-card,
 [data-theme="dark"] .xg-step-card,
 [data-theme="dark"] .xg-formula-box,
+[data-theme="dark"] .xg-market-box,
+[data-theme="dark"] .xg-rapaport-box,
 [data-theme="dark"] .xg-author-card,
 [data-theme="dark"] .xg-link-card,
 [data-theme="dark"] .xg-faq-item,
-[data-theme="dark"] .xg-spot-price-card,
-[data-theme="dark"] .xg-auth-card,
-[data-theme="dark"] .xg-brand-card,
-[data-theme="dark"] .xg-trend-card {
+[data-theme="dark"] .xg-final-cta-box,
+[data-theme="dark"] .xg-review-card,
+[data-theme="dark"] .xg-price-table {
 	background: #1d1b19;
 	border-color: #34302b;
 }
 
-[data-theme="dark"] .xg-hero-title,
-[data-theme="dark"] .xg-section-title,
-[data-theme="dark"] .xgoud-toc-title,
-[data-theme="dark"] .xg-c-card-title,
-[data-theme="dark"] .xg-trust-card-title,
-[data-theme="dark"] .xg-step-title,
-[data-theme="dark"] .xg-link-card-title,
-[data-theme="dark"] .xg-faq-q-text,
+/* Cremefarbene Flächen */
+[data-theme="dark"] .xgoud-cta-modern { background: #241f17; border-color: #3a3325; }
+[data-theme="dark"] .xgoud-toc-item:hover { background: #1d1b19; }
+[data-theme="dark"] .xgoud-toc-grid,
+[data-theme="dark"] .xgoud-toc-item,
+[data-theme="dark"] .xgoud-toc-item .title { border-color: #34302b; }
+
+/* Überschriften → hell (Attribut-Selektor schlägt blueprint.css-Spezifität) */
 [data-theme="dark"] .xg-blueprint h1,
 [data-theme="dark"] .xg-blueprint h2,
-[data-theme="dark"] .xg-blueprint h3 {
+[data-theme="dark"] .xg-blueprint h3,
+[data-theme="dark"] .xgoud-toc-item .title,
+[data-theme="dark"] .xg-b-title,
+[data-theme="dark"] .xg-author-role,
+[data-theme="dark"] .xg-trustpilot-rating,
+[data-theme="dark"] .xg-update-date {
 	color: #f3efe8;
 }
 
-[data-theme="dark"] .xg-hero-lead,
-[data-theme="dark"] .xg-c-card-text,
-[data-theme="dark"] .xg-trust-card-text,
-[data-theme="dark"] .xg-step-text,
-[data-theme="dark"] .xg-faq-a-text,
-[data-theme="dark"] .xg-expert-box-text,
-[data-theme="dark"] .xg-blueprint p {
+/* Fließtext → gedämpft hell */
+[data-theme="dark"] .xg-blueprint p,
+[data-theme="dark"] .xg-blueprint li,
+[data-theme="dark"] .xg-intro,
+[data-theme="dark"] .hero-lead,
+[data-theme="dark"] .xgoud-subtitle,
+[data-theme="dark"] .xg-trustpilot-count,
+[data-theme="dark"] .xg-author-company {
 	color: #a8a294;
 }
 
-/* Tabellen im Dark-Mode */
-[data-theme="dark"] .xg-price-table th { background: #262320; color: #f3efe8; }
-[data-theme="dark"] .xg-price-table td { background: #1d1b19; color: #cfc9bd; border-color: #34302b; }
+/* CTA-Modern Text bleibt lesbar */
+[data-theme="dark"] .xgoud-cta-content h2 { color: #f3efe8; }
+[data-theme="dark"] .xgoud-subtitle { color: #c9c2b5; }
 
-/* Outline-Button im Dark-Mode lesbar halten */
+/* FAQ-Frage hell */
+[data-theme="dark"] .xg-faq-question { color: #f3efe8; }
+
+/* Preistabelle */
+[data-theme="dark"] .xg-price-table th { background: #2a2620; color: #f3efe8; }
+[data-theme="dark"] .xg-price-table td { color: #cfc9bd; border-color: #34302b; }
+[data-theme="dark"] .xg-price-table tr:hover { background: #211e1a; }
+
+/* Outline-Button lesbar halten */
 [data-theme="dark"] a.xg-btn-outline,
 [data-theme="dark"] .xg-btn-outline .wp-block-button__link {
 	border-color: #f3efe8; color: #f3efe8 !important;
