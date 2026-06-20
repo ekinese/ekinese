@@ -54,19 +54,11 @@
 </div>
 <!-- /wp:html -->
 
-<!-- SMART CALCULATOR -->
+<!-- SMART CALCULATOR (Wizard – JS baut die Schritte selbst auf) -->
 <!-- wp:html -->
-<section class="xg-calc-section">
-	<div class="xg-calc">
-		<div class="xg-calc-intro">
-			<h2 class="xg-section-title">Wert berechnen &amp; verkaufen</h2>
-		</div>
-		<div class="xg-calc-types"></div>
-		<div class="xg-calc-body">
-			<div class="xg-calc-fields"></div>
-			<div class="xg-calc-result"></div>
-		</div>
-		<div class="xg-calc-cart"></div>
+<section class="xg-calc-section" style="padding:50px 20px;">
+	<div class="xg-calc-shell">
+		<div class="xg-calc" data-mode="full"></div>
 	</div>
 </section>
 <!-- /wp:html -->

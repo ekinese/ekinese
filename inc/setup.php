@@ -155,13 +155,49 @@ function ekinese_calculator_data() {
 			'platina'   => array( 'label' => 'Platina',   'spot' => 28.90 ),
 			'palladium' => array( 'label' => 'Palladium', 'spot' => 30.10 ),
 		),
-		'purities'  => array(
-			'8'  => 0.333,
-			'14' => 0.585,
-			'18' => 0.750,
-			'21' => 0.875,
-			'22' => 0.916,
-			'24' => 0.999,
+		/*
+		 * Reinheit ist METALL-ABHÄNGIG:
+		 *   Gold       → Karat (8–24 karaat)
+		 *   Silber/Platin/Palladium → Legierung (Tausendstel, z. B. 925, 950, 999)
+		 * Werte = Feingehalt-Faktor (0–1).
+		 */
+		'metal_purities' => array(
+			'goud'      => array(
+				'8'  => 0.333,
+				'14' => 0.585,
+				'18' => 0.750,
+				'21' => 0.875,
+				'22' => 0.916,
+				'24' => 0.999,
+			),
+			'zilver'    => array(
+				'800' => 0.800,
+				'835' => 0.835,
+				'925' => 0.925,
+				'999' => 0.999,
+			),
+			'platina'   => array(
+				'850' => 0.850,
+				'900' => 0.900,
+				'950' => 0.950,
+				'999' => 0.999,
+			),
+			'palladium' => array(
+				'500' => 0.500,
+				'950' => 0.950,
+				'999' => 0.999,
+			),
+		),
+		// Klartext-Labels für Legierungen (Gold nutzt direkt "karaat" im JS).
+		'purity_labels' => array(
+			'800' => '80,0 %',
+			'835' => '83,5 %',
+			'850' => '85,0 %',
+			'900' => '90,0 %',
+			'925' => 'Sterling 92,5 %',
+			'950' => '95,0 %',
+			'999' => 'Fein 99,9 %',
+			'500' => '50,0 %',
 		),
 		'conditions' => array(
 			'nieuw'     => array( 'label' => 'Neuwertig',    'factor' => 1.00 ),
@@ -195,6 +231,8 @@ function ekinese_calculator_data() {
 			),
 			'anchor'  => 9000,
 		),
+		// Zertifizierungs-Labore für Diamanten & Edelsteine.
+		'labs' => array( 'GIA', 'IGI', 'HRD', 'Kein Zertifikat' ),
 		// wp_xg_gemstones – Basis €/ct.
 		'gem_base' => array(
 			'robijn'  => array( 'label' => 'Robijn (Rubin)',   'anchor' => 3500 ),
@@ -219,13 +257,46 @@ function ekinese_calculator_data() {
 			'box'    => array( 'label' => 'Originalbox',        'bonus' => 0.03 ),
 			'papers' => array( 'label' => 'Zertifikat/Papiere', 'bonus' => 0.05 ),
 		),
-		// wp_xg_charity – Projekte.
+		// Uhren-Detailfelder (nicht preisrelevant im Mock, erleichtern die Suche/Bewertung).
+		'watch_metals'    => array( 'Edelstahl', 'Gelbgold', 'Weißgold', 'Roségold', 'Platin', 'Stahl/Gold', 'Titan' ),
+		'watch_bracelets' => array( 'Edelstahlband', 'Lederband', 'Kautschuk', 'Gold-Band', 'NATO/Textil' ),
+		'watch_dials'     => array( 'Schwarz', 'Weiß', 'Silber', 'Blau', 'Grün', 'Champagner', 'Grau', 'Sonstige' ),
+		/*
+		 * wp_xg_charity – Bereiche mit konkreten Empfängern + Verteilungsgewicht.
+		 * Die Empfänger sind später pro Stadt aus einer eigenen DB befüllbar
+		 * (Schulen, Kindergärten, Frauenhäuser …). 'weight' = Anteil am Topf.
+		 */
 		'charity_projects' => array(
-			array( 'id' => 'social',       'label' => 'Sozialarbeit' ),
-			array( 'id' => 'kindergarten', 'label' => 'Kindergärten' ),
-			array( 'id' => 'shelter',      'label' => 'Frauenhäuser' ),
-			array( 'id' => 'sport',        'label' => 'Sportzentren' ),
-			array( 'id' => 'school',       'label' => 'Schulen' ),
+			array(
+				'id'         => 'social',
+				'label'      => 'Sozialarbeit',
+				'weight'     => 0.25,
+				'recipients' => array( 'Stichting Buurtwerk Amsterdam', 'Sociaal Steunpunt Rotterdam', 'Voedselbank Den Haag' ),
+			),
+			array(
+				'id'         => 'kindergarten',
+				'label'      => 'Kindergärten',
+				'weight'     => 0.20,
+				'recipients' => array( 'Kinderopvang De Zonnebloem', 'KDV Het Speelkwartier', 'Peuterspeelzaal Pippeloentje' ),
+			),
+			array(
+				'id'         => 'shelter',
+				'label'      => 'Frauenhäuser',
+				'weight'     => 0.25,
+				'recipients' => array( 'Blijf Groep Amsterdam', 'Vrouwenopvang Rotterdam', 'Veilig Thuis Utrecht' ),
+			),
+			array(
+				'id'         => 'sport',
+				'label'      => 'Sportzentren',
+				'weight'     => 0.15,
+				'recipients' => array( 'Sportclub Jeugd Eindhoven', 'Buurtsport Tilburg', 'Zwemvereniging De Dolfijn' ),
+			),
+			array(
+				'id'         => 'school',
+				'label'      => 'Schulen',
+				'weight'     => 0.15,
+				'recipients' => array( 'Basisschool De Regenboog', 'OBS Het Kompas', 'Vrije School Zutphen', 'Montessori Amsterdam' ),
+			),
 		),
 		'currency' => 'EUR',
 	);

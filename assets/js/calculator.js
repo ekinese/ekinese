@@ -1,528 +1,777 @@
 /**
- * XGOUD Smart Calculator – Wertberechnung & Verkauf.
+ * XGOUD Smart Calculator – geführter Wizard.
  *
- * Performance-first: reines Vanilla JS, keine Frameworks, eine IIFE.
+ * Konzept: Der Kunde wird zu seinem Produkt GELEITET (Karten-Auswahl,
+ * Schritt für Schritt) statt sich durch Dropdown-Felder zu arbeiten.
+ * Calculator UND Warenkorb stecken in EINEM Widget (Tab-Umschaltung).
  *
- * DATENQUELLE:
- *   Aktuell aus window.XG_CALC_DATA (Mock, via wp_localize_script gesetzt).
- *   Spätere DB/API-Anbindung (Cron-Cache): NUR dieses Objekt wird durch
- *   echte Werte aus der REST-Route ersetzt – die Berechnungslogik bleibt gleich.
+ * Flow:
+ *   Typ → Detail → Resultat (live) → Warenkorb
+ *      → Checkout: Daten → Service → Auszahlung → Charity-Empfänger → Danke
  *
- * PREIS-LOGIK:
- *   Edelmetalle → FIXPREIS  (Spot × Gewicht × Reinheit% − Marge%)
- *   Edelsteine  → INDIKATION (iDex-Basis ± Range%)   = VON–BIS
- *   Uhren       → INDIKATION (DB-Preis ± Range%)      = VON–BIS
- *   Schmuck     → Staffelpreis (mehr Gramm ⇒ höher €/g)
- *   Charity     → fester %-Anteil der Marge fließt in Charity-Topf
+ * Design: reines Vanilla JS, keine Frameworks. Light/Dark über data-theme.
+ *
+ * DATENQUELLE: window.XG_CALC_DATA (Mock via wp_localize_script).
+ * Struktur = spätere DB-Tabellen → Cron-Cache-Swap ohne JS-Änderung.
  */
 (function () {
 	'use strict';
 
-	/* =========================================================
-	   FALLBACK-MOCKDATEN
-	   Werden von window.XG_CALC_DATA (PHP) überschrieben, sobald
-	   vorhanden. Struktur = spätere DB-Tabellen.
-	========================================================= */
-	var DATA = window.XG_CALC_DATA || {
-		// wp_xg_margins (LIVE editierbar im Admin)
-		margins: {
-			metal: 0.08,        // 8 % Marge auf Spot
-			diamond_range: 0.10, // ±10 % Indikation
-			gem_range: 0.12,
-			watch_range: 0.10,
-			charity_share: 0.05 // 5 % der Marge → Charity
-		},
-		// wp_xg_metals – Spotpreis €/g (Mock; später Swiss Forex Cron-Cache)
-		metals: {
-			goud:     { label: 'Goud',     spot: 62.50 },
-			zilver:   { label: 'Zilver',   spot: 0.78 },
-			platina:  { label: 'Platina',  spot: 28.90 },
-			palladium:{ label: 'Palladium',spot: 30.10 }
-		},
-		// Reinheit (karaat → Faktor)
-		purities: {
-			'8':  0.333, '14': 0.585, '18': 0.750,
-			'21': 0.875, '22': 0.916, '24': 0.999
-		},
-		// Zustand (nur Barren/Münzen)
-		conditions: {
-			nieuw:        { label: 'Neuwertig',    factor: 1.00 },
-			zeer_goed:    { label: 'Sehr gut',     factor: 0.99 },
-			goed:         { label: 'Gut',          factor: 0.98 },
-			voldoende:    { label: 'Befriedigend', factor: 0.96 }
-		},
-		// Schmuck-Staffel: ab Gramm-Schwelle besserer €/g-Bonus
-		jewelry_tiers: [
-			{ min: 0,   bonus: 0.00 },
-			{ min: 50,  bonus: 0.02 },
-			{ min: 100, bonus: 0.04 },
-			{ min: 250, bonus: 0.06 }
-		],
-		// wp_xg_diamonds – iDex-Basis €/ct (Mock-Matrix, vereinfacht)
-		diamond_base: {
-			// Basis €/ct nach Farbe (D..Z gruppiert) × Reinheit-Faktor
-			color:   { D:1.00, E:0.95, F:0.90, G:0.82, H:0.74, I:0.66, J:0.58, K:0.48 },
-			clarity: { FL:1.00, IF:0.95, VVS1:0.90, VVS2:0.86, VS1:0.80, VS2:0.74, SI1:0.64, SI2:0.54, I1:0.40, I2:0.30, I3:0.20 },
-			cut:     { Excellent:1.00, 'Very Good':0.95, Good:0.88, Fair:0.78, Poor:0.65 },
-			fluor:   { None:1.00, Faint:0.98, Medium:0.94, Strong:0.88 },
-			anchor:  9000 // €/ct Referenz für D/FL/Excellent/None bei 1ct
-		},
-		// wp_xg_gemstones – Basis €/ct
-		gem_base: {
-			robijn:   { label: 'Robijn (Rubin)',   anchor: 3500 },
-			saffier:  { label: 'Saffier (Saphir)', anchor: 2200 },
-			smaragd:  { label: 'Smaragd',          anchor: 2800 }
-		},
-		// wp_xg_watches – Marktpreis € (Mock; später eigene DB)
-		watches: {
-			rolex:    { label: 'Rolex',    models: { 'Submariner': 11000, 'Datejust': 7500, 'GMT-Master II': 14000 } },
-			omega:    { label: 'Omega',    models: { 'Speedmaster': 5500, 'Seamaster': 4200 } },
-			patek:    { label: 'Patek Philippe', models: { 'Nautilus': 38000, 'Calatrava': 18000 } },
-			cartier:  { label: 'Cartier',  models: { 'Santos': 6500, 'Tank': 4800 } }
-		},
-		watch_conditions: {
-			nieuw:     { label: 'Neuwertig',          factor: 1.00 },
-			zeer_goed: { label: 'Sehr gut',           factor: 0.90 },
-			goed:      { label: 'Gut',                factor: 0.78 },
-			voldoende: { label: 'Befriedigend',       factor: 0.65 },
-			service:   { label: 'Restaurierungsbedarf',factor: 0.50 }
-		},
-		watch_extras: {
-			box:  { label: 'Originalbox',  bonus: 0.03 },
-			papers:{ label: 'Zertifikat/Papiere', bonus: 0.05 }
-		},
-		// wp_xg_charity – Projekte
-		charity_projects: [
-			{ id: 'social',     label: 'Sozialarbeit' },
-			{ id: 'kindergarten', label: 'Kindergärten' },
-			{ id: 'shelter',    label: 'Frauenhäuser' },
-			{ id: 'sport',      label: 'Sportzentren' },
-			{ id: 'school',     label: 'Schulen' }
-		],
-		currency: 'EUR'
+	/* =====================================================================
+	   ICONS (inline SVG, kein externes Icon-Set)
+	===================================================================== */
+	var ICON = {
+		metal:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8l3-4h12l3 4-9 12L3 8z"/><path d="M3 8h18M9 4l3 4 3-4M12 8v12"/></svg>',
+		diamond: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h12l3 6-9 12L3 9l3-6z"/><path d="M3 9h18M9 3L7 9l5 12 5-12-2-6"/></svg>',
+		gem:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="13" r="7"/><path d="M8 4h8l-2 4h-4L8 4zM12 9v8M8 13h8"/></svg>',
+		watch:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="6"/><path d="M12 9v3l2 1M9 2h6M9 22h6"/></svg>',
+		search:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>',
+		cart:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 4h2l2 13h11l2-9H6"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>',
+		check:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg>',
+		heart:   '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.6-9.5-9C1 9 2.5 5.5 6 5.5c2 0 3.2 1.3 4 2.5.8-1.2 2-2.5 4-2.5 3.5 0 5 3.5 3.5 6.5C19 16.4 12 21 12 21z"/></svg>',
+		home:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V10z"/></svg>',
+		office:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16M15 21V9h4a1 1 0 0 1 1 1v11M2 21h20M7 8h2M7 12h2M7 16h2"/></svg>',
+		truck:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 5h11v11H2zM13 8h4l3 3v5h-7M6 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM17 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></svg>'
 	};
 
-	/* =========================================================
+	/* =====================================================================
+	   DATEN (Fallback; window.XG_CALC_DATA überschreibt)
+	===================================================================== */
+	var DATA = window.XG_CALC_DATA || {};
+
+	/* =====================================================================
 	   HELFER
-	========================================================= */
+	===================================================================== */
 	function euro(n) {
-		return new Intl.NumberFormat('nl-NL', {
-			style: 'currency', currency: DATA.currency || 'EUR',
-			maximumFractionDigits: 2
-		}).format(isFinite(n) ? n : 0);
+		return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: DATA.currency || 'EUR', maximumFractionDigits: 0 }).format(isFinite(n) ? n : 0);
+	}
+	function euro2(n) {
+		return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: DATA.currency || 'EUR', maximumFractionDigits: 2 }).format(isFinite(n) ? n : 0);
 	}
 	function pct(n) { return (n * 100).toFixed(1).replace('.', ',') + ' %'; }
-	function el(tag, cls, html) {
-		var e = document.createElement(tag);
-		if (cls) e.className = cls;
-		if (html != null) e.innerHTML = html;
-		return e;
-	}
-	function opt(value, label) {
-		var o = document.createElement('option');
-		o.value = value; o.textContent = label;
-		return o;
+	function h(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+	function opt(v, l) { var o = document.createElement('option'); o.value = v; o.textContent = l; return o; }
+
+	// Preis-Count-up Animation
+	function animateValue(node, to, fmt) {
+		var from = 0, start = null, dur = 600;
+		function frame(t) {
+			if (!start) start = t;
+			var p = Math.min((t - start) / dur, 1);
+			var eased = 1 - Math.pow(1 - p, 3);
+			node.textContent = fmt(from + (to - from) * eased);
+			if (p < 1) requestAnimationFrame(frame);
+		}
+		requestAnimationFrame(frame);
 	}
 
-	/* =========================================================
-	   BERECHNUNGEN  (geben einheitliches Result-Objekt zurück)
-	   result = { market, marginPct, marginAbs, charity, payoutLow, payoutHigh, indicative }
-	========================================================= */
-	function calcMetal(form) {
-		var metal = DATA.metals[form.metal];
-		var purity = DATA.purities[form.karaat] || 0;
-		var weight = parseFloat(form.weight) || 0;
+	/* =====================================================================
+	   BERECHNUNGEN
+	   result = { market, marginPct, marginAbs, charity, low, high, indicative }
+	===================================================================== */
+	function calcMetal(f) {
+		var metal = DATA.metals[f.metal];
+		if (!metal) return null;
+		var purity = (DATA.metal_purities[f.metal] && DATA.metal_purities[f.metal][f.purity]) || 0;
+		var weight = parseFloat(f.weight) || 0;
 		var market = metal.spot * weight * purity;
 
-		// Zustand nur bei Barren/Münzen
-		var condFactor = 1;
-		if (form.shape !== 'sieraad' && form.condition && DATA.conditions[form.condition]) {
-			condFactor = DATA.conditions[form.condition].factor;
+		var condFactor = 1, tierBonus = 0;
+		if (f.form !== 'sieraad' && f.condition && DATA.conditions[f.condition]) {
+			condFactor = DATA.conditions[f.condition].factor;
 		}
-		// Schmuck-Staffel
-		var tierBonus = 0;
-		if (form.shape === 'sieraad') {
+		if (f.form === 'sieraad') {
 			DATA.jewelry_tiers.forEach(function (t) { if (weight >= t.min) tierBonus = t.bonus; });
 		}
-		market = market * condFactor;
-		var marginPct = DATA.margins.metal - tierBonus; // Staffel reduziert Marge ⇒ mehr €/g
-		if (marginPct < 0) marginPct = 0;
+		market *= condFactor;
+		var marginPct = Math.max(DATA.margins.metal - tierBonus, 0);
 		var marginAbs = market * marginPct;
 		var payout = market - marginAbs;
-		var charity = marginAbs * DATA.margins.charity_share;
-
-		return {
-			market: market, marginPct: marginPct, marginAbs: marginAbs,
-			charity: charity, payoutLow: payout, payoutHigh: payout,
-			indicative: false
-		};
+		return { market: market, marginPct: marginPct, marginAbs: marginAbs, charity: marginAbs * DATA.margins.charity_share, low: payout, high: payout, indicative: false };
 	}
-
-	function calcDiamond(form) {
-		var b = DATA.diamond_base;
-		var carat = parseFloat(form.carat) || 0;
-		var f = (b.color[form.color] || 0) * (b.clarity[form.clarity] || 0) *
-			(b.cut[form.cut] || 0) * (b.fluor[form.fluor] || 1);
-		var market = b.anchor * f * carat;
-		return indicative(market, DATA.margins.diamond_range);
+	function calcDiamond(f) {
+		var b = DATA.diamond_base, carat = parseFloat(f.carat) || 0;
+		var factor = (b.color[f.color] || 0) * (b.clarity[f.clarity] || 0) * (b.cut[f.cut] || 0) * (b.fluor[f.fluor] || 1);
+		return indicative(b.anchor * factor * carat, DATA.margins.diamond_range);
 	}
-
-	function calcGem(form) {
-		var g = DATA.gem_base[form.gem];
-		var carat = parseFloat(form.carat) || 0;
-		// vereinfachte Qualitäts-Skala 1..5
-		var q = (parseFloat(form.quality) || 3) / 5;
-		var market = g.anchor * carat * q;
-		return indicative(market, DATA.margins.gem_range);
+	function calcGem(f) {
+		var g = DATA.gem_base[f.gem]; if (!g) return null;
+		var carat = parseFloat(f.carat) || 0, q = (parseFloat(f.quality) || 3) / 5;
+		return indicative(g.anchor * carat * q, DATA.margins.gem_range);
 	}
-
-	function calcWatch(form) {
-		var brand = DATA.watches[form.brand];
-		var base = brand && brand.models[form.model] ? brand.models[form.model] : 0;
-		var cf = DATA.watch_conditions[form.condition] ? DATA.watch_conditions[form.condition].factor : 1;
+	function calcWatch(f) {
+		var brand = DATA.watches[f.brand];
+		var base = brand && brand.models[f.model] ? brand.models[f.model] : 0;
+		var cf = DATA.watch_conditions[f.condition] ? DATA.watch_conditions[f.condition].factor : 1;
 		var bonus = 0;
-		if (form.box) bonus += DATA.watch_extras.box.bonus;
-		if (form.papers) bonus += DATA.watch_extras.papers.bonus;
-		var market = base * cf * (1 + bonus);
-		return indicative(market, DATA.margins.watch_range);
+		if (f.box) bonus += DATA.watch_extras.box.bonus;
+		if (f.papers) bonus += DATA.watch_extras.papers.bonus;
+		return indicative(base * cf * (1 + bonus), DATA.margins.watch_range);
 	}
-
-	// Indikationspreis von–bis (Edelsteine + Uhren)
 	function indicative(market, range) {
-		var marginPct = range;
-		var marginAbs = market * marginPct;
-		var mid = market - marginAbs;
-		var low = market * (1 - range - 0.03);
-		var high = market * (1 - range + 0.03);
-		var charity = marginAbs * DATA.margins.charity_share;
+		var marginAbs = market * range;
 		return {
-			market: market, marginPct: marginPct, marginAbs: marginAbs,
-			charity: charity, payoutLow: low, payoutHigh: high,
+			market: market, marginPct: range, marginAbs: marginAbs,
+			charity: marginAbs * DATA.margins.charity_share,
+			low: market * (1 - range - 0.03), high: market * (1 - range + 0.03),
 			indicative: true
 		};
 	}
 
-	/* =========================================================
-	   WARENKORB  (quotes → später wp_xg_quotes → Terminplaner)
-	========================================================= */
-	var cart = [];
+	/* =====================================================================
+	   WIDGET-INSTANZ
+	===================================================================== */
+	function Calculator(root) {
+		var mode = root.getAttribute('data-mode') || 'full';
+		var state = {
+			view: 'calc',          // calc | cart | checkout
+			type: null,            // metal | diamond | gem | watch
+			subStep: 0,            // innerhalb des Typs
+			form: {},
+			result: null,
+			cart: [],
+			checkout: { step: 0, data: {}, service: null, payout: null, charity: null }
+		};
 
-	function addToCart(entry) {
-		cart.push(entry);
-		renderCart();
-	}
-	function removeFromCart(idx) {
-		cart.splice(idx, 1);
-		renderCart();
-	}
+		// Grundgerüst
+		root.innerHTML = '';
+		var head = h('div', 'xg-calc-head');
+		head.appendChild(liveBlock());
+		head.appendChild(themeToggle());
+		root.appendChild(head);
 
-	/* =========================================================
-	   UI: FELD-DEFINITIONEN PRO PRODUKTTYP
-	========================================================= */
-	function buildMetalFields(wrap) {
-		var grid = el('div', 'xg-calc-grid');
+		var tabs = h('div', 'xg-calc-tabs');
+		var tabCalc = h('button', 'xg-calc-tab active', ICON.search + ' Berechnen');
+		var tabCart = h('button', 'xg-calc-tab', ICON.cart + ' <span>Auswahl</span> <span class="xg-calc-tab-badge" style="display:none">0</span>');
+		tabs.appendChild(tabCalc); tabs.appendChild(tabCart);
+		root.appendChild(tabs);
 
-		var mSel = el('select', 'xg-calc-input'); mSel.name = 'metal';
-		Object.keys(DATA.metals).forEach(function (k) { mSel.appendChild(opt(k, DATA.metals[k].label)); });
-		grid.appendChild(field('Metall', mSel));
+		var progress = h('div', 'xg-calc-progress');
+		root.appendChild(progress);
 
-		var kSel = el('select', 'xg-calc-input'); kSel.name = 'karaat';
-		Object.keys(DATA.purities).forEach(function (k) { kSel.appendChild(opt(k, k + ' karaat')); });
-		grid.appendChild(field('Reinheit', kSel));
+		var stage = h('div', 'xg-calc-stage');
+		root.appendChild(stage);
 
-		var shape = el('select', 'xg-calc-input'); shape.name = 'shape';
-		shape.appendChild(opt('barren', 'Barren'));
-		shape.appendChild(opt('munt', 'Münze'));
-		shape.appendChild(opt('sieraad', 'Gold-Schmuckstücke'));
-		grid.appendChild(field('Form', shape));
+		tabCalc.addEventListener('click', function () { state.view = 'calc'; render(); });
+		tabCart.addEventListener('click', function () { if (state.cart.length || state.view === 'checkout') { state.view = 'cart'; render(); } });
 
-		var w = el('input', 'xg-calc-input'); w.type = 'number'; w.name = 'weight';
-		w.min = '0'; w.step = '0.1'; w.placeholder = 'Gewicht in g';
-		grid.appendChild(field('Gewicht (g)', w));
+		/* ---------- LIVE / THEME ---------- */
+		function liveBlock() {
+			var b = h('div', 'xg-calc-live', '<span class="xg-calc-live-dot"></span> Live-Preise');
+			var t = h('span', 'xg-calc-live-time');
+			function tick() {
+				var d = new Date();
+				t.innerHTML = '&middot; <strong>' + d.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }) + '</strong> CET';
+			}
+			tick(); setInterval(tick, 30000);
+			b.appendChild(t);
+			return b;
+		}
+		function themeToggle() {
+			var wrap = h('div', 'xg-calc-theme');
+			var sun = h('span', 'xc-on', '☀'); var moon = h('span', '', '☾');
+			wrap.appendChild(sun); wrap.appendChild(moon);
+			wrap.addEventListener('click', function () {
+				var host = document.documentElement;
+				var dark = host.getAttribute('data-theme') === 'dark';
+				host.setAttribute('data-theme', dark ? 'light' : 'dark');
+				sun.classList.toggle('xc-on', dark); moon.classList.toggle('xc-on', !dark);
+			});
+			return wrap;
+		}
 
-		var condWrap = field('Zustand', (function () {
-			var c = el('select', 'xg-calc-input'); c.name = 'condition';
-			Object.keys(DATA.conditions).forEach(function (k) { c.appendChild(opt(k, DATA.conditions[k].label)); });
+		/* ---------- PROGRESS ---------- */
+		function renderProgress() {
+			progress.innerHTML = '';
+			var steps, idx;
+			if (state.view === 'checkout') {
+				steps = ['Daten', 'Service', 'Auszahlung', 'Charity', 'Fertig'];
+				idx = state.checkout.step;
+			} else {
+				steps = ['Produkt', 'Details', 'Resultat'];
+				idx = !state.type ? 0 : (state.result ? 2 : 1);
+			}
+			var line = h('div', 'xg-calc-prog-line');
+			var fill = h('div', 'xg-calc-prog-fill');
+			fill.style.width = (idx / (steps.length - 1) * 100) + '%';
+			line.appendChild(fill); progress.appendChild(line);
+
+			var row = h('div', 'xg-calc-prog-steps');
+			steps.forEach(function (s, i) {
+				var st = h('div', 'xg-calc-pstep' + (i === idx ? ' active' : i < idx ? ' done' : ''));
+				st.appendChild(h('div', 'xg-calc-pstep-num', i < idx ? '✓' : (i + 1)));
+				st.appendChild(h('div', 'xg-calc-pstep-lbl', s));
+				row.appendChild(st);
+			});
+			progress.appendChild(row);
+		}
+
+		/* ---------- PANEL-WECHSEL mit Animation ---------- */
+		function setPanel(node) {
+			var old = stage.querySelector('.xg-calc-panel, .xg-calc-cart, .xg-calc-checkout');
+			if (old) { old.classList.add('out'); setTimeout(function () { mount(); }, 180); }
+			else mount();
+			function mount() { stage.innerHTML = ''; stage.appendChild(node); }
+		}
+
+		/* =================================================================
+		   RENDER (Router)
+		================================================================= */
+		function render() {
+			tabCalc.classList.toggle('active', state.view === 'calc');
+			tabCart.classList.toggle('active', state.view !== 'calc');
+			updateBadge();
+			renderProgress();
+			if (state.view === 'calc') renderCalc();
+			else if (state.view === 'cart') renderCart();
+			else renderCheckout();
+		}
+
+		function updateBadge() {
+			var badge = tabCart.querySelector('.xg-calc-tab-badge');
+			if (state.cart.length) {
+				badge.style.display = '';
+				if (badge.textContent !== String(state.cart.length)) {
+					badge.textContent = state.cart.length;
+					badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump');
+				}
+			} else { badge.style.display = 'none'; }
+		}
+
+		/* =================================================================
+		   CALC-VIEW
+		================================================================= */
+		function renderCalc() {
+			if (!state.type) return renderTypePicker();
+			if (state.result) return renderResult();
+			renderDetails();
+		}
+
+		// Step 1: Produkt-Typ
+		function renderTypePicker() {
+			var p = h('div', 'xg-calc-panel');
+			p.appendChild(panelHead('Was möchten Sie verkaufen?', 'Wählen Sie eine Kategorie – wir führen Sie zum Preis.'));
+			p.appendChild(findBox());
+
+			var types = [
+				{ k: 'metal',   t: 'Edelmetall', d: 'Gold, Silber, Platin, Palladium' },
+				{ k: 'diamond', t: 'Diamant',    d: 'Lose Steine & Schmuck' },
+				{ k: 'gem',     t: 'Edelstein',  d: 'Rubin, Saphir, Smaragd' },
+				{ k: 'watch',   t: 'Uhr',        d: 'Luxusuhren aller Marken' }
+			];
+			var grid = h('div', 'xg-calc-opts');
+			types.forEach(function (ty) {
+				grid.appendChild(optCard(ICON[ty.k], ty.t, ty.d, function () {
+					state.type = ty.k; state.form = {}; state.subStep = 0; state.result = null; render();
+				}));
+			});
+			p.appendChild(grid);
+			setPanel(p);
+		}
+
+		// Step 2: Details (geführt – Leitwert als Karten, Rest kompakt)
+		function renderDetails() {
+			var p = h('div', 'xg-calc-panel');
+			var titles = { metal: 'Ihr Edelmetall', diamond: 'Ihr Diamant', gem: 'Ihr Edelstein', watch: 'Ihre Uhr' };
+			p.appendChild(panelHead(titles[state.type], 'Angaben ergänzen – der Preis berechnet sich live.', true));
+
+			var body = h('div');
+			if (state.type === 'metal') buildMetal(body);
+			else if (state.type === 'diamond') buildDiamond(body);
+			else if (state.type === 'gem') buildGem(body);
+			else if (state.type === 'watch') buildWatch(body);
+			p.appendChild(body);
+
+			var actions = h('div', 'xg-calc-next-wrap');
+			var btn = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Preis berechnen');
+			btn.addEventListener('click', function () {
+				var r = compute();
+				if (r) { state.result = r; render(); }
+			});
+			actions.appendChild(btn);
+			p.appendChild(actions);
+			setPanel(p);
+		}
+
+		function compute() {
+			if (state.type === 'metal') return calcMetal(state.form);
+			if (state.type === 'diamond') return calcDiamond(state.form);
+			if (state.type === 'gem') return calcGem(state.form);
+			if (state.type === 'watch') return calcWatch(state.form);
+			return null;
+		}
+
+		/* ---------- FELD-BUILDER ---------- */
+		function field(label, control, span, hint) {
+			var f = h('div', 'xg-calc-field' + (span ? ' span-2' : ''));
+			var l = h('label', 'xg-calc-label', label);
+			if (hint) l.appendChild(h('small', '', ' · ' + hint));
+			f.appendChild(l); f.appendChild(control);
+			return f;
+		}
+		function sel(name, entries, onchange) {
+			var s = h('select', 'xg-calc-input'); s.name = name;
+			entries.forEach(function (e) { s.appendChild(opt(e[0], e[1])); });
+			s.addEventListener('change', function () { state.form[name] = s.value; if (onchange) onchange(); });
+			state.form[name] = s.value;
+			return s;
+		}
+		function num(name, ph, step) {
+			var i = h('input', 'xg-calc-input'); i.type = 'number'; i.name = name;
+			i.min = '0'; i.step = step || '0.1'; i.placeholder = ph;
+			i.addEventListener('input', function () { state.form[name] = i.value; });
+			return i;
+		}
+		function text(name, ph) {
+			var i = h('input', 'xg-calc-input'); i.type = 'text'; i.name = name; i.placeholder = ph;
+			i.addEventListener('input', function () { state.form[name] = i.value; });
+			return i;
+		}
+		function seg(name, entries) {
+			var wrap = h('div', 'xg-calc-seg');
+			entries.forEach(function (e, i) {
+				var b = h('button', i === 0 ? 'active' : '', e[1]); b.type = 'button';
+				b.addEventListener('click', function () {
+					Array.prototype.forEach.call(wrap.children, function (c) { c.classList.remove('active'); });
+					b.classList.add('active'); state.form[name] = e[0];
+					if (name === 'form') refreshMetalCond();
+				});
+				wrap.appendChild(b);
+			});
+			state.form[name] = entries[0][0];
+			return wrap;
+		}
+		function pill(name, label) {
+			var w = h('label', 'xg-calc-pill');
+			var inp = h('input'); inp.type = 'checkbox';
+			var box = h('span', 'xc-box', ICON.check);
+			w.appendChild(inp); w.appendChild(box); w.appendChild(document.createTextNode(label));
+			inp.addEventListener('change', function () { state.form[name] = inp.checked; w.classList.toggle('on', inp.checked); });
+			return w;
+		}
+
+		var _metalCondField = null;
+		function refreshMetalCond() {
+			if (_metalCondField) _metalCondField.style.display = (state.form.form === 'sieraad') ? 'none' : '';
+		}
+
+		// ----- METAL: nur Gold = Karat, andere = Legierung -----
+		function buildMetal(wrap) {
+			// Leitwert: Metall als Karten
+			var cards = h('div', 'xg-calc-opts cols-3');
+			Object.keys(DATA.metals).forEach(function (k) {
+				var c = optCardMini(DATA.metals[k].label, function () { state.form.metal = k; state.form.purity = null; render(); });
+				if (state.form.metal === k) c.classList.add('selected');
+				cards.appendChild(c);
+			});
+			wrap.appendChild(field('Metall', cards, true));
+			if (!state.form.metal) return;
+
+			var grid = h('div', 'xg-calc-grid');
+			// Form
+			grid.appendChild(field('Form', seg('form', [['barren', 'Barren'], ['munt', 'Münze'], ['sieraad', 'Schmuck']])));
+
+			// Reinheit: Gold → Karat, sonst → Legierung
+			var purEntries = Object.keys(DATA.metal_purities[state.form.metal]).map(function (key) {
+				var lbl = (state.form.metal === 'goud') ? (key + ' karaat') : (key + ' (' + DATA.purity_labels[key] + ')');
+				return [key, lbl];
+			});
+			var purLabel = (state.form.metal === 'goud') ? 'Karat' : 'Legierung';
+			grid.appendChild(field(purLabel, sel('purity', purEntries)));
+
+			grid.appendChild(field('Gewicht', num('weight', 'in Gramm'), false, 'g'));
+
+			_metalCondField = field('Zustand', sel('condition', Object.keys(DATA.conditions).map(function (k) { return [k, DATA.conditions[k].label]; })));
+			grid.appendChild(_metalCondField);
+			wrap.appendChild(grid);
+			refreshMetalCond();
+		}
+
+		// ----- DIAMOND: + Labor + Zertifikatsnummer -----
+		function buildDiamond(wrap) {
+			var b = DATA.diamond_base;
+			var grid = h('div', 'xg-calc-grid');
+			grid.appendChild(field('Karatgewicht', num('carat', 'ct', '0.01'), false, 'ct'));
+			grid.appendChild(field('Farbe', sel('color', Object.keys(b.color).map(function (k) { return [k, k]; }))));
+			grid.appendChild(field('Reinheit', sel('clarity', Object.keys(b.clarity).map(function (k) { return [k, k]; }))));
+			grid.appendChild(field('Schliff', sel('cut', Object.keys(b.cut).map(function (k) { return [k, k]; }))));
+			grid.appendChild(field('Fluoreszenz', sel('fluor', Object.keys(b.fluor).map(function (k) { return [k, k]; }))));
+			grid.appendChild(field('Labor', sel('lab', DATA.labs.map(function (l) { return [l, l]; }))));
+			grid.appendChild(field('Zertifikatsnummer', text('cert', 'optional'), true, 'optional'));
+			wrap.appendChild(grid);
+		}
+
+		// ----- GEM: + Labor + Zertifikat -----
+		function buildGem(wrap) {
+			var cards = h('div', 'xg-calc-opts cols-3');
+			Object.keys(DATA.gem_base).forEach(function (k) {
+				var c = optCardMini(DATA.gem_base[k].label, function () { state.form.gem = k; render(); });
+				if (state.form.gem === k) c.classList.add('selected');
+				cards.appendChild(c);
+			});
+			wrap.appendChild(field('Edelstein', cards, true));
+			if (!state.form.gem) return;
+
+			var grid = h('div', 'xg-calc-grid');
+			grid.appendChild(field('Karatgewicht', num('carat', 'ct', '0.01'), false, 'ct'));
+			grid.appendChild(field('Qualität', sel('quality', [['5', 'Exzellent'], ['4', 'Sehr gut'], ['3', 'Gut'], ['2', 'Mittel'], ['1', 'Einfach']])));
+			grid.appendChild(field('Labor', sel('lab', DATA.labs.map(function (l) { return [l, l]; }))));
+			grid.appendChild(field('Zertifikatsnummer', text('cert', 'optional'), true, 'optional'));
+			wrap.appendChild(grid);
+		}
+
+		// ----- WATCH: Marke→Modell + Metall, Armband, Jahr, Zifferblatt, Edition -----
+		function buildWatch(wrap) {
+			var cards = h('div', 'xg-calc-opts cols-3');
+			Object.keys(DATA.watches).forEach(function (k) {
+				var c = optCardMini(DATA.watches[k].label, function () { state.form.brand = k; state.form.model = null; render(); });
+				if (state.form.brand === k) c.classList.add('selected');
+				cards.appendChild(c);
+			});
+			wrap.appendChild(field('Marke', cards, true));
+			if (!state.form.brand) return;
+
+			var grid = h('div', 'xg-calc-grid');
+			grid.appendChild(field('Modell', sel('model', Object.keys(DATA.watches[state.form.brand].models).map(function (m) { return [m, m]; }))));
+			grid.appendChild(field('Zustand', sel('condition', Object.keys(DATA.watch_conditions).map(function (k) { return [k, DATA.watch_conditions[k].label]; }))));
+			grid.appendChild(field('Gehäuse-Metall', sel('wmetal', DATA.watch_metals.map(function (m) { return [m, m]; }))));
+			grid.appendChild(field('Armbandtyp', sel('bracelet', DATA.watch_bracelets.map(function (m) { return [m, m]; }))));
+			grid.appendChild(field('Baujahr', num('year', 'z.B. 2015', '1'), false, 'erleichtert die Suche'));
+			grid.appendChild(field('Zifferblatt', sel('dial', DATA.watch_dials.map(function (m) { return [m, m]; }))));
+			grid.appendChild(field('Edition', text('edition', 'z.B. Limited / Standard'), true));
+			var pills = h('div', 'xg-calc-pills');
+			pills.appendChild(pill('box', DATA.watch_extras.box.label));
+			pills.appendChild(pill('papers', DATA.watch_extras.papers.label));
+			grid.appendChild(field('Zubehör', pills, true));
+			wrap.appendChild(grid);
+		}
+
+		// Step 3: Resultat
+		function renderResult() {
+			var r = state.result;
+			var p = h('div', 'xg-calc-panel');
+			var res = h('div', 'xg-calc-result');
+
+			var top = h('div', 'xg-calc-result-top');
+			top.appendChild(h('span', 'xg-calc-result-type', typeLabel()));
+			top.appendChild(h('span', 'xg-calc-badge ' + (r.indicative ? 'ind' : 'fix'), r.indicative ? 'Preisindikation' : 'Festpreis'));
+			res.appendChild(top);
+
+			var price = h('div', 'xg-calc-price');
+			res.appendChild(price);
+			res.appendChild(h('div', 'xg-calc-price-note', r.indicative
+				? 'Unverbindliche Indikation. Endpreis nach Begutachtung.'
+				: 'Fester Ankaufspreis auf Basis aktueller Spot-Preise.'));
+
+			// Count-up
+			if (r.indicative) {
+				price.innerHTML = '<span class="lo">–</span> – <span class="hi">–</span>';
+				animateValue(price.querySelector('.lo'), r.low, euro);
+				animateValue(price.querySelector('.hi'), r.high, euro);
+			} else {
+				animateValue(price, r.low, euro);
+			}
+
+			var brk = h('div', 'xg-calc-break');
+			brk.appendChild(breakRow('Marktpreis', euro2(r.market)));
+			brk.appendChild(breakRow('Marge', pct(r.marginPct) + ' · ' + euro2(r.marginAbs)));
+			brk.appendChild(breakRow('Differenz Markt ↔ Ankauf', euro2(r.market - r.low)));
+			res.appendChild(brk);
+
+			// Charity prominent
+			var ch = h('div', 'xg-calc-charity');
+			ch.appendChild(h('div', 'xg-calc-charity-head', ICON.heart + ' Davon für den guten Zweck'));
+			ch.appendChild(h('div', 'xg-calc-charity-amt', euro2(r.charity)));
+			ch.appendChild(h('div', 'xg-calc-charity-txt', 'In jeder Marge steckt ein fester Charity-Anteil. Den Empfänger wählen Sie später selbst.'));
+			res.appendChild(ch);
+
+			var add = h('button', 'xg-calc-btn xg-calc-btn-primary', ICON.cart + ' Zur Auswahl hinzufügen');
+			add.addEventListener('click', function () { addToCart(r); });
+			res.appendChild(add);
+			res.appendChild(h('div', '', '<div style="height:10px"></div>'));
+			var again = h('button', 'xg-calc-btn xg-calc-btn-ghost', 'Weiteres Produkt berechnen');
+			again.addEventListener('click', function () { state.type = null; state.form = {}; state.result = null; render(); });
+			res.appendChild(again);
+
+			p.appendChild(res);
+			setPanel(p);
+		}
+		function breakRow(l, v, cls) { return h('div', 'xg-calc-break-row' + (cls ? ' ' + cls : ''), '<span>' + l + '</span><b>' + v + '</b>'); }
+
+		function typeLabel() { return { metal: 'Edelmetall', diamond: 'Diamant', gem: 'Edelstein', watch: 'Uhr' }[state.type]; }
+		function specLabel() {
+			var f = state.form;
+			if (state.type === 'metal') return (DATA.metals[f.metal] ? DATA.metals[f.metal].label : '') + ' · ' + (f.weight || 0) + ' g';
+			if (state.type === 'diamond') return (f.carat || 0) + ' ct · ' + (f.color || '') + '/' + (f.clarity || '');
+			if (state.type === 'gem') return (DATA.gem_base[f.gem] ? DATA.gem_base[f.gem].label : '') + ' · ' + (f.carat || 0) + ' ct';
+			if (state.type === 'watch') return (DATA.watches[f.brand] ? DATA.watches[f.brand].label : '') + ' ' + (f.model || '');
+			return '';
+		}
+
+		function addToCart(r) {
+			state.cart.push({
+				type: state.type, typeLabel: typeLabel(), spec: specLabel(),
+				low: r.low, high: r.high, indicative: r.indicative, charity: r.charity
+			});
+			state.type = null; state.form = {}; state.result = null;
+			state.view = 'cart';
+			render();
+		}
+
+		/* =================================================================
+		   CART-VIEW (kombiniert)
+		================================================================= */
+		function renderCart() {
+			var wrap = h('div', 'xg-calc-cart');
+			if (!state.cart.length) {
+				wrap.appendChild(h('div', 'xg-calc-cart-empty', ICON.cart + '<p>Noch keine Produkte ausgewählt.</p>'));
+				var back = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Produkt berechnen');
+				back.addEventListener('click', function () { state.view = 'calc'; render(); });
+				wrap.appendChild(back);
+				setPanel(wrap); return;
+			}
+
+			var totalLow = 0, totalHigh = 0, totalCharity = 0;
+			state.cart.forEach(function (it, i) {
+				totalLow += it.low; totalHigh += it.high; totalCharity += it.charity;
+				var row = h('div', 'xg-calc-citem');
+				row.appendChild(h('div', 'xg-calc-citem-ico', ICON[it.type]));
+				var body = h('div', 'xg-calc-citem-body');
+				body.appendChild(h('div', 'xg-calc-citem-title', it.typeLabel));
+				body.appendChild(h('div', 'xg-calc-citem-spec', it.spec));
+				row.appendChild(body);
+				row.appendChild(h('div', 'xg-calc-citem-price', it.indicative ? euro(it.low) + '–' + euro(it.high) : euro(it.low)));
+				var del = h('button', 'xg-calc-citem-del', '✕');
+				del.addEventListener('click', function () { state.cart.splice(i, 1); render(); });
+				row.appendChild(del);
+				wrap.appendChild(row);
+			});
+
+			var sum = h('div', 'xg-calc-cart-sum');
+			var r1 = h('div', 'xg-calc-cart-sum-row total');
+			r1.innerHTML = '<span>Geschätzter Ankaufswert</span><b>' + (totalLow === totalHigh ? euro(totalLow) : euro(totalLow) + ' – ' + euro(totalHigh)) + '</b>';
+			sum.appendChild(r1);
+			wrap.appendChild(sum);
+
+			// Charity GROSS + Aufschlüsselung wer/wieviel
+			var ch = h('div', 'xg-calc-cart-charity');
+			ch.appendChild(h('div', 'xg-calc-cart-charity-top', ICON.heart + ' Ihr Beitrag für den guten Zweck'));
+			ch.appendChild(h('div', 'xg-calc-cart-charity-amt', euro2(totalCharity)));
+			var list = h('div', 'xg-calc-cart-charity-list');
+			var palette = ['#AE1E1E', '#1f9d55', '#c8a24a', '#3a6ea5', '#7a4fa3'];
+			DATA.charity_projects.forEach(function (pj, i) {
+				var share = totalCharity * (pj.weight || (1 / DATA.charity_projects.length));
+				var line = h('div', 'xg-calc-charity-line');
+				line.innerHTML =
+					'<span class="xg-calc-charity-line-name"><span style="background:' + palette[i % palette.length] + '"></span>' + pj.label + '</span>' +
+					'<span class="xg-calc-charity-line-amt">' + euro2(share) + '</span>';
+				list.appendChild(line);
+			});
+			ch.appendChild(list);
+			ch.appendChild(h('div', 'xg-calc-charity-txt', '<div style="font-size:12px;color:var(--xc-ink-soft);margin-top:10px">Im nächsten Schritt können Sie gezielt eine Einrichtung in Ihrer Stadt wählen.</div>'));
+			wrap.appendChild(ch);
+
+			var actions = h('div', 'xg-calc-cart-actions');
+			var go = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Termin vereinbaren & verkaufen');
+			go.addEventListener('click', function () { state.view = 'checkout'; state.checkout.step = 0; render(); });
+			var more = h('button', 'xg-calc-btn xg-calc-btn-ghost', 'Weiteres Produkt hinzufügen');
+			more.addEventListener('click', function () { state.view = 'calc'; render(); });
+			actions.appendChild(go); actions.appendChild(more);
+			wrap.appendChild(actions);
+
+			setPanel(wrap);
+		}
+
+		/* =================================================================
+		   CHECKOUT-FLOW
+		================================================================= */
+		function renderCheckout() {
+			var c = state.checkout;
+			var node = h('div', 'xg-calc-checkout');
+			if (c.step === 0) checkoutData(node);
+			else if (c.step === 1) checkoutService(node);
+			else if (c.step === 2) checkoutPayout(node);
+			else if (c.step === 3) checkoutCharity(node);
+			else checkoutThanks(node);
+			setPanel(node);
+		}
+		function coHead(node, title, sub) { node.appendChild(panelHead(title, sub, true, true)); }
+
+		// 1) Daten
+		function checkoutData(node) {
+			coHead(node, 'Ihre Kontaktdaten', 'Damit wir Ihren Termin bestätigen können.');
+			var grid = h('div', 'xg-calc-grid');
+			grid.appendChild(field('Vorname', coInput('first')));
+			grid.appendChild(field('Nachname', coInput('last')));
+			grid.appendChild(field('E-Mail', coInput('email', 'email')));
+			grid.appendChild(field('Telefon', coInput('phone', 'tel')));
+			grid.appendChild(field('Stadt', coInput('city'), true));
+			node.appendChild(grid);
+			coNav(node, null, 'Weiter', function () { state.checkout.step = 1; render(); });
+		}
+		function coInput(name, type) {
+			var i = h('input', 'xg-calc-input'); i.type = type || 'text';
+			i.value = state.checkout.data[name] || '';
+			i.addEventListener('input', function () { state.checkout.data[name] = i.value; });
+			return i;
+		}
+
+		// 2) Service
+		function checkoutService(node) {
+			coHead(node, 'Wie möchten Sie verkaufen?', 'Wählen Sie die für Sie bequemste Option.');
+			var svc = h('div', 'xg-calc-svc');
+			[
+				{ k: 'home', i: ICON.home, t: 'Hausbesuch', d: 'Unser Experte kommt zu Ihnen (kostenlos & versichert).' },
+				{ k: 'office', i: ICON.office, t: 'In einer Filiale', d: 'Besuchen Sie eines unserer Büros.' },
+				{ k: 'pickup', i: ICON.truck, t: 'Abhol-Service', d: 'Versicherte Abholung per Kurier.' }
+			].forEach(function (s) {
+				var card = optCard(s.i, s.t, s.d, function () { state.checkout.service = s.k; state.checkout.step = 2; render(); });
+				if (state.checkout.service === s.k) card.classList.add('selected');
+				svc.appendChild(card);
+			});
+			node.appendChild(svc);
+			coNav(node, function () { state.checkout.step = 0; render(); }, null, null);
+		}
+
+		// 3) Auszahlung
+		function checkoutPayout(node) {
+			coHead(node, 'Auszahlungsart', 'Wie möchten Sie Ihr Geld erhalten?');
+			var grid = h('div', 'xg-calc-opts');
+			[
+				{ k: 'bank', t: 'Banküberweisung', d: 'Direkt auf Ihr Konto.' },
+				{ k: 'cash', t: 'Barauszahlung', d: 'Sofort vor Ort (bis Limit).' }
+			].forEach(function (pp) {
+				var card = optCardMini(pp.t + ' — ' + pp.d, function () { state.checkout.payout = pp.k; state.checkout.step = 3; render(); });
+				if (state.checkout.payout === pp.k) card.classList.add('selected');
+				grid.appendChild(card);
+			});
+			node.appendChild(grid);
+			coNav(node, function () { state.checkout.step = 1; render(); }, null, null);
+		}
+
+		// 4) Charity-Empfänger gezielt wählen
+		function checkoutCharity(node) {
+			coHead(node, 'Wohin soll Ihr Beitrag gehen?', 'Wählen Sie eine konkrete Einrichtung – gerne in Ihrer Stadt.');
+			var totalCharity = state.cart.reduce(function (a, b) { return a + b.charity; }, 0);
+			node.appendChild(h('div', 'xg-calc-charity', ICON.heart + ' <b style="color:var(--xc-red)"> ' + euro2(totalCharity) + '</b> fließen an die gewählte Einrichtung.'));
+
+			var typeSel = sel2('charity_type', DATA.charity_projects.map(function (p) { return [p.id, p.label]; }), function (v) { fillRecipients(v); });
+			node.appendChild(field('Bereich', typeSel, true));
+
+			var recipientWrap = field('Einrichtung', h('select', 'xg-calc-input'), true);
+			node.appendChild(recipientWrap);
+			function fillRecipients(typeId) {
+				var prj = DATA.charity_projects.filter(function (p) { return p.id === typeId; })[0];
+				var s = recipientWrap.querySelector('select');
+				s.innerHTML = '';
+				(prj.recipients || []).forEach(function (r) { s.appendChild(opt(r, r)); });
+				state.checkout.charity = { type: typeId, recipient: s.value };
+				s.onchange = function () { state.checkout.charity.recipient = s.value; };
+			}
+			fillRecipients(DATA.charity_projects[0].id);
+
+			coNav(node, function () { state.checkout.step = 2; render(); }, 'Termin anfragen', function () { state.checkout.step = 4; render(); });
+		}
+		function sel2(name, entries, onchange) {
+			var s = h('select', 'xg-calc-input'); s.name = name;
+			entries.forEach(function (e) { s.appendChild(opt(e[0], e[1])); });
+			s.addEventListener('change', function () { onchange(s.value); });
+			return s;
+		}
+
+		// 5) Danke
+		function checkoutThanks(node) {
+			var t = h('div', 'xg-calc-thanks');
+			t.appendChild(h('div', 'xg-calc-thanks-check', ICON.check));
+			t.appendChild(h('h3', '', 'Vielen Dank!'));
+			var name = state.checkout.data.first || '';
+			t.appendChild(h('p', '', 'Ihr Terminversuch ist bei uns eingegangen' + (name ? ', ' + name : '') + '. Sie erhalten in Kürze eine Bestätigungs-E-Mail mit allen Details.'));
+			var ch = state.checkout.charity;
+			if (ch) t.appendChild(h('p', '', '<span style="color:var(--xc-red);font-weight:700">♥</span> Ihr Beitrag geht an: <b>' + ch.recipient + '</b>'));
+
+			// Übergabe an Backend (später: POST → wp_xg_appointments)
+			document.dispatchEvent(new CustomEvent('xg:appointment-submit', {
+				detail: { cart: state.cart, checkout: state.checkout }
+			}));
+
+			var done = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Neue Berechnung starten');
+			done.style.marginTop = '20px'; done.style.maxWidth = '280px'; done.style.marginLeft = 'auto'; done.style.marginRight = 'auto';
+			done.addEventListener('click', function () {
+				state.cart = []; state.type = null; state.form = {}; state.result = null;
+				state.checkout = { step: 0, data: {}, service: null, payout: null, charity: null };
+				state.view = 'calc'; render();
+			});
+			t.appendChild(done);
+			node.appendChild(t);
+		}
+
+		function coNav(node, back, nextLabel, nextFn) {
+			var wrap = h('div', 'xg-calc-next-wrap');
+			if (back) { var b = h('button', 'xg-calc-btn xg-calc-btn-ghost', '← Zurück'); b.addEventListener('click', back); wrap.appendChild(b); }
+			if (nextLabel) { var n = h('button', 'xg-calc-btn xg-calc-btn-primary', nextLabel); n.addEventListener('click', nextFn); wrap.appendChild(n); }
+			node.appendChild(wrap);
+		}
+
+		/* ---------- gemeinsame UI-Bausteine ---------- */
+		function panelHead(title, sub, showBack, checkout) {
+			var head = h('div', 'xg-calc-panel-head');
+			var left = h('div');
+			left.appendChild(h('div', 'xg-calc-panel-title', title));
+			if (sub) left.appendChild(h('div', 'xg-calc-panel-sub', sub));
+			head.appendChild(left);
+			if (showBack) {
+				var b = h('button', 'xg-calc-back', '← Zurück');
+				b.addEventListener('click', function () {
+					if (checkout) { state.view = 'cart'; render(); }
+					else { state.type = null; state.form = {}; state.result = null; render(); }
+				});
+				head.appendChild(b);
+			}
+			return head;
+		}
+		function findBox() {
+			var box = h('div', 'xg-calc-find', ICON.search);
+			var inp = h('input'); inp.type = 'text'; inp.placeholder = 'Produkt suchen (z.B. Rolex, Diamant, Goud)…';
+			box.appendChild(inp);
+			inp.addEventListener('input', function () {
+				var q = inp.value.toLowerCase();
+				if (!q) return;
+				if (/rolex|omega|patek|cartier|uhr|horloge/.test(q)) quickType('watch');
+				else if (/diamant|diamond|brilliant/.test(q)) quickType('diamond');
+				else if (/robijn|rubin|saffier|saphir|smaragd|emerald|edelste/.test(q)) quickType('gem');
+				else if (/goud|gold|zilver|silber|platin|palladium|barren|munt|münz/.test(q)) quickType('metal');
+			});
+			return box;
+		}
+		function quickType(t) { state.type = t; state.form = {}; state.result = null; render(); }
+		function optCard(icon, title, desc, onclick) {
+			var c = h('button', 'xg-calc-opt'); c.type = 'button';
+			c.appendChild(h('div', 'xg-calc-opt-ico', icon));
+			var b = h('div', 'xg-calc-opt-body');
+			b.appendChild(h('div', 'xg-calc-opt-title', title));
+			b.appendChild(h('div', 'xg-calc-opt-desc', desc));
+			c.appendChild(b);
+			c.addEventListener('click', onclick);
 			return c;
-		})());
-		grid.appendChild(condWrap);
-
-		// Zustand bei Schmuck ausblenden
-		shape.addEventListener('change', function () {
-			condWrap.style.display = (shape.value === 'sieraad') ? 'none' : '';
-		});
-
-		wrap.appendChild(grid);
-		return function () {
-			return {
-				metal: mSel.value, karaat: kSel.value, shape: shape.value,
-				weight: w.value, condition: condWrap.style.display === 'none' ? null : condWrap.querySelector('select').value
-			};
-		};
-	}
-
-	function buildDiamondFields(wrap) {
-		var grid = el('div', 'xg-calc-grid');
-		var b = DATA.diamond_base;
-
-		var carat = el('input', 'xg-calc-input'); carat.type = 'number';
-		carat.name = 'carat'; carat.min = '0'; carat.step = '0.01'; carat.placeholder = 'ct';
-		grid.appendChild(field('Karatgewicht (ct)', carat));
-
-		grid.appendChild(field('Farbe', selectFrom('color', Object.keys(b.color))));
-		grid.appendChild(field('Reinheit', selectFrom('clarity', Object.keys(b.clarity))));
-		grid.appendChild(field('Schliff', selectFrom('cut', Object.keys(b.cut))));
-		grid.appendChild(field('Fluoreszenz', selectFrom('fluor', Object.keys(b.fluor))));
-
-		wrap.appendChild(grid);
-		return function () {
-			return {
-				carat: carat.value,
-				color: grid.querySelector('[name=color]').value,
-				clarity: grid.querySelector('[name=clarity]').value,
-				cut: grid.querySelector('[name=cut]').value,
-				fluor: grid.querySelector('[name=fluor]').value
-			};
-		};
-	}
-
-	function buildGemFields(wrap) {
-		var grid = el('div', 'xg-calc-grid');
-		var g = el('select', 'xg-calc-input'); g.name = 'gem';
-		Object.keys(DATA.gem_base).forEach(function (k) { g.appendChild(opt(k, DATA.gem_base[k].label)); });
-		grid.appendChild(field('Edelstein', g));
-
-		var carat = el('input', 'xg-calc-input'); carat.type = 'number';
-		carat.name = 'carat'; carat.min = '0'; carat.step = '0.01'; carat.placeholder = 'ct';
-		grid.appendChild(field('Karatgewicht (ct)', carat));
-
-		var q = el('select', 'xg-calc-input'); q.name = 'quality';
-		[['5','Exzellent'],['4','Sehr gut'],['3','Gut'],['2','Mittel'],['1','Einfach']]
-			.forEach(function (p) { q.appendChild(opt(p[0], p[1])); });
-		grid.appendChild(field('Qualität', q));
-
-		wrap.appendChild(grid);
-		return function () {
-			return { gem: g.value, carat: carat.value, quality: q.value };
-		};
-	}
-
-	function buildWatchFields(wrap) {
-		var grid = el('div', 'xg-calc-grid');
-
-		var brand = el('select', 'xg-calc-input'); brand.name = 'brand';
-		Object.keys(DATA.watches).forEach(function (k) { brand.appendChild(opt(k, DATA.watches[k].label)); });
-		grid.appendChild(field('Marke', brand));
-
-		var model = el('select', 'xg-calc-input'); model.name = 'model';
-		function fillModels() {
-			model.innerHTML = '';
-			Object.keys(DATA.watches[brand.value].models).forEach(function (m) { model.appendChild(opt(m, m)); });
 		}
-		fillModels();
-		brand.addEventListener('change', fillModels);
-		grid.appendChild(field('Modell', model));
-
-		var cond = el('select', 'xg-calc-input'); cond.name = 'condition';
-		Object.keys(DATA.watch_conditions).forEach(function (k) { cond.appendChild(opt(k, DATA.watch_conditions[k].label)); });
-		grid.appendChild(field('Zustand', cond));
-
-		var extras = el('div', 'xg-calc-checks');
-		var box = checkbox('box', DATA.watch_extras.box.label);
-		var papers = checkbox('papers', DATA.watch_extras.papers.label);
-		extras.appendChild(box.wrap); extras.appendChild(papers.wrap);
-		grid.appendChild(field('Zubehör', extras));
-
-		wrap.appendChild(grid);
-		return function () {
-			return {
-				brand: brand.value, model: model.value, condition: cond.value,
-				box: box.input.checked, papers: papers.input.checked
-			};
-		};
-	}
-
-	function selectFrom(name, keys) {
-		var s = el('select', 'xg-calc-input'); s.name = name;
-		keys.forEach(function (k) { s.appendChild(opt(k, k)); });
-		return s;
-	}
-	function field(label, control) {
-		var f = el('div', 'xg-calc-field');
-		f.appendChild(el('label', 'xg-calc-label', label));
-		f.appendChild(control);
-		return f;
-	}
-	function checkbox(name, label) {
-		var wrap = el('label', 'xg-calc-check');
-		var input = el('input'); input.type = 'checkbox'; input.name = name;
-		wrap.appendChild(input);
-		wrap.appendChild(document.createTextNode(' ' + label));
-		return { wrap: wrap, input: input };
-	}
-
-	/* =========================================================
-	   UI: RESULTAT-KARTE
-	========================================================= */
-	function renderResult(container, r, typeLabel) {
-		container.innerHTML = '';
-		var card = el('div', 'xg-calc-result-card');
-
-		var payout = r.indicative
-			? euro(r.payoutLow) + ' – ' + euro(r.payoutHigh)
-			: euro(r.payoutLow);
-
-		card.appendChild(el('div', 'xg-calc-result-head',
-			'<span class="xg-calc-result-type">' + typeLabel + '</span>' +
-			(r.indicative ? '<span class="xg-calc-badge">Preisindikation</span>'
-			              : '<span class="xg-calc-badge xg-calc-badge-fix">Festpreis</span>')
-		));
-
-		card.appendChild(el('div', 'xg-calc-payout',
-			'<span class="xg-calc-payout-label">Ankaufspreis</span>' +
-			'<span class="xg-calc-payout-value">' + payout + '</span>'
-		));
-
-		var rows = el('div', 'xg-calc-breakdown');
-		rows.appendChild(breakRow('Marktpreis', euro(r.market)));
-		rows.appendChild(breakRow('Marge', pct(r.marginPct) + ' · ' + euro(r.marginAbs)));
-		rows.appendChild(breakRow('Differenz Markt ↔ Ankauf', euro(r.market - r.payoutLow), 'xg-calc-diff'));
-		rows.appendChild(breakRow('♥ Charity-Anteil', euro(r.charity), 'xg-calc-charity'));
-		card.appendChild(rows);
-
-		// Charity-Wahl
-		var charityWrap = el('div', 'xg-calc-charity-pick');
-		charityWrap.appendChild(el('label', 'xg-calc-label', 'Wohin soll Ihr Charity-Anteil fließen?'));
-		var cSel = el('select', 'xg-calc-input'); cSel.name = 'charity_project';
-		DATA.charity_projects.forEach(function (p) { cSel.appendChild(opt(p.id, p.label)); });
-		charityWrap.appendChild(cSel);
-		card.appendChild(charityWrap);
-
-		// Aktionen
-		var actions = el('div', 'xg-calc-actions');
-		var addBtn = el('button', 'xg-btn-gold', 'Zum Verkauf hinzufügen');
-		addBtn.type = 'button';
-		addBtn.addEventListener('click', function () {
-			addToCart({
-				type: typeLabel, payout: payout, charity: r.charity,
-				charityProject: cSel.options[cSel.selectedIndex].text,
-				market: r.market, marginAbs: r.marginAbs, indicative: r.indicative
-			});
-		});
-		actions.appendChild(addBtn);
-		card.appendChild(actions);
-
-		container.appendChild(card);
-	}
-	function breakRow(label, value, cls) {
-		return el('div', 'xg-calc-break-row' + (cls ? ' ' + cls : ''),
-			'<span>' + label + '</span><span>' + value + '</span>');
-	}
-
-	/* =========================================================
-	   UI: WARENKORB-RENDER
-	========================================================= */
-	function renderCart() {
-		var box = document.querySelector('.xg-calc-cart');
-		if (!box) return;
-		box.innerHTML = '';
-		if (!cart.length) {
-			box.appendChild(el('p', 'xg-calc-cart-empty', 'Noch keine Produkte ausgewählt.'));
-			return;
-		}
-		box.appendChild(el('h3', 'xg-calc-cart-title', 'Ihre Auswahl'));
-
-		var totalCharity = 0;
-		cart.forEach(function (item, i) {
-			totalCharity += item.charity || 0;
-			var row = el('div', 'xg-calc-cart-item');
-			row.appendChild(el('div', 'xg-calc-cart-info',
-				'<strong>' + item.type + '</strong>' +
-				'<span>' + item.payout + '</span>' +
-				'<small>♥ ' + euro(item.charity) + ' → ' + item.charityProject + '</small>'
-			));
-			var del = el('button', 'xg-calc-cart-del', '✕');
-			del.type = 'button';
-			del.addEventListener('click', function () { removeFromCart(i); });
-			row.appendChild(del);
-			box.appendChild(row);
-		});
-
-		box.appendChild(el('div', 'xg-calc-cart-total',
-			'Gesamt-Charity dieser Auswahl: <strong>' + euro(totalCharity) + '</strong>'));
-
-		var toPlanner = el('button', 'xg-btn-gold xg-calc-to-planner', 'Termin vereinbaren & verkaufen');
-		toPlanner.type = 'button';
-		toPlanner.addEventListener('click', function () {
-			// Übergabe an Terminplaner (später: POST → wp_xg_appointments)
-			document.dispatchEvent(new CustomEvent('xg:cart-to-planner', { detail: { cart: cart } }));
-			var planner = document.querySelector('.xg-planner');
-			if (planner) planner.scrollIntoView({ behavior: 'smooth' });
-		});
-		box.appendChild(toPlanner);
-	}
-
-	/* =========================================================
-	   INIT: Calculator-Widget aufbauen
-	========================================================= */
-	function initCalculator(root) {
-		var typeNav = root.querySelector('.xg-calc-types');
-		var fieldsWrap = root.querySelector('.xg-calc-fields');
-		var resultWrap = root.querySelector('.xg-calc-result');
-		if (!typeNav || !fieldsWrap || !resultWrap) return;
-
-		var types = [
-			{ key: 'metal',   label: 'Edelmetall', build: buildMetalFields, calc: calcMetal },
-			{ key: 'diamond', label: 'Diamant',    build: buildDiamondFields, calc: calcDiamond },
-			{ key: 'gem',     label: 'Edelstein',  build: buildGemFields,  calc: calcGem },
-			{ key: 'watch',   label: 'Uhr',        build: buildWatchFields, calc: calcWatch }
-		];
-
-		var active = null, getValues = null;
-
-		function selectType(t, btn) {
-			active = t;
-			Array.prototype.forEach.call(typeNav.children, function (c) { c.classList.remove('active'); });
-			if (btn) btn.classList.add('active');
-			fieldsWrap.innerHTML = '';
-			resultWrap.innerHTML = '';
-			getValues = t.build(fieldsWrap);
-			bindLive();
-			recalc();
+		function optCardMini(label, onclick) {
+			var c = h('button', 'xg-calc-opt'); c.type = 'button';
+			c.appendChild(h('div', 'xg-calc-opt-body', '<div class="xg-calc-opt-title">' + label + '</div>'));
+			c.addEventListener('click', onclick);
+			return c;
 		}
 
-		function recalc() {
-			if (!active || !getValues) return;
-			var r = active.calc(getValues());
-			renderResult(resultWrap, r, active.label);
-		}
-
-		function bindLive() {
-			fieldsWrap.querySelectorAll('input, select').forEach(function (i) {
-				i.addEventListener('input', recalc);
-				i.addEventListener('change', recalc);
-			});
-		}
-
-		// Typ-Buttons
-		types.forEach(function (t) {
-			var btn = el('button', 'xg-calc-type-btn', t.label);
-			btn.type = 'button';
-			btn.addEventListener('click', function () { selectType(t, btn); });
-			typeNav.appendChild(btn);
-		});
-
-		// Default: erster Typ
-		selectType(types[0], typeNav.children[0]);
-		renderCart();
+		render();
 	}
 
+	/* =====================================================================
+	   BOOT
+	===================================================================== */
 	function boot() {
-		document.querySelectorAll('.xg-calc').forEach(initCalculator);
+		document.querySelectorAll('.xg-calc').forEach(function (root) {
+			if (!root.__xgInit) { root.__xgInit = true; new Calculator(root); }
+		});
 	}
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', boot);
-	} else {
-		boot();
-	}
+	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+	else boot();
 })();
