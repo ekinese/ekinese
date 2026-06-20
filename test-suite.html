@@ -2758,6 +2758,114 @@ a.xg-final-btn:hover {
     .xg-final-cta-box { padding: 30px; }
 }
 
+/* =====================================================================
+   MODERN POLISH  (Tiefe, Motion, weichere Ecken – weg vom 2010-Look)
+   ===================================================================== */
+
+/* Scroll-Reveal: sanftes Einblenden (Klassen werden von blueprint.js gesetzt) */
+.xg-blueprint .xg-reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .75s cubic-bezier(.2,.7,.2,1), transform .75s cubic-bezier(.2,.7,.2,1);
+    will-change: opacity, transform;
+}
+.xg-blueprint .xg-reveal.in { opacity: 1; transform: none; }
+
+/* Karten: weichere Ecken, tiefere Schatten, geschmeidigere Hover-Bewegung */
+.xg-blueprint .xg-benefit,
+.xg-blueprint .xg-c-card,
+.xg-blueprint .xg-trust-card,
+.xg-blueprint .xg-step-card,
+.xg-blueprint .xg-author-card,
+.xg-blueprint .xg-formula-box,
+.xg-blueprint .xg-market-box,
+.xg-blueprint .xg-rapaport-box,
+.xg-blueprint .xg-review-card,
+.xg-blueprint .xg-final-cta-box,
+.xg-blueprint .xg-link-card {
+    border-radius: 8px;
+    box-shadow: 0 18px 44px rgba(17,17,17,.06);
+    transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease;
+}
+.xg-blueprint .xg-benefit:hover,
+.xg-blueprint .xg-c-card:hover,
+.xg-blueprint .xg-trust-card:hover,
+.xg-blueprint .xg-step-card:hover,
+.xg-blueprint .xg-author-card:hover,
+.xg-blueprint .xg-formula-box:hover,
+.xg-blueprint .xg-market-box:hover,
+.xg-blueprint .xg-final-cta-box:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 30px 70px rgba(208,172,75,.18);
+    border-color: #D0AC4B;
+}
+
+/* Karten bekommen oben eine feine Gold-Linie beim Hover */
+.xg-blueprint .xg-benefit,
+.xg-blueprint .xg-c-card,
+.xg-blueprint .xg-trust-card,
+.xg-blueprint .xg-step-card { position: relative; overflow: hidden; }
+.xg-blueprint .xg-benefit::before,
+.xg-blueprint .xg-c-card::before,
+.xg-blueprint .xg-trust-card::before,
+.xg-blueprint .xg-step-card::before {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #D0AC4B, #e8c976);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .4s cubic-bezier(.2,.7,.2,1);
+}
+.xg-blueprint .xg-benefit:hover::before,
+.xg-blueprint .xg-c-card:hover::before,
+.xg-blueprint .xg-trust-card:hover::before,
+.xg-blueprint .xg-step-card:hover::before { transform: scaleX(1); }
+
+/* Hero: zarter Verlauf statt flacher Fläche */
+.xg-blueprint .xg-hero-v2 {
+    background: linear-gradient(180deg, #faf6ec 0%, #efefef 100%);
+}
+
+/* TOC & Tabelle: weiche Ecken + Schatten */
+.xg-blueprint .xgoud-toc-grid {
+    border-radius: 8px; overflow: hidden;
+    box-shadow: 0 14px 36px rgba(17,17,17,.05);
+    background: #fff;
+}
+.xg-blueprint .xg-table-wrapper {
+    border-radius: 8px; overflow: hidden;
+    box-shadow: 0 18px 44px rgba(17,17,17,.06);
+}
+
+/* Buttons: Tiefe + Lift (Marke bleibt scharfkantig) */
+.xg-blueprint .xg-btn-gold .wp-block-button__link,
+.xg-blueprint a.xg-btn-gold,
+.xg-blueprint .cta-button .wp-block-button__link,
+.xg-blueprint a.cta-button,
+.xg-blueprint .xg-final-btn .wp-block-button__link,
+.xg-blueprint a.xg-final-btn {
+    box-shadow: 0 12px 26px rgba(208,172,75,.30);
+}
+.xg-blueprint .xg-btn-gold .wp-block-button__link:hover,
+.xg-blueprint a.xg-btn-gold:hover,
+.xg-blueprint .cta-button .wp-block-button__link:hover,
+.xg-blueprint a.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 36px rgba(208,172,75,.40);
+}
+
+/* CTA-Modern: weiche Ecken + Tiefe */
+.xg-blueprint .xgoud-cta-modern {
+    border-radius: 10px; overflow: hidden;
+    box-shadow: 0 24px 60px rgba(17,17,17,.08);
+}
+
+/* Charity-Ticker dezent anheben */
+.xg-charity-ticker { box-shadow: 0 6px 20px rgba(17,17,17,.04); }
+
+@media (prefers-reduced-motion: reduce) {
+    .xg-blueprint .xg-reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+
 
 /* =====================================================================
    XGOUD Smart Calculator  ·  Wizard
@@ -3322,8 +3430,8 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 	display: flex; flex-direction: column;
 }
 
-/* Kompakt (Hero): alles in einem Widget, Tabs schalten Calc/Cart */
-.xg-calc[data-mode="compact"] { max-width: 460px; }
+/* Kompakt (Hero/Produkt): füllt seine Spalte → überall gleiche Breite */
+.xg-calc[data-mode="compact"] { max-width: 100%; width: 100%; }
 .xg-calc[data-mode="compact"] .xg-calc-stage { min-height: 320px; padding: 8px 18px 18px; }
 .xg-calc[data-mode="compact"] .xg-calc-progress { padding: 16px 18px 4px; }
 .xg-calc[data-mode="compact"] .xg-calc-head { padding: 13px 18px; }
@@ -3828,7 +3936,8 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 	</div>
 	<div class="xg-hero-split-calc">
-		<div class="xg-calc" data-mode="compact"></div>
+		<!-- Hero: alleen edelmetaal (horloges/edelstenen via categoriepaginas). -->
+			<div class="xg-calc" data-mode="compact" data-only="metal"></div>
 	</div>
 </section></section>
 <section class="tst-page" data-page="edelmetalen" hidden><div class="xg-hero-v2">
@@ -6828,7 +6937,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 				<li>Zuiverheid: 22 karaat (91,67% goud)</li><li>Gewicht: 1 troy ounce (31,1 gram)</li><li>Herkomst: Zuid-Afrika</li><li>Wereldwijd erkende beleggingsmunt</li>
 			</ul>
 		</div>
-		<div class="xg-calc" data-mode="compact" data-preset='{"type":"metal","form":{"metal":"goud","form":"munt","purity":"22"}}'></div>
+		<div class="xg-calc" data-mode="compact" data-lock="1" data-preset='{"type":"metal","form":{"metal":"goud","form":"munt","purity":"22"}}'></div>
 	</div>
 </div></section>
 
@@ -7935,30 +8044,80 @@ window.XG_CALC_DATA = {
 ;
 /**
  * XGOUD Verkoop-Blaupause – Interaktionen.
- * Aktuell nur das FAQ-Akkordeon (Klick auf Frage öffnet/schließt Antwort).
+ *  - FAQ-Akkordeon (Klick auf Frage öffnet/schließt Antwort)
+ *  - Scroll-Reveal: Sektionen/Karten faden beim Scrollen sanft ein
  */
 (function () {
 	'use strict';
 
 	function initFaq() {
 		var questions = document.querySelectorAll('.xg-faq-question');
-		if (!questions.length) {
-			return;
-		}
+		if (!questions.length) return;
 		questions.forEach(function (q) {
 			q.addEventListener('click', function () {
 				var item = this.closest('.xg-faq-item');
-				if (item) {
-					item.classList.toggle('active');
-				}
+				if (item) item.classList.toggle('active');
 			});
 		});
 	}
 
+	// Sanftes Einblenden beim Scrollen (modern, dezent, mit Stagger).
+	function initReveal() {
+		if (!('IntersectionObserver' in window)) return;
+		if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+		var sel = [
+			'.xg-blueprint .xg-section-title',
+			'.xg-blueprint .hero-kicker',
+			'.xg-blueprint .xg-hero-v2 h1',
+			'.xg-blueprint .hero-lead',
+			'.xg-blueprint .xg-hero-buttons',
+			'.xg-blueprint .xg-benefit',
+			'.xg-blueprint .xg-c-card',
+			'.xg-blueprint .xg-trust-card',
+			'.xg-blueprint .xg-step-card',
+			'.xg-blueprint .xg-author-card',
+			'.xg-blueprint .xg-link-card',
+			'.xg-blueprint .xg-review-card',
+			'.xg-blueprint .xg-formula-box',
+			'.xg-blueprint .xg-rapaport-box',
+			'.xg-blueprint .xgoud-cta-modern',
+			'.xg-blueprint .xg-final-cta-box',
+			'.xg-blueprint .xg-table-wrapper',
+			'.xg-blueprint .xgoud-toc-grid',
+			'.xg-blueprint .xg-cert-image',
+			'.xg-blueprint .xg-eeat-content'
+		].join(',');
+
+		var targets = document.querySelectorAll(sel);
+		if (!targets.length) return;
+
+		targets.forEach(function (el) {
+			el.classList.add('xg-reveal');
+			// Stagger anhand Position unter Geschwistern.
+			var p = el.parentElement;
+			var idx = p ? Array.prototype.indexOf.call(p.children, el) : 0;
+			el.style.transitionDelay = (Math.min(idx, 6) * 0.07) + 's';
+		});
+
+		var io = new IntersectionObserver(function (entries) {
+			entries.forEach(function (e) {
+				if (e.isIntersecting) {
+					e.target.classList.add('in');
+					io.unobserve(e.target);
+				}
+			});
+		}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+		targets.forEach(function (el) { io.observe(el); });
+	}
+
+	function boot() { initFaq(); initReveal(); }
+
 	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', initFaq);
+		document.addEventListener('DOMContentLoaded', boot);
 	} else {
-		initFaq();
+		boot();
 	}
 })();
 
@@ -8113,6 +8272,20 @@ window.XG_CALC_DATA = {
 			} catch (e) {}
 		}
 
+		/*
+		 * Scope/Lock für Hero, Kategorie- und Produktseiten:
+		 *   data-only="metal"          → Hero: nur Edelmetaal (kein Typ-Picker)
+		 *   data-only="diamond,gem"    → Kategorie Edelstenen (kleiner Picker)
+		 *   data-only="watch"          → Kategorie Horloges
+		 *   data-lock="1" + data-preset→ Produktseite: Produkt steht fest,
+		 *                                nur noch Gewicht abfragen
+		 */
+		var onlyAttr = root.getAttribute('data-only');
+		var onlyTypes = onlyAttr ? onlyAttr.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : null;
+		var only = (onlyTypes && onlyTypes.length === 1) ? onlyTypes[0] : null; // genau ein Typ → kein Picker
+		var lock = root.getAttribute('data-lock') === '1';
+		if (only && !state.type) state.type = only;
+
 		// Grundgerüst
 		root.innerHTML = '';
 		var head = h('div', 'xg-calc-head');
@@ -8172,6 +8345,10 @@ window.XG_CALC_DATA = {
 			if (state.view === 'checkout') {
 				steps = ['Gegevens', 'Service', 'Uitbetaling', 'Goede doel', 'Klaar'];
 				idx = state.checkout.step;
+			} else if (only) {
+				// Kein Typ-Picker → nur Gegevens + Resultaat.
+				steps = ['Gegevens', 'Resultaat'];
+				idx = state.result ? 1 : 0;
 			} else {
 				steps = ['Product', 'Details', 'Resultaat'];
 				idx = !state.type ? 0 : (state.result ? 2 : 1);
@@ -8227,7 +8404,10 @@ window.XG_CALC_DATA = {
 		   CALC-VIEW
 		================================================================= */
 		function renderCalc() {
-			if (!state.type) return renderTypePicker();
+			if (!state.type) {
+				if (only) { state.type = only; }   // Only-Modus: kein Typ-Picker
+				else return renderTypePicker();
+			}
 			if (state.result) return renderResult();
 			renderDetails();
 		}
@@ -8236,7 +8416,7 @@ window.XG_CALC_DATA = {
 		function renderTypePicker() {
 			var p = h('div', 'xg-calc-panel');
 			p.appendChild(panelHead('Wat wilt u verkopen?', 'Kies een categorie – wij leiden u naar de prijs.'));
-			p.appendChild(findBox());
+			if (!onlyTypes) p.appendChild(findBox()); // Suche nur im vollen Modus
 
 			var types = [
 				{ k: 'metal',   t: 'Edelmetaal', d: 'Goud, zilver, platina, palladium' },
@@ -8244,6 +8424,7 @@ window.XG_CALC_DATA = {
 				{ k: 'gem',     t: 'Edelsteen',  d: 'Robijn, saffier, smaragd' },
 				{ k: 'watch',   t: 'Horloge',    d: 'Luxe horloges van alle merken' }
 			];
+			if (onlyTypes) types = types.filter(function (ty) { return onlyTypes.indexOf(ty.k) !== -1; });
 			var grid = h('div', 'xg-calc-opts');
 			types.forEach(function (ty) {
 				grid.appendChild(optCard(ICON[ty.k], ty.t, ty.d, function () {
@@ -8258,7 +8439,7 @@ window.XG_CALC_DATA = {
 		function renderDetails() {
 			var p = h('div', 'xg-calc-panel');
 			var titles = { metal: 'Uw edelmetaal', diamond: 'Uw diamant', gem: 'Uw edelsteen', watch: 'Uw horloge' };
-			p.appendChild(panelHead(titles[state.type], 'Vul de gegevens aan – de prijs wordt live berekend.', true));
+			p.appendChild(panelHead(titles[state.type], 'Vul de gegevens aan – de prijs wordt live berekend.', !only));
 
 			var body = h('div');
 			if (state.type === 'metal') buildMetal(body);
@@ -8367,6 +8548,17 @@ window.XG_CALC_DATA = {
 
 		// ----- METAL: nur Gold = Karat, andere = Legierung -----
 		function buildMetal(wrap) {
+			// Lock-Modus (Produktseite): Produkt steht fest, nur Gewicht abfragen.
+			if (lock && state.form.metal) {
+				var mLbl = DATA.metals[state.form.metal] ? DATA.metals[state.form.metal].label : '';
+				var fLbl = { barren: 'Baar', munt: 'Munt', sieraad: 'Sieraad' }[state.form.form] || '';
+				var pLbl = state.form.purity ? (state.form.metal === 'goud' ? state.form.purity + ' karaat' : (DATA.purity_labels[state.form.purity] || state.form.purity)) : '';
+				var summary = [mLbl, fLbl, pLbl].filter(Boolean).join(' · ');
+				var box = h('div', 'xg-calc-input'); box.style.display = 'flex'; box.style.alignItems = 'center'; box.style.fontWeight = '700'; box.textContent = summary;
+				wrap.appendChild(field('Product', box, true));
+				wrap.appendChild(field('Gewicht', rangeNum('weight', 0, 1000, 1, 'g', state.form.weight || 0), true));
+				return;
+			}
 			// Leitwert: Metall als Karten
 			var cards = h('div', 'xg-calc-opts cols-3');
 			Object.keys(DATA.metals).forEach(function (k) {

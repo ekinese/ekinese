@@ -319,7 +319,7 @@ const productPage = `
 				${krugerSpecs.map(s => `<li>${s}</li>`).join('')}
 			</ul>
 		</div>
-		<div class="xg-calc" data-mode="compact" data-preset='{"type":"metal","form":{"metal":"goud","form":"munt","purity":"22"}}'></div>
+		<div class="xg-calc" data-mode="compact" data-lock="1" data-preset='{"type":"metal","form":{"metal":"goud","form":"munt","purity":"22"}}'></div>
 	</div>
 </div></section>
 

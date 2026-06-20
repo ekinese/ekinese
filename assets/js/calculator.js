@@ -148,6 +148,20 @@
 			} catch (e) {}
 		}
 
+		/*
+		 * Scope/Lock für Hero, Kategorie- und Produktseiten:
+		 *   data-only="metal"          → Hero: nur Edelmetaal (kein Typ-Picker)
+		 *   data-only="diamond,gem"    → Kategorie Edelstenen (kleiner Picker)
+		 *   data-only="watch"          → Kategorie Horloges
+		 *   data-lock="1" + data-preset→ Produktseite: Produkt steht fest,
+		 *                                nur noch Gewicht abfragen
+		 */
+		var onlyAttr = root.getAttribute('data-only');
+		var onlyTypes = onlyAttr ? onlyAttr.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : null;
+		var only = (onlyTypes && onlyTypes.length === 1) ? onlyTypes[0] : null; // genau ein Typ → kein Picker
+		var lock = root.getAttribute('data-lock') === '1';
+		if (only && !state.type) state.type = only;
+
 		// Grundgerüst
 		root.innerHTML = '';
 		var head = h('div', 'xg-calc-head');
@@ -207,6 +221,10 @@
 			if (state.view === 'checkout') {
 				steps = ['Gegevens', 'Service', 'Uitbetaling', 'Goede doel', 'Klaar'];
 				idx = state.checkout.step;
+			} else if (only) {
+				// Kein Typ-Picker → nur Gegevens + Resultaat.
+				steps = ['Gegevens', 'Resultaat'];
+				idx = state.result ? 1 : 0;
 			} else {
 				steps = ['Product', 'Details', 'Resultaat'];
 				idx = !state.type ? 0 : (state.result ? 2 : 1);
@@ -262,7 +280,10 @@
 		   CALC-VIEW
 		================================================================= */
 		function renderCalc() {
-			if (!state.type) return renderTypePicker();
+			if (!state.type) {
+				if (only) { state.type = only; }   // Only-Modus: kein Typ-Picker
+				else return renderTypePicker();
+			}
 			if (state.result) return renderResult();
 			renderDetails();
 		}
@@ -271,7 +292,7 @@
 		function renderTypePicker() {
 			var p = h('div', 'xg-calc-panel');
 			p.appendChild(panelHead('Wat wilt u verkopen?', 'Kies een categorie – wij leiden u naar de prijs.'));
-			p.appendChild(findBox());
+			if (!onlyTypes) p.appendChild(findBox()); // Suche nur im vollen Modus
 
 			var types = [
 				{ k: 'metal',   t: 'Edelmetaal', d: 'Goud, zilver, platina, palladium' },
@@ -279,6 +300,7 @@
 				{ k: 'gem',     t: 'Edelsteen',  d: 'Robijn, saffier, smaragd' },
 				{ k: 'watch',   t: 'Horloge',    d: 'Luxe horloges van alle merken' }
 			];
+			if (onlyTypes) types = types.filter(function (ty) { return onlyTypes.indexOf(ty.k) !== -1; });
 			var grid = h('div', 'xg-calc-opts');
 			types.forEach(function (ty) {
 				grid.appendChild(optCard(ICON[ty.k], ty.t, ty.d, function () {
@@ -293,7 +315,7 @@
 		function renderDetails() {
 			var p = h('div', 'xg-calc-panel');
 			var titles = { metal: 'Uw edelmetaal', diamond: 'Uw diamant', gem: 'Uw edelsteen', watch: 'Uw horloge' };
-			p.appendChild(panelHead(titles[state.type], 'Vul de gegevens aan – de prijs wordt live berekend.', true));
+			p.appendChild(panelHead(titles[state.type], 'Vul de gegevens aan – de prijs wordt live berekend.', !only));
 
 			var body = h('div');
 			if (state.type === 'metal') buildMetal(body);
@@ -402,6 +424,17 @@
 
 		// ----- METAL: nur Gold = Karat, andere = Legierung -----
 		function buildMetal(wrap) {
+			// Lock-Modus (Produktseite): Produkt steht fest, nur Gewicht abfragen.
+			if (lock && state.form.metal) {
+				var mLbl = DATA.metals[state.form.metal] ? DATA.metals[state.form.metal].label : '';
+				var fLbl = { barren: 'Baar', munt: 'Munt', sieraad: 'Sieraad' }[state.form.form] || '';
+				var pLbl = state.form.purity ? (state.form.metal === 'goud' ? state.form.purity + ' karaat' : (DATA.purity_labels[state.form.purity] || state.form.purity)) : '';
+				var summary = [mLbl, fLbl, pLbl].filter(Boolean).join(' · ');
+				var box = h('div', 'xg-calc-input'); box.style.display = 'flex'; box.style.alignItems = 'center'; box.style.fontWeight = '700'; box.textContent = summary;
+				wrap.appendChild(field('Product', box, true));
+				wrap.appendChild(field('Gewicht', rangeNum('weight', 0, 1000, 1, 'g', state.form.weight || 0), true));
+				return;
+			}
 			// Leitwert: Metall als Karten
 			var cards = h('div', 'xg-calc-opts cols-3');
 			Object.keys(DATA.metals).forEach(function (k) {

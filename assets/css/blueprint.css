@@ -1573,3 +1573,111 @@ a.xg-final-btn:hover {
     .xg-final-cta-content h2 { font-size: 40px; }
     .xg-final-cta-box { padding: 30px; }
 }
+
+/* =====================================================================
+   MODERN POLISH  (Tiefe, Motion, weichere Ecken – weg vom 2010-Look)
+   ===================================================================== */
+
+/* Scroll-Reveal: sanftes Einblenden (Klassen werden von blueprint.js gesetzt) */
+.xg-blueprint .xg-reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .75s cubic-bezier(.2,.7,.2,1), transform .75s cubic-bezier(.2,.7,.2,1);
+    will-change: opacity, transform;
+}
+.xg-blueprint .xg-reveal.in { opacity: 1; transform: none; }
+
+/* Karten: weichere Ecken, tiefere Schatten, geschmeidigere Hover-Bewegung */
+.xg-blueprint .xg-benefit,
+.xg-blueprint .xg-c-card,
+.xg-blueprint .xg-trust-card,
+.xg-blueprint .xg-step-card,
+.xg-blueprint .xg-author-card,
+.xg-blueprint .xg-formula-box,
+.xg-blueprint .xg-market-box,
+.xg-blueprint .xg-rapaport-box,
+.xg-blueprint .xg-review-card,
+.xg-blueprint .xg-final-cta-box,
+.xg-blueprint .xg-link-card {
+    border-radius: 8px;
+    box-shadow: 0 18px 44px rgba(17,17,17,.06);
+    transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease;
+}
+.xg-blueprint .xg-benefit:hover,
+.xg-blueprint .xg-c-card:hover,
+.xg-blueprint .xg-trust-card:hover,
+.xg-blueprint .xg-step-card:hover,
+.xg-blueprint .xg-author-card:hover,
+.xg-blueprint .xg-formula-box:hover,
+.xg-blueprint .xg-market-box:hover,
+.xg-blueprint .xg-final-cta-box:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 30px 70px rgba(208,172,75,.18);
+    border-color: #D0AC4B;
+}
+
+/* Karten bekommen oben eine feine Gold-Linie beim Hover */
+.xg-blueprint .xg-benefit,
+.xg-blueprint .xg-c-card,
+.xg-blueprint .xg-trust-card,
+.xg-blueprint .xg-step-card { position: relative; overflow: hidden; }
+.xg-blueprint .xg-benefit::before,
+.xg-blueprint .xg-c-card::before,
+.xg-blueprint .xg-trust-card::before,
+.xg-blueprint .xg-step-card::before {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #D0AC4B, #e8c976);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .4s cubic-bezier(.2,.7,.2,1);
+}
+.xg-blueprint .xg-benefit:hover::before,
+.xg-blueprint .xg-c-card:hover::before,
+.xg-blueprint .xg-trust-card:hover::before,
+.xg-blueprint .xg-step-card:hover::before { transform: scaleX(1); }
+
+/* Hero: zarter Verlauf statt flacher Fläche */
+.xg-blueprint .xg-hero-v2 {
+    background: linear-gradient(180deg, #faf6ec 0%, #efefef 100%);
+}
+
+/* TOC & Tabelle: weiche Ecken + Schatten */
+.xg-blueprint .xgoud-toc-grid {
+    border-radius: 8px; overflow: hidden;
+    box-shadow: 0 14px 36px rgba(17,17,17,.05);
+    background: #fff;
+}
+.xg-blueprint .xg-table-wrapper {
+    border-radius: 8px; overflow: hidden;
+    box-shadow: 0 18px 44px rgba(17,17,17,.06);
+}
+
+/* Buttons: Tiefe + Lift (Marke bleibt scharfkantig) */
+.xg-blueprint .xg-btn-gold .wp-block-button__link,
+.xg-blueprint a.xg-btn-gold,
+.xg-blueprint .cta-button .wp-block-button__link,
+.xg-blueprint a.cta-button,
+.xg-blueprint .xg-final-btn .wp-block-button__link,
+.xg-blueprint a.xg-final-btn {
+    box-shadow: 0 12px 26px rgba(208,172,75,.30);
+}
+.xg-blueprint .xg-btn-gold .wp-block-button__link:hover,
+.xg-blueprint a.xg-btn-gold:hover,
+.xg-blueprint .cta-button .wp-block-button__link:hover,
+.xg-blueprint a.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 36px rgba(208,172,75,.40);
+}
+
+/* CTA-Modern: weiche Ecken + Tiefe */
+.xg-blueprint .xgoud-cta-modern {
+    border-radius: 10px; overflow: hidden;
+    box-shadow: 0 24px 60px rgba(17,17,17,.08);
+}
+
+/* Charity-Ticker dezent anheben */
+.xg-charity-ticker { box-shadow: 0 6px 20px rgba(17,17,17,.04); }
+
+@media (prefers-reduced-motion: reduce) {
+    .xg-blueprint .xg-reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+}

@@ -561,8 +561,8 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 	display: flex; flex-direction: column;
 }
 
-/* Kompakt (Hero): alles in einem Widget, Tabs schalten Calc/Cart */
-.xg-calc[data-mode="compact"] { max-width: 460px; }
+/* Kompakt (Hero/Produkt): füllt seine Spalte → überall gleiche Breite */
+.xg-calc[data-mode="compact"] { max-width: 100%; width: 100%; }
 .xg-calc[data-mode="compact"] .xg-calc-stage { min-height: 320px; padding: 8px 18px 18px; }
 .xg-calc[data-mode="compact"] .xg-calc-progress { padding: 16px 18px 4px; }
 .xg-calc[data-mode="compact"] .xg-calc-head { padding: 13px 18px; }

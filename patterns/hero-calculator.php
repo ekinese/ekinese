@@ -29,7 +29,8 @@
 <!-- wp:html -->
 	</div>
 	<div class="xg-hero-split-calc">
-		<div class="xg-calc" data-mode="compact"></div>
+		<!-- Hero: alleen edelmetaal (horloges/edelstenen via categoriepaginas). -->
+			<div class="xg-calc" data-mode="compact" data-only="metal"></div>
 	</div>
 </section>
 <!-- /wp:html -->
