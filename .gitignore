@@ -1,0 +1,15 @@
+# Abhängigkeiten / Build
+node_modules/
+vendor/
+build/
+*.log
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# WordPress-spezifisch (falls Theme in größeres Repo wandert)
+wp-config.php

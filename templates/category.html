@@ -1,0 +1,24 @@
+<!-- wp:template-part {"slug":"header","tagName":"header","area":"header"} /-->
+
+<!-- wp:group {"tagName":"main","layout":{"type":"constrained"}} -->
+<main class="wp-block-group">
+
+	<!-- wp:group {"className":"category-intro","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group category-intro">
+		<!-- wp:query-title {"type":"archive","level":1} /-->
+		<!-- wp:term-description /-->
+	</div>
+	<!-- /wp:group -->
+
+	<!--
+	  BLAUPAUSE: Hier wird das wiederverwendbare Kategorie-Layout eingebunden.
+	  Bearbeite das Layout zentral im Pattern "ekinese/blueprint-category"
+	  (Datei: patterns/blueprint-category.php) — Änderungen wirken auf alle
+	  Kategorie-Seiten, die dieses Template nutzen.
+	-->
+	<!-- wp:pattern {"slug":"ekinese/blueprint-category"} /-->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer","area":"footer"} /-->

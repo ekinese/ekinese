@@ -1,0 +1,15 @@
+/**
+ * Editor-spezifische Ergänzungen.
+ * Spiegelt die wichtigsten eigenen Block-Styles für die Editor-Vorschau.
+ */
+
+.editor-styles-wrapper .wp-block-group.is-style-card {
+	padding: var(--wp--preset--spacing--40);
+	border: 1px solid var(--wp--preset--color--surface);
+	border-radius: 10px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.editor-styles-wrapper .wp-block-image.is-style-rounded-lg img {
+	border-radius: 16px;
+}

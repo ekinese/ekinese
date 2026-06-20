@@ -1,0 +1,21 @@
+/*
+Theme Name: Ekinese
+Theme URI: https://example.com/ekinese
+Author: Ekin Boyraz
+Author URI: https://example.com
+Description: Ein modernes FSE-Theme (Full Site Editing / Block Theme). Header, Footer und Seitenlayouts werden vollständig über den Gutenberg Site-Editor gesteuert. Optimiert für viele Inhaltsseiten (300+).
+Requires at least: 6.5
+Tested up to: 6.7
+Requires PHP: 7.4
+Version: 0.1.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: ekinese
+Tags: full-site-editing, block-patterns, block-styles, custom-colors, custom-logo, custom-menu, editor-style, featured-images, threaded-comments, translation-ready
+*/
+
+/*
+ * Hinweis: In einem Block-Theme (FSE) wird das Styling primär über theme.json gesteuert.
+ * Diese Datei enthält nur den Theme-Header (Pflicht) sowie optionale Ergänzungen,
+ * die sich nicht über theme.json abbilden lassen.
+ */
