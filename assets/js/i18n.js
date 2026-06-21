@@ -73,7 +73,46 @@
 		'Blijf op de hoogte': d('Bleiben Sie informiert', 'Stay informed', 'Restez informé', 'Manténgase informado', 'Resta aggiornato', 'Haberdar olun', 'Bądź na bieżąco'),
 		'Onze kantoren': d('Unsere Filialen', 'Our offices', 'Nos agences', 'Nuestras oficinas', 'Le nostre sedi', 'Şubelerimiz', 'Nasze biura'),
 		'Hoofdkantoor': d('Hauptsitz', 'Head office', 'Siège', 'Sede central', 'Sede centrale', 'Genel merkez', 'Siedziba główna'),
-		'Route plannen': d('Route planen', 'Plan route', 'Itinéraire', 'Planificar ruta', 'Pianifica percorso', 'Rota planla', 'Zaplanuj trasę')
+		'Route plannen': d('Route planen', 'Plan route', 'Itinéraire', 'Planificar ruta', 'Pianifica percorso', 'Rota planla', 'Zaplanuj trasę'),
+
+		/* ---- Header / navigatie ---- */
+		'Edelmetalen': d('Edelmetalle', 'Precious metals', 'Métaux précieux', 'Metales preciosos', 'Metalli preziosi', 'Değerli metaller', 'Metale szlachetne'),
+		'Edelstenen': d('Edelsteine', 'Gemstones', 'Pierres précieuses', 'Piedras preciosas', 'Pietre preziose', 'Değerli taşlar', 'Kamienie szlachetne'),
+		'Horloges': d('Uhren', 'Watches', 'Montres', 'Relojes', 'Orologi', 'Saatler', 'Zegarki'),
+		'Dagprijzen': d('Tagespreise', 'Daily prices', 'Prix du jour', 'Precios diarios', 'Prezzi del giorno', 'Günlük fiyatlar', 'Ceny dnia'),
+		'Over ons': d('Über uns', 'About us', 'À propos', 'Sobre nosotros', 'Chi siamo', 'Hakkımızda', 'O nas'),
+		'Afspraak maken': d('Termin vereinbaren', 'Book appointment', 'Prendre rendez-vous', 'Reservar cita', 'Prenota appuntamento', 'Randevu al', 'Umów się'),
+		'Gratis taxatie': d('Kostenlose Schätzung', 'Free appraisal', 'Estimation gratuite', 'Tasación gratuita', 'Valutazione gratuita', 'Ücretsiz değerleme', 'Bezpłatna wycena'),
+		'Thuisbezoek': d('Hausbesuch', 'Home visit', 'Visite à domicile', 'Visita a domicilio', 'Visita a domicilio', 'Eve ziyaret', 'Wizyta domowa'),
+		'Inruilen': d('Eintauschen', 'Trade in', 'Reprise', 'Canjear', 'Permuta', 'Takas', 'Wymiana'),
+		'Hoe werkt het?': d('Wie funktioniert es?', 'How it works', 'Comment ça marche ?', '¿Cómo funciona?', 'Come funziona?', 'Nasıl çalışır?', 'Jak to działa?'),
+		'Alle vestigingen': d('Alle Filialen', 'All branches', 'Toutes les agences', 'Todas las oficinas', 'Tutte le sedi', 'Tüm şubeler', 'Wszystkie oddziały'),
+
+		/* ---- Mega-menu koppen ---- */
+		'Diensten': d('Leistungen', 'Services', 'Services', 'Servicios', 'Servizi', 'Hizmetler', 'Usługi'),
+		'Hulp': d('Hilfe', 'Help', 'Aide', 'Ayuda', 'Aiuto', 'Yardım', 'Pomoc'),
+		'Locaties': d('Standorte', 'Locations', 'Emplacements', 'Ubicaciones', 'Sedi', 'Konumlar', 'Lokalizacje'),
+		'Over XGOUD': d('Über XGOUD', 'About XGOUD', 'À propos de XGOUD', 'Sobre XGOUD', 'Su XGOUD', 'XGOUD hakkında', 'O XGOUD'),
+		'Vertrouwen': d('Vertrauen', 'Trust', 'Confiance', 'Confianza', 'Fiducia', 'Güven', 'Zaufanie'),
+		'Media': d('Medien', 'Media', 'Médias', 'Medios', 'Media', 'Medya', 'Media'),
+		'Grafieken': d('Diagramme', 'Charts', 'Graphiques', 'Gráficos', 'Grafici', 'Grafikler', 'Wykresy'),
+		'Markt': d('Markt', 'Market', 'Marché', 'Mercado', 'Mercato', 'Piyasa', 'Rynek'),
+		'Snel:': d('Schnell:', 'Quick:', 'Rapide :', 'Rápido:', 'Veloce:', 'Hızlı:', 'Szybko:'),
+
+		/* ---- Footer ---- */
+		'Contact': d('Kontakt', 'Contact', 'Contact', 'Contacto', 'Contatto', 'İletişim', 'Kontakt'),
+		'Beoordelingen': d('Bewertungen', 'Reviews', 'Avis', 'Reseñas', 'Recensioni', 'Değerlendirmeler', 'Opinie'),
+		'Reviews': d('Bewertungen', 'Reviews', 'Avis', 'Reseñas', 'Recensioni', 'Yorumlar', 'Opinie'),
+		'Certificaten': d('Zertifikate', 'Certificates', 'Certificats', 'Certificados', 'Certificati', 'Sertifikalar', 'Certyfikaty'),
+		'Partners': d('Partner', 'Partners', 'Partenaires', 'Socios', 'Partner', 'Ortaklar', 'Partnerzy'),
+		'Nieuws': d('Nachrichten', 'News', 'Actualités', 'Noticias', 'Notizie', 'Haberler', 'Aktualności'),
+		'Pers': d('Presse', 'Press', 'Presse', 'Prensa', 'Stampa', 'Basın', 'Prasa'),
+		'Vacatures': d('Stellenangebote', 'Careers', 'Carrières', 'Empleo', 'Lavora con noi', 'Kariyer', 'Kariera'),
+		'Werkwijze': d('Vorgehensweise', 'How we work', 'Méthode', 'Método', 'Metodo', 'Çalışma şekli', 'Sposób pracy'),
+		'Goud verkopen': d('Gold verkaufen', 'Sell gold', "Vendre de l'or", 'Vender oro', "Vendere oro", 'Altın sat', 'Sprzedaj złoto'),
+		'Zilver verkopen': d('Silber verkaufen', 'Sell silver', "Vendre de l'argent", 'Vender plata', 'Vendere argento', 'Gümüş sat', 'Sprzedaj srebro'),
+		'Diamanten verkopen': d('Diamanten verkaufen', 'Sell diamonds', 'Vendre des diamants', 'Vender diamantes', 'Vendere diamanti', 'Pırlanta sat', 'Sprzedaj diamenty'),
+		'Veilig en betrouwbaar': d('Sicher und zuverlässig', 'Safe and reliable', 'Sûr et fiable', 'Seguro y fiable', 'Sicuro e affidabile', 'Güvenli ve güvenilir', 'Bezpiecznie i niezawodnie')
 	};
 
 	var LANG = 'nl';
