@@ -277,8 +277,63 @@ function ekinese_products_import_page() {
 ===================================================================== */
 function ekinese_register_product_block() {
 	register_block_type( 'ekinese/product-detail', array( 'render_callback' => 'ekinese_render_product_detail' ) );
+	register_block_type( 'ekinese/product-list', array(
+		'attributes'      => array(
+			'metal'    => array( 'type' => 'string', 'default' => '' ),
+			'category' => array( 'type' => 'string', 'default' => '' ),
+			'limit'    => array( 'type' => 'number', 'default' => 24 ),
+			'title'    => array( 'type' => 'string', 'default' => '' ),
+		),
+		'render_callback' => 'ekinese_render_product_list',
+	) );
 }
 add_action( 'init', 'ekinese_register_product_block' );
+
+/**
+ * Productenlijst-blok: toont productkaarten, optioneel gefilterd op metaal en
+ * categorie. Voor categorie-/hubpagina's. Bv:
+ *   <!-- wp:ekinese/product-list {"metal":"gold","category":"Munten"} /-->
+ */
+function ekinese_render_product_list( $attr ) {
+	$meta = array();
+	if ( ! empty( $attr['metal'] ) ) {
+		$meta[] = array( 'key' => 'metal', 'value' => sanitize_text_field( $attr['metal'] ) );
+	}
+	if ( ! empty( $attr['category'] ) ) {
+		$meta[] = array( 'key' => 'category', 'value' => sanitize_text_field( $attr['category'] ) );
+	}
+	$posts = get_posts( array(
+		'post_type'      => 'xg_product',
+		'posts_per_page' => (int) ( $attr['limit'] ?? 24 ),
+		'post_status'    => 'publish',
+		'orderby'        => 'meta_value_num',
+		'meta_key'       => 'weight',
+		'order'          => 'ASC',
+		'meta_query'     => $meta ?: array(),
+	) );
+	if ( ! $posts ) {
+		return '';
+	}
+	ob_start();
+	echo '<section><div class="xg-container">';
+	if ( ! empty( $attr['title'] ) ) {
+		echo '<h2 class="xg-section-title">' . esc_html( $attr['title'] ) . '</h2>';
+	}
+	echo '<div class="xg-grid-4">';
+	foreach ( $posts as $p ) {
+		$w = get_post_meta( $p->ID, 'weight', true );
+		$c = get_post_meta( $p->ID, 'carat', true );
+		printf(
+			'<a class="xg-c-card" href="%s" style="text-decoration:none"><h3>%s</h3><p>%s%s</p></a>',
+			esc_url( get_permalink( $p->ID ) ),
+			esc_html( $p->post_title ),
+			$w ? esc_html( $w ) . ' g' : '',
+			$c ? ' &middot; ' . esc_html( $c ) : ''
+		);
+	}
+	echo '</div></div></section>';
+	return ob_get_clean();
+}
 
 function ekinese_render_product_detail() {
 	if ( ! is_singular( 'xg_product' ) ) {
