@@ -14,11 +14,12 @@
     padding: 40px 0;
 }
 
-/* Layout-Container & Karten-Grids (ersetzen die alten Page-Builder-Wrapper) */
+/* Layout-Container & Karten-Grids (ersetzen die alten Page-Builder-Wrapper).
+   EINE Breite für Header, Content und Footer: var(--max-w)=1400, 40px Rand. */
 .xg-blueprint .xg-container {
-    max-width: 1200px;
+    max-width: var(--max-w, 1400px);
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 40px;
 }
 .xg-blueprint .xg-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
 .xg-blueprint .xg-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
@@ -1599,7 +1600,7 @@ a.xg-final-btn:hover {
 .xg-blueprint .xg-review-card,
 .xg-blueprint .xg-final-cta-box,
 .xg-blueprint .xg-link-card {
-    border-radius: 8px;
+    border-radius: 0;
     box-shadow: 0 18px 44px rgba(17,17,17,.06);
     transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease;
 }
@@ -1643,12 +1644,12 @@ a.xg-final-btn:hover {
 
 /* TOC & Tabelle: weiche Ecken + Schatten */
 .xg-blueprint .xgoud-toc-grid {
-    border-radius: 8px; overflow: hidden;
+    border-radius: 0; overflow: hidden;
     box-shadow: 0 14px 36px rgba(17,17,17,.05);
     background: #fff;
 }
 .xg-blueprint .xg-table-wrapper {
-    border-radius: 8px; overflow: hidden;
+    border-radius: 0; overflow: hidden;
     box-shadow: 0 18px 44px rgba(17,17,17,.06);
 }
 
@@ -1671,7 +1672,7 @@ a.xg-final-btn:hover {
 
 /* CTA-Modern: weiche Ecken + Tiefe */
 .xg-blueprint .xgoud-cta-modern {
-    border-radius: 10px; overflow: hidden;
+    border-radius: 0; overflow: hidden;
     box-shadow: 0 24px 60px rgba(17,17,17,.08);
 }
 

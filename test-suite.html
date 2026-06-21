@@ -30,9 +30,10 @@ html, body,
 
 /* ---------------------------------------------------------------
    DARK TOKENS  (Rot BLEIBT Rot – nur aufgehellt; Flächen dunkel)
-   Gold ergänzt als Highlight, ersetzt Rot NICHT.
+   html[data-theme="dark"] (höhere Spezifität als header-footer.css :root,
+   damit die Dark-Tokens unabhängig von der Ladereihenfolge gewinnen).
 --------------------------------------------------------------- */
-[data-theme="dark"] {
+html[data-theme="dark"] {
 	--red:       #e7483f;   /* Rot bleibt – auf Dunkel aufgehellt */
 	--red-dark:  #c5392f;
 	--red-soft:  rgba(231,72,63,.13);
@@ -202,7 +203,7 @@ html, body,
 .xg-charity-ticker-projects span {
 	font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
 	color: var(--ink-soft, #6b665c);
-	padding: 5px 11px; border: 1px solid var(--line, #e3ddd0); border-radius: 30px;
+	padding: 5px 11px; border: 1px solid var(--line, #e3ddd0); border-radius: 0;
 	transition: border-color .2s, color .2s;
 }
 .xg-charity-ticker-projects span:hover { border-color: var(--gold, #c8a24a); color: var(--gold, #c8a24a); }
@@ -1066,7 +1067,7 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
    FOOTER
    ========================================================== */
 .xg-footer-wrap { position: relative; overflow: hidden; }
-.footer { background: var(--cream); padding: 52px 64px 0; font-size: 14px; color: var(--ink-soft); position: relative; z-index: 1; }
+.footer { background: var(--cream); padding: 52px 40px 0; font-size: 14px; color: var(--ink-soft); position: relative; z-index: 1; }
 .footer__top {
   display: grid;
   grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
@@ -1198,11 +1199,12 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
     padding: 40px 0;
 }
 
-/* Layout-Container & Karten-Grids (ersetzen die alten Page-Builder-Wrapper) */
+/* Layout-Container & Karten-Grids (ersetzen die alten Page-Builder-Wrapper).
+   EINE Breite für Header, Content und Footer: var(--max-w)=1400, 40px Rand. */
 .xg-blueprint .xg-container {
-    max-width: 1200px;
+    max-width: var(--max-w, 1400px);
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 40px;
 }
 .xg-blueprint .xg-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
 .xg-blueprint .xg-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
@@ -2783,7 +2785,7 @@ a.xg-final-btn:hover {
 .xg-blueprint .xg-review-card,
 .xg-blueprint .xg-final-cta-box,
 .xg-blueprint .xg-link-card {
-    border-radius: 8px;
+    border-radius: 0;
     box-shadow: 0 18px 44px rgba(17,17,17,.06);
     transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease;
 }
@@ -2827,12 +2829,12 @@ a.xg-final-btn:hover {
 
 /* TOC & Tabelle: weiche Ecken + Schatten */
 .xg-blueprint .xgoud-toc-grid {
-    border-radius: 8px; overflow: hidden;
+    border-radius: 0; overflow: hidden;
     box-shadow: 0 14px 36px rgba(17,17,17,.05);
     background: #fff;
 }
 .xg-blueprint .xg-table-wrapper {
-    border-radius: 8px; overflow: hidden;
+    border-radius: 0; overflow: hidden;
     box-shadow: 0 18px 44px rgba(17,17,17,.06);
 }
 
@@ -2855,7 +2857,7 @@ a.xg-final-btn:hover {
 
 /* CTA-Modern: weiche Ecken + Tiefe */
 .xg-blueprint .xgoud-cta-modern {
-    border-radius: 10px; overflow: hidden;
+    border-radius: 0; overflow: hidden;
     box-shadow: 0 24px 60px rgba(17,17,17,.08);
 }
 
@@ -2893,7 +2895,7 @@ a.xg-final-btn:hover {
 	--xc-gold-soft:  rgba(200,162,74,.12);
 	--xc-shadow:     0 18px 50px rgba(28,26,22,.10);
 	--xc-shadow-lg:  0 30px 80px rgba(28,26,22,.16);
-	--xc-radius:     2px;
+	--xc-radius:     0;
 	--xc-ease:       cubic-bezier(.4,0,.2,1);
 	--xc-font:       Arial, Helvetica, sans-serif;
 }

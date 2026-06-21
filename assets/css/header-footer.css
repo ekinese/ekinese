@@ -844,7 +844,7 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
    FOOTER
    ========================================================== */
 .xg-footer-wrap { position: relative; overflow: hidden; }
-.footer { background: var(--cream); padding: 52px 64px 0; font-size: 14px; color: var(--ink-soft); position: relative; z-index: 1; }
+.footer { background: var(--cream); padding: 52px 40px 0; font-size: 14px; color: var(--ink-soft); position: relative; z-index: 1; }
 .footer__top {
   display: grid;
   grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;

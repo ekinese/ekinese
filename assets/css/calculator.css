@@ -24,7 +24,7 @@
 	--xc-gold-soft:  rgba(200,162,74,.12);
 	--xc-shadow:     0 18px 50px rgba(28,26,22,.10);
 	--xc-shadow-lg:  0 30px 80px rgba(28,26,22,.16);
-	--xc-radius:     2px;
+	--xc-radius:     0;
 	--xc-ease:       cubic-bezier(.4,0,.2,1);
 	--xc-font:       Arial, Helvetica, sans-serif;
 }

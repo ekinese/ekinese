@@ -23,9 +23,10 @@ html, body,
 
 /* ---------------------------------------------------------------
    DARK TOKENS  (Rot BLEIBT Rot – nur aufgehellt; Flächen dunkel)
-   Gold ergänzt als Highlight, ersetzt Rot NICHT.
+   html[data-theme="dark"] (höhere Spezifität als header-footer.css :root,
+   damit die Dark-Tokens unabhängig von der Ladereihenfolge gewinnen).
 --------------------------------------------------------------- */
-[data-theme="dark"] {
+html[data-theme="dark"] {
 	--red:       #e7483f;   /* Rot bleibt – auf Dunkel aufgehellt */
 	--red-dark:  #c5392f;
 	--red-soft:  rgba(231,72,63,.13);
@@ -195,7 +196,7 @@ html, body,
 .xg-charity-ticker-projects span {
 	font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
 	color: var(--ink-soft, #6b665c);
-	padding: 5px 11px; border: 1px solid var(--line, #e3ddd0); border-radius: 30px;
+	padding: 5px 11px; border: 1px solid var(--line, #e3ddd0); border-radius: 0;
 	transition: border-color .2s, color .2s;
 }
 .xg-charity-ticker-projects span:hover { border-color: var(--gold, #c8a24a); color: var(--gold, #c8a24a); }
