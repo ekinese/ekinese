@@ -21,7 +21,7 @@
   --neutral:   #888880;
   --white:     #ffffff;
   --font:      Arial, Helvetica, sans-serif;
-  --max-w:     1400px;
+  --max-w:     100%;   /* volle schermbreedte op desktop (frame), 40px gutter via padding */
   --shadow:    0 12px 40px rgba(0,0,0,0.11);
   --topbar-h:  52px;
   --header-h:  84px;
