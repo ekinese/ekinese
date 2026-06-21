@@ -34,3 +34,4 @@ require_once get_theme_file_path( 'inc/watches.php' );
 require_once get_theme_file_path( 'inc/tickets.php' );
 require_once get_theme_file_path( 'inc/notifications.php' );
 require_once get_theme_file_path( 'inc/pickup.php' );
+require_once get_theme_file_path( 'inc/stats.php' );
