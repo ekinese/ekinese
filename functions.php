@@ -31,3 +31,4 @@ require_once get_theme_file_path( 'inc/newsletter.php' );
 require_once get_theme_file_path( 'inc/lexicon.php' );
 require_once get_theme_file_path( 'inc/integrations.php' );
 require_once get_theme_file_path( 'inc/watches.php' );
+require_once get_theme_file_path( 'inc/tickets.php' );
