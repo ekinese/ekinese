@@ -37,6 +37,14 @@ function pattern(file) {
 	var tmp = '.tst-render.php';
 	fs.writeFileSync(tmp, php);
 	var out = execSync('php -d display_errors=1 ' + tmp, { encoding: 'utf8' });
+	// Demo voor het dynamische prijsblok (server-rendered in WordPress).
+	out = out.replace(/<!--\s*wp:ekinese\/metal-prices[^>]*?-->/g,
+		'<section><div class="xg-container"><div class="xg-spec-table"><table><thead><tr><th>Metaal</th><th>Spotprijs (€/g)</th><th>Inkoopprijs (€/g)</th></tr></thead><tbody>' +
+		'<tr><td>Goud</td><td>€ 62,50</td><td><strong>€ 57,50</strong></td></tr>' +
+		'<tr><td>Zilver</td><td>€ 0,78</td><td><strong>€ 0,72</strong></td></tr>' +
+		'<tr><td>Platina</td><td>€ 28,90</td><td><strong>€ 26,59</strong></td></tr>' +
+		'<tr><td>Palladium</td><td>€ 30,10</td><td><strong>€ 27,69</strong></td></tr>' +
+		'</tbody></table></div></div></section>');
 	return stripBlocks(out).trim();
 }
 
@@ -87,6 +95,8 @@ const pages = {
 	'sv-kantoor':{ label: '— Kantoorbezoek',   html: safePattern('services-kantoorbezoek.php') },
 	'sv-ophaal': { label: '— Ophaalservice',   html: safePattern('services-ophaalservice.php') },
 	'sv-zakelijk':{label: '— Zakelijk',        html: safePattern('services-zakelijk.php') },
+	dagprijzen:  { label: 'Dagprijzen',        html: safePattern('price-dagprijzen.php') },
+	goudprijs:   { label: '— Goudprijs',       html: safePattern('price-goudprijs.php') },
 	contact:     { label: 'Contact',           html: safePattern('contact.php') },
 	privacy:     { label: 'Privacy',           html: safePattern('page-privacy.php') },
 	terms:       { label: 'Voorwaarden',       html: safePattern('page-terms.php') },

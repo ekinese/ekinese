@@ -353,11 +353,11 @@
 
   const STD = {
     dagprijzen:`<div class="xg-std-grid">
-      <div class="xg-std-col"><h3>Dagprijzen</h3><a href="#">Goudprijs vandaag</a><a href="#">Zilverprijs vandaag</a><a href="#">Platinaprijs vandaag</a><a href="#">Palladiumprijs</a></div>
-      <div class="xg-std-col"><h3>Grafieken</h3><a href="#">Historische prijzen</a><a href="#">Koersanalyse</a><a href="#">Prijsverwachting</a></div>
-      <div class="xg-std-col"><h3>Markt</h3><a href="#">Marktnieuws</a><a href="#">LBMA fixing</a><a href="#">EUR/USD koers</a></div>
+      <div class="xg-std-col"><h3>Dagprijzen</h3><a href="/dagprijzen/goudprijs/">Goudprijs vandaag</a><a href="/dagprijzen/zilverprijs/">Zilverprijs vandaag</a><a href="/dagprijzen/platinaprijs/">Platinaprijs vandaag</a><a href="/dagprijzen/palladiumprijs/">Palladiumprijs</a></div>
+      <div class="xg-std-col"><h3>Overzicht</h3><a href="/dagprijzen/">Alle dagprijzen</a><a href="/inkoopprijzen/">Inkoopprijzen</a><a href="/edelmetalen-verkopen/">Edelmetaal verkopen</a></div>
+      <div class="xg-std-col"><h3>Markt</h3><a href="/lexicon/spotprijs/">Wat is de spotprijs?</a><a href="/lexicon/troy-ounce/">Troy ounce</a><a href="/lexicon/fineness-zuiverheid/">Zuiverheid</a></div>
     </div>
-    <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="#">Goudprijs</a><a class="xg-ql" href="#">Zilverprijs</a><a class="xg-ql" href="#">Koersgrafiek</a></div>`,
+    <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="/dagprijzen/goudprijs/">Goudprijs</a><a class="xg-ql" href="/dagprijzen/zilverprijs/">Zilverprijs</a><a class="xg-ql" href="/dagprijzen/">Alle prijzen</a></div>`,
     service:`<div class="xg-std-grid">
       <div class="xg-std-col"><h3>Diensten</h3><a href="/service/gratis-taxatie/">Gratis taxatie</a><a href="/service/thuisbezoek/">Thuisbezoek</a><a href="/service/inruilen/">Inruilen</a></div>
       <div class="xg-std-col"><h3>Hulp</h3><a href="/service/faq/">FAQ</a><a href="/contact/">Contact</a><a href="/service/hoe-werkt-het/">Hoe werkt het?</a></div>
