@@ -16,8 +16,23 @@
 	};
 	var KEY = 'xg-locale';
 
+	var SECONDARY = ['de', 'en', 'fr', 'es', 'it', 'tr', 'pl'];
+
+	// Huidige taal komt van de SERVER (URL-prefix), niet uit localStorage –
+	// zo blijft de keuze SEO-echt en consistent met de gerenderde pagina.
+	function langFromUrl() {
+		var m = location.pathname.match(/^\/(de|en|fr|es|it|tr|pl)(\/|$)/);
+		return m ? m[1] : 'nl';
+	}
+	// Bouw de URL van de huidige pagina in een andere taal (prefix wisselen).
+	function urlForLang(code) {
+		var path = location.pathname.replace(/^\/(de|en|fr|es|it|tr|pl)(\/|$)/, '/');
+		return (code === 'nl' ? '' : '/' + code) + path + location.search + location.hash;
+	}
+
 	var state = { lang: 'nl', currency: 'EUR' };
 	try { Object.assign(state, JSON.parse(localStorage.getItem(KEY)) || {}); } catch (e) {}
+	state.lang = langFromUrl(); // URL is leidend
 
 	function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} document.cookie = 'xg_locale=' + state.lang + ';path=/;max-age=31536000'; }
 
@@ -60,9 +75,10 @@
 			b.className = 'xg-ctrl-opt' + (state.lang === l[0] ? ' active' : '');
 			b.textContent = l[1];
 			b.addEventListener('click', function () {
-				state.lang = l[0]; apply();
-				langs.querySelectorAll('.xg-ctrl-opt').forEach(function (x) { x.classList.remove('active'); });
-				b.classList.add('active'); label.textContent = state.lang.toUpperCase() + ' · ' + state.currency;
+				// Taalwissel = navigeren naar de server-gerenderde taal-URL (SEO-echt).
+				if (l[0] === state.lang) return;
+				save(); // valuta-/voorkeur bewaren over de navigatie heen
+				location.href = urlForLang(l[0]);
 			});
 			langs.appendChild(b);
 		});

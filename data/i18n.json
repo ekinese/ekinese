@@ -1,0 +1,859 @@
+{
+ "langs": [
+  "de",
+  "en",
+  "fr",
+  "es",
+  "it",
+  "tr",
+  "pl"
+ ],
+ "dict": {
+  "Berekenen": {
+   "de": "Berechnen",
+   "en": "Calculate",
+   "fr": "Calculer",
+   "es": "Calcular",
+   "it": "Calcola",
+   "tr": "Hesapla",
+   "pl": "Oblicz"
+  },
+  "Selectie": {
+   "de": "Auswahl",
+   "en": "Selection",
+   "fr": "Sélection",
+   "es": "Selección",
+   "it": "Selezione",
+   "tr": "Seçim",
+   "pl": "Wybór"
+  },
+  "Product": {
+   "de": "Produkt",
+   "en": "Product",
+   "fr": "Produit",
+   "es": "Producto",
+   "it": "Prodotto",
+   "tr": "Ürün",
+   "pl": "Produkt"
+  },
+  "Details": {
+   "de": "Details",
+   "en": "Details",
+   "fr": "Détails",
+   "es": "Detalles",
+   "it": "Dettagli",
+   "tr": "Ayrıntılar",
+   "pl": "Szczegóły"
+  },
+  "Resultaat": {
+   "de": "Ergebnis",
+   "en": "Result",
+   "fr": "Résultat",
+   "es": "Resultado",
+   "it": "Risultato",
+   "tr": "Sonuç",
+   "pl": "Wynik"
+  },
+  "Gegevens": {
+   "de": "Daten",
+   "en": "Details",
+   "fr": "Coordonnées",
+   "es": "Datos",
+   "it": "Dati",
+   "tr": "Bilgiler",
+   "pl": "Dane"
+  },
+  "Service": {
+   "de": "Service",
+   "en": "Service",
+   "fr": "Service",
+   "es": "Servicio",
+   "it": "Servizio",
+   "tr": "Hizmet",
+   "pl": "Usługa"
+  },
+  "Uitbetaling": {
+   "de": "Auszahlung",
+   "en": "Payout",
+   "fr": "Paiement",
+   "es": "Pago",
+   "it": "Pagamento",
+   "tr": "Ödeme",
+   "pl": "Wypłata"
+  },
+  "Goede doel": {
+   "de": "Guter Zweck",
+   "en": "Charity",
+   "fr": "Bonne cause",
+   "es": "Buena causa",
+   "it": "Beneficenza",
+   "tr": "Hayır",
+   "pl": "Cel charytatywny"
+  },
+  "Klaar": {
+   "de": "Fertig",
+   "en": "Done",
+   "fr": "Terminé",
+   "es": "Listo",
+   "it": "Fatto",
+   "tr": "Tamam",
+   "pl": "Gotowe"
+  },
+  "Live prijzen": {
+   "de": "Live-Preise",
+   "en": "Live prices",
+   "fr": "Prix en direct",
+   "es": "Precios en vivo",
+   "it": "Prezzi live",
+   "tr": "Canlı fiyatlar",
+   "pl": "Ceny na żywo"
+  },
+  "Wat wilt u verkopen?": {
+   "de": "Was möchten Sie verkaufen?",
+   "en": "What would you like to sell?",
+   "fr": "Que souhaitez-vous vendre ?",
+   "es": "¿Qué desea vender?",
+   "it": "Cosa vuoi vendere?",
+   "tr": "Ne satmak istersiniz?",
+   "pl": "Co chcesz sprzedać?"
+  },
+  "Kies een categorie – wij leiden u naar de prijs.": {
+   "de": "Wählen Sie eine Kategorie – wir führen Sie zum Preis.",
+   "en": "Choose a category – we guide you to the price.",
+   "fr": "Choisissez une catégorie – nous vous guidons vers le prix.",
+   "es": "Elija una categoría: le guiamos hasta el precio.",
+   "it": "Scegli una categoria – ti guidiamo al prezzo.",
+   "tr": "Bir kategori seçin – sizi fiyata yönlendirelim.",
+   "pl": "Wybierz kategorię – poprowadzimy Cię do ceny."
+  },
+  "Edelmetaal": {
+   "de": "Edelmetall",
+   "en": "Precious metal",
+   "fr": "Métal précieux",
+   "es": "Metal precioso",
+   "it": "Metallo prezioso",
+   "tr": "Değerli metal",
+   "pl": "Metal szlachetny"
+  },
+  "Diamant": {
+   "de": "Diamant",
+   "en": "Diamond",
+   "fr": "Diamant",
+   "es": "Diamante",
+   "it": "Diamante",
+   "tr": "Pırlanta",
+   "pl": "Diament"
+  },
+  "Edelsteen": {
+   "de": "Edelstein",
+   "en": "Gemstone",
+   "fr": "Pierre précieuse",
+   "es": "Piedra preciosa",
+   "it": "Pietra preziosa",
+   "tr": "Değerli taş",
+   "pl": "Kamień szlachetny"
+  },
+  "Horloge": {
+   "de": "Uhr",
+   "en": "Watch",
+   "fr": "Montre",
+   "es": "Reloj",
+   "it": "Orologio",
+   "tr": "Saat",
+   "pl": "Zegarek"
+  },
+  "Prijs berekenen": {
+   "de": "Preis berechnen",
+   "en": "Calculate price",
+   "fr": "Calculer le prix",
+   "es": "Calcular precio",
+   "it": "Calcola il prezzo",
+   "tr": "Fiyatı hesapla",
+   "pl": "Oblicz cenę"
+  },
+  "Gewicht": {
+   "de": "Gewicht",
+   "en": "Weight",
+   "fr": "Poids",
+   "es": "Peso",
+   "it": "Peso",
+   "tr": "Ağırlık",
+   "pl": "Waga"
+  },
+  "Metaal": {
+   "de": "Metall",
+   "en": "Metal",
+   "fr": "Métal",
+   "es": "Metal",
+   "it": "Metallo",
+   "tr": "Metal",
+   "pl": "Metal"
+  },
+  "Vorm": {
+   "de": "Form",
+   "en": "Form",
+   "fr": "Forme",
+   "es": "Forma",
+   "it": "Forma",
+   "tr": "Biçim",
+   "pl": "Forma"
+  },
+  "Staat": {
+   "de": "Zustand",
+   "en": "Condition",
+   "fr": "État",
+   "es": "Estado",
+   "it": "Stato",
+   "tr": "Durum",
+   "pl": "Stan"
+  },
+  "Kleur": {
+   "de": "Farbe",
+   "en": "Color",
+   "fr": "Couleur",
+   "es": "Color",
+   "it": "Colore",
+   "tr": "Renk",
+   "pl": "Kolor"
+  },
+  "Zuiverheid": {
+   "de": "Reinheit",
+   "en": "Clarity",
+   "fr": "Pureté",
+   "es": "Pureza",
+   "it": "Purezza",
+   "tr": "Berraklık",
+   "pl": "Czystość"
+  },
+  "Karaatgewicht": {
+   "de": "Karatgewicht",
+   "en": "Carat weight",
+   "fr": "Poids en carats",
+   "es": "Peso en quilates",
+   "it": "Peso in carati",
+   "tr": "Karat ağırlığı",
+   "pl": "Masa w karatach"
+  },
+  "Merk": {
+   "de": "Marke",
+   "en": "Brand",
+   "fr": "Marque",
+   "es": "Marca",
+   "it": "Marca",
+   "tr": "Marka",
+   "pl": "Marka"
+  },
+  "Model": {
+   "de": "Modell",
+   "en": "Model",
+   "fr": "Modèle",
+   "es": "Modelo",
+   "it": "Modello",
+   "tr": "Model",
+   "pl": "Model"
+  },
+  "Marktprijs": {
+   "de": "Marktpreis",
+   "en": "Market price",
+   "fr": "Prix du marché",
+   "es": "Precio de mercado",
+   "it": "Prezzo di mercato",
+   "tr": "Piyasa fiyatı",
+   "pl": "Cena rynkowa"
+  },
+  "Marge": {
+   "de": "Marge",
+   "en": "Margin",
+   "fr": "Marge",
+   "es": "Margen",
+   "it": "Margine",
+   "tr": "Marj",
+   "pl": "Marża"
+  },
+  "Vaste prijs": {
+   "de": "Festpreis",
+   "en": "Fixed price",
+   "fr": "Prix fixe",
+   "es": "Precio fijo",
+   "it": "Prezzo fisso",
+   "tr": "Sabit fiyat",
+   "pl": "Cena stała"
+  },
+  "Prijsindicatie": {
+   "de": "Preisindikation",
+   "en": "Price indication",
+   "fr": "Estimation",
+   "es": "Indicación de precio",
+   "it": "Stima del prezzo",
+   "tr": "Fiyat göstergesi",
+   "pl": "Orientacyjna cena"
+  },
+  "Aan selectie toevoegen": {
+   "de": "Zur Auswahl hinzufügen",
+   "en": "Add to selection",
+   "fr": "Ajouter à la sélection",
+   "es": "Añadir a la selección",
+   "it": "Aggiungi alla selezione",
+   "tr": "Seçime ekle",
+   "pl": "Dodaj do wyboru"
+  },
+  "Nog een product berekenen": {
+   "de": "Weiteres Produkt berechnen",
+   "en": "Calculate another product",
+   "fr": "Calculer un autre produit",
+   "es": "Calcular otro producto",
+   "it": "Calcola un altro prodotto",
+   "tr": "Başka ürün hesapla",
+   "pl": "Oblicz kolejny produkt"
+  },
+  "Afspraak maken & verkopen": {
+   "de": "Termin vereinbaren & verkaufen",
+   "en": "Book appointment & sell",
+   "fr": "Prendre rendez-vous et vendre",
+   "es": "Reservar cita y vender",
+   "it": "Prenota e vendi",
+   "tr": "Randevu al & sat",
+   "pl": "Umów się i sprzedaj"
+  },
+  "Nog een product toevoegen": {
+   "de": "Weiteres Produkt hinzufügen",
+   "en": "Add another product",
+   "fr": "Ajouter un autre produit",
+   "es": "Añadir otro producto",
+   "it": "Aggiungi un altro prodotto",
+   "tr": "Başka ürün ekle",
+   "pl": "Dodaj kolejny produkt"
+  },
+  "Uw contactgegevens": {
+   "de": "Ihre Kontaktdaten",
+   "en": "Your contact details",
+   "fr": "Vos coordonnées",
+   "es": "Sus datos de contacto",
+   "it": "I tuoi dati",
+   "tr": "İletişim bilgileriniz",
+   "pl": "Twoje dane kontaktowe"
+  },
+  "Voornaam": {
+   "de": "Vorname",
+   "en": "First name",
+   "fr": "Prénom",
+   "es": "Nombre",
+   "it": "Nome",
+   "tr": "Ad",
+   "pl": "Imię"
+  },
+  "Achternaam": {
+   "de": "Nachname",
+   "en": "Last name",
+   "fr": "Nom",
+   "es": "Apellido",
+   "it": "Cognome",
+   "tr": "Soyad",
+   "pl": "Nazwisko"
+  },
+  "E-mail": {
+   "de": "E-Mail",
+   "en": "Email",
+   "fr": "E-mail",
+   "es": "Correo",
+   "it": "E-mail",
+   "tr": "E-posta",
+   "pl": "E-mail"
+  },
+  "Telefoon": {
+   "de": "Telefon",
+   "en": "Phone",
+   "fr": "Téléphone",
+   "es": "Teléfono",
+   "it": "Telefono",
+   "tr": "Telefon",
+   "pl": "Telefon"
+  },
+  "Stad": {
+   "de": "Stadt",
+   "en": "City",
+   "fr": "Ville",
+   "es": "Ciudad",
+   "it": "Città",
+   "tr": "Şehir",
+   "pl": "Miasto"
+  },
+  "Verder": {
+   "de": "Weiter",
+   "en": "Next",
+   "fr": "Suivant",
+   "es": "Siguiente",
+   "it": "Avanti",
+   "tr": "İleri",
+   "pl": "Dalej"
+  },
+  "← Terug": {
+   "de": "← Zurück",
+   "en": "← Back",
+   "fr": "← Retour",
+   "es": "← Atrás",
+   "it": "← Indietro",
+   "tr": "← Geri",
+   "pl": "← Wstecz"
+  },
+  "Hoe wilt u verkopen?": {
+   "de": "Wie möchten Sie verkaufen?",
+   "en": "How would you like to sell?",
+   "fr": "Comment souhaitez-vous vendre ?",
+   "es": "¿Cómo desea vender?",
+   "it": "Come vuoi vendere?",
+   "tr": "Nasıl satmak istersiniz?",
+   "pl": "Jak chcesz sprzedać?"
+  },
+  "Bezoek aan huis": {
+   "de": "Hausbesuch",
+   "en": "Home visit",
+   "fr": "Visite à domicile",
+   "es": "Visita a domicilio",
+   "it": "Visita a domicilio",
+   "tr": "Eve ziyaret",
+   "pl": "Wizyta domowa"
+  },
+  "In een vestiging": {
+   "de": "In einer Filiale",
+   "en": "At a branch",
+   "fr": "En agence",
+   "es": "En una oficina",
+   "it": "In filiale",
+   "tr": "Şubede",
+   "pl": "W oddziale"
+  },
+  "Ophaalservice": {
+   "de": "Abhol-Service",
+   "en": "Pickup service",
+   "fr": "Service de retrait",
+   "es": "Servicio de recogida",
+   "it": "Servizio di ritiro",
+   "tr": "Alma servisi",
+   "pl": "Usługa odbioru"
+  },
+  "Afspraak aanvragen": {
+   "de": "Termin anfragen",
+   "en": "Request appointment",
+   "fr": "Demander un rendez-vous",
+   "es": "Solicitar cita",
+   "it": "Richiedi appuntamento",
+   "tr": "Randevu iste",
+   "pl": "Poproś o termin"
+  },
+  "Hartelijk dank!": {
+   "de": "Vielen Dank!",
+   "en": "Thank you!",
+   "fr": "Merci beaucoup !",
+   "es": "¡Muchas gracias!",
+   "it": "Grazie!",
+   "tr": "Teşekkürler!",
+   "pl": "Dziękujemy!"
+  },
+  "Nieuwe berekening starten": {
+   "de": "Neue Berechnung starten",
+   "en": "Start new calculation",
+   "fr": "Nouveau calcul",
+   "es": "Nuevo cálculo",
+   "it": "Nuovo calcolo",
+   "tr": "Yeni hesaplama",
+   "pl": "Nowe obliczenie"
+  },
+  "XGOUD assistent": {
+   "de": "XGOUD Assistent",
+   "en": "XGOUD assistant",
+   "fr": "Assistant XGOUD",
+   "es": "Asistente XGOUD",
+   "it": "Assistente XGOUD",
+   "tr": "XGOUD asistanı",
+   "pl": "Asystent XGOUD"
+  },
+  "Typ uw bericht…": {
+   "de": "Ihre Nachricht…",
+   "en": "Type your message…",
+   "fr": "Votre message…",
+   "es": "Escriba su mensaje…",
+   "it": "Scrivi il messaggio…",
+   "tr": "Mesajınızı yazın…",
+   "pl": "Wpisz wiadomość…"
+  },
+  "Online — we reageren direct": {
+   "de": "Online – wir antworten sofort",
+   "en": "Online — we reply right away",
+   "fr": "En ligne — réponse immédiate",
+   "es": "En línea — respondemos al instante",
+   "it": "Online — rispondiamo subito",
+   "tr": "Çevrimiçi — hemen yanıtlıyoruz",
+   "pl": "Online — odpowiadamy od razu"
+  },
+  "Offline — laat een bericht achter": {
+   "de": "Offline – hinterlassen Sie eine Nachricht",
+   "en": "Offline — leave a message",
+   "fr": "Hors ligne — laissez un message",
+   "es": "Sin conexión — deje un mensaje",
+   "it": "Offline — lascia un messaggio",
+   "tr": "Çevrimdışı — mesaj bırakın",
+   "pl": "Offline — zostaw wiadomość"
+  },
+  "Aanmelden": {
+   "de": "Anmelden",
+   "en": "Subscribe",
+   "fr": "S'inscrire",
+   "es": "Suscribirse",
+   "it": "Iscriviti",
+   "tr": "Abone ol",
+   "pl": "Zapisz się"
+  },
+  "Uw e-mailadres": {
+   "de": "Ihre E-Mail-Adresse",
+   "en": "Your email address",
+   "fr": "Votre adresse e-mail",
+   "es": "Su correo electrónico",
+   "it": "La tua e-mail",
+   "tr": "E-posta adresiniz",
+   "pl": "Twój adres e-mail"
+  },
+  "Stad (optioneel)": {
+   "de": "Stadt (optional)",
+   "en": "City (optional)",
+   "fr": "Ville (facultatif)",
+   "es": "Ciudad (opcional)",
+   "it": "Città (facoltativo)",
+   "tr": "Şehir (isteğe bağlı)",
+   "pl": "Miasto (opcjonalnie)"
+  },
+  "Blijf op de hoogte": {
+   "de": "Bleiben Sie informiert",
+   "en": "Stay informed",
+   "fr": "Restez informé",
+   "es": "Manténgase informado",
+   "it": "Resta aggiornato",
+   "tr": "Haberdar olun",
+   "pl": "Bądź na bieżąco"
+  },
+  "Onze kantoren": {
+   "de": "Unsere Filialen",
+   "en": "Our offices",
+   "fr": "Nos agences",
+   "es": "Nuestras oficinas",
+   "it": "Le nostre sedi",
+   "tr": "Şubelerimiz",
+   "pl": "Nasze biura"
+  },
+  "Hoofdkantoor": {
+   "de": "Hauptsitz",
+   "en": "Head office",
+   "fr": "Siège",
+   "es": "Sede central",
+   "it": "Sede centrale",
+   "tr": "Genel merkez",
+   "pl": "Siedziba główna"
+  },
+  "Route plannen": {
+   "de": "Route planen",
+   "en": "Plan route",
+   "fr": "Itinéraire",
+   "es": "Planificar ruta",
+   "it": "Pianifica percorso",
+   "tr": "Rota planla",
+   "pl": "Zaplanuj trasę"
+  },
+  "Edelmetalen": {
+   "de": "Edelmetalle",
+   "en": "Precious metals",
+   "fr": "Métaux précieux",
+   "es": "Metales preciosos",
+   "it": "Metalli preziosi",
+   "tr": "Değerli metaller",
+   "pl": "Metale szlachetne"
+  },
+  "Edelstenen": {
+   "de": "Edelsteine",
+   "en": "Gemstones",
+   "fr": "Pierres précieuses",
+   "es": "Piedras preciosas",
+   "it": "Pietre preziose",
+   "tr": "Değerli taşlar",
+   "pl": "Kamienie szlachetne"
+  },
+  "Horloges": {
+   "de": "Uhren",
+   "en": "Watches",
+   "fr": "Montres",
+   "es": "Relojes",
+   "it": "Orologi",
+   "tr": "Saatler",
+   "pl": "Zegarki"
+  },
+  "Dagprijzen": {
+   "de": "Tagespreise",
+   "en": "Daily prices",
+   "fr": "Prix du jour",
+   "es": "Precios diarios",
+   "it": "Prezzi del giorno",
+   "tr": "Günlük fiyatlar",
+   "pl": "Ceny dnia"
+  },
+  "Over ons": {
+   "de": "Über uns",
+   "en": "About us",
+   "fr": "À propos",
+   "es": "Sobre nosotros",
+   "it": "Chi siamo",
+   "tr": "Hakkımızda",
+   "pl": "O nas"
+  },
+  "Afspraak maken": {
+   "de": "Termin vereinbaren",
+   "en": "Book appointment",
+   "fr": "Prendre rendez-vous",
+   "es": "Reservar cita",
+   "it": "Prenota appuntamento",
+   "tr": "Randevu al",
+   "pl": "Umów się"
+  },
+  "Gratis taxatie": {
+   "de": "Kostenlose Schätzung",
+   "en": "Free appraisal",
+   "fr": "Estimation gratuite",
+   "es": "Tasación gratuita",
+   "it": "Valutazione gratuita",
+   "tr": "Ücretsiz değerleme",
+   "pl": "Bezpłatna wycena"
+  },
+  "Thuisbezoek": {
+   "de": "Hausbesuch",
+   "en": "Home visit",
+   "fr": "Visite à domicile",
+   "es": "Visita a domicilio",
+   "it": "Visita a domicilio",
+   "tr": "Eve ziyaret",
+   "pl": "Wizyta domowa"
+  },
+  "Inruilen": {
+   "de": "Eintauschen",
+   "en": "Trade in",
+   "fr": "Reprise",
+   "es": "Canjear",
+   "it": "Permuta",
+   "tr": "Takas",
+   "pl": "Wymiana"
+  },
+  "Hoe werkt het?": {
+   "de": "Wie funktioniert es?",
+   "en": "How it works",
+   "fr": "Comment ça marche ?",
+   "es": "¿Cómo funciona?",
+   "it": "Come funziona?",
+   "tr": "Nasıl çalışır?",
+   "pl": "Jak to działa?"
+  },
+  "Alle vestigingen": {
+   "de": "Alle Filialen",
+   "en": "All branches",
+   "fr": "Toutes les agences",
+   "es": "Todas las oficinas",
+   "it": "Tutte le sedi",
+   "tr": "Tüm şubeler",
+   "pl": "Wszystkie oddziały"
+  },
+  "Diensten": {
+   "de": "Leistungen",
+   "en": "Services",
+   "fr": "Services",
+   "es": "Servicios",
+   "it": "Servizi",
+   "tr": "Hizmetler",
+   "pl": "Usługi"
+  },
+  "Hulp": {
+   "de": "Hilfe",
+   "en": "Help",
+   "fr": "Aide",
+   "es": "Ayuda",
+   "it": "Aiuto",
+   "tr": "Yardım",
+   "pl": "Pomoc"
+  },
+  "Locaties": {
+   "de": "Standorte",
+   "en": "Locations",
+   "fr": "Emplacements",
+   "es": "Ubicaciones",
+   "it": "Sedi",
+   "tr": "Konumlar",
+   "pl": "Lokalizacje"
+  },
+  "Over XGOUD": {
+   "de": "Über XGOUD",
+   "en": "About XGOUD",
+   "fr": "À propos de XGOUD",
+   "es": "Sobre XGOUD",
+   "it": "Su XGOUD",
+   "tr": "XGOUD hakkında",
+   "pl": "O XGOUD"
+  },
+  "Vertrouwen": {
+   "de": "Vertrauen",
+   "en": "Trust",
+   "fr": "Confiance",
+   "es": "Confianza",
+   "it": "Fiducia",
+   "tr": "Güven",
+   "pl": "Zaufanie"
+  },
+  "Media": {
+   "de": "Medien",
+   "en": "Media",
+   "fr": "Médias",
+   "es": "Medios",
+   "it": "Media",
+   "tr": "Medya",
+   "pl": "Media"
+  },
+  "Grafieken": {
+   "de": "Diagramme",
+   "en": "Charts",
+   "fr": "Graphiques",
+   "es": "Gráficos",
+   "it": "Grafici",
+   "tr": "Grafikler",
+   "pl": "Wykresy"
+  },
+  "Markt": {
+   "de": "Markt",
+   "en": "Market",
+   "fr": "Marché",
+   "es": "Mercado",
+   "it": "Mercato",
+   "tr": "Piyasa",
+   "pl": "Rynek"
+  },
+  "Snel:": {
+   "de": "Schnell:",
+   "en": "Quick:",
+   "fr": "Rapide :",
+   "es": "Rápido:",
+   "it": "Veloce:",
+   "tr": "Hızlı:",
+   "pl": "Szybko:"
+  },
+  "Contact": {
+   "de": "Kontakt",
+   "en": "Contact",
+   "fr": "Contact",
+   "es": "Contacto",
+   "it": "Contatto",
+   "tr": "İletişim",
+   "pl": "Kontakt"
+  },
+  "Beoordelingen": {
+   "de": "Bewertungen",
+   "en": "Reviews",
+   "fr": "Avis",
+   "es": "Reseñas",
+   "it": "Recensioni",
+   "tr": "Değerlendirmeler",
+   "pl": "Opinie"
+  },
+  "Reviews": {
+   "de": "Bewertungen",
+   "en": "Reviews",
+   "fr": "Avis",
+   "es": "Reseñas",
+   "it": "Recensioni",
+   "tr": "Yorumlar",
+   "pl": "Opinie"
+  },
+  "Certificaten": {
+   "de": "Zertifikate",
+   "en": "Certificates",
+   "fr": "Certificats",
+   "es": "Certificados",
+   "it": "Certificati",
+   "tr": "Sertifikalar",
+   "pl": "Certyfikaty"
+  },
+  "Partners": {
+   "de": "Partner",
+   "en": "Partners",
+   "fr": "Partenaires",
+   "es": "Socios",
+   "it": "Partner",
+   "tr": "Ortaklar",
+   "pl": "Partnerzy"
+  },
+  "Nieuws": {
+   "de": "Nachrichten",
+   "en": "News",
+   "fr": "Actualités",
+   "es": "Noticias",
+   "it": "Notizie",
+   "tr": "Haberler",
+   "pl": "Aktualności"
+  },
+  "Pers": {
+   "de": "Presse",
+   "en": "Press",
+   "fr": "Presse",
+   "es": "Prensa",
+   "it": "Stampa",
+   "tr": "Basın",
+   "pl": "Prasa"
+  },
+  "Vacatures": {
+   "de": "Stellenangebote",
+   "en": "Careers",
+   "fr": "Carrières",
+   "es": "Empleo",
+   "it": "Lavora con noi",
+   "tr": "Kariyer",
+   "pl": "Kariera"
+  },
+  "Werkwijze": {
+   "de": "Vorgehensweise",
+   "en": "How we work",
+   "fr": "Méthode",
+   "es": "Método",
+   "it": "Metodo",
+   "tr": "Çalışma şekli",
+   "pl": "Sposób pracy"
+  },
+  "Goud verkopen": {
+   "de": "Gold verkaufen",
+   "en": "Sell gold",
+   "fr": "Vendre de l'or",
+   "es": "Vender oro",
+   "it": "Vendere oro",
+   "tr": "Altın sat",
+   "pl": "Sprzedaj złoto"
+  },
+  "Zilver verkopen": {
+   "de": "Silber verkaufen",
+   "en": "Sell silver",
+   "fr": "Vendre de l'argent",
+   "es": "Vender plata",
+   "it": "Vendere argento",
+   "tr": "Gümüş sat",
+   "pl": "Sprzedaj srebro"
+  },
+  "Diamanten verkopen": {
+   "de": "Diamanten verkaufen",
+   "en": "Sell diamonds",
+   "fr": "Vendre des diamants",
+   "es": "Vender diamantes",
+   "it": "Vendere diamanti",
+   "tr": "Pırlanta sat",
+   "pl": "Sprzedaj diamenty"
+  },
+  "Veilig en betrouwbaar": {
+   "de": "Sicher und zuverlässig",
+   "en": "Safe and reliable",
+   "fr": "Sûr et fiable",
+   "es": "Seguro y fiable",
+   "it": "Sicuro e affidabile",
+   "tr": "Güvenli ve güvenilir",
+   "pl": "Bezpiecznie i niezawodnie"
+  }
+ }
+}

@@ -242,6 +242,8 @@ function ekinese_sitemap_output() {
 		foreach ( $q as $id ) {
 			$urls[] = get_permalink( $id );
 		}
+		/** Taalvarianten/extra URL's toevoegen (server-i18n hreflang). */
+		$urls = apply_filters( 'ekinese_sitemap_urls', $urls );
 		$xml  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 		$xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 		foreach ( array_unique( $urls ) as $u ) {

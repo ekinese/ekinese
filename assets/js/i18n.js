@@ -145,7 +145,10 @@
 	function translateAll() { walk(document.body); }
 	function setLang(lang) { LANG = lang || 'nl'; translateAll(); }
 
-	if (window.XGLocale && window.XGLocale.get) LANG = window.XGLocale.get().lang || 'nl';
+	// Taal komt van de SERVER (html lang = URL-prefix). Static HTML is al
+	// server-side vertaald; deze laag vertaalt alleen dynamisch ingeladen
+	// widgets (calculator/chat) naar dezelfde taal.
+	LANG = (document.documentElement.getAttribute('lang') || 'nl').slice(0, 2).toLowerCase();
 	document.addEventListener('xg:locale-change', function (e) { setLang(e.detail && e.detail.lang); });
 
 	var obs = new MutationObserver(function (muts) {
