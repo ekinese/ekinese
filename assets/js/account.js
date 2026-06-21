@@ -62,11 +62,39 @@
 		return '<section class="xg-acc-sec"><h3>' + esc(title) + '</h3><div class="xg-table-scroll"><table class="xg-spec-table"><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table></div></section>';
 	}
 
+	function statCards(d) {
+		var pf = d.portfolio || {};
+		var cards = [
+			['Spaarpunten', (d.points != null ? d.points : 0)],
+			['Portfoliowaarde', pf.total != null ? ('€ ' + esc(pf.total)) : '€ 0'],
+			['Winst/verlies', (pf.gain != null ? ('€ ' + esc(pf.gain) + ' (' + esc(pf.gain_pct || 0) + '%)') : '—')]
+		];
+		var html = '<div class="xg-acc-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0">';
+		cards.forEach(function (c) {
+			html += '<div class="xg-c-card" style="padding:16px"><div style="font-size:22px;font-weight:700;color:var(--red,#AE1E1E)">' + c[1] + '</div><div style="font-size:12px;color:var(--ink-soft,#6b665c)">' + esc(c[0]) + '</div></div>';
+		});
+		html += '</div>';
+		if (d.referral_url) {
+			html += '<p class="xg-acc-ref">Nodig vrienden uit en spaar punten: <code>' + esc(d.referral_url) + '</code></p>';
+		}
+		return html;
+	}
+
 	function renderDash(d) {
 		if (loginBox) loginBox.hidden = true;
 		dash.hidden = false;
 		dash.innerHTML =
 			'<h2>Mijn XGOUD</h2><p class="xg-acc-email">' + esc(d.email) + '</p>' +
+			statCards(d) +
+			section('Mijn portfolio', (d.portfolio || {}).items, [
+				{ key: 'name', label: 'Product' }, { key: 'qty', label: 'Aantal' },
+				{ key: 'value', label: 'Waarde (€)' }, { key: 'gain', label: 'Winst/verlies (€)' },
+				{ key: 'gain_pct', label: '%' }
+			]) +
+			section('Lopende loterijen', d.lotteries, [
+				{ key: 'title', label: 'Loterij' }, { key: 'prize', label: 'Prijs' },
+				{ key: 'cost', label: 'Inzet (punten)' }, { key: 'tickets', label: 'Loten' }
+			]) +
 			section('Afspraken', d.appointments, [
 				{ key: 'date', label: 'Datum' }, { key: 'time', label: 'Tijd' },
 				{ key: 'service', label: 'Service' }, { key: 'status', label: 'Status' }
