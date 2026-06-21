@@ -162,7 +162,7 @@ add_action( 'wp_enqueue_scripts', 'ekinese_enqueue_assets' );
  * @return array
  */
 function ekinese_calculator_data() {
-	return array(
+	$data = array(
 		// wp_xg_margins – später LIVE im Admin editierbar.
 		'margins'   => array(
 			'metal'         => 0.08,
@@ -325,4 +325,15 @@ function ekinese_calculator_data() {
 		// REST-Ziel für den Terminplaner (Calculator-Checkout → Afspraak).
 		'rest_appointment' => esc_url_raw( rest_url( 'ekinese/v1/appointment' ) ),
 	);
+
+	// Charity-Empfänger aus echten Projekten (CPT), falls vorhanden – sonst
+	// bleiben die obigen Default-Empfänger.
+	if ( function_exists( 'ekinese_charity_projects_for_calc' ) ) {
+		$projects = ekinese_charity_projects_for_calc();
+		if ( ! empty( $projects ) ) {
+			$data['charity_projects'] = $projects;
+		}
+	}
+
+	return $data;
 }

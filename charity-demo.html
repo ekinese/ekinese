@@ -1,0 +1,2302 @@
+<!DOCTYPE html>
+<html lang="nl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XGOUD – Goede doelen (demo)</title>
+<style>
+/* =====================================================================
+   XGOUD – Theme-System (Day ↔ Dark)
+   Dark-Mode dreht die Markenfarbe von ROT auf GOLD.
+   header-footer.css ist bereits voll tokenisiert → wir überschreiben
+   hier nur die Tokens für [data-theme="dark"].
+   ===================================================================== */
+
+/* Sanfter Übergang beim Umschalten (nur Farben, performant). */
+html, body,
+.xg-topbar, .xg-header, .xg-mega, .footer, .ft-wrap, .xg-drop, .ft-dropup,
+.xg-blueprint, .xg-calc, [class^="xg-"], [class^="footer"] {
+	transition: background-color .35s ease, color .35s ease, border-color .35s ease;
+}
+
+/* ---------------------------------------------------------------
+   GOLD-HIGHLIGHT  (in BEIDEN Modi: Rot bleibt primär, Gold als
+   edler Akzent für Werte/Charity/Premium-Details)
+--------------------------------------------------------------- */
+:root {
+	--gold:      #c8a24a;
+	--gold-soft: rgba(200,162,74,.12);
+}
+
+/* ---------------------------------------------------------------
+   DARK TOKENS  (Rot BLEIBT Rot – nur aufgehellt; Flächen dunkel)
+   html[data-theme="dark"] (höhere Spezifität als header-footer.css :root,
+   damit die Dark-Tokens unabhängig von der Ladereihenfolge gewinnen).
+--------------------------------------------------------------- */
+html[data-theme="dark"] {
+	--red:       #e7483f;   /* Rot bleibt – auf Dunkel aufgehellt */
+	--red-dark:  #c5392f;
+	--red-soft:  rgba(231,72,63,.13);
+	--ink:       #f3efe8;   /* Text hell */
+	--ink-soft:  #a8a294;
+	--cream:     #141312;   /* Seiten-Hintergrund */
+	--line:      #34302b;   /* Linien */
+	--white:     #1d1b19;   /* vormals weiße Flächen */
+	--green:     #34c172;
+	--up:        #34c172;
+	--down:      #e0625c;
+	--neutral:   #8a847a;
+	--shadow:    0 18px 50px rgba(0,0,0,.5);
+	--gold:      #d9b65f;   /* Gold im Dark etwas heller */
+	--gold-soft: rgba(217,182,95,.14);
+}
+
+/* Bilder/Logos etwas entsättigen für ruhigeres Dark-UI (optional) */
+[data-theme="dark"] .partner-logo { opacity: .7; }
+
+/* =====================================================================
+   THEME-SWITCH (modern, gleitender Knopf, Sonne/Mond)
+   ===================================================================== */
+.xg-theme-switch {
+	position: relative;
+	border: none; background: none; padding: 0; cursor: pointer;
+	display: inline-flex; align-items: center;
+	-webkit-tap-highlight-color: transparent;
+}
+.xg-theme-track {
+	position: relative;
+	width: 60px; height: 30px;
+	border-radius: 30px;
+	background: var(--line, #e3ddd0);
+	border: 1px solid var(--line, #e3ddd0);
+	display: flex; align-items: center; justify-content: space-between;
+	padding: 0 7px;
+	transition: background .35s ease, border-color .35s ease;
+	overflow: hidden;
+}
+.xg-theme-switch.is-dark .xg-theme-track {
+	background: #2a2622;
+	border-color: #3a352f;
+}
+.xg-theme-ico {
+	position: relative; z-index: 2;
+	width: 16px; height: 16px;
+	display: flex; align-items: center; justify-content: center;
+	transition: opacity .3s ease, color .3s ease;
+}
+.xg-theme-ico svg { width: 14px; height: 14px; display: block; }
+.xg-theme-ico.sun  { color: #c8a24a; opacity: 1; }
+.xg-theme-ico.moon { color: #9a948a; opacity: .6; }
+.xg-theme-switch.is-dark .xg-theme-ico.sun  { opacity: .5; color: #8a847a; }
+.xg-theme-switch.is-dark .xg-theme-ico.moon { opacity: 1; color: #d9b65f; }
+
+.xg-theme-knob {
+	position: absolute; top: 50%; left: 3px;
+	width: 24px; height: 24px;
+	transform: translateY(-50%);
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 2px 6px rgba(0,0,0,.25);
+	transition: left .35s cubic-bezier(.4,0,.2,1), background .35s ease;
+	z-index: 1;
+}
+.xg-theme-switch.is-dark .xg-theme-knob {
+	left: 31px;
+	background: #d9b65f;
+}
+
+/* =====================================================================
+   DARK-OVERRIDES  ·  Blueprint-Seiten (echte Klassen aus blueprint.css)
+   Gold-Akzent bleibt; nur Flächen dunkel + Text hell.
+   ===================================================================== */
+[data-theme="dark"] body { background: #141312; }
+[data-theme="dark"] .xg-blueprint { background: #141312; }
+
+/* Weiße Karten → dunkel */
+[data-theme="dark"] .xg-benefit,
+[data-theme="dark"] .xg-c-card,
+[data-theme="dark"] .xg-trust-card,
+[data-theme="dark"] .xg-step-card,
+[data-theme="dark"] .xg-formula-box,
+[data-theme="dark"] .xg-market-box,
+[data-theme="dark"] .xg-rapaport-box,
+[data-theme="dark"] .xg-author-card,
+[data-theme="dark"] .xg-link-card,
+[data-theme="dark"] .xg-faq-item,
+[data-theme="dark"] .xg-final-cta-box,
+[data-theme="dark"] .xg-review-card,
+[data-theme="dark"] .xg-price-table {
+	background: #1d1b19;
+	border-color: #34302b;
+}
+
+/* Cremefarbene Flächen */
+[data-theme="dark"] .xgoud-cta-modern { background: #241f17; border-color: #3a3325; }
+[data-theme="dark"] .xgoud-toc-item:hover { background: #1d1b19; }
+[data-theme="dark"] .xgoud-toc-grid,
+[data-theme="dark"] .xgoud-toc-item,
+[data-theme="dark"] .xgoud-toc-item .title { border-color: #34302b; }
+
+/* Überschriften → hell (Attribut-Selektor schlägt blueprint.css-Spezifität) */
+[data-theme="dark"] .xg-blueprint h1,
+[data-theme="dark"] .xg-blueprint h2,
+[data-theme="dark"] .xg-blueprint h3,
+[data-theme="dark"] .xgoud-toc-item .title,
+[data-theme="dark"] .xg-b-title,
+[data-theme="dark"] .xg-author-role,
+[data-theme="dark"] .xg-trustpilot-rating,
+[data-theme="dark"] .xg-update-date {
+	color: #f3efe8;
+}
+
+/* Fließtext → gedämpft hell */
+[data-theme="dark"] .xg-blueprint p,
+[data-theme="dark"] .xg-blueprint li,
+[data-theme="dark"] .xg-intro,
+[data-theme="dark"] .hero-lead,
+[data-theme="dark"] .xgoud-subtitle,
+[data-theme="dark"] .xg-trustpilot-count,
+[data-theme="dark"] .xg-author-company {
+	color: #a8a294;
+}
+
+/* CTA-Modern Text bleibt lesbar */
+[data-theme="dark"] .xgoud-cta-content h2 { color: #f3efe8; }
+[data-theme="dark"] .xgoud-subtitle { color: #c9c2b5; }
+
+/* FAQ-Frage hell */
+[data-theme="dark"] .xg-faq-question { color: #f3efe8; }
+
+/* Preistabelle */
+[data-theme="dark"] .xg-price-table th { background: #2a2620; color: #f3efe8; }
+[data-theme="dark"] .xg-price-table td { color: #cfc9bd; border-color: #34302b; }
+[data-theme="dark"] .xg-price-table tr:hover { background: #211e1a; }
+
+/* Outline-Button lesbar halten */
+[data-theme="dark"] a.xg-btn-outline,
+[data-theme="dark"] .xg-btn-outline .wp-block-button__link {
+	border-color: #f3efe8; color: #f3efe8 !important;
+}
+
+/* =====================================================================
+   CHARITY-TICKER  (globale Komponente: "XGOUD gaf deze maand …")
+   Gold-Akzent für den Betrag, passt sich Day/Dark automatisch an.
+   ===================================================================== */
+.xg-charity-ticker {
+	display: flex; align-items: center; justify-content: center;
+	gap: 16px 20px; flex-wrap: wrap; text-align: center;
+	padding: 14px 24px;
+	background: var(--white, #fff);
+	border-top: 1px solid var(--line, #e3ddd0);
+	border-bottom: 1px solid var(--line, #e3ddd0);
+}
+.xg-charity-ticker-label { font-size: 13px; font-weight: 600; color: var(--ink-soft, #6b665c); }
+.xg-charity-ticker-amount {
+	display: inline-flex; align-items: center; gap: 7px;
+	font-size: 20px; font-weight: 800; letter-spacing: -.3px;
+	color: var(--gold, #c8a24a);
+}
+.xg-charity-ticker-amount::before {
+	content: '♥'; font-size: 15px; color: var(--gold, #c8a24a);
+}
+.xg-charity-ticker-projects { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.xg-charity-ticker-projects span {
+	font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+	color: var(--ink-soft, #6b665c);
+	padding: 5px 11px; border: 1px solid var(--line, #e3ddd0); border-radius: 0;
+	transition: border-color .2s, color .2s;
+}
+.xg-charity-ticker-projects span:hover { border-color: var(--gold, #c8a24a); color: var(--gold, #c8a24a); }
+
+@media (max-width: 600px) {
+	.xg-charity-ticker { gap: 8px 12px; padding: 12px 16px; }
+	.xg-charity-ticker-label { font-size: 12px; }
+	.xg-charity-ticker-amount { font-size: 18px; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+	html, body, [class^="xg-"], [class^="footer"] { transition: none !important; }
+	.xg-theme-knob, .xg-theme-track, .xg-theme-ico { transition: none !important; }
+}
+
+
+/* ==========================================================
+   XGOUD – Header & Footer System
+   Eigenständige Komponente (Live-Ticker, Mega-Menu, Suche).
+   Wird über inc/setup.php als 'ekinese-header-footer' geladen.
+   ========================================================== */
+
+/* ==========================================================
+   DESIGN TOKENS
+   ========================================================== */
+:root {
+  --red:       #AE1E1E;
+  --red-dark:  #8C1717;
+  --red-soft:  rgba(174,30,30,0.07);
+  --ink:       #1c1a16;
+  --ink-soft:  #4a463e;
+  --cream:     #f7f5f1;
+  --line:      #e3ddd0;
+  --green:     #1f9d55;
+  --up:        #1f9d55;
+  --down:      #d93636;
+  --neutral:   #888880;
+  --white:     #ffffff;
+  --font:      Arial, Helvetica, sans-serif;
+  --max-w:     1400px;
+  --shadow:    0 12px 40px rgba(0,0,0,0.11);
+  --topbar-h:  52px;
+  --header-h:  84px;
+}
+
+/* ==========================================================
+   BASE
+   ========================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { font-family: var(--font); color: var(--ink); background: var(--cream); }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { display: block; max-width: 100%; }
+body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
+
+/* ==========================================================
+   BLUR OVERLAY — covers nav + content when ticker dropdown open
+   ========================================================== */
+.xg-blur-overlay {
+  display: none;
+  position: fixed;
+  top: var(--topbar-h);   /* below topbar only */
+  left: 0; right: 0; bottom: 0;
+  z-index: 98000;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  background: rgba(28,26,22,0.22);
+}
+.xg-blur-overlay.active { display: block; }
+
+/* Footer blur — absolute inside footer-wrap */
+.footer-blur-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  background: rgba(28,26,22,0.18);
+  pointer-events: none;
+}
+.footer-blur-overlay.active { display: block; }
+
+/* ==========================================================
+   TOPBAR  (52px fixed)
+   ========================================================== */
+.xg-topbar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: var(--topbar-h);
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
+  z-index: 99999;
+}
+.xg-topbar-inner {
+  height: var(--topbar-h);
+  display: flex;
+  align-items: stretch;
+  padding-left: 0;
+}
+
+/* Live block */
+.xg-live {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 18px;
+  border-right: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.xg-live-row {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .8px; text-transform: uppercase;
+  color: var(--ink);
+}
+.xg-live-dot {
+  width: 9px; height: 9px;
+  background: var(--green);
+  border-radius: 2px;
+  animation: xgPulse 1.5s infinite;
+}
+@keyframes xgPulse {
+  0%   { opacity:1; transform:scale(1);   box-shadow:0 0 0 0 rgba(31,157,85,.5); }
+  70%  { opacity:.7; transform:scale(1.4); box-shadow:0 0 0 6px rgba(31,157,85,0); }
+  100% { opacity:1; transform:scale(1);   box-shadow:0 0 0 0 rgba(31,157,85,0); }
+}
+.xg-live-time { font-size: 10px; color: var(--ink-soft); }
+.xg-live-time strong { color: var(--ink); font-weight: 700; font-size: 11px; }
+
+/* Ticker viewport */
+.xg-ticker-vp {
+  flex: 1; overflow: hidden;
+  position: relative; min-width: 0;
+}
+.xg-ticker-track {
+  display: flex; align-items: stretch;
+  height: 100%; width: max-content;
+  animation: xgScroll 22s linear infinite;
+}
+.xg-ticker-track.paused { animation-play-state: paused; }
+@keyframes xgScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Ticker item */
+.xg-ti {
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 2px; padding: 0 20px;
+  border-right: 1px solid var(--line);
+  flex-shrink: 0; min-width: 170px;
+  cursor: pointer; position: relative;
+  transition: background .15s;
+  user-select: none;
+}
+.xg-ti:hover, .xg-ti.active { background: var(--red-soft); }
+.xg-ti-name { font-size: 10px; font-weight: 700; color: var(--ink-soft); letter-spacing: .5px; text-transform: uppercase; }
+.xg-ti-row  { display: flex; align-items: center; gap: 6px; }
+.xg-ti-price { font-size: 15px; font-weight: 700; color: var(--ink); }
+.xg-ti-unit  { font-size: 10px; color: var(--ink-soft); }
+.xg-ti-pct  { font-size: 11px; font-weight: 700; }
+.xg-ti-pct.up   { color: var(--up); }
+.xg-ti-pct.down { color: var(--down); }
+.xg-ti-pct.neutral { color: var(--neutral); }
+.xg-ti-chev { font-size: 9px; color: var(--ink-soft); transition: transform .2s; }
+.xg-ti.active .xg-ti-chev { transform: rotate(180deg); color: var(--red); }
+
+/* LBMA right block */
+.xg-topbar-lbma {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 18px;
+  border-left: 1px solid var(--line);
+  flex-shrink: 0;
+  font-size: 10px; color: var(--ink-soft);
+  line-height: 1.5;
+}
+.xg-topbar-lbma strong { color: var(--ink); font-size: 11px; font-weight: 700; display: block; }
+
+/* ==========================================================
+   TICKER DROPDOWN (header, drops down)
+   ========================================================== */
+.xg-drop {
+  position: fixed;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--red);
+  border-radius: 0;                  /* sharp corners */
+  box-shadow: var(--shadow);
+  width: 380px; max-width: 92vw;
+  display: none;
+  z-index: 99998;
+  overflow: hidden;
+}
+.xg-drop.open { display: block; }
+
+.xg-drop-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--cream);
+}
+.xg-drop-title { font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: .3px; }
+.xg-drop-close {
+  width: 26px; height: 26px;
+  border: 1px solid var(--line); background: var(--white);
+  cursor: pointer; font-size: 14px; color: var(--ink-soft);
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color .15s, color .15s;
+}
+.xg-drop-close:hover { border-color: var(--red); color: var(--red); }
+
+/* Price rows */
+.xg-drop-prices {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.xg-drop-pb {
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+}
+.xg-drop-pb-label {
+  font-size: 10px; color: var(--ink-soft);
+  text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 6px;
+  display: flex; align-items: center; gap: 5px;
+}
+.xg-drop-pb-icon {
+  width: 16px; height: 16px;
+  border: 1px solid var(--red);
+  color: var(--red);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; border-radius: 2px;
+  flex-shrink: 0;
+}
+.xg-drop-pb-value { font-size: 20px; font-weight: 700; color: var(--ink); }
+
+/* Sessions */
+.xg-drop-sessions {
+  border-bottom: 1px solid var(--line);
+}
+.xg-drop-session {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.xg-drop-session:last-child { border-bottom: none; }
+.xg-drop-sess-label { color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
+.xg-drop-sess-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.xg-drop-sess-dot.up      { background: var(--up);      }
+.xg-drop-sess-dot.down    { background: var(--down);    }
+.xg-drop-sess-dot.neutral { background: var(--neutral); }
+.xg-drop-sess-price { font-weight: 700; color: var(--ink); }
+.xg-drop-sess-change { font-size: 11px; font-weight: 700; }
+.xg-drop-sess-change.up      { color: var(--up);      }
+.xg-drop-sess-change.down    { color: var(--down);    }
+.xg-drop-sess-change.neutral { color: var(--neutral); }
+
+/* Sparkline */
+.xg-drop-graph { padding: 12px 16px 16px; }
+.xg-drop-graph-label { font-size: 10px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+
+/* ==========================================================
+   MAIN HEADER  (84px fixed)
+   ========================================================== */
+.xg-header {
+  position: fixed;
+  top: var(--topbar-h); left: 0;
+  width: 100%; height: var(--header-h);
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
+  z-index: 99997;
+  transition: box-shadow .3s;
+}
+.xg-header.scrolled { box-shadow: 0 8px 30px rgba(0,0,0,.07); }
+.xg-header-inner {
+  max-width: var(--max-w);
+  height: var(--header-h);
+  margin: 0 auto; padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+/* Logo */
+.xg-logo { flex-shrink: 0; font-size: 22px; font-weight: 900; letter-spacing: 3px; color: var(--ink); }
+.xg-logo span { color: var(--red); }
+.xg-logo a { color: inherit; }
+
+/* Nav */
+.xg-nav { flex: 1; margin: 0 40px; }
+.xg-nav ul { display: flex; justify-content: center; gap: 32px; }
+.xg-nav-item {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--ink); cursor: pointer;
+  position: relative; padding-bottom: 3px;
+  transition: color .2s; user-select: none; white-space: nowrap;
+}
+.xg-nav-item::after {
+  content: ''; position: absolute; bottom: -2px; left: 0;
+  width: 0; height: 2px; background: var(--red);
+  transition: width .25s ease;
+}
+.xg-nav-item:hover::after, .xg-nav-item.active::after { width: 100%; }
+.xg-nav-item:hover, .xg-nav-item.active { color: var(--red); }
+
+/* Actions */
+.xg-actions { display: flex; align-items: center; gap: 22px; flex-shrink: 0; }
+
+/* Search icon */
+.xg-search-btn {
+  background: none; border: none; cursor: pointer;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink-soft);
+  border-radius: 0;
+  transition: color .15s, background .15s;
+}
+.xg-search-btn:hover { color: var(--red); background: var(--red-soft); }
+.xg-search-btn svg { width: 18px; height: 18px; }
+
+/* Trust */
+.xg-trust { position: relative; cursor: pointer; text-align: center; }
+.xg-trust-stars { color: var(--green); font-size: 16px; letter-spacing: 1.5px; line-height: 1; }
+.xg-trust-sub { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); margin-top: 2px; }
+
+.xg-trust-tip {
+  position: absolute;
+  top: calc(100% + 16px); right: 0;
+  width: 280px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--green);
+  padding: 18px;
+  opacity: 0; visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity .25s, transform .25s, visibility .25s;
+  box-shadow: var(--shadow); z-index: 200;
+}
+.xg-trust:hover .xg-trust-tip { opacity: 1; visibility: visible; transform: translateY(0); }
+.xg-trust-tip-stars { color: var(--green); font-size: 20px; letter-spacing: 3px; margin-bottom: 3px; }
+.xg-trust-tip-brand { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ink); margin-bottom: 10px; }
+.xg-trust-tip-score { font-size: 36px; font-weight: 700; color: var(--ink); line-height: 1; }
+.xg-trust-tip-max   { font-size: 12px; color: var(--ink-soft); margin-bottom: 10px; }
+.xg-trust-tip-hr    { height: 1px; background: var(--line); margin: 10px 0; }
+.xg-trust-tip-text  { font-size: 12px; color: var(--ink-soft); line-height: 1.7; margin-bottom: 12px; }
+.xg-trust-tip a     { font-size: 12px; font-weight: 700; color: var(--red); border-bottom: 1px solid currentColor; }
+
+/* Phone */
+.xg-phone { position: relative; font-size: 14px; font-weight: 700; cursor: pointer; color: var(--ink); white-space: nowrap; }
+.xg-phone-tip {
+  position: absolute;
+  top: calc(100% + 16px); right: 0;
+  width: 280px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--red);
+  opacity: 0; visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity .25s, transform .25s, visibility .25s;
+  box-shadow: var(--shadow); z-index: 200; overflow: hidden;
+}
+.xg-phone:hover .xg-phone-tip { opacity: 1; visibility: visible; transform: translateY(0); }
+.xg-phone-tip-top { padding: 14px 16px 12px; border-bottom: 1px solid var(--line); }
+.xg-phone-tip-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); margin-bottom: 5px; }
+.xg-phone-tip-num   { font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
+.xg-phone-tip-hours { font-size: 12px; color: var(--ink-soft); line-height: 1.8; }
+.xg-phone-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; font-size: 13px; font-weight: 600; color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  transition: background .15s, color .15s;
+}
+.xg-phone-link:last-child { border-bottom: none; }
+.xg-phone-link:hover { background: var(--red-soft); color: var(--red); }
+.xg-phone-link-icon {
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line); flex-shrink: 0;
+}
+.xg-phone-link-icon svg { width: 14px; height: 14px; }
+.xg-phone-link:hover .xg-phone-link-icon { border-color: var(--red); }
+.xg-phone-link-sub { font-size: 11px; font-weight: 400; color: var(--ink-soft); display: block; margin-top: 1px; }
+
+/* CTA */
+.xg-cta {
+  display: flex; align-items: center; justify-content: center;
+  height: 46px; padding: 0 24px;
+  background: var(--red); color: var(--white);
+  font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+  transition: background .2s; white-space: nowrap;
+}
+.xg-cta:hover { background: var(--red-dark); }
+
+/* Mobile toggle */
+.xg-mobile-toggle { display: none; background: none; border: none; padding: 6px; cursor: pointer; flex-direction: column; gap: 5px; }
+.xg-mobile-toggle span { display: block; width: 22px; height: 2px; background: var(--ink); transition: .25s; }
+
+/* ==========================================================
+   MEGA MENU
+   ========================================================== */
+.xg-mega {
+  position: fixed;
+  top: calc(var(--topbar-h) + var(--header-h));
+  left: 0; width: 100%;
+  background: var(--white);
+  border-top: 2px solid var(--red);
+  border-bottom: 1px solid var(--line);
+  opacity: 0; visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity .25s, transform .3s cubic-bezier(.4,0,.2,1), visibility .25s;
+  z-index: 99996;
+  box-shadow: 0 20px 50px rgba(0,0,0,.08);
+}
+.xg-mega.active { opacity: 1; visibility: visible; transform: translateY(0); }
+
+.xg-mega-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  min-height: 400px;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 260px;
+}
+.xg-mega-content { padding: 30px 40px; display: flex; flex-direction: column; }
+
+/* ==========================================================
+   WIZARD
+   ========================================================== */
+.xg-wizard { display: flex; flex-direction: column; height: 100%; min-height: 340px; }
+
+/* Topbar row: step label | search | back */
+.xg-wiz-top {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  gap: 16px; margin-bottom: 20px;
+}
+.xg-wiz-label { font-size: 19px; font-weight: 700; color: var(--ink); flex: 1; }
+.xg-wiz-search {
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid var(--line);
+  padding: 7px 12px; width: 210px; flex-shrink: 0;
+  transition: border-color .2s;
+  background: var(--white);
+}
+.xg-wiz-search:focus-within { border-color: var(--red); }
+.xg-wiz-search-icon { flex-shrink: 0; color: var(--ink-soft); }
+.xg-wiz-search-icon svg { width: 13px; height: 13px; display: block; }
+.xg-wiz-search input { border: none; outline: none; font-size: 13px; color: var(--ink); width: 100%; background: transparent; font-family: var(--font); }
+.xg-wiz-search input::placeholder { color: var(--ink-soft); }
+
+.xg-back-btn {
+  border: none; background: none; padding: 0;
+  cursor: pointer; font-size: 13px; font-weight: 700;
+  color: var(--red); display: flex; align-items: center; gap: 4px;
+  white-space: nowrap; flex-shrink: 0;
+  transition: color .15s;
+}
+.xg-back-btn:hover { color: var(--red-dark); }
+
+/* Progress bar */
+.xg-progress { margin-bottom: 22px; }
+.xg-prog-line { height: 3px; background: var(--line); overflow: hidden; margin-bottom: 18px; }
+.xg-prog-fill { width: 0; height: 100%; background: var(--red); transition: width .55s cubic-bezier(.4,0,.2,1); }
+.xg-prog-steps { display: flex; justify-content: space-between; }
+.xg-step { display: flex; align-items: center; gap: 9px; }
+.xg-step-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #bbb;
+  transition: all .35s ease;
+}
+.xg-step.active .xg-step-num {
+  background: var(--red); border-color: var(--red); color: var(--white);
+  animation: xgPulseStep 1.8s infinite;
+}
+.xg-step.done .xg-step-num { background: var(--red); border-color: var(--red); color: var(--white); }
+@keyframes xgPulseStep {
+  0%   { box-shadow: 0 0 0 0   rgba(174,30,30,.4); transform: scale(1); }
+  50%  { box-shadow: 0 0 0 10px rgba(174,30,30,0);  transform: scale(1.1); }
+  100% { box-shadow: 0 0 0 0   rgba(174,30,30,0);   transform: scale(1); }
+}
+.xg-step-lbl { font-size: 12px; font-weight: 700; color: var(--ink); }
+
+/* Wizard body */
+#xgWizBody { flex: 1; display: flex; flex-direction: column; }
+#xgWizBody:has(.xg-result) { align-items: center; justify-content: center; }
+
+/* Options */
+.xg-options {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px;
+}
+.xg-opt {
+  border: 1px solid var(--line);
+  background: var(--white);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color .2s, background .2s, color .2s;
+}
+.xg-opt:hover { border-color: var(--red); background: var(--red-soft); }
+.xg-opt-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.xg-opt-desc  { font-size: 12px; color: var(--ink-soft); line-height: 1.5; }
+.xg-opt:hover .xg-opt-title { color: var(--red); }
+
+/* Quick links */
+.xg-quicklinks {
+  margin-top: 14px; padding-top: 12px;
+  border-top: 1px solid var(--line);
+  display: flex; gap: 7px; flex-wrap: wrap; align-items: center;
+}
+.xg-ql-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--ink-soft); margin-right: 3px; }
+.xg-ql {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  font-size: 12px; font-weight: 600; color: var(--ink-soft);
+  transition: background .15s, color .15s, border-color .15s;
+}
+.xg-ql:hover { background: var(--red-soft); color: var(--red); border-color: var(--red); }
+
+/* Result */
+.xg-result { width: 100%; max-width: 460px; text-align: center; }
+.xg-result-check {
+  width: 62px; height: 62px; border-radius: 50%;
+  background: var(--red); color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 700; margin: 0 auto 16px;
+}
+.xg-result h3 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+.xg-result h3::after {
+  content: ''; display: block;
+  width: 32px; height: 3px;
+  background: var(--red); margin: 8px auto 16px;
+}
+.xg-result-sum { display: grid; gap: 8px; margin-bottom: 22px; color: var(--ink-soft); font-size: 14px; }
+.xg-result-sum div strong { color: var(--ink); }
+.xg-result-cta {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 46px; padding: 0 30px;
+  background: var(--red); color: var(--white);
+  font-weight: 700; font-size: 13px;
+  transition: background .2s;
+}
+.xg-result-cta:hover { background: var(--red-dark); }
+
+/* ==========================================================
+   STANDARD MENUS
+   ========================================================== */
+.xg-std-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; }
+.xg-std-col h3 {
+  margin: 0 0 14px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px;
+  color: var(--ink-soft); font-weight: 700;
+  padding-bottom: 8px; border-bottom: 2px solid var(--red);
+  display: inline-block;
+}
+.xg-std-col a {
+  display: block; padding: 8px 0;
+  color: var(--ink); font-size: 13px; font-weight: 500;
+  border-bottom: 1px solid var(--line);
+  transition: color .15s, padding-left .15s;
+}
+.xg-std-col a:hover { color: var(--red); padding-left: 5px; }
+.xg-std-quick {
+  margin-top: 18px; padding-top: 12px;
+  border-top: 1px solid var(--line);
+  display: flex; gap: 7px; flex-wrap: wrap; align-items: center;
+}
+
+/* ==========================================================
+   SIDEBAR
+   ========================================================== */
+.xg-sidebar {
+  background: var(--cream);
+  border-left: 1px solid var(--line);
+  padding: 26px 24px;
+  display: flex; flex-direction: column;
+}
+.xg-sb-stars { color: var(--green); font-size: 16px; letter-spacing: 2px; margin-bottom: 3px; }
+.xg-sb-tp    { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--ink); margin-bottom: 8px; }
+.xg-sb-score { font-size: 36px; font-weight: 700; color: var(--ink); line-height: 1; margin-bottom: 3px; }
+.xg-sb-text  { color: var(--ink-soft); line-height: 1.6; font-size: 12px; }
+.xg-sb-hr    { height: 1px; background: var(--line); margin: 18px 0; }
+.xg-sb-list  { display: flex; flex-direction: column; gap: 10px; }
+.xg-sb-list li { position: relative; padding-left: 18px; font-size: 13px; color: var(--ink); }
+.xg-sb-list li::before { content: "\2713"; position: absolute; left: 0; color: var(--red); font-weight: 700; }
+.xg-sb-cta {
+  display: flex; align-items: center; justify-content: center;
+  height: 44px; margin-top: 18px;
+  background: var(--red); color: var(--white);
+  font-weight: 700; font-size: 12px;
+  text-transform: uppercase; letter-spacing: 1px;
+  transition: background .2s;
+}
+.xg-sb-cta:hover { background: var(--red-dark); }
+
+/* ==========================================================
+   FULL-SCREEN SEARCH
+   ========================================================== */
+.xg-search-ov {
+  position: fixed; inset: 0;
+  background: rgba(28,26,22,.93);
+  backdrop-filter: blur(7px);
+  z-index: 999999;
+  display: none; flex-direction: column;
+  align-items: center; padding-top: 130px;
+}
+.xg-search-ov.open { display: flex; }
+.xg-search-ov-close {
+  position: absolute; top: 26px; right: 32px;
+  background: none; border: 1px solid rgba(255,255,255,.2);
+  cursor: pointer; color: var(--white);
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; transition: border-color .15s;
+}
+.xg-search-ov-close:hover { border-color: var(--white); }
+.xg-search-box {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--white);
+  padding: 14px 18px;
+  width: 660px; max-width: 90vw;
+  border-top: 2px solid var(--red);
+}
+.xg-search-box-icon { color: var(--red); flex-shrink: 0; }
+.xg-search-box-icon svg { width: 20px; height: 20px; display: block; }
+.xg-search-box input {
+  flex: 1; border: none; outline: none;
+  font-size: 19px; font-family: var(--font); color: var(--ink); background: transparent;
+}
+.xg-search-box input::placeholder { color: #bbb; }
+.xg-search-results {
+  width: 660px; max-width: 90vw;
+  margin-top: 12px;
+  background: var(--white);
+  overflow: hidden;
+}
+.xg-sr-section { padding: 12px 18px 4px; }
+.xg-sr-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--ink-soft); margin-bottom: 6px;
+}
+.xg-sr-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; font-size: 13px; color: var(--ink);
+  cursor: pointer; border-bottom: 1px solid var(--line);
+  transition: color .15s;
+}
+.xg-sr-item:last-child { border-bottom: none; }
+.xg-sr-item:hover { color: var(--red); }
+.xg-sr-icon {
+  width: 22px; height: 22px;
+  border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.xg-sr-icon svg { width: 12px; height: 12px; color: var(--red); }
+
+/* ==========================================================
+   MOBILE MENU
+   ========================================================== */
+.xg-mobile-menu {
+  display: none;
+  position: fixed; inset: 0;
+  background: var(--white); z-index: 999998;
+  overflow-y: auto; flex-direction: column;
+}
+.xg-mobile-menu.open { display: flex; }
+.xg-mob-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.xg-mob-logo { font-size: 20px; font-weight: 900; letter-spacing: 3px; color: var(--ink); }
+.xg-mob-logo span { color: var(--red); }
+.xg-mob-close {
+  background: none; border: 1px solid var(--line);
+  width: 36px; height: 36px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink); font-size: 20px; line-height: 1;
+  transition: border-color .15s, color .15s;
+}
+.xg-mob-close:hover { border-color: var(--red); color: var(--red); }
+.xg-mob-top {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 12px; padding: 20px;
+  border-bottom: 1px solid var(--line); background: var(--cream);
+  flex-shrink: 0;
+}
+.xg-mob-stars { color: var(--green); font-size: 17px; letter-spacing: 2px; }
+.xg-mob-phone { font-size: 19px; font-weight: 700; color: var(--ink); }
+.xg-mob-cta {
+  width: 100%; height: 46px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--red); color: var(--white);
+  font-weight: 700; font-size: 12px;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.xg-mob-nav { display: flex; flex-direction: column; flex: 1; }
+.xg-mob-nav a {
+  display: flex; align-items: center;
+  padding: 15px 20px; font-size: 14px; font-weight: 700;
+  color: var(--ink); border-bottom: 1px solid var(--line);
+  text-transform: uppercase; letter-spacing: .5px;
+  transition: color .15s, background .15s; position: relative;
+}
+.xg-mob-nav a::after {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 0; background: var(--red);
+  transition: width .15s;
+}
+.xg-mob-nav a:hover { color: var(--red); background: var(--red-soft); }
+.xg-mob-nav a:hover::after { width: 3px; }
+.xg-mob-nav a span { margin-left: auto; font-size: 16px; color: var(--ink-soft); }
+.xg-mob-contact {
+  padding: 16px 20px;
+  border-top: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 8px; flex-shrink: 0;
+}
+.xg-mob-contact a {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 600; color: var(--ink-soft);
+  padding: 10px 14px; border: 1px solid var(--line);
+  transition: color .15s, border-color .15s;
+}
+.xg-mob-contact a:hover { color: var(--red); border-color: var(--red); }
+.xg-mob-contact a svg { width: 15px; height: 15px; color: var(--red); flex-shrink: 0; }
+
+/* ==========================================================
+   FOOTER TICKER
+   ========================================================== */
+.ft-wrap { position: relative; background: var(--white); border-bottom: 1px solid var(--line); }
+.ft-ticker { display: flex; align-items: stretch; height: 60px; }
+.ft-live {
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 3px; padding: 0 18px;
+  border-right: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.ft-live-row {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 700; letter-spacing: .6px;
+  text-transform: uppercase; color: var(--ink);
+}
+.ft-live-sq {
+  width: 8px; height: 8px; border-radius: 2px; background: var(--green);
+  animation: xgPulse 1.5s infinite;
+}
+.ft-live-time-label { font-size: 10px; color: var(--ink-soft); }
+.ft-live-time { font-weight: 700; font-size: 11px; color: var(--ink); }
+.ft-vp { flex: 1; overflow: hidden; position: relative; min-width: 0; }
+.ft-track {
+  display: flex; align-items: stretch;
+  height: 100%; width: max-content;
+  animation: ftScroll 22s linear infinite;
+}
+.ft-track.paused { animation-play-state: paused; }
+@keyframes ftScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.ft-lbma {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 16px; border-left: 1px solid var(--line);
+  flex-shrink: 0; font-size: 10px; color: var(--ink-soft); line-height: 1.5;
+}
+.ft-lbma strong { font-size: 11px; color: var(--ink); font-weight: 700; display: block; }
+
+/* Footer ticker item */
+.ft-item {
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 2px; padding: 0 22px;
+  border-right: 1px solid var(--line);
+  flex-shrink: 0; min-width: 175px;
+  cursor: pointer; position: relative;
+  transition: background .15s; user-select: none;
+}
+.ft-item:hover, .ft-item.active { background: var(--red-soft); }
+.ft-item-name { font-size: 10px; font-weight: 700; color: var(--ink-soft); letter-spacing: .3px; text-transform: uppercase; }
+.ft-item-row  { display: flex; align-items: center; gap: 7px; }
+.ft-item-price { font-weight: 700; font-size: 15px; color: var(--ink); }
+.ft-item-unit  { font-size: 10px; color: var(--ink-soft); }
+.ft-item-pct   { font-weight: 700; font-size: 11px; }
+.ft-item-pct.up   { color: var(--up); }
+.ft-item-pct.down { color: var(--down); }
+.ft-item-pct.neutral { color: var(--neutral); }
+.ft-item-chev  { font-size: 9px; color: var(--ink-soft); transition: transform .2s; }
+.ft-item.active .ft-item-chev { transform: rotate(180deg); color: var(--red); }
+
+/* ==========================================================
+   FOOTER DROPUP
+   ========================================================== */
+.ft-dropup {
+  position: fixed;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--red);
+  border-radius: 0;   /* sharp corners */
+  box-shadow: 0 -8px 32px rgba(0,0,0,.12);
+  width: 380px; max-width: 92vw;
+  display: none; z-index: 100001; overflow: hidden;
+}
+.ft-dropup.open { display: block; }
+.ft-du-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--cream);
+}
+.ft-du-title { font-size: 13px; font-weight: 700; color: var(--ink); }
+.ft-du-meta  { display: flex; align-items: center; gap: 10px; }
+.ft-du-pct   { font-size: 13px; font-weight: 700; }
+.ft-du-close {
+  width: 26px; height: 26px;
+  border: 1px solid var(--line); background: var(--white);
+  cursor: pointer; font-size: 14px; color: var(--ink-soft);
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color .15s, color .15s;
+}
+.ft-du-close:hover { border-color: var(--red); color: var(--red); }
+.ft-du-prices {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line);
+}
+.ft-du-pb { border: 1px solid var(--line); padding: 10px 12px; }
+.ft-du-pb-label { font-size: 10px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+.ft-du-pb-icon {
+  width: 15px; height: 15px;
+  border: 1px solid var(--red); color: var(--red);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700;
+}
+.ft-du-pb-value { font-size: 19px; font-weight: 700; color: var(--ink); }
+.ft-du-sessions { border-bottom: 1px solid var(--line); }
+.ft-du-sess {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 16px; border-bottom: 1px solid var(--line); font-size: 12px;
+}
+.ft-du-sess:last-child { border-bottom: none; }
+.ft-du-sess-label { color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
+.ft-du-sess-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.ft-du-sess-dot.up      { background: var(--up); }
+.ft-du-sess-dot.down    { background: var(--down); }
+.ft-du-sess-dot.neutral { background: var(--neutral); }
+.ft-du-sess-price { font-weight: 700; color: var(--ink); }
+.ft-du-sess-change { font-size: 11px; font-weight: 700; }
+.ft-du-sess-change.up      { color: var(--up); }
+.ft-du-sess-change.down    { color: var(--down); }
+.ft-du-sess-change.neutral { color: var(--neutral); }
+.ft-du-graph { padding: 10px 16px 14px; }
+.ft-du-graph-label { font-size: 10px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 7px; }
+
+/* ==========================================================
+   FOOTER
+   ========================================================== */
+.xg-footer-wrap { position: relative; overflow: hidden; }
+/* Footer-Padding NICHT auf .footer (das würde die 1400er-Breite nach innen
+   verschieben und gegenüber Header/Content versetzen). Stattdessen auf
+   footer__top/__bottom mit max-width + 40px – exakt bündig zu Header/Content. */
+.footer { background: var(--cream); padding: 0; font-size: 14px; color: var(--ink-soft); position: relative; z-index: 1; }
+.footer__top {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
+  gap: 40px; max-width: var(--max-w); margin: 0 auto; padding: 52px 40px 44px;
+}
+.footer__col { display: flex; flex-direction: column; }
+.footer__logo { line-height: 1; margin-bottom: 4px; }
+.footer__logo-x    { font-size: 38px; font-weight: 700; color: var(--red); }
+.footer__logo-goud { font-size: 28px; font-weight: 700; color: var(--ink); letter-spacing: 1px; }
+.footer__logo-sub  { font-size: 10px; letter-spacing: 3px; color: var(--ink-soft); margin-top: 6px; font-weight: 700; }
+.footer__desc { margin: 14px 0 20px; max-width: 300px; line-height: 1.6; font-size: 13px; }
+.footer__stars { display: flex; gap: 3px; margin-bottom: 3px; }
+.fstar { width: 18px; height: 18px; fill: var(--red); color: var(--red); }
+.footer__tp-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--ink); margin-bottom: 6px; }
+.footer__rating-text { font-size: 13px; margin-bottom: 14px; color: var(--ink); }
+.footer__rating-text strong { font-weight: 700; }
+.footer__review-badges { display: flex; gap: 14px; flex-wrap: wrap; }
+.review-badge { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: var(--ink); }
+.review-badge__icon { width: 15px; height: 15px; }
+.review-badge__icon--tp { fill: var(--green); }
+.footer__heading { font-size: 11px; letter-spacing: 1.5px; color: var(--ink); font-weight: 700; margin: 0 0 16px; }
+.footer__link {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid var(--line);
+  color: var(--ink-soft); font-size: 13px;
+  transition: color .15s, padding-left .15s;
+}
+.footer__link:hover { color: var(--red); padding-left: 4px; }
+.footer__link--plain { justify-content: flex-start; }
+.footer__link--accent { color: var(--red); font-weight: 700; border-bottom: none; margin-top: 6px; }
+.footer__contact-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px; color: var(--ink-soft); }
+.footer__contact-row:hover strong { color: var(--red); }
+.footer__icon { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; color: var(--red); }
+.footer__contact-row strong { display: block; color: var(--ink); font-size: 14px; transition: color .15s; }
+.footer__contact-row small { display: block; font-size: 12px; color: var(--ink-soft); line-height: 1.5; margin-top: 1px; }
+.footer__socials { display: flex; gap: 8px; margin-top: 6px; }
+.footer__socials a {
+  width: 32px; height: 32px;
+  border: 1.5px solid var(--red); color: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, color .15s;
+}
+.footer__socials a svg { width: 14px; height: 14px; }
+.footer__socials a:hover { background: var(--red); color: var(--white); }
+.footer__trust-box {
+  margin-top: 18px; background: var(--white);
+  border: 1px solid var(--line); padding: 14px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.footer__trust-icon { width: 22px; height: 22px; color: var(--red); flex-shrink: 0; margin-top: 2px; }
+.footer__trust-box strong { display: block; font-size: 13px; color: var(--ink); margin-bottom: 3px; }
+.footer__trust-box p { margin: 0; font-size: 12px; line-height: 1.5; color: var(--ink-soft); }
+.footer__bottom {
+  border-top: 1px solid var(--red);
+  max-width: var(--max-w); margin: 0 auto; padding: 20px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap; font-size: 12px; color: var(--ink-soft);
+  position: relative; z-index: 1;
+}
+.footer__bottom-left { display: flex; gap: 8px; align-items: center; white-space: nowrap; }
+.footer__divider { color: var(--line); }
+.footer__bottom-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.footer__bottom-links a:hover { color: var(--red); }
+.footer__bottom-partners { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.partner-logo { font-weight: 700; color: var(--ink-soft); font-size: 12px; letter-spacing: .3px; white-space: nowrap; opacity: .8; transition: color .15s, opacity .15s; }
+.partner-logo:hover { color: var(--red); opacity: 1; }
+
+/* ==========================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================== */
+
+/* Tablet landscape 991–1200 */
+@media (max-width: 1200px) {
+  .xg-header-inner { padding: 0 24px; }
+  .xg-nav ul { gap: 22px; }
+  .xg-nav-item { font-size: 12px; }
+  .xg-actions { gap: 16px; }
+  .xg-mega-content { padding: 24px 28px; }
+}
+
+/* Tablet portrait 768–991 */
+@media (max-width: 991px) {
+  body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
+  .xg-nav, .xg-phone, .xg-trust, .xg-cta, .xg-search-btn { display: none; }
+  .xg-mobile-toggle { display: flex; }
+  .xg-mega { display: none !important; }
+  .footer { padding: 40px 32px 0; }
+  .footer__top { grid-template-columns: 1fr 1fr 1fr; }
+  .footer__brand { grid-column: 1 / -1; }
+  .xg-drop { display: none !important; }
+}
+
+/* Mobile large 600–768 */
+@media (max-width: 768px) {
+  :root { --topbar-h: 44px; --header-h: 64px; }
+  .xg-header-inner { padding: 0 16px; }
+  .xg-logo { font-size: 18px; }
+  .footer { padding: 32px 20px 0; }
+  .footer__top { grid-template-columns: 1fr 1fr; gap: 28px; }
+  .footer__bottom { flex-direction: column; align-items: flex-start; }
+  .xg-ti, .ft-item { min-width: 140px; padding: 0 14px; }
+}
+
+/* Mobile small 0–600 */
+@media (max-width: 600px) {
+  :root { --header-h: 58px; }
+  .xg-logo { font-size: 16px; letter-spacing: 2px; }
+  .footer__top { grid-template-columns: 1fr; }
+  .footer__bottom-links { flex-direction: column; gap: 8px; }
+  .footer__bottom-partners { display: none; }
+  .xg-ti { min-width: 130px; padding: 0 12px; }
+  .xg-ti-price { font-size: 13px; }
+}
+
+
+/* =====================================================================
+   XGOUD Charity – Transparenz-Board + Zertifikat
+   Rot primär, Gold für Beträge. Scharfkantig. Day/Dark über Tokens.
+   ===================================================================== */
+
+.xg-charity-board { max-width: var(--max-w, 1400px); margin: 0 auto; padding: 40px; }
+
+.xg-charity-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.xg-charity-tab {
+	border: 1px solid var(--line, #e3ddd0); background: var(--white, #fff);
+	color: var(--ink-soft, #6b665c); font: 700 13px Arial, sans-serif; letter-spacing: .3px;
+	padding: 11px 18px; cursor: pointer; transition: .15s ease;
+}
+.xg-charity-tab:hover { border-color: var(--gold, #c8a24a); color: var(--gold, #c8a24a); }
+.xg-charity-tab.active { background: var(--red, #AE1E1E); border-color: var(--red, #AE1E1E); color: #fff; }
+
+.xg-charity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.xg-charity-card {
+	border: 1px solid var(--line, #e3ddd0); background: var(--white, #fff);
+	padding: 22px; display: flex; flex-direction: column; gap: 14px;
+	box-shadow: 0 14px 34px rgba(17,17,17,.05);
+}
+.xg-charity-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.xg-charity-card-head h3 { margin: 0; font-size: 18px; color: var(--ink, #1c1a16); }
+.xg-charity-card-head span { font-size: 12px; color: var(--ink-soft, #6b665c); }
+
+.xg-charity-accrued {
+	display: flex; flex-direction: column; gap: 2px;
+	padding: 14px; border: 1px solid var(--gold, #c8a24a);
+	background: var(--gold-soft, rgba(200,162,74,.12));
+}
+.xg-charity-accrued span { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--ink-soft, #6b665c); }
+.xg-charity-accrued strong { font-size: 26px; font-weight: 800; color: var(--gold, #c8a24a); }
+
+.xg-charity-pay-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft, #6b665c); margin-bottom: 6px; }
+.xg-charity-payrow { display: flex; justify-content: space-between; font-size: 14px; padding: 6px 0; border-bottom: 1px dashed var(--line, #e3ddd0); }
+.xg-charity-payrow:last-child { border-bottom: none; }
+.xg-charity-payrow b { color: var(--red, #AE1E1E); }
+.xg-charity-payrow.muted span { color: var(--ink-soft, #6b665c); }
+.xg-charity-link { font-size: 13px; font-weight: 700; color: var(--red, #AE1E1E); text-decoration: none; margin-top: auto; }
+.xg-charity-link:hover { color: var(--red-dark, #8C1717); }
+.xg-charity-empty { color: var(--ink-soft, #6b665c); }
+
+@media (max-width: 900px) { .xg-charity-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .xg-charity-board { padding: 24px 16px; } .xg-charity-grid { grid-template-columns: 1fr; } }
+
+/* =====================================================================
+   ZERTIFIKAT (ekinese_render_certificate / [xg_certificate])
+   ===================================================================== */
+.xg-certificate {
+	max-width: 680px; margin: 30px auto; padding: 48px 54px; text-align: center;
+	background: var(--white, #fff);
+	border: 1px solid var(--gold, #c8a24a);
+	box-shadow: 0 24px 60px rgba(17,17,17,.10); position: relative;
+}
+.xg-certificate::before, .xg-certificate::after {
+	content: ""; position: absolute; left: 18px; right: 18px; height: 1px; background: var(--gold, #c8a24a); opacity: .5;
+}
+.xg-certificate::before { top: 14px; }
+.xg-certificate::after { bottom: 14px; }
+.xg-cert-brand { font-size: 26px; font-weight: 900; letter-spacing: 3px; color: var(--ink, #1c1a16); }
+.xg-cert-brand span { color: var(--red, #AE1E1E); }
+.xg-cert-kicker { margin-top: 10px; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold, #c8a24a); font-weight: 700; }
+.xg-certificate h2 { font-size: 30px; margin: 18px 0 10px; color: var(--ink, #1c1a16); }
+.xg-certificate p { font-size: 16px; line-height: 1.7; color: var(--ink-soft, #6b665c); margin: 6px 0; }
+.xg-certificate strong { color: var(--gold, #c8a24a); }
+.xg-cert-project { font-size: 22px; font-weight: 800; color: var(--red, #AE1E1E); margin: 12px 0; }
+.xg-cert-sub { font-style: italic; }
+.xg-cert-foot { display: flex; justify-content: space-between; margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--line, #e3ddd0); font-size: 13px; color: var(--ink-soft, #6b665c); }
+
+@media print {
+	body * { visibility: hidden; }
+	.xg-certificate, .xg-certificate * { visibility: visible; }
+	.xg-certificate { position: absolute; left: 0; top: 0; box-shadow: none; }
+}
+
+.xg-charity-hero { max-width: var(--max-w,1400px); margin: 0 auto; padding: 40px 40px 0; }
+.xg-charity-hero h1 { font-size: 48px; margin: 0 0 12px; color: var(--ink,#1c1a16); }
+.xg-charity-hero p { font-size: 18px; color: var(--ink-soft,#6b665c); max-width: 760px; }
+.xg-demo-sep { max-width: var(--max-w,1400px); margin: 0 auto; padding: 30px 40px 0; }
+.xg-demo-sep h2 { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-soft,#777); border-top: 1px solid var(--line,#e3ddd0); padding-top: 24px; }
+</style>
+</head>
+<body>
+<!-- Blur overlay -->
+<div class="xg-blur-overlay" id="xgBlurOverlay"></div>
+
+<!-- Full-screen search -->
+<div class="xg-search-ov" id="xgSearchOv">
+  <button class="xg-search-ov-close" id="xgSearchClose">&#x2715;</button>
+  <div class="xg-search-box">
+    <span class="xg-search-box-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+    </span>
+    <input type="text" id="xgSearchInput" placeholder="Zoek metaal, product, categorie…" autocomplete="off">
+  </div>
+  <div class="xg-search-results" id="xgSearchResults">
+    <div class="xg-sr-section">
+      <div class="xg-sr-label">Populair</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg></span>Goud verkopen</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg></span>Goudprijs vandaag</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg></span>Gouden ring taxatie</div>
+    </div>
+    <div class="xg-sr-section">
+      <div class="xg-sr-label">Categorieën</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg></span>Edelmetalen</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg></span>Edelstenen</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg></span>Horloges</div>
+    </div>
+    <div class="xg-sr-section">
+      <div class="xg-sr-label">Recent</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Krugerrand</div>
+      <div class="xg-sr-item"><span class="xg-sr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>Zilver baren</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HEADER SYSTEM ===== -->
+<div id="xg-header-system">
+
+  <!-- TOPBAR -->
+  <div class="xg-topbar">
+    <div class="xg-topbar-inner">
+      <div class="xg-live">
+        <div class="xg-live-row">
+          <span class="xg-live-dot"></span>
+          LIVE PRIJZEN
+        </div>
+        <div class="xg-live-time">Bijgewerkt: <strong id="xgTime">--:--</strong></div>
+      </div>
+      <div class="xg-ticker-vp">
+        <div class="xg-ticker-track" id="xgTrack"></div>
+      </div>
+      <div class="xg-topbar-lbma">
+        <strong>LBMA</strong>
+        <span id="xgDate">--</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="xg-header" id="xgHeader">
+    <div class="xg-header-inner">
+
+      <div class="xg-logo"><a href="/">X<span>GOUD</span></a></div>
+
+      <nav class="xg-nav">
+        <ul>
+          <li class="xg-nav-item" data-menu="edelmetalen">Edelmetalen</li>
+          <li class="xg-nav-item" data-menu="edelstenen">Edelstenen</li>
+          <li class="xg-nav-item" data-menu="horloges">Horloges</li>
+          <li class="xg-nav-item" data-menu="dagprijzen">Dagprijzen</li>
+          <li class="xg-nav-item" data-menu="service">Service</li>
+          <li class="xg-nav-item" data-menu="overons">Over Ons</li>
+        </ul>
+      </nav>
+
+      <div class="xg-actions">
+        <button class="xg-search-btn" id="xgSearchBtn" title="Zoeken">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        </button>
+
+        <div class="xg-trust">
+          <div class="xg-trust-stars">★★★★★</div>
+          <div class="xg-trust-sub">Trustpilot</div>
+          <div class="xg-trust-tip">
+            <div class="xg-trust-tip-stars">★★★★★</div>
+            <div class="xg-trust-tip-brand">Trustpilot</div>
+            <div class="xg-trust-tip-score">4,8</div>
+            <div class="xg-trust-tip-max">op 5 — 2.400+ beoordelingen</div>
+            <div class="xg-trust-tip-hr"></div>
+            <div class="xg-trust-tip-text">Klanten waarderen onze eerlijke prijzen, snelle uitbetaling en persoonlijke aanpak.</div>
+            <a href="/reviews/">Bekijk alle beoordelingen →</a>
+          </div>
+        </div>
+
+        <div class="xg-phone">
+          085 060 3009
+          <div class="xg-phone-tip">
+            <div class="xg-phone-tip-top">
+              <div class="xg-phone-tip-label">Direct contact</div>
+              <div class="xg-phone-tip-num">085 060 3009</div>
+              <div class="xg-phone-tip-hours">Ma – Vr &nbsp; 09:00 – 17:30<br>Za &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10:00 – 16:00</div>
+            </div>
+            <a href="https://wa.me/31850603009" class="xg-phone-link" target="_blank">
+              <span class="xg-phone-link-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 3.5A12 12 0 0 0 3.5 20.5L2 22l1.7-1.7A12 12 0 1 0 20.5 3.5z"/><path d="M9 10.5c.5 1 1.5 2.5 3 3.5l1-1c.3-.3.8-.3 1.1 0l1.8 1.8a.75.75 0 0 1 0 1C14.5 17 11 16 9 14s-3-5.5-1.8-6.8a.75.75 0 0 1 1 0l1.8 1.8c.3.3.3.8 0 1.1z"/></svg>
+              </span>
+              <span>WhatsApp<span class="xg-phone-link-sub">Stuur een bericht</span></span>
+            </a>
+            <a href="mailto:info@xgoud.nl" class="xg-phone-link">
+              <span class="xg-phone-link-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
+              </span>
+              <span>info@xgoud.nl<span class="xg-phone-link-sub">Stuur een e-mail</span></span>
+            </a>
+            <a href="/vestigingen/" class="xg-phone-link">
+              <span class="xg-phone-link-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
+              </span>
+              <span>40+ vestigingen<span class="xg-phone-link-sub">Vind een locatie</span></span>
+            </a>
+          </div>
+        </div>
+
+        <div class="xg-theme-host" data-xg-theme-toggle></div>
+
+        <a href="/afspraak/" class="xg-cta">Plan afspraak</a>
+
+        <button class="xg-mobile-toggle" id="xgMobToggle" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MEGA MENU -->
+  <div class="xg-mega" id="xgMega">
+    <div class="xg-mega-inner">
+      <div id="xgMegaContent" class="xg-mega-content"></div>
+      <aside class="xg-sidebar">
+        <div class="xg-sb-stars">★★★★★</div>
+        <div class="xg-sb-tp">Trustpilot</div>
+        <div class="xg-sb-score">4,8</div>
+        <div class="xg-sb-text">Gebaseerd op 2.400+ beoordelingen</div>
+        <div class="xg-sb-hr"></div>
+        <ul class="xg-sb-list">
+          <li>40+ vestigingen</li>
+          <li>Gratis taxatie</li>
+          <li>Direct uitbetaald</li>
+          <li>Persoonlijk advies</li>
+        </ul>
+        <a href="/afspraak/" class="xg-sb-cta">Plan afspraak</a>
+      </aside>
+    </div>
+  </div>
+
+  <!-- MOBILE MENU -->
+  <div class="xg-mobile-menu" id="xgMobMenu">
+    <div class="xg-mob-header">
+      <div class="xg-mob-logo">X<span>GOUD</span></div>
+      <button class="xg-mob-close" id="xgMobClose">&#x2715;</button>
+    </div>
+    <div class="xg-mob-top">
+      <div class="xg-mob-stars">★★★★★</div>
+      <a href="tel:0850603009" class="xg-mob-phone">085 060 3009</a>
+      <a href="/afspraak/" class="xg-mob-cta">Plan afspraak</a>
+    </div>
+    <nav class="xg-mob-nav">
+      <a href="/edelmetalen/">Edelmetalen <span>›</span></a>
+      <a href="/edelstenen/">Edelstenen <span>›</span></a>
+      <a href="/horloges/">Horloges <span>›</span></a>
+      <a href="/dagprijzen/">Dagprijzen <span>›</span></a>
+      <a href="/service/">Service <span>›</span></a>
+      <a href="/over-ons/">Over Ons <span>›</span></a>
+    </nav>
+    <div class="xg-mob-contact">
+      <a href="https://wa.me/31850603009">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 3.5A12 12 0 0 0 3.5 20.5L2 22l1.7-1.7A12 12 0 1 0 20.5 3.5z"/></svg>
+        WhatsApp
+      </a>
+      <a href="mailto:info@xgoud.nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
+        info@xgoud.nl
+      </a>
+      <a href="/vestigingen/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
+        Vestigingen
+      </a>
+    </div>
+  </div>
+
+</div><!-- /header system -->
+
+<main>
+	<div class="xg-charity-ticker">
+		<span class="xg-charity-ticker-label">XGOUD heeft deze maand aan goede doelen gegeven:</span>
+		<span class="xg-charity-ticker-amount" data-xg-charity-total>€ 0,00</span>
+		<div class="xg-charity-ticker-projects">
+			<span>Maatschappelijk werk</span><span>Kinderdagverblijven</span><span>Vrouwenopvang</span><span>Sportcentra</span><span>Scholen</span>
+		</div>
+	</div>
+
+	<div class="xg-charity-hero">
+		<h1>Wat wij teruggeven</h1>
+		<p>In elke transactie zit een vast deel voor het goede doel. Hieronder ziet u transparant welk project hoeveel ontvangt — en wanneer. Klik op een categorie.</p>
+	</div>
+
+	<div class="xg-charity-board"></div>
+
+	<div class="xg-demo-sep"><h2>↓ XGOUD-certificaat voor de klant</h2></div>
+	
+<div class="xg-certificate">
+	<div class="xg-cert-brand">X<span>GOUD</span></div>
+	<div class="xg-cert-kicker">Certificaat van steun</div>
+	<h2>Hartelijk dank, Anna de Vries</h2>
+	<p>Met uw verkoop bij XGOUD heeft u <strong>€ 38,50</strong> bijgedragen aan</p>
+	<div class="xg-cert-project">Basisschool De Regenboog (Utrecht)</div>
+	<p class="xg-cert-sub">U heeft hiermee iets goeds gedaan voor een goed doel in uw omgeving.</p>
+	<div class="xg-cert-foot"><span>2026-06-21</span><span>XGOUD &middot; xgoud.nl</span></div>
+</div>
+</main>
+
+<!-- ===== FOOTER WRAP ===== -->
+<div class="xg-footer-wrap" id="xgFooterWrap">
+  <div class="footer-blur-overlay" id="ftBlurOv"></div>
+
+  <!-- Footer ticker -->
+  <div class="ft-wrap">
+    <div class="ft-ticker">
+      <div class="ft-live">
+        <div class="ft-live-row"><span class="ft-live-sq"></span>LIVE</div>
+        <div><span class="ft-live-time-label">Marktupdate </span><span class="ft-live-time" id="ftTime">--:--:--</span></div>
+      </div>
+      <div class="ft-vp">
+        <div class="ft-track" id="ftTrack"></div>
+      </div>
+      <div class="ft-lbma">
+        <strong>LBMA</strong>
+        <span id="ftDate">--</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__top">
+
+      <div class="footer__col footer__brand">
+        <div class="footer__logo">
+          <span class="footer__logo-x">X</span><span class="footer__logo-goud">GOUD</span>
+          <div class="footer__logo-sub">EDELMETAAL INKOOP</div>
+        </div>
+        <p class="footer__desc">XGOUD is gespecialiseerd in de inkoop van goud, zilver en andere edelmetalen tegen eerlijke, marktconforme prijzen.</p>
+        <div class="footer__stars">
+          <svg viewBox="0 0 24 24" class="fstar"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+          <svg viewBox="0 0 24 24" class="fstar"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+          <svg viewBox="0 0 24 24" class="fstar"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+          <svg viewBox="0 0 24 24" class="fstar"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+          <svg viewBox="0 0 24 24" class="fstar"><defs><linearGradient id="hg"><stop offset="80%" stop-color="currentColor"/><stop offset="80%" stop-color="transparent"/></linearGradient></defs><path fill="url(#hg)" stroke="currentColor" stroke-width=".5" d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+        </div>
+        <div class="footer__tp-label">Trustpilot</div>
+        <div class="footer__rating-text"><strong>4,8 / 5</strong> &nbsp;Gebaseerd op duizenden beoordelingen</div>
+        <div class="footer__review-badges">
+          <span class="review-badge">
+            <svg viewBox="0 0 24 24" class="review-badge__icon review-badge__icon--tp"><path d="M12 .9l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8-7.2-3.9-7.2 3.9 1.4-8L.3 9.5l8.1-1.2z"/></svg>
+            Trustpilot
+          </span>
+          <span class="review-badge">
+            <svg viewBox="0 0 48 48" class="review-badge__icon" style="width:18px;height:18px"><path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h11.8c-.5 2.7-2 4.9-4.3 6.5v5.4h7C42.5 37 45.1 31.3 45.1 24.5z"/><path fill="#34A853" d="M24 46c5.9 0 10.8-2 14.5-5.4l-7-5.4c-2 1.4-4.5 2.2-7.5 2.2-5.8 0-10.7-3.9-12.4-9.1H3.4v5.6C7.1 41.5 14.9 46 24 46z"/><path fill="#FBBC05" d="M11.6 28.3c-.4-1.4-.7-2.8-.7-4.3s.3-2.9.7-4.3v-5.6H3.4C1.9 17 1 20.4 1 24s.9 7 2.4 9.9z"/><path fill="#EA4335" d="M24 9.5c3.3 0 6.1 1.1 8.4 3.3l6.2-6.2C34.8 3 29.9 1 24 1 14.9 1 7.1 5.5 3.4 14.1l8.2 5.6C13.3 13.4 18.2 9.5 24 9.5z"/></svg>
+            Google Reviews
+          </span>
+        </div>
+      </div>
+
+      <div class="footer__col">
+        <h4 class="footer__heading">CONTACT</h4>
+        <a class="footer__contact-row" href="tel:0850603009">
+          <svg class="footer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5c0-1.1.9-2 2-2h2.2c.6 0 1.1.4 1.2 1l1 4c.1.5-.1 1-.5 1.3L7.4 10.8c1.4 2.9 3.8 5.3 6.8 6.8l1.5-1.5c.3-.4.8-.5 1.3-.4l4 1c.6.1 1 .6 1 1.2V20c0 1.1-.9 2-2 2h-1C9.6 22 2 14.4 2 6V5z"/></svg>
+          <span><strong>085 - 060 30 09</strong><small>Ma-Vr 09:00–18:00 / Za 09:00–16:00</small></span>
+        </a>
+        <a class="footer__contact-row" href="mailto:info@xgoud.nl">
+          <svg class="footer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
+          <span><strong>info@xgoud.nl</strong><small>Wij reageren binnen 24 uur</small></span>
+        </a>
+        <a class="footer__contact-row" href="#">
+          <svg class="footer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
+          <span><strong>Hoofdkantoor</strong><small>Piuslaan 26, 5614 CM Eindhoven</small></span>
+        </a>
+        <div class="footer__socials">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 8.5h2V5h-2c-2.2 0-4 1.8-4 4v2H9v3.5h2V21h3.5v-6.5H17l.5-3.5h-3V9c0-.6.4-1 .5-.5z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="8" y1="11" x2="8" y2="16"/><circle cx="8" cy="8" r=".6"/><path d="M12 16v-3a2 2 0 0 1 4 0v3"/><line x1="12" y1="11" x2="12" y2="16"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="12" rx="4"/><path d="M11 9.5l4 2.5-4 2.5z" fill="currentColor" stroke="none"/></svg></a>
+        </div>
+      </div>
+
+      <nav class="footer__col">
+        <h4 class="footer__heading">DIENSTEN</h4>
+        <a class="footer__link" href="#">Goud verkopen</a>
+        <a class="footer__link" href="#">Zilver verkopen</a>
+        <a class="footer__link" href="#">Diamanten verkopen</a>
+        <a class="footer__link" href="#">Luxe horloges verkopen</a>
+        <a class="footer__link" href="#">Edelstenen verkopen</a>
+        <a class="footer__link" href="#">Munten verkopen</a>
+        <a class="footer__link" href="#">Taxatie aan huis</a>
+        <a class="footer__link" href="#">Zakelijk verkopen</a>
+      </nav>
+
+      <nav class="footer__col">
+        <h4 class="footer__heading">LOCATIES</h4>
+        <a class="footer__link footer__link--plain" href="#">Amsterdam</a>
+        <a class="footer__link footer__link--plain" href="#">Rotterdam</a>
+        <a class="footer__link footer__link--plain" href="#">Eindhoven</a>
+        <a class="footer__link footer__link--plain" href="#">Antwerpen</a>
+        <a class="footer__link footer__link--plain" href="#">Utrecht</a>
+        <a class="footer__link footer__link--plain" href="#">Brussel</a>
+        <a class="footer__link footer__link--plain" href="#">Den Haag</a>
+        <a class="footer__link footer__link--accent" href="#">Alle vestigingen →</a>
+      </nav>
+
+      <nav class="footer__col">
+        <h4 class="footer__heading">OVER XGOUD</h4>
+        <a class="footer__link footer__link--plain" href="#">Over ons</a>
+        <a class="footer__link footer__link--plain" href="#">Werkwijze</a>
+        <a class="footer__link footer__link--plain" href="#">Nieuws</a>
+        <a class="footer__link footer__link--plain" href="#">Vacatures</a>
+        <a class="footer__link footer__link--plain" href="#">Reviews</a>
+        <a class="footer__link footer__link--plain" href="#">Contact</a>
+        <div class="footer__trust-box">
+          <svg class="footer__trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/></svg>
+          <div><strong>Veilig en betrouwbaar</strong><p>Uw waardevolle spullen zijn bij ons in veilige handen.</p></div>
+        </div>
+      </nav>
+
+    </div>
+    <div class="footer__bottom">
+      <div class="footer__bottom-left">
+        <span>© 2026 XGOUD</span><span class="footer__divider">|</span><span>Alle rechten voorbehouden</span>
+      </div>
+      <div class="footer__bottom-links">
+        <a href="#">Privacyverklaring</a>
+        <a href="#">Cookiebeleid</a>
+        <a href="#">Algemene voorwaarden</a>
+        <a href="#">Sitemap</a>
+      </div>
+      <div class="footer__bottom-partners">
+        <span class="partner-logo">UMICORE</span>
+        <span class="partner-logo" style="font-style:italic">C. Hafner</span>
+        <span class="partner-logo" style="font-size:11px">HEIMERLE+MEULE</span>
+        <span class="partner-logo" style="letter-spacing:1px">DEGUSSA</span>
+        <span class="partner-logo" style="font-size:11px">Royal Canadian Mint</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>window.XG_CHARITY = {"month_total":65168.36,"currency":"EUR","categories":[{"id":"social","label":"Maatschappelijk werk","projects":[{"name":"Stichting Buurtwerk","city":"Amsterdam","accrued":4210.5,"paid":12000,"website":"#","payouts":[{"period":"Q1 2026","amount":6000},{"period":"Q4 2025","amount":6000}]},{"name":"Sociaal Steunpunt","city":"Rotterdam","accrued":1875,"paid":3000,"website":"#","payouts":[{"period":"Q1 2026","amount":3000}]}]},{"id":"kindergarten","label":"Kinderdagverblijven","projects":[{"name":"De Zonnebloem","city":"Eindhoven","accrued":3120.8,"paid":4500,"website":"#","payouts":[{"period":"Q1 2026","amount":4500}]},{"name":"Het Speelkwartier","city":"Tilburg","accrued":980,"paid":0,"website":"#","payouts":[]}]},{"id":"shelter","label":"Vrouwenopvang","projects":[{"name":"Blijf Groep","city":"Amsterdam","accrued":5400,"paid":8000,"website":"#","payouts":[{"period":"Q1 2026","amount":8000}]}]},{"id":"sport","label":"Sportcentra","projects":[{"name":"Buurtsport","city":"Tilburg","accrued":1260,"paid":2000,"website":"#","payouts":[{"period":"Q1 2026","amount":2000}]}]},{"id":"school","label":"Scholen","projects":[{"name":"Basisschool De Regenboog","city":"Utrecht","accrued":2240,"paid":5000,"website":"#","payouts":[{"period":"Q1 2026","amount":5000}]},{"name":"OBS Het Kompas","city":"Groningen","accrued":760,"paid":0,"website":"#","payouts":[]}]}]};</script>
+<script>/**
+ * XGOUD – Theme-Switch (Day ↔ Dark).
+ *
+ * Setzt data-theme auf <html>, merkt sich die Wahl (localStorage) und
+ * respektiert beim ersten Besuch die System-Einstellung. Im Dark-Mode
+ * wechselt die Markenfarbe von Rot auf Gold (siehe CSS-Tokens).
+ *
+ * Der Schalter wird in jedes Element mit [data-xg-theme-toggle] gerendert.
+ * Mehrere Schalter (Header, Calculator …) bleiben synchron.
+ */
+(function () {
+	'use strict';
+
+	var KEY = 'xg-theme';
+	var root = document.documentElement;
+
+	function current() { return root.getAttribute('data-theme') || 'light'; }
+
+	function apply(theme, persist) {
+		root.setAttribute('data-theme', theme);
+		if (persist) { try { localStorage.setItem(KEY, theme); } catch (e) {} }
+		document.querySelectorAll('[data-xg-theme-toggle]').forEach(syncToggle);
+		document.dispatchEvent(new CustomEvent('xg:theme-change', { detail: { theme: theme } }));
+	}
+
+	function toggle() { apply(current() === 'dark' ? 'light' : 'dark', true); }
+
+	// Initialwert: gespeichert > System > light
+	function init() {
+		var saved = null;
+		try { saved = localStorage.getItem(KEY); } catch (e) {}
+		if (!saved) {
+			saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+		}
+		apply(saved, false);
+	}
+
+	// Moderner Schalter (Sonne/Mond, gleitender Knopf)
+	function buildToggle(host) {
+		host.innerHTML = '';
+		var btn = document.createElement('button');
+		btn.type = 'button';
+		btn.className = 'xg-theme-switch';
+		btn.setAttribute('aria-label', 'Dark Mode umschalten');
+		btn.innerHTML =
+			'<span class="xg-theme-track">' +
+				'<span class="xg-theme-ico sun" aria-hidden="true">' +
+					'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>' +
+				'</span>' +
+				'<span class="xg-theme-ico moon" aria-hidden="true">' +
+					'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"/></svg>' +
+				'</span>' +
+				'<span class="xg-theme-knob"></span>' +
+			'</span>';
+		btn.addEventListener('click', toggle);
+		host.appendChild(btn);
+		syncToggle(host);
+	}
+
+	function syncToggle(host) {
+		var dark = current() === 'dark';
+		var btn = host.querySelector('.xg-theme-switch');
+		if (btn) btn.classList.toggle('is-dark', dark);
+	}
+
+	function boot() {
+		document.querySelectorAll('[data-xg-theme-toggle]').forEach(buildToggle);
+	}
+
+	// API für andere Skripte (z.B. Calculator-internen Schalter)
+	window.XGTheme = {
+		toggle: toggle,
+		set: function (t) { apply(t, true); },
+		get: current,
+		mount: function (host) { buildToggle(host); } // Switch on demand erzeugen
+	};
+
+	init(); // so früh wie möglich (kein FOUC-Flash)
+	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+	else boot();
+})();
+
+;
+/* ==========================================================
+   XGOUD – Header & Footer System (interactions)
+   Live-Ticker, Mega-Menu-Wizard, Fullscreen-Suche, Mobile-Menu.
+   Wird über inc/setup.php im Footer geladen.
+   Hinweis: METALS-Preise sind aktuell Demo-Daten. Später per
+   REST/API anbinden (siehe README → Live-Preise).
+   ========================================================== */
+(function () {
+  'use strict';
+
+  /* ==========================================================
+     DATA
+     ========================================================== */
+  const METALS = [
+    { key:'goud',      name:'GOUD 999',      priceG:106.42, changeAbs: 0.45,   changePct: 0.42,  open:105.97, prev:105.65, state:'up' },
+    { key:'zilver',    name:'ZILVER 999',    priceG:  1.24, changeAbs: 0.0022, changePct: 0.18,  open:1.237,  prev:1.231,  state:'up' },
+    { key:'platina',   name:'PLATINA 999',   priceG: 37.14, changeAbs:-0.030,  changePct:-0.08,  open:37.17,  prev:37.20,  state:'down' },
+    { key:'palladium', name:'PALLADIUM 999', priceG: 31.78, changeAbs: 0.085,  changePct: 0.27,  open:31.695, prev:31.60,  state:'up' },
+  ];
+
+  function fmt(n,d){ return n.toLocaleString('nl-NL',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function nowStr()   { const n=new Date(); return `${pad(n.getHours())}:${pad(n.getMinutes())}`; }
+  function nowStrSec(){ const n=new Date(); return `${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())}`; }
+  function dateStr()  { const n=new Date(); return `${n.getDate()} ${['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'][n.getMonth()]} ${n.getFullYear()}`; }
+
+  /* clocks */
+  function updateClocks(){
+    const t=document.getElementById('xgTime'); if(t) t.textContent=nowStr();
+    const d=document.getElementById('xgDate'); if(d) d.textContent=dateStr();
+    const ft=document.getElementById('ftTime'); if(ft) ft.textContent=nowStrSec();
+    const fd=document.getElementById('ftDate'); if(fd) fd.textContent=dateStr();
+  }
+  updateClocks(); setInterval(updateClocks, 1000);
+
+  /* spark SVG */
+  function buildSeries(up){
+    const pts=[]; let y=50;
+    for(let i=0;i<16;i++){ y+=(Math.random()-.46)*10; y=Math.max(8,Math.min(92,y)); pts.push(y); }
+    pts[0]=up?76:24; pts[pts.length-1]=up?24:76;
+    return pts;
+  }
+  function sparkSVG(pts,up,w=320,h=100){
+    const s=w/(pts.length-1);
+    const d=pts.map((p,i)=>`${i===0?'M':'L'}${(i*s).toFixed(1)},${(h-(p/100*h)).toFixed(1)}`).join(' ');
+    const fill=`${d} L${w},${h} L0,${h} Z`;
+    const c=up?'#1f9d55':'#d93636';
+    return `<svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      <path d="${fill}" fill="${c}" opacity=".1"/>
+      <path d="${d}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+  }
+
+  /* session rows */
+  function sessionRows(m){
+    const s=m.state, up=s==='up', dn=s==='down';
+    const cls=up?'up':dn?'down':'neutral';
+    const sign=up?'+':dn?'-':'';
+    const absChange=Math.abs(m.changeAbs);
+    return `
+      <div class="xg-drop-session">
+        <span class="xg-drop-sess-label"><span class="xg-drop-sess-dot neutral"></span>Sluiting gisteren (17:00)</span>
+        <span class="xg-drop-sess-price">€ ${fmt(m.prev,2)}/g</span>
+        <span class="xg-drop-sess-change neutral">—</span>
+      </div>
+      <div class="xg-drop-session">
+        <span class="xg-drop-sess-label"><span class="xg-drop-sess-dot ${cls}"></span>Opening vandaag (09:00)</span>
+        <span class="xg-drop-sess-price">€ ${fmt(m.open,2)}/g</span>
+        <span class="xg-drop-sess-change ${cls}">${sign}€ ${fmt(absChange*.3,3)}</span>
+      </div>
+      <div class="xg-drop-session">
+        <span class="xg-drop-sess-label"><span class="xg-drop-sess-dot ${cls}"></span>Huidig</span>
+        <span class="xg-drop-sess-price">€ ${fmt(m.priceG,2)}/g</span>
+        <span class="xg-drop-sess-change ${cls}">${up?'+':''}${fmt(m.changePct,2)}%</span>
+      </div>`;
+  }
+
+  /* ==========================================================
+     HEADER TICKER
+     ========================================================== */
+  const xgBlurOv = document.getElementById('xgBlurOverlay');
+  let activeHDrop = null;
+
+  function buildHdrTicker(){
+    const track=document.getElementById('xgTrack'); if(!track) return;
+    let html='';
+    for(let c=0;c<2;c++){
+      METALS.forEach((m,i)=>{
+        const up=m.changePct>=0, dn=m.changePct<0;
+        const cls=up?'up':dn?'down':'neutral';
+        const sign=up?'+':'';
+        html+=`<div class="xg-ti" data-idx="${i}">
+          <div class="xg-ti-name">${m.name}</div>
+          <div class="xg-ti-row">
+            <span class="xg-ti-price">€ ${fmt(m.priceG,2)}</span>
+            <span class="xg-ti-unit">/g</span>
+            <span class="xg-ti-pct ${cls}">${sign}${fmt(m.changePct,2)}%</span>
+            <span class="xg-ti-chev">▾</span>
+          </div>
+        </div>`;
+      });
+    }
+    track.innerHTML=html;
+    track.querySelectorAll('.xg-ti').forEach(el=>{
+      el.addEventListener('click', e=>{
+        e.stopPropagation();
+        const idx=parseInt(el.dataset.idx);
+        const was=el.classList.contains('active');
+        closeHDrop();
+        if(!was){ el.classList.add('active'); openHDrop(el, METALS[idx]); }
+      });
+    });
+  }
+
+  function openHDrop(el, m){
+    const up=m.changePct>=0, dn=m.changePct<0;
+    const cls=up?'up':dn?'down':'neutral';
+    const sign=up?'+':'';
+    const kg=m.priceG*1000;
+    const div=document.createElement('div');
+    div.className='xg-drop open';
+    div.innerHTML=`
+      <div class="xg-drop-head">
+        <span class="xg-drop-title">${m.name}</span>
+        <button class="xg-drop-close" id="hdClose">&#x2715;</button>
+      </div>
+      <div class="xg-drop-prices">
+        <div class="xg-drop-pb">
+          <div class="xg-drop-pb-label"><span class="xg-drop-pb-icon">g</span>Per gram</div>
+          <div class="xg-drop-pb-value">€ ${fmt(m.priceG,2)}</div>
+        </div>
+        <div class="xg-drop-pb">
+          <div class="xg-drop-pb-label"><span class="xg-drop-pb-icon">kg</span>Per kilo</div>
+          <div class="xg-drop-pb-value">€ ${fmt(kg,0)}</div>
+        </div>
+      </div>
+      <div class="xg-drop-sessions">${sessionRows(m)}</div>
+      <div class="xg-drop-graph">
+        <div class="xg-drop-graph-label">Verloop vandaag</div>
+        ${sparkSVG(buildSeries(up),up)}
+      </div>`;
+    document.body.appendChild(div);
+    activeHDrop=div;
+
+    const rect=el.getBoundingClientRect();
+    let left=rect.left;
+    if(left+380>window.innerWidth-12) left=window.innerWidth-392;
+    if(left<12) left=12;
+    div.style.left=`${left}px`;
+    div.style.top=`${rect.bottom+4}px`;
+
+    // Blur from topbar-bottom down
+    xgBlurOv.style.top = `var(--topbar-h)`;
+    xgBlurOv.classList.add('active');
+    document.getElementById('xgTrack').classList.add('paused');
+
+    div.querySelector('#hdClose').addEventListener('click', e=>{ e.stopPropagation(); closeHDrop(); });
+  }
+
+  function closeHDrop(){
+    if(activeHDrop){ activeHDrop.remove(); activeHDrop=null; }
+    document.querySelectorAll('.xg-ti').forEach(i=>i.classList.remove('active'));
+    if(xgBlurOv) xgBlurOv.classList.remove('active');
+    const t=document.getElementById('xgTrack'); if(t) t.classList.remove('paused');
+  }
+  document.addEventListener('click', e=>{ if(activeHDrop&&!activeHDrop.contains(e.target)) closeHDrop(); });
+  buildHdrTicker();
+
+  /* ==========================================================
+     FOOTER TICKER
+     ========================================================== */
+  const ftBlurOv = document.getElementById('ftBlurOv');
+  let activeFtDrop = null;
+
+  function buildFtTicker(){
+    const track=document.getElementById('ftTrack'); if(!track) return;
+    let html='';
+    for(let c=0;c<2;c++){
+      METALS.forEach((m,i)=>{
+        const up=m.changePct>=0, dn=m.changePct<0;
+        const cls=up?'up':dn?'down':'neutral';
+        const sign=up?'+':'';
+        html+=`<div class="ft-item" data-idx="${i}">
+          <div class="ft-item-name">${m.name}</div>
+          <div class="ft-item-row">
+            <span class="ft-item-price">€ ${fmt(m.priceG,2)}</span>
+            <span class="ft-item-unit">/g</span>
+            <span class="ft-item-pct ${cls}">${sign}${fmt(m.changePct,2)}%</span>
+            <span class="ft-item-chev">▾</span>
+          </div>
+        </div>`;
+      });
+    }
+    track.innerHTML=html;
+    track.querySelectorAll('.ft-item').forEach(el=>{
+      el.addEventListener('click', e=>{
+        e.stopPropagation();
+        const idx=parseInt(el.dataset.idx);
+        const was=el.classList.contains('active');
+        closeFtDrop();
+        if(!was){ el.classList.add('active'); openFtDrop(el, METALS[idx]); }
+      });
+    });
+  }
+
+  function openFtDrop(el, m){
+    const up=m.changePct>=0, dn=m.changePct<0;
+    const cls=up?'up':dn?'down':'neutral';
+    const sign=up?'+':'';
+    const kg=m.priceG*1000;
+    const div=document.createElement('div');
+    div.className='ft-dropup open';
+    div.innerHTML=`
+      <div class="ft-du-head">
+        <span class="ft-du-title">${m.name}</span>
+        <div class="ft-du-meta">
+          <span class="ft-du-pct ${cls}">${sign}${fmt(m.changePct,2)}%</span>
+          <button class="ft-du-close" id="ftClose">&#x2715;</button>
+        </div>
+      </div>
+      <div class="ft-du-prices">
+        <div class="ft-du-pb">
+          <div class="ft-du-pb-label"><span class="ft-du-pb-icon">g</span>Per gram</div>
+          <div class="ft-du-pb-value">€ ${fmt(m.priceG,2)}</div>
+        </div>
+        <div class="ft-du-pb">
+          <div class="ft-du-pb-label"><span class="ft-du-pb-icon">kg</span>Per kilo</div>
+          <div class="ft-du-pb-value">€ ${fmt(kg,0)}</div>
+        </div>
+      </div>
+      <div class="ft-du-sessions">
+        <div class="ft-du-sess">
+          <span class="ft-du-sess-label"><span class="ft-du-sess-dot neutral"></span>Sluiting gisteren (17:00)</span>
+          <span class="ft-du-sess-price">€ ${fmt(m.prev,2)}/g</span>
+          <span class="ft-du-sess-change neutral">—</span>
+        </div>
+        <div class="ft-du-sess">
+          <span class="ft-du-sess-label"><span class="ft-du-sess-dot ${cls}"></span>Opening (09:00)</span>
+          <span class="ft-du-sess-price">€ ${fmt(m.open,2)}/g</span>
+          <span class="ft-du-sess-change ${cls}">${sign}€ ${fmt(Math.abs(m.changeAbs)*.3,3)}</span>
+        </div>
+        <div class="ft-du-sess">
+          <span class="ft-du-sess-label"><span class="ft-du-sess-dot ${cls}"></span>Huidig</span>
+          <span class="ft-du-sess-price">€ ${fmt(m.priceG,2)}/g</span>
+          <span class="ft-du-sess-change ${cls}">${sign}${fmt(m.changePct,2)}%</span>
+        </div>
+      </div>
+      <div class="ft-du-graph">
+        <div class="ft-du-graph-label">Verloop vandaag</div>
+        ${sparkSVG(buildSeries(up),up)}
+      </div>`;
+    document.body.appendChild(div);
+    activeFtDrop=div;
+    if(ftBlurOv) ftBlurOv.classList.add('active');
+    document.getElementById('ftTrack').classList.add('paused');
+
+    requestAnimationFrame(()=>{
+      const dh=div.offsetHeight;
+      const rect=el.getBoundingClientRect();
+      let left=rect.left;
+      if(left+380>window.innerWidth-12) left=window.innerWidth-392;
+      if(left<12) left=12;
+      div.style.left=`${left}px`;
+      div.style.top=`${rect.top-dh-10}px`;
+    });
+
+    div.querySelector('#ftClose').addEventListener('click', e=>{ e.stopPropagation(); closeFtDrop(); });
+  }
+
+  function closeFtDrop(){
+    if(activeFtDrop){ activeFtDrop.remove(); activeFtDrop=null; }
+    document.querySelectorAll('.ft-item').forEach(i=>i.classList.remove('active'));
+    if(ftBlurOv) ftBlurOv.classList.remove('active');
+    const t=document.getElementById('ftTrack'); if(t) t.classList.remove('paused');
+  }
+  document.addEventListener('click', e=>{ if(activeFtDrop&&!activeFtDrop.contains(e.target)) closeFtDrop(); });
+  buildFtTicker();
+
+  /* ==========================================================
+     FULL-SCREEN SEARCH
+     ========================================================== */
+  const searchOv = document.getElementById('xgSearchOv');
+  const searchIn = document.getElementById('xgSearchInput');
+  const searchRs = document.getElementById('xgSearchResults');
+  const ALL_TERMS = ['Goud verkopen','Goudprijs vandaag','Gouden ring taxatie','Krugerrand','Maple Leaf','Zilver baren','Zilver verkopen','Platina','Palladium','Diamanten','Saffieren','Rolex','Omega','Edelstenen','Horloges'];
+
+  const searchBtn = document.getElementById('xgSearchBtn');
+  if(searchBtn) searchBtn.addEventListener('click',()=>{
+    searchOv.classList.add('open');
+    setTimeout(()=>searchIn.focus(),80);
+  });
+  const searchCloseBtn = document.getElementById('xgSearchClose');
+  if(searchCloseBtn) searchCloseBtn.addEventListener('click',()=>{
+    searchOv.classList.remove('open'); searchIn.value='';
+  });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && searchOv) searchOv.classList.remove('open'); });
+
+  if(searchIn) searchIn.addEventListener('input',()=>{
+    const q=searchIn.value.toLowerCase().trim();
+    if(!q){ searchRs.innerHTML=`<div class="xg-sr-section"><div class="xg-sr-label">Typ om te zoeken</div></div>`; return; }
+    const matches=ALL_TERMS.filter(s=>s.toLowerCase().includes(q)).slice(0,7);
+    const iconSVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>`;
+    searchRs.innerHTML=matches.length
+      ? `<div class="xg-sr-section"><div class="xg-sr-label">Resultaten</div>${matches.map(s=>`<div class="xg-sr-item"><span class="xg-sr-icon">${iconSVG}</span>${s}</div>`).join('')}</div>`
+      : `<div class="xg-sr-section"><div style="padding:12px 0;color:var(--ink-soft);font-size:13px;">Geen resultaten gevonden</div></div>`;
+  });
+
+  /* ==========================================================
+     MEGA MENU — WIZARD
+     ========================================================== */
+  const megaMenu    = document.getElementById('xgMega');
+  const megaContent = document.getElementById('xgMegaContent');
+  const navItems    = document.querySelectorAll('.xg-nav-item');
+
+  const WIZ = {
+    edelmetalen: {
+      steps:['Kies uw metaal','Kies uw categorie','Kies uw product'],
+      opts:{
+        goud:      {lbl:'Goud',      desc:'Sieraden, munten, baren en tandgoud',
+          cats:{ sieraden:{lbl:'Sieraden',prods:['Ringen','Kettingen','Armbanden','Oorbellen']},
+                 munten:{lbl:'Munten',prods:['Krugerrand','Maple Leaf','Britannia','Philharmoniker']},
+                 baren:{lbl:'Baren',prods:['1g','5g','10g','20g','50g','100g','250g','500g','1 kg']},
+                 tandgoud:{lbl:'Tandgoud',prods:['14 karaat','18 karaat','22 karaat']} }},
+        zilver:    {lbl:'Zilver',    desc:'Bestek, munten en baren',
+          cats:{ bestek:{lbl:'Bestek',prods:['Lepels','Vorken','Sets']},
+                 munten:{lbl:'Munten',prods:['Maple Leaf','Britannia','Eagle']},
+                 baren:{lbl:'Baren',prods:['100g','250g','500g','1 kg']} }},
+        platina:   {lbl:'Platina',   desc:'Sieraden en baren',
+          cats:{ sieraden:{lbl:'Sieraden',prods:['Ringen','Kettingen']},
+                 baren:{lbl:'Baren',prods:['1g','10g','100g']} }},
+        palladium: {lbl:'Palladium', desc:'Baren en objecten',
+          cats:{ baren:{lbl:'Baren',prods:['1g','10g','100g']} }}
+      },
+      ql: ['Gouden ring','Krugerrand','Goud baren','Tandgoud']
+    },
+    edelstenen: {
+      steps:['Kies uw steen','Kies uw categorie','Kies uw gewicht'],
+      opts:{
+        diamanten:{lbl:'Diamanten',desc:'Losse diamanten', cats:{ los:{lbl:'Losse Diamanten',prods:['0.25 ct','0.50 ct','1.00 ct','2.00 ct']} }},
+        saffieren:{lbl:'Saffieren',desc:'Natuurlijke saffieren', cats:{ los:{lbl:'Losse saffieren',prods:['Blauw','Geel','Roze']} }}
+      },
+      ql:['Diamanten ring','Losse diamant','Saffier']
+    },
+    horloges: {
+      steps:['Kies uw merk','Kies uw collectie','Kies uw model'],
+      opts:{
+        rolex:{lbl:'Rolex',desc:'Sporters en klassiekers', cats:{ submariner:{lbl:'Submariner',prods:['Date','No Date']}, datejust:{lbl:'Datejust',prods:['36mm','41mm']} }},
+        omega:{lbl:'Omega',desc:'Speedmaster en meer', cats:{ speedmaster:{lbl:'Speedmaster',prods:['Moonwatch','Professional']} }}
+      },
+      ql:['Rolex Submariner','Rolex Datejust','Omega Speedmaster']
+    }
+  };
+
+  const STD = {
+    dagprijzen:`<div class="xg-std-grid">
+      <div class="xg-std-col"><h3>Dagprijzen</h3><a href="#">Goudprijs vandaag</a><a href="#">Zilverprijs vandaag</a><a href="#">Platinaprijs vandaag</a><a href="#">Palladiumprijs</a></div>
+      <div class="xg-std-col"><h3>Grafieken</h3><a href="#">Historische prijzen</a><a href="#">Koersanalyse</a><a href="#">Prijsverwachting</a></div>
+      <div class="xg-std-col"><h3>Markt</h3><a href="#">Marktnieuws</a><a href="#">LBMA fixing</a><a href="#">EUR/USD koers</a></div>
+    </div>
+    <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="#">Goudprijs</a><a class="xg-ql" href="#">Zilverprijs</a><a class="xg-ql" href="#">Koersgrafiek</a></div>`,
+    service:`<div class="xg-std-grid">
+      <div class="xg-std-col"><h3>Diensten</h3><a href="#">Gratis taxatie</a><a href="#">Thuisbezoek</a><a href="#">Inruilen</a></div>
+      <div class="xg-std-col"><h3>Hulp</h3><a href="#">FAQ</a><a href="#">Contact</a><a href="#">Hoe werkt het?</a></div>
+      <div class="xg-std-col"><h3>Locaties</h3><a href="#">Alle vestigingen</a><a href="#">Amsterdam</a><a href="#">Rotterdam</a></div>
+    </div>
+    <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="#">Gratis taxatie</a><a class="xg-ql" href="#">Afspraak plannen</a></div>`,
+    overons:`<div class="xg-std-grid">
+      <div class="xg-std-col"><h3>Over XGOUD</h3><a href="#">Bedrijf</a><a href="#">Team</a><a href="#">Geschiedenis</a></div>
+      <div class="xg-std-col"><h3>Vertrouwen</h3><a href="#">Beoordelingen</a><a href="#">Certificaten</a><a href="#">Partners</a></div>
+      <div class="xg-std-col"><h3>Media</h3><a href="#">Nieuws</a><a href="#">Pers</a><a href="#">Vacatures</a></div>
+    </div>
+    <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="#">Reviews</a><a class="xg-ql" href="#">Vestigingen</a></div>`
+  };
+
+  let ws={menu:null,step:1,s1k:null,s2k:null,s1l:null,s2l:null,s3l:null};
+  let closeT=null;
+
+  function openMega(key){
+    clearTimeout(closeT);
+    navItems.forEach(n=>n.classList.toggle('active', n.dataset.menu===key));
+    if(STD[key]){
+      megaContent.innerHTML=STD[key];
+    } else if(WIZ[key]){
+      if(ws.menu!==key){ ws={menu:key,step:1,s1k:null,s2k:null,s1l:null,s2l:null,s3l:null}; }
+      renderWiz();
+    } else return;
+    megaMenu.classList.add('active');
+  }
+  function closeMega(){
+    closeT=setTimeout(()=>{
+      megaMenu.classList.remove('active');
+      navItems.forEach(n=>n.classList.remove('active'));
+      ws.menu=null;
+    },200);
+  }
+  navItems.forEach(i=>{ i.addEventListener('mouseenter',()=>openMega(i.dataset.menu)); i.addEventListener('mouseleave',closeMega); });
+  if(megaMenu){
+    megaMenu.addEventListener('mouseenter',()=>clearTimeout(closeT));
+    megaMenu.addEventListener('mouseleave',closeMega);
+  }
+
+  function sc(n){ return ws.step>n?'xg-step done':ws.step===n?'xg-step active':'xg-step'; }
+
+  function renderWiz(){
+    const d=WIZ[ws.menu]; const s=ws.step;
+    const pct=s===2?33:s===3?66:s===4?100:0;
+    const stepLbl=s<4?d.steps[s-1]:'Uw keuze';
+    const catQls=s===2&&ws.s1k ? Object.values(d.opts[ws.s1k].cats).map(c=>`<a class="xg-ql" href="#">${c.lbl}</a>`).join('') : '';
+    const qlItems = s===2&&ws.s1k ? catQls : d.ql.map(l=>`<a class="xg-ql" href="#">${l}</a>`).join('');
+
+    megaContent.innerHTML=`<div class="xg-wizard">
+      <div class="xg-wiz-top">
+        <div class="xg-wiz-label">${stepLbl}</div>
+        <div class="xg-wiz-search">
+          <span class="xg-wiz-search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></span>
+          <input type="text" placeholder="Snel zoeken…" id="xgWizSI">
+        </div>
+        ${s>1?'<button class="xg-back-btn" id="xgBackBtn">← Terug</button>':''}
+      </div>
+      <div class="xg-progress">
+        <div class="xg-prog-line"><div class="xg-prog-fill" style="width:${pct}%"></div></div>
+        <div class="xg-prog-steps">
+          <div class="${sc(1)}"><div class="xg-step-num">${s>1?'✓':'1'}</div><div class="xg-step-lbl">${ws.s1l||d.steps[0].replace('Kies uw ','')}</div></div>
+          <div class="${sc(2)}"><div class="xg-step-num">${s>2?'✓':'2'}</div><div class="xg-step-lbl">${ws.s2l||d.steps[1].replace('Kies uw ','')}</div></div>
+          <div class="${sc(3)}"><div class="xg-step-num">${s>3?'✓':'3'}</div><div class="xg-step-lbl">${ws.s3l||d.steps[2].replace('Kies uw ','')}</div></div>
+        </div>
+      </div>
+      <div id="xgWizBody"></div>
+      ${s<4?`<div class="xg-quicklinks"><span class="xg-ql-label">Populair:</span>${qlItems}</div>`:''}
+    </div>`;
+
+    renderWizBody();
+
+    const bb=document.getElementById('xgBackBtn');
+    if(bb) bb.addEventListener('click',()=>{
+      if(s===2){ws.step=1;ws.s1k=null;ws.s1l=null;}
+      else if(s===3){ws.step=2;ws.s2k=null;ws.s2l=null;}
+      else if(s===4){ws.step=3;ws.s3l=null;}
+      renderWiz();
+    });
+    const si=document.getElementById('xgWizSI');
+    if(si) si.addEventListener('input',()=>{
+      const q=si.value.toLowerCase();
+      document.querySelectorAll('.xg-opt').forEach(o=>{ o.style.display=o.textContent.toLowerCase().includes(q)?'':'none'; });
+    });
+  }
+
+  function renderWizBody(){
+    const body=document.getElementById('xgWizBody');
+    const d=WIZ[ws.menu]; const s=ws.step;
+    if(s===1){
+      let h='<div class="xg-options">';
+      Object.entries(d.opts).forEach(([k,v])=>{ h+=`<div class="xg-opt" data-s1="${k}"><div class="xg-opt-title">${v.lbl}</div><div class="xg-opt-desc">${v.desc}</div></div>`; });
+      body.innerHTML=h+'</div>';
+      body.querySelectorAll('[data-s1]').forEach(el=>el.addEventListener('click',()=>{ ws.s1k=el.dataset.s1; ws.s1l=d.opts[ws.s1k].lbl; ws.step=2; renderWiz(); }));
+    } else if(s===2){
+      let h='<div class="xg-options">';
+      Object.entries(d.opts[ws.s1k].cats).forEach(([k,v])=>{ h+=`<div class="xg-opt" data-s2="${k}"><div class="xg-opt-title">${v.lbl}</div></div>`; });
+      body.innerHTML=h+'</div>';
+      body.querySelectorAll('[data-s2]').forEach(el=>el.addEventListener('click',()=>{ ws.s2k=el.dataset.s2; ws.s2l=d.opts[ws.s1k].cats[ws.s2k].lbl; ws.step=3; renderWiz(); }));
+    } else if(s===3){
+      const prods=d.opts[ws.s1k].cats[ws.s2k].prods;
+      let h='<div class="xg-options">';
+      prods.forEach(p=>{ h+=`<div class="xg-opt" data-s3="${p}"><div class="xg-opt-title">${p}</div></div>`; });
+      body.innerHTML=h+'</div>';
+      body.querySelectorAll('[data-s3]').forEach(el=>el.addEventListener('click',()=>{ ws.s3l=el.dataset.s3; ws.step=4; renderWiz(); }));
+    } else {
+      body.innerHTML=`<div class="xg-result">
+        <div class="xg-result-check">✓</div>
+        <h3>Uw keuze</h3>
+        <div class="xg-result-sum">
+          <div><strong>${d.steps[0].replace('Kies uw ','')}:</strong> ${ws.s1l}</div>
+          <div><strong>${d.steps[1].replace('Kies uw ','')}:</strong> ${ws.s2l}</div>
+          <div><strong>${d.steps[2].replace('Kies uw ','')}:</strong> ${ws.s3l}</div>
+        </div>
+        <a href="/${ws.s1k}/${ws.s2k}/" class="xg-result-cta">Bekijk pagina →</a>
+      </div>`;
+    }
+  }
+
+  /* ==========================================================
+     SCROLL + MOBILE
+     ========================================================== */
+  window.addEventListener('scroll',()=>{
+    const h=document.getElementById('xgHeader');
+    if(h) h.classList.toggle('scrolled', window.scrollY>50);
+  });
+
+  const mobToggle = document.getElementById('xgMobToggle');
+  if(mobToggle) mobToggle.addEventListener('click',()=>{
+    document.getElementById('xgMobMenu').classList.add('open');
+    document.body.style.overflow='hidden';
+  });
+  const mobClose = document.getElementById('xgMobClose');
+  if(mobClose) mobClose.addEventListener('click',()=>{
+    document.getElementById('xgMobMenu').classList.remove('open');
+    document.body.style.overflow='';
+  });
+
+})();
+
+;
+/**
+ * XGOUD Charity – Live-Ticker-Summe + Transparenz-Auflistung.
+ * Datenquelle: window.XG_CHARITY (via wp_localize_script, inc/charity.php).
+ *   { month_total, currency, categories:[{id,label,projects:[{name,city,accrued,paid,payouts,website}]}], rest_total }
+ */
+(function () {
+	'use strict';
+
+	var D = window.XG_CHARITY;
+	if (!D) return;
+
+	function euro(n) {
+		return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: D.currency || 'EUR', maximumFractionDigits: 2 }).format(isFinite(n) ? n : 0);
+	}
+	function el(t, c, h) { var e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; }
+
+	// Count-up
+	function animate(node, to) {
+		var start = null, dur = 900;
+		function frame(t) {
+			if (!start) start = t;
+			var p = Math.min((t - start) / dur, 1);
+			node.textContent = euro((1 - Math.pow(1 - p, 3)) * to);
+			if (p < 1) requestAnimationFrame(frame);
+		}
+		requestAnimationFrame(frame);
+	}
+
+	function updateTicker() {
+		document.querySelectorAll('[data-xg-charity-total]').forEach(function (n) { animate(n, D.month_total || 0); });
+	}
+
+	// Transparenz-Board: Kategorien + Projekte (wer/wieviel/wann)
+	function renderBoard() {
+		var host = document.querySelector('.xg-charity-board');
+		if (!host) return;
+		host.innerHTML = '';
+
+		var tabs = el('div', 'xg-charity-tabs');
+		var body = el('div', 'xg-charity-body');
+		host.appendChild(tabs); host.appendChild(body);
+
+		var cats = (D.categories || []).filter(function (c) { return c.projects && c.projects.length; });
+		if (!cats.length) { body.appendChild(el('p', 'xg-charity-empty', 'Nog geen projecten beschikbaar.')); return; }
+
+		function show(cat) {
+			Array.prototype.forEach.call(tabs.children, function (b) { b.classList.toggle('active', b.dataset.id === cat.id); });
+			body.innerHTML = '';
+			var grid = el('div', 'xg-charity-grid');
+			cat.projects.forEach(function (p) {
+				var card = el('div', 'xg-charity-card');
+				var payouts = (p.payouts || []).map(function (x) {
+					return '<div class="xg-charity-payrow"><span>' + (x.period || x.date || '') + '</span><b>' + euro(x.amount) + '</b></div>';
+				}).join('') || '<div class="xg-charity-payrow muted"><span>Nog niet uitbetaald</span></div>';
+				card.innerHTML =
+					'<div class="xg-charity-card-head"><h3>' + p.name + '</h3>' + (p.city ? '<span>' + p.city + '</span>' : '') + '</div>' +
+					'<div class="xg-charity-accrued"><span>Opgebouwd dit kwartaal</span><strong>' + euro(p.accrued) + '</strong></div>' +
+					'<div class="xg-charity-pay"><div class="xg-charity-pay-label">Uitbetaald</div>' + payouts + '</div>' +
+					(p.website ? '<a class="xg-charity-link" href="' + p.website + '" target="_blank" rel="noopener">Bekijk project →</a>' : '');
+				grid.appendChild(card);
+			});
+			body.appendChild(grid);
+		}
+
+		cats.forEach(function (cat, i) {
+			var b = el('button', 'xg-charity-tab' + (i === 0 ? ' active' : ''), cat.label);
+			b.type = 'button'; b.dataset.id = cat.id;
+			b.addEventListener('click', function () { show(cat); });
+			tabs.appendChild(b);
+		});
+		show(cats[0]);
+	}
+
+	function liveRefresh() {
+		if (!D.rest_total || !window.fetch) return;
+		setInterval(function () {
+			fetch(D.rest_total).then(function (r) { return r.json(); }).then(function (j) {
+				if (j && typeof j.month_total === 'number' && j.month_total !== D.month_total) {
+					D.month_total = j.month_total; updateTicker();
+				}
+			}).catch(function () {});
+		}, 60000);
+	}
+
+	function boot() { updateTicker(); renderBoard(); liveRefresh(); }
+	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+	else boot();
+})();
+</script>
+</body>
+</html>

@@ -21,3 +21,4 @@ require_once get_theme_file_path( 'inc/block-styles.php' );
 require_once get_theme_file_path( 'inc/taxonomies.php' );
 require_once get_theme_file_path( 'inc/offices.php' );
 require_once get_theme_file_path( 'inc/scheduling.php' );
+require_once get_theme_file_path( 'inc/charity.php' );

@@ -1,0 +1,346 @@
+<?php
+/**
+ * XGOUD Charity-System.
+ *
+ * - CPT xg_charity_project : Projekte je Stadt (Kategorie, Stadt, Website,
+ *   Auszahlungs-Log). Im Backend editierbar.
+ * - Live-Summe: Charity-Beträge aus Afspraken sammeln sich pro Projekt an,
+ *   bis sie (zum Quartalsende) ausgezahlt werden.
+ * - Frontend: Auflistung wer/wieviel/wann + Live-Ticker-Summe.
+ * - XGOUD-Zertifikat für Kunden (Bestätigung der Unterstützung).
+ *
+ * @package Ekinese
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/** Charity-Kategorien (Schlüssel = Speicherung, Wert = Anzeige NL). */
+function ekinese_charity_categories() {
+	return array(
+		'social'       => 'Maatschappelijk werk',
+		'kindergarten' => 'Kinderdagverblijven',
+		'shelter'      => 'Vrouwenopvang',
+		'sport'        => 'Sportcentra',
+		'school'       => 'Scholen',
+	);
+}
+
+/* =====================================================================
+   CPT + Meta
+===================================================================== */
+function ekinese_register_charity() {
+	register_post_type(
+		'xg_charity_project',
+		array(
+			'labels'       => array(
+				'name'          => __( 'Goede doelen', 'ekinese' ),
+				'singular_name' => __( 'Goed doel', 'ekinese' ),
+				'add_new_item'  => __( 'Nieuw project', 'ekinese' ),
+				'menu_name'     => __( 'Goede doelen', 'ekinese' ),
+			),
+			'public'       => true,
+			'has_archive'  => false,
+			'show_in_rest' => true,
+			'menu_icon'    => 'dashicons-heart',
+			'supports'     => array( 'title', 'editor', 'thumbnail' ),
+			'rewrite'      => array( 'slug' => 'goede-doelen' ),
+		)
+	);
+
+	$fields = array(
+		'category' => 'string',
+		'city'     => 'string',
+		'website'  => 'string',
+		'payouts'  => 'string', // JSON [ {date, amount, period} ]
+	);
+	foreach ( $fields as $k => $t ) {
+		register_post_meta( 'xg_charity_project', $k, array( 'type' => $t, 'single' => true, 'show_in_rest' => true ) );
+	}
+}
+add_action( 'init', 'ekinese_register_charity' );
+
+/* =====================================================================
+   BERECHNUNGEN
+===================================================================== */
+
+/**
+ * Bisher ausgezahlte Summe eines Projekts (aus dem Payout-Log).
+ */
+function ekinese_charity_paid( $project_id ) {
+	$log = json_decode( (string) get_post_meta( $project_id, 'payouts', true ), true );
+	$sum = 0;
+	if ( is_array( $log ) ) {
+		foreach ( $log as $p ) {
+			$sum += (float) ( $p['amount'] ?? 0 );
+		}
+	}
+	return $sum;
+}
+
+/**
+ * Aufgelaufener (noch nicht ausgezahlter) Betrag eines Projekts.
+ * = Summe charity_total der zugeordneten Afspraken (bevestigd/afgerond)
+ *   − bereits ausgezahlt.
+ */
+function ekinese_charity_accrued( $project_id ) {
+	$title = get_the_title( $project_id );
+	$appts = get_posts(
+		array(
+			'post_type'      => 'xg_appointment',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+			'meta_query'     => array(
+				array( 'key' => 'charity_recipient', 'value' => $title ),
+			),
+			'fields'         => 'ids',
+		)
+	);
+	$sum = 0;
+	foreach ( $appts as $id ) {
+		if ( in_array( get_post_meta( $id, 'status', true ), array( 'confirmed', 'completed' ), true ) ) {
+			$sum += (float) get_post_meta( $id, 'charity_total', true );
+		}
+	}
+	return max( 0, $sum - ekinese_charity_paid( $project_id ) );
+}
+
+/**
+ * Charity-Gesamtsumme eines Zeitraums (für den Live-Ticker).
+ * Standard: laufender Monat, abgeschlossene Afspraken.
+ *
+ * @param string $since Y-m-d (Default: Monatsanfang)
+ * @return float
+ */
+function ekinese_charity_total_since( $since = '' ) {
+	if ( ! $since ) {
+		$since = gmdate( 'Y-m-01' );
+	}
+	$appts = get_posts(
+		array(
+			'post_type'      => 'xg_appointment',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+			'meta_query'     => array(
+				array( 'key' => 'status', 'value' => array( 'confirmed', 'completed' ), 'compare' => 'IN' ),
+			),
+			'date_query'     => array( array( 'after' => $since ) ),
+			'fields'         => 'ids',
+		)
+	);
+	$sum = 0;
+	foreach ( $appts as $id ) {
+		$sum += (float) get_post_meta( $id, 'charity_total', true );
+	}
+	return $sum;
+}
+
+/**
+ * Alle Projekte mit aufgelaufenem Betrag, nach Kategorie gruppiert.
+ * Für Frontend-Auflistung + Calculator-Empfängerliste.
+ */
+function ekinese_charity_projects_grouped() {
+	$cats = ekinese_charity_categories();
+	$out  = array();
+	foreach ( $cats as $key => $label ) {
+		$out[ $key ] = array( 'id' => $key, 'label' => $label, 'projects' => array() );
+	}
+	$projects = get_posts( array( 'post_type' => 'xg_charity_project', 'posts_per_page' => -1, 'post_status' => 'publish' ) );
+	foreach ( $projects as $p ) {
+		$cat = get_post_meta( $p->ID, 'category', true );
+		if ( ! isset( $out[ $cat ] ) ) {
+			continue;
+		}
+		$out[ $cat ]['projects'][] = array(
+			'id'      => $p->ID,
+			'name'    => $p->post_title,
+			'city'    => get_post_meta( $p->ID, 'city', true ),
+			'website' => get_post_meta( $p->ID, 'website', true ),
+			'accrued' => round( ekinese_charity_accrued( $p->ID ), 2 ),
+			'paid'    => round( ekinese_charity_paid( $p->ID ), 2 ),
+			'payouts' => json_decode( (string) get_post_meta( $p->ID, 'payouts', true ), true ) ?: array(),
+		);
+	}
+	return array_values( $out );
+}
+
+/**
+ * Empfängerliste für den Calculator (Kategorie → Projektnamen).
+ * Greift, wenn Projekte existieren – sonst nutzt setup.php seine Defaults.
+ */
+function ekinese_charity_projects_for_calc() {
+	$grouped = ekinese_charity_projects_grouped();
+	$out = array();
+	foreach ( $grouped as $g ) {
+		if ( empty( $g['projects'] ) ) {
+			continue;
+		}
+		$recipients = array();
+		foreach ( $g['projects'] as $pr ) {
+			$recipients[] = $pr['city'] ? $pr['name'] . ' (' . $pr['city'] . ')' : $pr['name'];
+		}
+		$out[] = array( 'id' => $g['id'], 'label' => $g['label'], 'recipients' => $recipients );
+	}
+	return $out;
+}
+
+/* =====================================================================
+   ZERTIFIKAT
+===================================================================== */
+/**
+ * XGOUD-Zertifikat (HTML) für die Charity-Unterstützung eines Kunden.
+ *
+ * @param int $appointment_id
+ * @return string HTML
+ */
+function ekinese_render_certificate( $appointment_id ) {
+	$first  = get_post_meta( $appointment_id, 'first', true );
+	$last   = get_post_meta( $appointment_id, 'last', true );
+	$amount = (float) get_post_meta( $appointment_id, 'charity_total', true );
+	$proj   = get_post_meta( $appointment_id, 'charity_recipient', true );
+	$date   = get_post_meta( $appointment_id, 'date', true ) ?: gmdate( 'Y-m-d' );
+	$euro   = '€ ' . number_format( $amount, 2, ',', '.' );
+
+	ob_start(); ?>
+	<div class="xg-certificate">
+		<div class="xg-cert-brand">X<span>GOUD</span></div>
+		<div class="xg-cert-kicker">Certificaat van steun</div>
+		<h2>Hartelijk dank, <?php echo esc_html( trim( $first . ' ' . $last ) ); ?></h2>
+		<p>Met uw verkoop bij XGOUD heeft u <strong><?php echo esc_html( $euro ); ?></strong> bijgedragen aan</p>
+		<div class="xg-cert-project"><?php echo esc_html( $proj ); ?></div>
+		<p class="xg-cert-sub">U heeft hiermee iets goeds gedaan voor een goed doel in uw omgeving.</p>
+		<div class="xg-cert-foot"><span><?php echo esc_html( $date ); ?></span><span>XGOUD &middot; xgoud.nl</span></div>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
+/** Shortcode [xg_certificate id="123"]. */
+function ekinese_certificate_shortcode( $atts ) {
+	$a = shortcode_atts( array( 'id' => 0 ), $atts );
+	return $a['id'] ? ekinese_render_certificate( (int) $a['id'] ) : '';
+}
+add_shortcode( 'xg_certificate', 'ekinese_certificate_shortcode' );
+
+/* =====================================================================
+   FRONTEND-ASSETS + DATEN (Ticker + Auflistung)
+===================================================================== */
+function ekinese_enqueue_charity_assets() {
+	$css = get_theme_file_path( 'assets/css/charity.css' );
+	if ( file_exists( $css ) ) {
+		wp_enqueue_style( 'ekinese-charity', get_theme_file_uri( 'assets/css/charity.css' ), array(), (string) filemtime( $css ) );
+	}
+	$js = get_theme_file_path( 'assets/js/charity.js' );
+	if ( file_exists( $js ) ) {
+		wp_enqueue_script( 'ekinese-charity', get_theme_file_uri( 'assets/js/charity.js' ), array(), (string) filemtime( $js ), true );
+		wp_localize_script(
+			'ekinese-charity',
+			'XG_CHARITY',
+			array(
+				'month_total' => round( ekinese_charity_total_since(), 2 ),
+				'currency'    => 'EUR',
+				'categories'  => ekinese_charity_projects_grouped(),
+				'rest_total'  => esc_url_raw( rest_url( 'ekinese/v1/charity-total' ) ),
+			)
+		);
+	}
+}
+add_action( 'wp_enqueue_scripts', 'ekinese_enqueue_charity_assets' );
+
+/** REST: aktuelle Monatssumme (für Live-Aktualisierung des Tickers). */
+function ekinese_register_charity_rest() {
+	register_rest_route(
+		'ekinese/v1',
+		'/charity-total',
+		array(
+			'methods'             => 'GET',
+			'permission_callback' => '__return_true',
+			'callback'            => function () {
+				return array( 'month_total' => round( ekinese_charity_total_since(), 2 ) );
+			},
+		)
+	);
+}
+add_action( 'rest_api_init', 'ekinese_register_charity_rest' );
+
+/* =====================================================================
+   ADMIN: Projekt-Metabox + Auszahlung + Spalten
+===================================================================== */
+function ekinese_charity_metabox() {
+	add_meta_box( 'xg_charity', __( 'Project-gegevens', 'ekinese' ), 'ekinese_charity_metabox_html', 'xg_charity_project', 'side', 'high' );
+	add_meta_box( 'xg_charity_pay', __( 'Uitbetalingen', 'ekinese' ), 'ekinese_charity_payout_html', 'xg_charity_project', 'normal', 'default' );
+}
+add_action( 'add_meta_boxes', 'ekinese_charity_metabox' );
+
+function ekinese_charity_metabox_html( $post ) {
+	wp_nonce_field( 'xg_charity_save', 'xg_charity_nonce' );
+	$cat = get_post_meta( $post->ID, 'category', true );
+	$city = esc_attr( get_post_meta( $post->ID, 'city', true ) );
+	$web = esc_attr( get_post_meta( $post->ID, 'website', true ) );
+	echo '<p><label><strong>Categorie</strong><br><select name="xg_cat" style="width:100%">';
+	foreach ( ekinese_charity_categories() as $k => $l ) {
+		printf( '<option value="%s" %s>%s</option>', esc_attr( $k ), selected( $cat, $k, false ), esc_html( $l ) );
+	}
+	echo '</select></label></p>';
+	echo '<p><label><strong>Stad</strong><br><input type="text" name="xg_city" value="' . $city . '" style="width:100%"></label></p>';
+	echo '<p><label><strong>Website</strong><br><input type="text" name="xg_web" value="' . $web . '" style="width:100%"></label></p>';
+	echo '<hr><p><strong>Opgebouwd (open):</strong><br><span style="font-size:20px;color:#c8a24a;font-weight:700">€ ' . esc_html( number_format( ekinese_charity_accrued( $post->ID ), 2, ',', '.' ) ) . '</span></p>';
+	echo '<p class="description">Som uit afspraken (bevestigd/afgerond) minus uitbetaald.</p>';
+}
+
+function ekinese_charity_payout_html( $post ) {
+	$log = json_decode( (string) get_post_meta( $post->ID, 'payouts', true ), true ) ?: array();
+	echo '<table class="widefat"><thead><tr><th>Datum</th><th>Periode</th><th>Bedrag €</th></tr></thead><tbody>';
+	foreach ( $log as $p ) {
+		printf( '<tr><td>%s</td><td>%s</td><td>%s</td></tr>', esc_html( $p['date'] ?? '' ), esc_html( $p['period'] ?? '' ), esc_html( number_format( (float) ( $p['amount'] ?? 0 ), 2, ',', '.' ) ) );
+	}
+	echo '</tbody></table>';
+	echo '<p><strong>' . esc_html__( 'Nieuwe uitbetaling toevoegen', 'ekinese' ) . '</strong></p>';
+	echo '<p>Datum <input type="date" name="xg_pay_date"> &nbsp; Periode <input type="text" name="xg_pay_period" placeholder="Q2 2026"> &nbsp; Bedrag € <input type="number" step="0.01" name="xg_pay_amount"></p>';
+}
+
+function ekinese_charity_save( $post_id ) {
+	if ( ! isset( $_POST['xg_charity_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['xg_charity_nonce'] ), 'xg_charity_save' ) ) {
+		return;
+	}
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+	update_post_meta( $post_id, 'category', sanitize_key( $_POST['xg_cat'] ?? '' ) );
+	update_post_meta( $post_id, 'city', sanitize_text_field( wp_unslash( $_POST['xg_city'] ?? '' ) ) );
+	update_post_meta( $post_id, 'website', sanitize_text_field( wp_unslash( $_POST['xg_web'] ?? '' ) ) );
+
+	// Neue Auszahlung anhängen.
+	$amount = (float) ( $_POST['xg_pay_amount'] ?? 0 );
+	if ( $amount > 0 ) {
+		$log = json_decode( (string) get_post_meta( $post_id, 'payouts', true ), true ) ?: array();
+		$log[] = array(
+			'date'   => sanitize_text_field( wp_unslash( $_POST['xg_pay_date'] ?? gmdate( 'Y-m-d' ) ) ),
+			'period' => sanitize_text_field( wp_unslash( $_POST['xg_pay_period'] ?? '' ) ),
+			'amount' => $amount,
+		);
+		update_post_meta( $post_id, 'payouts', wp_json_encode( $log ) );
+	}
+}
+add_action( 'save_post_xg_charity_project', 'ekinese_charity_save' );
+
+function ekinese_charity_columns( $cols ) {
+	$cols['xg_cat']     = __( 'Categorie', 'ekinese' );
+	$cols['xg_city']    = __( 'Stad', 'ekinese' );
+	$cols['xg_accrued'] = __( 'Opgebouwd', 'ekinese' );
+	return $cols;
+}
+add_filter( 'manage_xg_charity_project_posts_columns', 'ekinese_charity_columns' );
+
+function ekinese_charity_column( $col, $id ) {
+	$cats = ekinese_charity_categories();
+	if ( 'xg_cat' === $col ) {
+		echo esc_html( $cats[ get_post_meta( $id, 'category', true ) ] ?? '—' );
+	} elseif ( 'xg_city' === $col ) {
+		echo esc_html( get_post_meta( $id, 'city', true ) ?: '—' );
+	} elseif ( 'xg_accrued' === $col ) {
+		echo '€ ' . esc_html( number_format( ekinese_charity_accrued( $id ), 2, ',', '.' ) );
+	}
+}
+add_action( 'manage_xg_charity_project_posts_custom_column', 'ekinese_charity_column', 10, 2 );
