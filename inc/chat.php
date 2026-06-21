@@ -73,9 +73,100 @@ function ekinese_chat_is_open() {
  * @param string $context 'chat' | 'search'
  * @return array { reply:string, quick:array, suggestions:array }
  */
+/**
+ * Live prijs-indicatie uit een vrije zin (metaal + gewicht + zuiverheid).
+ * Bv. "10 gram 14 karaat goud" of "100 gram zilver 925".
+ *
+ * @return string|null Antwoordtekst of null wanneer niet berekenbaar.
+ */
+function ekinese_bot_price_estimate( $t ) {
+	if ( ! function_exists( 'ekinese_metal_spot' ) ) {
+		return null;
+	}
+	$metals = array( 'goud' => 'goud', 'gold' => 'goud', 'zilver' => 'zilver', 'silver' => 'zilver', 'platina' => 'platina', 'palladium' => 'palladium' );
+	$metal  = null;
+	foreach ( $metals as $needle => $key ) {
+		if ( false !== mb_strpos( $t, $needle ) ) {
+			$metal = $key;
+			break;
+		}
+	}
+	if ( ! $metal || ! preg_match( '/(\d+(?:[.,]\d+)?)\s*(?:gram|gr|g)\b/', $t, $gm ) ) {
+		return null;
+	}
+	$grams = (float) str_replace( ',', '.', $gm[1] );
+	if ( $grams <= 0 ) {
+		return null;
+	}
+	// Zuiverheid: karaat (goud) of millesimaal (legering).
+	$purity = ( 'goud' === $metal ) ? 0.585 : 0.925; // redelijke standaard
+	if ( preg_match( '/(\d{1,2})\s*(?:k|karaat|kt)\b/', $t, $km ) ) {
+		$purity = min( 24, max( 8, (int) $km[1] ) ) / 24;
+	} elseif ( preg_match( '/\b(333|375|500|585|750|800|835|900|916|925|950|958|999)\b/', $t, $pm ) ) {
+		$purity = (int) $pm[1] / 1000;
+	}
+	$spot   = ekinese_metal_spot( $metal );
+	$margin = 0.08;
+	$opt    = get_option( 'xg_calc_margins', array() );
+	if ( isset( $opt['metal'] ) ) {
+		$margin = (float) $opt['metal'];
+	}
+	$value = $grams * $purity * $spot * ( 1 - $margin );
+	if ( $value <= 0 ) {
+		return null;
+	}
+	return sprintf(
+		'Indicatie voor %s gram %s (zuiverheid %d‰): circa € %s. Dit is een richtprijs op basis van de actuele spotkoers; de exacte prijs bepalen wij bij taxatie. Een afspraak maken?',
+		number_format_i18n( $grams, ( floor( $grams ) === $grams ) ? 0 : 1 ),
+		$metal,
+		(int) round( $purity * 1000 ),
+		number_format_i18n( $value, 2 )
+	);
+}
+
+/**
+ * Eerstvolgende open dagen (voor afspraak-suggestie in de chat).
+ *
+ * @return string|null
+ */
+function ekinese_bot_next_open_days() {
+	if ( ! function_exists( 'ekinese_office_open_days' ) ) {
+		return null;
+	}
+	$hq = get_posts( array( 'post_type' => 'xg_office', 'numberposts' => 1, 'meta_key' => 'is_hq', 'meta_value' => '1', 'fields' => 'ids' ) );
+	$days = $hq ? ekinese_office_open_days( $hq[0] ) : array();
+	if ( ! $days ) {
+		return null;
+	}
+	$names = array( 'ma' => 'maandag', 'di' => 'dinsdag', 'wo' => 'woensdag', 'do' => 'donderdag', 'vr' => 'vrijdag', 'za' => 'zaterdag', 'zo' => 'zondag' );
+	$labels = array();
+	foreach ( $days as $d ) {
+		if ( isset( $names[ $d ] ) ) {
+			$labels[] = $names[ $d ];
+		}
+	}
+	if ( ! $labels ) {
+		return null;
+	}
+	return 'Voor een afspraak op ons hoofdkantoor in Eindhoven kunt u terecht op: ' . implode( ', ', $labels ) . '. Wilt u dat ik een afspraak voor u inplan?';
+}
+
 function ekinese_bot_reply( $text, $context = 'chat' ) {
 	$t    = mb_strtolower( trim( $text ) );
 	$open = ekinese_chat_is_open();
+
+	// Slimme intenties vóór de algemene regels: live prijsindicatie.
+	$estimate = ekinese_bot_price_estimate( $t );
+	if ( $estimate ) {
+		return array( 'reply' => $estimate, 'quick' => array( 'Afspraak maken', 'Hoe werkt het?' ), 'suggestions' => ekinese_bot_suggestions( $t ) );
+	}
+	// Afspraak-intentie met dag/slot-vraag.
+	if ( preg_match( '/\b(wanneer|welke dag|beschikbaar|open op|tijden|slot)\b/', $t ) ) {
+		$days = ekinese_bot_next_open_days();
+		if ( $days ) {
+			return array( 'reply' => $days, 'quick' => array( 'Afspraak maken', 'Alle kantoren' ), 'suggestions' => ekinese_bot_suggestions( $t ) );
+		}
+	}
 
 	$rules = array(
 		array( '/\b(goud|goudprijs|koers|gram|verkoop|verkopen)\b/', 'De actuele goudprijs ziet u live bovenaan de pagina. Wilt u een indicatie? Gebruik onze rekentool of noem het gewicht en karaat.', array( 'Goud verkopen', 'Goudprijs vandaag' ) ),
