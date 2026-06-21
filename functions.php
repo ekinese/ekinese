@@ -22,3 +22,4 @@ require_once get_theme_file_path( 'inc/taxonomies.php' );
 require_once get_theme_file_path( 'inc/offices.php' );
 require_once get_theme_file_path( 'inc/scheduling.php' );
 require_once get_theme_file_path( 'inc/charity.php' );
+require_once get_theme_file_path( 'inc/chat.php' );

@@ -90,14 +90,16 @@ const css = [
 	'assets/css/theme.css',
 	'assets/css/header-footer.css',
 	'assets/css/blueprint.css',
-	'assets/css/calculator.css'
+	'assets/css/calculator.css',
+	'assets/css/chat.css'
 ].map(read).join('\n\n');
 
 const js = [
 	'assets/js/theme.js',
 	'assets/js/header-footer.js',
 	'assets/js/blueprint.js',
-	'assets/js/calculator.js'
+	'assets/js/calculator.js',
+	'assets/js/chat.js'
 ].map(read).join('\n;\n');
 
 const html = `<!DOCTYPE html>
@@ -144,6 +146,7 @@ ${footer}
 
 <script>
 window.XG_CALC_DATA = ${JSON.stringify(calcData, null, 1)};
+window.XG_CHAT = { open: true }; /* Demo: lokaler Fallback-Bot (kein Server) */
 </script>
 <script>
 ${js}
