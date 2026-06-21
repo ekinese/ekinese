@@ -5762,8 +5762,23 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 	};
 	var KEY = 'xg-locale';
 
+	var SECONDARY = ['de', 'en', 'fr', 'es', 'it', 'tr', 'pl'];
+
+	// Huidige taal komt van de SERVER (URL-prefix), niet uit localStorage –
+	// zo blijft de keuze SEO-echt en consistent met de gerenderde pagina.
+	function langFromUrl() {
+		var m = location.pathname.match(/^\/(de|en|fr|es|it|tr|pl)(\/|$)/);
+		return m ? m[1] : 'nl';
+	}
+	// Bouw de URL van de huidige pagina in een andere taal (prefix wisselen).
+	function urlForLang(code) {
+		var path = location.pathname.replace(/^\/(de|en|fr|es|it|tr|pl)(\/|$)/, '/');
+		return (code === 'nl' ? '' : '/' + code) + path + location.search + location.hash;
+	}
+
 	var state = { lang: 'nl', currency: 'EUR' };
 	try { Object.assign(state, JSON.parse(localStorage.getItem(KEY)) || {}); } catch (e) {}
+	state.lang = langFromUrl(); // URL is leidend
 
 	function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} document.cookie = 'xg_locale=' + state.lang + ';path=/;max-age=31536000'; }
 
@@ -5806,9 +5821,17 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 			b.className = 'xg-ctrl-opt' + (state.lang === l[0] ? ' active' : '');
 			b.textContent = l[1];
 			b.addEventListener('click', function () {
-				state.lang = l[0]; apply();
-				langs.querySelectorAll('.xg-ctrl-opt').forEach(function (x) { x.classList.remove('active'); });
-				b.classList.add('active'); label.textContent = state.lang.toUpperCase() + ' · ' + state.currency;
+				if (l[0] === state.lang) return;
+				save(); // valuta-/voorkeur bewaren over de navigatie heen
+				// Productie: navigeren naar de server-gerenderde taal-URL (SEO-echt).
+				// Standalone preview (file://): geen server → client-vertaling als fallback.
+				if (location.protocol === 'file:') {
+					state.lang = l[0]; apply();
+					langs.querySelectorAll('.xg-ctrl-opt').forEach(function (x) { x.classList.remove('active'); });
+					b.classList.add('active'); label.textContent = state.lang.toUpperCase() + ' · ' + state.currency;
+				} else {
+					location.href = urlForLang(l[0]);
+				}
 			});
 			langs.appendChild(b);
 		});
@@ -5987,7 +6010,10 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 	function translateAll() { walk(document.body); }
 	function setLang(lang) { LANG = lang || 'nl'; translateAll(); }
 
-	if (window.XGLocale && window.XGLocale.get) LANG = window.XGLocale.get().lang || 'nl';
+	// Taal komt van de SERVER (html lang = URL-prefix). Static HTML is al
+	// server-side vertaald; deze laag vertaalt alleen dynamisch ingeladen
+	// widgets (calculator/chat) naar dezelfde taal.
+	LANG = (document.documentElement.getAttribute('lang') || 'nl').slice(0, 2).toLowerCase();
 	document.addEventListener('xg:locale-change', function (e) { setLang(e.detail && e.detail.lang); });
 
 	var obs = new MutationObserver(function (muts) {

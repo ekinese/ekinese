@@ -75,10 +75,17 @@
 			b.className = 'xg-ctrl-opt' + (state.lang === l[0] ? ' active' : '');
 			b.textContent = l[1];
 			b.addEventListener('click', function () {
-				// Taalwissel = navigeren naar de server-gerenderde taal-URL (SEO-echt).
 				if (l[0] === state.lang) return;
 				save(); // valuta-/voorkeur bewaren over de navigatie heen
-				location.href = urlForLang(l[0]);
+				// Productie: navigeren naar de server-gerenderde taal-URL (SEO-echt).
+				// Standalone preview (file://): geen server → client-vertaling als fallback.
+				if (location.protocol === 'file:') {
+					state.lang = l[0]; apply();
+					langs.querySelectorAll('.xg-ctrl-opt').forEach(function (x) { x.classList.remove('active'); });
+					b.classList.add('active'); label.textContent = state.lang.toUpperCase() + ' · ' + state.currency;
+				} else {
+					location.href = urlForLang(l[0]);
+				}
 			});
 			langs.appendChild(b);
 		});
