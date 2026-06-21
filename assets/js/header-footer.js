@@ -359,17 +359,17 @@
     </div>
     <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="#">Goudprijs</a><a class="xg-ql" href="#">Zilverprijs</a><a class="xg-ql" href="#">Koersgrafiek</a></div>`,
     service:`<div class="xg-std-grid">
-      <div class="xg-std-col"><h3>Diensten</h3><a href="#">Gratis taxatie</a><a href="#">Thuisbezoek</a><a href="#">Inruilen</a></div>
-      <div class="xg-std-col"><h3>Hulp</h3><a href="#">FAQ</a><a href="#">Contact</a><a href="#">Hoe werkt het?</a></div>
-      <div class="xg-std-col"><h3>Locaties</h3><a href="#">Alle vestigingen</a><a href="#">Amsterdam</a><a href="#">Rotterdam</a></div>
+      <div class="xg-std-col"><h3>Diensten</h3><a href="/service/gratis-taxatie/">Gratis taxatie</a><a href="/service/thuisbezoek/">Thuisbezoek</a><a href="/service/inruilen/">Inruilen</a></div>
+      <div class="xg-std-col"><h3>Hulp</h3><a href="/service/faq/">FAQ</a><a href="/contact/">Contact</a><a href="/service/hoe-werkt-het/">Hoe werkt het?</a></div>
+      <div class="xg-std-col"><h3>Locaties</h3><a href="/kantoren/">Alle vestigingen</a><a href="/kantoren/amsterdam/">Amsterdam</a><a href="/kantoren/rotterdam/">Rotterdam</a></div>
     </div>
-    <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="#">Gratis taxatie</a><a class="xg-ql" href="#">Afspraak plannen</a></div>`,
+    <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="/service/gratis-taxatie/">Gratis taxatie</a><a class="xg-ql" href="/afspraak/">Afspraak plannen</a></div>`,
     overons:`<div class="xg-std-grid">
-      <div class="xg-std-col"><h3>Over XGOUD</h3><a href="#">Bedrijf</a><a href="#">Team</a><a href="#">Geschiedenis</a></div>
-      <div class="xg-std-col"><h3>Vertrouwen</h3><a href="#">Beoordelingen</a><a href="#">Certificaten</a><a href="#">Partners</a></div>
-      <div class="xg-std-col"><h3>Media</h3><a href="#">Nieuws</a><a href="#">Pers</a><a href="#">Vacatures</a></div>
+      <div class="xg-std-col"><h3>Over XGOUD</h3><a href="/over-ons/bedrijf/">Bedrijf</a><a href="/over-ons/team/">Team</a><a href="/over-ons/geschiedenis/">Geschiedenis</a></div>
+      <div class="xg-std-col"><h3>Vertrouwen</h3><a href="/over-ons/beoordelingen/">Beoordelingen</a><a href="/over-ons/certificaten/">Certificaten</a><a href="/over-ons/partners/">Partners</a></div>
+      <div class="xg-std-col"><h3>Media</h3><a href="/over-ons/nieuws/">Nieuws</a><a href="/over-ons/pers/">Pers</a><a href="/over-ons/vacatures/">Vacatures</a></div>
     </div>
-    <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="#">Reviews</a><a class="xg-ql" href="#">Vestigingen</a></div>`
+    <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="/over-ons/beoordelingen/">Reviews</a><a class="xg-ql" href="/kantoren/">Vestigingen</a></div>`
   };
 
   let ws={menu:null,step:1,s1k:null,s2k:null,s1l:null,s2l:null,s3l:null};
