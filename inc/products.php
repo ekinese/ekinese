@@ -273,6 +273,98 @@ function ekinese_products_import_page() {
 }
 
 /* =====================================================================
+   PRODUCTDETAIL-BLOCK  (single-xg_product template)
+===================================================================== */
+function ekinese_register_product_block() {
+	register_block_type( 'ekinese/product-detail', array( 'render_callback' => 'ekinese_render_product_detail' ) );
+}
+add_action( 'init', 'ekinese_register_product_block' );
+
+function ekinese_render_product_detail() {
+	if ( ! is_singular( 'xg_product' ) ) {
+		return '';
+	}
+	$id      = get_the_ID();
+	$name    = get_the_title( $id );
+	$metal   = get_post_meta( $id, 'metal', true );
+	$cat     = get_post_meta( $id, 'category', true );
+	$metaln  = array( 'gold' => 'Goud', 'silver' => 'Zilver', 'platinum' => 'Platina', 'palladium' => 'Palladium' );
+	$kicker  = strtoupper( ( $metaln[ $metal ] ?? $metal ) . ' verkopen' );
+
+	ob_start();
+	?>
+	<div class="xg-blueprint">
+		<div class="xg-charity-ticker">
+			<span class="xg-charity-ticker-label">XGOUD heeft deze maand aan goede doelen gegeven:</span>
+			<span class="xg-charity-ticker-amount" data-xg-charity-total>€ 65.168,36</span>
+			<div class="xg-charity-ticker-projects"><span>Scholen</span><span>Kinderdagverblijven</span><span>Sportcentra</span></div>
+		</div>
+
+		<section class="xg-hero-v2"><div class="xg-container">
+			<div class="xg-grid-2" style="align-items:center;gap:50px">
+				<div>
+					<div class="hero-kicker"><?php echo esc_html( $kicker ); ?></div>
+					<h1><?php echo esc_html( $name ); ?> verkopen</h1>
+					<p class="hero-lead"><?php printf( 'Verkoop uw %s eenvoudig en tegen een eerlijke dagprijs bij XGOUD. Bekijk hieronder de specificaties en maak direct een afspraak.', esc_html( $name ) ); ?></p>
+					<div class="xg-hero-buttons">
+						<a class="xg-btn-gold" href="/afspraak/?product=<?php echo esc_attr( get_post_field( 'post_name', $id ) ); ?>">Direct verkopen</a>
+						<a class="xg-btn-outline" href="#specs">Specificaties</a>
+					</div>
+				</div>
+				<div>
+					<?php
+					if ( has_post_thumbnail( $id ) ) {
+						echo get_the_post_thumbnail( $id, 'large' );
+					} else {
+						echo '<div style="background:#ead9bd;min-height:300px"></div>';
+					}
+					?>
+				</div>
+			</div>
+		</div></section>
+
+		<section id="specs" class="xg-price-section"><div class="xg-container">
+			<h2 class="xg-section-title">Specificaties</h2>
+			<div class="xg-table-wrapper"><?php echo ekinese_product_specs_table( $id ); // phpcs:ignore ?></div>
+			<?php
+			$content = get_post_field( 'post_content', $id );
+			if ( trim( wp_strip_all_tags( $content ) ) ) {
+				echo '<div class="xg-intro" style="margin-top:30px">' . wp_kses_post( apply_filters( 'the_content', $content ) ) . '</div>';
+			}
+			?>
+		</div></section>
+
+		<?php
+		$related = ekinese_related_products( $id, 4 );
+		if ( $related ) :
+		?>
+		<section><div class="xg-container">
+			<h2 class="xg-section-title">Gerelateerde producten</h2>
+			<div class="xg-grid-4">
+				<?php foreach ( $related as $r ) : ?>
+					<a class="xg-c-card" href="<?php echo esc_url( get_permalink( $r->ID ) ); ?>" style="text-decoration:none">
+						<h3><?php echo esc_html( $r->post_title ); ?></h3>
+						<p><?php echo esc_html( get_post_meta( $r->ID, 'weight', true ) ); ?> g · <?php echo esc_html( get_post_meta( $r->ID, 'carat', true ) ); ?></p>
+					</a>
+				<?php endforeach; ?>
+			</div>
+		</div></section>
+		<?php endif; ?>
+
+		<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+			<h2>Klaar om uw <?php echo esc_html( $name ); ?> te verkopen?</h2>
+			<p>Maak een afspraak of laat onze expert langskomen. Eerlijk, snel en verzekerd.</p>
+		</div><div class="xg-final-cta-box">
+			<h3>Direct starten</h3>
+			<div class="xg-final-list"><div class="xg-final-item">✓ Eerlijke dagprijs</div><div class="xg-final-item">✓ Directe uitbetaling</div></div>
+			<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+		</div></div></div></section>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
+/* =====================================================================
    REST  (voor bots/calculators)
 ===================================================================== */
 function ekinese_register_products_rest() {

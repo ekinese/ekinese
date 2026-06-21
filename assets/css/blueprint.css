@@ -1682,3 +1682,14 @@ a.xg-final-btn:hover {
 @media (prefers-reduced-motion: reduce) {
     .xg-blueprint .xg-reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
+
+/* Specificatie-tabel (productpagina): label-kolom licht i.p.v. zwart. */
+.xg-spec-table th {
+    background: #faf8f2;
+    color: #111;
+    text-align: left;
+    font-weight: 700;
+    border-bottom: 1px solid #ececec;
+}
+[data-theme="dark"] .xg-spec-table th { background: #262320; color: #f3efe8; border-color: #34302b; }
+.xg-c-card[href]:hover { text-decoration: none; }
