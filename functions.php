@@ -48,3 +48,4 @@ require_once get_theme_file_path( 'inc/hr.php' );
 require_once get_theme_file_path( 'inc/accounting.php' );
 require_once get_theme_file_path( 'inc/portfolio.php' );
 require_once get_theme_file_path( 'inc/marketplace.php' );
+require_once get_theme_file_path( 'inc/news.php' );
