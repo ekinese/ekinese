@@ -75,21 +75,29 @@
 		var metal = DATA.metals[f.metal];
 		if (!metal) return null;
 		var purity = (DATA.metal_purities[f.metal] && DATA.metal_purities[f.metal][f.purity]) || 0;
-		var weight = parseFloat(f.weight) || 0;
-		var market = metal.spot * weight * purity;
 
-		var condFactor = 1, tierBonus = 0;
-		if (f.form !== 'sieraad' && f.condition && DATA.conditions[f.condition]) {
-			condFactor = DATA.conditions[f.condition].factor;
-		}
+		// KERNLOGICA:
+		//   Baar/Munt  → verkoop PER STUK: vast gewicht per stuk × aantal stuks.
+		//   Sloop/sieraden → verkoop PER GEWICHT: opgegeven gram (+ staffel/staat).
+		var grams, condFactor = 1, tierBonus = 0;
 		if (f.form === 'sieraad') {
-			DATA.jewelry_tiers.forEach(function (t) { if (weight >= t.min) tierBonus = t.bonus; });
+			grams = parseFloat(f.weight) || 0;
+			DATA.jewelry_tiers.forEach(function (t) { if (grams >= t.min) tierBonus = t.bonus; });
+		} else {
+			var per = parseFloat(f.unit_weight) || 0;
+			var qty = parseInt(f.qty, 10) || 0;
+			grams = per * qty;
+			if (f.condition && DATA.conditions[f.condition]) condFactor = DATA.conditions[f.condition].factor;
 		}
-		market *= condFactor;
+		var market = metal.spot * grams * purity * condFactor;
 		var marginPct = Math.max(DATA.margins.metal - tierBonus, 0);
 		var marginAbs = market * marginPct;
 		var payout = market - marginAbs;
-		return { market: market, marginPct: marginPct, marginAbs: marginAbs, charity: marginAbs * DATA.margins.charity_share, low: payout, high: payout, indicative: false };
+		return {
+			market: market, marginPct: marginPct, marginAbs: marginAbs,
+			charity: marginAbs * DATA.margins.charity_share, low: payout, high: payout,
+			indicative: false, grams: grams, qty: (f.form === 'sieraad') ? null : (parseInt(f.qty, 10) || 0)
+		};
 	}
 	function calcDiamond(f) {
 		var b = DATA.diamond_base, carat = parseFloat(f.carat) || 0;
@@ -360,9 +368,10 @@
 			state.form[name] = s.value;
 			return s;
 		}
-		function num(name, ph, step) {
+		function num(name, ph, step, def) {
 			var i = h('input', 'xg-calc-input'); i.type = 'number'; i.name = name;
 			i.min = '0'; i.step = step || '0.1'; i.placeholder = ph;
+			if (def != null) { i.value = def; state.form[name] = String(def); }
 			i.addEventListener('input', function () { state.form[name] = i.value; });
 			return i;
 		}
@@ -396,18 +405,19 @@
 			set(val, false);
 			return wrap;
 		}
-		function seg(name, entries) {
+		function seg(name, entries, onchange) {
 			var wrap = h('div', 'xg-calc-seg');
-			entries.forEach(function (e, i) {
-				var b = h('button', i === 0 ? 'active' : '', e[1]); b.type = 'button';
+			var cur = state.form[name] || entries[0][0];
+			entries.forEach(function (e) {
+				var b = h('button', e[0] === cur ? 'active' : '', e[1]); b.type = 'button';
 				b.addEventListener('click', function () {
 					Array.prototype.forEach.call(wrap.children, function (c) { c.classList.remove('active'); });
 					b.classList.add('active'); state.form[name] = e[0];
-					if (name === 'form') refreshMetalCond();
+					if (onchange) onchange();
 				});
 				wrap.appendChild(b);
 			});
-			state.form[name] = entries[0][0];
+			state.form[name] = cur;
 			return wrap;
 		}
 		function pill(name, label) {
@@ -419,12 +429,7 @@
 			return w;
 		}
 
-		var _metalCondField = null;
-		function refreshMetalCond() {
-			if (_metalCondField) _metalCondField.style.display = (state.form.form === 'sieraad') ? 'none' : '';
-		}
-
-		// ----- METAL: nur Gold = Karat, andere = Legierung -----
+		// ----- METAL: Baar/Munt per stuk · Sloop per gewicht -----
 		function buildMetal(wrap) {
 			// Lock-Modus (Produktseite): Produkt steht fest, nur Gewicht abfragen.
 			if (lock && state.form.metal) {
@@ -447,24 +452,51 @@
 			wrap.appendChild(field('Metaal', cards, true));
 			if (!state.form.metal) return;
 
+			if (!state.form.form) state.form.form = 'barren';
+
 			var grid = h('div', 'xg-calc-grid');
-			// Form
-			grid.appendChild(field('Vorm', seg('form', [['barren', 'Baar'], ['munt', 'Munt'], ['sieraad', 'Sieraad']])));
+			// Vorm — bepaalt of we per stuk (baar/munt) of per gewicht (sloop) rekenen.
+			var sub = h('div', 'xg-calc-form-sub');
+			grid.appendChild(field('Vorm', seg('form', [['barren', 'Baar'], ['munt', 'Munt'], ['sieraad', 'Sloop & sieraden']], function () { buildMetalFields(sub); })));
 
 			// Reinheit: Gold → Karat, sonst → Legierung
 			var purEntries = Object.keys(DATA.metal_purities[state.form.metal]).map(function (key) {
 				var lbl = (state.form.metal === 'goud') ? (key + ' karaat') : (key + ' (' + DATA.purity_labels[key] + ')');
 				return [key, lbl];
 			});
-			var purLabel = (state.form.metal === 'goud') ? 'Karaat' : 'Legering';
+			var purLabel = (state.form.metal === 'goud') ? 'Karaat / gehalte' : 'Legering';
 			grid.appendChild(field(purLabel, sel('purity', purEntries)));
-
-			_metalCondField = field('Staat', sel('condition', Object.keys(DATA.conditions).map(function (k) { return [k, DATA.conditions[k].label]; })));
-			grid.appendChild(_metalCondField);
 			wrap.appendChild(grid);
-			// Gewicht als Range-Slider (volle Breite, leicht bedienbar).
-			wrap.appendChild(field('Gewicht', rangeNum('weight', 0, 1000, 1, 'g', 0), true));
-			refreshMetalCond();
+
+			// Vorm-afhankelijke velden (per stuk vs. per gewicht).
+			wrap.appendChild(sub);
+			buildMetalFields(sub);
+		}
+
+		// Gangbare gewichten per stuk (gram) voor baren en munten.
+		var PIECE_WEIGHTS = {
+			barren: [['1', '1 g'], ['2.5', '2,5 g'], ['5', '5 g'], ['10', '10 g'], ['20', '20 g'], ['31.1035', '1 oz (31,1 g)'], ['50', '50 g'], ['100', '100 g'], ['250', '250 g'], ['500', '500 g'], ['1000', '1 kg']],
+			munt: [['1.5552', '1/20 oz (1,56 g)'], ['3.1103', '1/10 oz (3,11 g)'], ['7.7759', '1/4 oz (7,78 g)'], ['15.5517', '1/2 oz (15,55 g)'], ['31.1035', '1 oz (31,10 g)'], ['33.9305', 'Krugerrand 1 oz (33,93 g)'], ['7.9881', 'Sovereign (7,99 g)'], ['8.359', '10 Gulden (8,36 g)']]
+		};
+
+		// Velden die afhangen van de gekozen vorm — herbouwd bij vormwissel.
+		function buildMetalFields(sub) {
+			sub.innerHTML = '';
+			if (state.form.form === 'sieraad') {
+				// PER GEWICHT: gram-slider + staat.
+				var g = h('div', 'xg-calc-grid');
+				g.appendChild(field('Staat', sel('condition', Object.keys(DATA.conditions).map(function (k) { return [k, DATA.conditions[k].label]; }))));
+				sub.appendChild(g);
+				sub.appendChild(field('Totaal gewicht', rangeNum('weight', 0, 1000, 1, 'g', state.form.weight || 0), true, 'in gram'));
+			} else {
+				// PER STUK: gewicht per stuk + aantal.
+				var presets = PIECE_WEIGHTS[state.form.form] || PIECE_WEIGHTS.barren;
+				// purity-default niet door vorm overschrijven
+				var g2 = h('div', 'xg-calc-grid');
+				g2.appendChild(field('Gewicht per stuk', sel('unit_weight', presets), false, state.form.form === 'munt' ? 'standaardmunten' : 'standaardbaren'));
+				g2.appendChild(field('Aantal stuks', num('qty', '1', '1', state.form.qty || 1)));
+				sub.appendChild(g2);
+			}
 		}
 
 		// ----- DIAMOND: + Labor + Zertifikatsnummer -----
