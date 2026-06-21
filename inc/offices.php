@@ -108,6 +108,8 @@ function ekinese_get_offices() {
 			'hours'    => $hours ? json_decode( $hours, true ) : array(),
 			'is_hq'    => (bool) get_post_meta( $id, 'is_hq', true ),
 			'zone'     => get_post_meta( $id, 'zone', true ),
+			// Offene Tage = aus Zonen-Medewerkers berechnet (Terminplaner).
+			'open_days' => function_exists( 'ekinese_office_open_days' ) ? ekinese_office_open_days( $id ) : array(),
 		);
 	}
 	wp_reset_postdata();

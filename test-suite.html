@@ -8896,10 +8896,11 @@ window.XG_CALC_DATA = {
 			var ch = state.checkout.charity;
 			if (ch) t.appendChild(h('p', '', '<span style="color:var(--xc-red);font-weight:700">♥</span> Uw bijdrage gaat naar: <b>' + ch.recipient + '</b>'));
 
-			// Übergabe an Backend (später: POST → wp_xg_appointments)
+			// Übergabe an Backend: Event + REST-POST (Terminplaner legt Afspraak an).
 			document.dispatchEvent(new CustomEvent('xg:appointment-submit', {
 				detail: { cart: state.cart, checkout: state.checkout }
 			}));
+			submitAppointment();
 
 			var done = h('button', 'xg-calc-btn xg-calc-btn-primary', 'Nieuwe berekening starten');
 			done.style.marginTop = '20px'; done.style.maxWidth = '280px'; done.style.marginLeft = 'auto'; done.style.marginRight = 'auto';
@@ -8910,6 +8911,33 @@ window.XG_CALC_DATA = {
 			});
 			t.appendChild(done);
 			node.appendChild(t);
+		}
+
+		// Termin an das Backend senden (REST). Im Demo/ohne WP schlägt es
+		// still fehl – die Danke-Seite wird trotzdem angezeigt.
+		function submitAppointment() {
+			var rest = (window.XG_CALC_DATA && window.XG_CALC_DATA.rest_appointment) || '/wp-json/ekinese/v1/appointment';
+			var c = state.checkout, d = c.data || {};
+			var totalLow = state.cart.reduce(function (a, b) { return a + b.low; }, 0);
+			var charity = state.cart.reduce(function (a, b) { return a + b.charity; }, 0);
+			var payload = {
+				first: d.first, last: d.last, email: d.email, phone: d.phone,
+				city: d.city, address: d.address || '', postcode: d.postcode || '',
+				service: c.service, payout: c.payout,
+				charity_project: c.charity ? c.charity.type : '',
+				charity_recipient: c.charity ? c.charity.recipient : '',
+				payout_total: Math.round(totalLow), charity_total: Math.round(charity * 100) / 100,
+				products: state.cart
+			};
+			try {
+				if (window.fetch) {
+					fetch(rest, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(payload)
+					}).catch(function () {});
+				}
+			} catch (e) {}
 		}
 
 		function coNav(node, back, nextLabel, nextFn) {

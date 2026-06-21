@@ -322,5 +322,7 @@ function ekinese_calculator_data() {
 			),
 		),
 		'currency' => 'EUR',
+		// REST-Ziel für den Terminplaner (Calculator-Checkout → Afspraak).
+		'rest_appointment' => esc_url_raw( rest_url( 'ekinese/v1/appointment' ) ),
 	);
 }
