@@ -102,6 +102,7 @@ const css = [
 const js = [
 	'assets/js/theme.js',
 	'assets/js/locale.js',
+	'assets/js/i18n.js',
 	'assets/js/header-footer.js',
 	'assets/js/blueprint.js',
 	'assets/js/calculator.js',

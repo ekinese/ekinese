@@ -6,7 +6,7 @@
 (function () {
 	'use strict';
 
-	var LANGS = [['nl', 'NL'], ['de', 'DE'], ['en', 'EN'], ['fr', 'FR'], ['es', 'ES']];
+	var LANGS = [['nl', 'NL'], ['de', 'DE'], ['en', 'EN'], ['fr', 'FR'], ['es', 'ES'], ['it', 'IT'], ['tr', 'TR'], ['pl', 'PL']];
 	// Statische koersen t.o.v. EUR (later vervangbaar door live rates).
 	var CUR = {
 		EUR: { rate: 1, symbol: '€', locale: 'nl-NL' },
