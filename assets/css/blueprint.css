@@ -34,6 +34,26 @@
 }
 
 /* =========================
+   MOBIEL – geen horizontale overflow, brede elementen scrollen netjes
+========================= */
+@media (max-width: 767px) {
+    html, body { overflow-x: hidden; max-width: 100%; }
+    .xg-blueprint img,
+    .xg-blueprint iframe,
+    .xg-blueprint video { max-width: 100%; height: auto; }
+    /* Brede tabellen horizontaal scrollbaar i.p.v. de pagina te verbreden. */
+    .xg-blueprint .xg-spec-table,
+    .xg-blueprint .xg-table-scroll { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .xg-blueprint .xg-spec-table table { min-width: 480px; }
+    /* Horizontaal scrollende kaartrijen op touch (geen afgekapte kolommen). */
+    .xg-blueprint .xg-hscroll {
+        display: flex; gap: 14px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory; padding-bottom: 8px; margin: 0 -16px; padding-left: 16px; padding-right: 16px;
+    }
+    .xg-blueprint .xg-hscroll > * { flex: 0 0 82%; scroll-snap-align: start; }
+}
+
+/* =========================
    HERO (content pages)
 ========================= */
 

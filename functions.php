@@ -29,3 +29,4 @@ require_once get_theme_file_path( 'inc/seo.php' );
 require_once get_theme_file_path( 'inc/diamond.php' );
 require_once get_theme_file_path( 'inc/newsletter.php' );
 require_once get_theme_file_path( 'inc/lexicon.php' );
+require_once get_theme_file_path( 'inc/integrations.php' );

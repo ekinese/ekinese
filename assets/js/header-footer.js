@@ -497,4 +497,13 @@
     document.body.style.overflow='';
   });
 
+  /* Footer-accordion (alleen mobiel <=600px): klik op kop klapt kolom in/uit. */
+  const FOOT_MQ = window.matchMedia('(max-width: 600px)');
+  document.querySelectorAll('nav.footer__col .footer__heading').forEach(h=>{
+    h.addEventListener('click',()=>{
+      if(!FOOT_MQ.matches) return;
+      h.parentElement.classList.toggle('is-open');
+    });
+  });
+
 })();

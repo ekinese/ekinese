@@ -960,4 +960,24 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
   .footer__bottom-partners { display: none; }
   .xg-ti { min-width: 130px; padding: 0 12px; }
   .xg-ti-price { font-size: 13px; }
+
+  /* Footer-Akkordeon (Mobile) – Navigatiekolommen inklapbaar. */
+  nav.footer__col { border-bottom: 1px solid var(--line, rgba(0,0,0,.1)); padding-bottom: 12px; }
+  nav.footer__col .footer__heading {
+    margin: 0; padding: 14px 0; cursor: pointer; position: relative;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  nav.footer__col .footer__heading::after {
+    content: ""; width: 9px; height: 9px; border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor; transform: rotate(45deg);
+    transition: transform .25s ease; margin-right: 4px; opacity: .7;
+  }
+  nav.footer__col.is-open .footer__heading::after { transform: rotate(-135deg); }
+  nav.footer__col .footer__link,
+  nav.footer__col .footer__trust-box {
+    max-height: 0; overflow: hidden; opacity: 0;
+    transition: max-height .3s ease, opacity .2s ease, margin .3s ease;
+  }
+  nav.footer__col.is-open .footer__link { max-height: 60px; opacity: 1; }
+  nav.footer__col.is-open .footer__trust-box { max-height: 200px; opacity: 1; }
 }

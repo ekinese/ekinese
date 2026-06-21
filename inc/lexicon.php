@@ -75,15 +75,84 @@ function ekinese_seed_lexicon() {
 	}
 }
 
+/**
+ * Listings (data/listings.csv) → lexicon-entries onder categorie "Locaties".
+ *
+ * Bron is de listdom-export (steden met rijke SEO-tekst). Provincie = Category
+ * wordt een xg_term_cat-term. Upsert per slug. URL-namespace /lexicon/ staat los
+ * van /kantoren/, dus geen botsing met de kantorenpagina's.
+ *
+ * @return int Aantal verwerkte entries.
+ */
+function ekinese_import_lexicon_listings() {
+	$file = get_theme_file_path( 'data/listings.csv' );
+	if ( ! file_exists( $file ) || ! ( $fp = fopen( $file, 'r' ) ) ) { // phpcs:ignore
+		return 0;
+	}
+	$header = null;
+	$count  = 0;
+	while ( ( $row = fgetcsv( $fp, 0, ',' ) ) !== false ) {
+		if ( null === $header ) {
+			$header    = $row;
+			$header[0] = preg_replace( '/^\xEF\xBB\xBF/', '', $header[0] );
+			continue;
+		}
+		$r = @array_combine( $header, $row ); // phpcs:ignore
+		if ( ! $r || empty( $r['Slug'] ) || empty( $r['Title'] ) ) {
+			continue;
+		}
+		$slug    = sanitize_title( $r['Slug'] );
+		$title   = sanitize_text_field( $r['Title'] );
+		$excerpt = wp_strip_all_tags( (string) ( $r['Excerpt'] ?? '' ) );
+
+		$existing = get_page_by_path( $slug, OBJECT, 'xg_term' );
+		$postarr  = array(
+			'post_type'    => 'xg_term',
+			'post_status'  => 'publish',
+			'post_title'   => $title,
+			'post_name'    => $slug,
+			'post_content' => wp_kses_post( (string) ( $r['Description'] ?? '' ) ),
+			'post_excerpt' => mb_substr( $excerpt, 0, 300 ),
+		);
+		if ( $existing ) {
+			$postarr['ID'] = $existing->ID;
+		}
+		$id = wp_insert_post( $postarr );
+		if ( is_wp_error( $id ) ) {
+			continue;
+		}
+		// Provincie als categorie (hiërarchisch), plus overkoepelende term "Locaties".
+		$cats = array( 'Locaties' );
+		if ( ! empty( $r['Category'] ) ) {
+			$cats[] = sanitize_text_field( $r['Category'] );
+		}
+		wp_set_object_terms( $id, $cats, 'xg_term_cat', false );
+		$count++;
+	}
+	fclose( $fp );
+	return $count;
+}
+
 function ekinese_lexicon_seed_menu() {
 	add_submenu_page( 'edit.php?post_type=xg_term', __( 'Seed', 'ekinese' ), __( 'Basis-seed', 'ekinese' ), 'manage_options', 'xg-lexicon-seed', function () {
 		if ( isset( $_POST['xg_lx_nonce'] ) && wp_verify_nonce( sanitize_key( $_POST['xg_lx_nonce'] ), 'xg_lx' ) ) {
-			ekinese_seed_lexicon();
-			echo '<div class="notice notice-success"><p>Basisbegrippen toegevoegd.</p></div>';
+			if ( isset( $_POST['xg_lx_listings'] ) ) {
+				$n = ekinese_import_lexicon_listings();
+				echo '<div class="notice notice-success"><p>' . esc_html( sprintf( '%d locatie-entries geïmporteerd in het lexicon.', $n ) ) . '</p></div>';
+			} else {
+				ekinese_seed_lexicon();
+				echo '<div class="notice notice-success"><p>Basisbegrippen toegevoegd.</p></div>';
+			}
 		}
-		echo '<div class="wrap"><h1>Lexicon seed</h1><form method="post">';
+		echo '<div class="wrap"><h1>Lexicon seed</h1>';
+		echo '<form method="post" style="margin-bottom:24px">';
 		wp_nonce_field( 'xg_lx', 'xg_lx_nonce' );
 		submit_button( 'Basisbegrippen toevoegen' );
+		echo '</form>';
+		echo '<form method="post"><h2>Locaties importeren</h2><p>Bron: <code>data/listings.csv</code>. Maakt lexicon-entries per stad, gegroepeerd op provincie.</p>';
+		wp_nonce_field( 'xg_lx', 'xg_lx_nonce' );
+		echo '<input type="hidden" name="xg_lx_listings" value="1">';
+		submit_button( 'Locaties importeren' );
 		echo '</form></div>';
 	} );
 }
