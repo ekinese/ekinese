@@ -497,8 +497,8 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
 .xg-logo a { color: inherit; }
 
 /* Nav */
-.xg-nav { flex: 1; margin: 0 40px; }
-.xg-nav ul { display: flex; justify-content: center; gap: 32px; }
+.xg-nav { flex: 1 1 auto; min-width: 0; margin: 0 28px; }
+.xg-nav ul { display: flex; justify-content: center; gap: 30px; flex-wrap: nowrap; }
 .xg-nav-item {
   font-size: 13px; font-weight: 700;
   letter-spacing: 1px; text-transform: uppercase;
@@ -516,6 +516,10 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
 
 /* Actions */
 .xg-actions { display: flex; align-items: center; gap: 22px; flex-shrink: 0; }
+
+/* JS-gevulde taal/valuta-controls: ruimte vooraf reserveren → geen layout-shift
+   (CLS) bij het laden, en geen "springende" balk. */
+.xg-ctrl-host { min-width: 104px; min-height: 38px; display: flex; align-items: center; justify-content: flex-end; flex-shrink: 0; }
 
 /* Search icon */
 .xg-search-btn {
@@ -1142,12 +1146,19 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
    RESPONSIVE BREAKPOINTS
    ========================================================== */
 
-/* Tablet landscape 991–1200 */
-@media (max-width: 1200px) {
-  .xg-header-inner { padding: 0 24px; }
-  .xg-nav ul { gap: 22px; }
-  .xg-nav-item { font-size: 12px; }
+/* Lange vertalingen (DE/FR/ES) – balk compact houden, nooit afkappen.
+   Progressief de niet-essentiële items verbergen vóór de mobiele omslag. */
+@media (max-width: 1400px) {
   .xg-actions { gap: 16px; }
+  .xg-nav ul { gap: 24px; }
+  .xg-phone { display: none; }   /* contact staat ook in topbar/footer */
+}
+@media (max-width: 1240px) {
+  .xg-trust { display: none; }   /* niet-essentieel; voorkomt overloop */
+  .xg-header-inner { padding: 0 24px; }
+  .xg-nav { margin: 0 16px; }
+  .xg-nav ul { gap: 18px; }
+  .xg-nav-item { font-size: 12px; letter-spacing: .6px; }
   .xg-mega-content { padding: 24px 28px; }
 }
 
