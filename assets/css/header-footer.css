@@ -21,7 +21,7 @@
   --neutral:   #888880;
   --white:     #ffffff;
   --font:      Arial, Helvetica, sans-serif;
-  --max-w:     100%;   /* volle schermbreedte op desktop (frame), 40px gutter via padding */
+  --max-w:     1680px;  /* ruime, moderne breedte mét marges op grote schermen (geen rand-tot-rand) */
   --shadow:    0 12px 40px rgba(0,0,0,0.11);
   --topbar-h:  52px;
   --header-h:  84px;
@@ -939,16 +939,21 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
   .xg-mega-content { padding: 24px 28px; }
 }
 
-/* Tablet portrait 768–991 */
-@media (max-width: 991px) {
+/* Header → hamburger al vanaf 1120px: voorkomt overloop van de nav bij langere
+   vertalingen (DE/FR/ES) ruim vóór de krappe 992px-zone. */
+@media (max-width: 1120px) {
   body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
   .xg-nav, .xg-phone, .xg-trust, .xg-cta, .xg-search-btn { display: none; }
   .xg-mobile-toggle { display: flex; }
   .xg-mega { display: none !important; }
+  .xg-drop { display: none !important; }
+}
+
+/* Tablet portrait 768–991 (alleen footer-layout; header is al hamburger) */
+@media (max-width: 991px) {
   .footer { padding: 40px 32px 0; }
   .footer__top { grid-template-columns: 1fr 1fr 1fr; }
   .footer__brand { grid-column: 1 / -1; }
-  .xg-drop { display: none !important; }
 }
 
 /* Mobile large 600–768 */

@@ -99,14 +99,43 @@ function xg_current_lang() {
 	return 'nl';
 }
 
+/** Case-insensitieve index van het woordenboek (kleine letters => vertalingen). */
+function xg_dictionary_lc() {
+	static $lc = null;
+	if ( null !== $lc ) {
+		return $lc;
+	}
+	$lc = array();
+	foreach ( xg_dictionary() as $k => $v ) {
+		$lc[ mb_strtolower( $k ) ] = $v;
+	}
+	return $lc;
+}
+
+/**
+ * Vertalingen voor een bronstring opzoeken — eerst exact, dan case-insensitief.
+ * Zo wordt "Over Ons" óók gevonden via sleutel "Over ons".
+ *
+ * @return array|null [ lang => vertaling ] of null.
+ */
+function xg_lookup( $key ) {
+	$dict = xg_dictionary();
+	if ( isset( $dict[ $key ] ) ) {
+		return $dict[ $key ];
+	}
+	$lc = xg_dictionary_lc();
+	$k  = mb_strtolower( $key );
+	return $lc[ $k ] ?? null;
+}
+
 /** Vertaal één string naar de huidige (of opgegeven) taal. */
 function xg_t( $s, $lang = null ) {
 	$lang = $lang ?: xg_current_lang();
 	if ( 'nl' === $lang ) {
 		return $s;
 	}
-	$dict = xg_dictionary();
-	return ( isset( $dict[ $s ][ $lang ] ) && '' !== $dict[ $s ][ $lang ] ) ? $dict[ $s ][ $lang ] : $s;
+	$tr = xg_lookup( $s );
+	return ( $tr && ! empty( $tr[ $lang ] ) ) ? $tr[ $lang ] : $s;
 }
 
 /* =====================================================================
@@ -163,15 +192,21 @@ function xg_i18n_translate_html( $html ) {
 	if ( ! $dict ) {
 		return $html;
 	}
+	$lc = xg_dictionary_lc();
 	return preg_replace_callback(
 		'/>([^<>]+)</',
-		function ( $m ) use ( $dict, $lang ) {
+		function ( $m ) use ( $dict, $lc, $lang ) {
 			$raw = $m[1];
 			$key = trim( $raw );
-			if ( '' === $key || ! isset( $dict[ $key ][ $lang ] ) || '' === $dict[ $key ][ $lang ] ) {
+			if ( '' === $key ) {
 				return $m[0];
 			}
-			return '>' . str_replace( $key, $dict[ $key ][ $lang ], $raw ) . '<';
+			// Exact, anders case-insensitief.
+			$tr = $dict[ $key ][ $lang ] ?? ( $lc[ mb_strtolower( $key ) ][ $lang ] ?? null );
+			if ( null === $tr || '' === $tr ) {
+				return $m[0];
+			}
+			return '>' . str_replace( $key, $tr, $raw ) . '<';
 		},
 		$html
 	);

@@ -117,6 +117,11 @@
 
 	var LANG = 'nl';
 
+	// Case-insensitieve index → "Over Ons" vindt ook sleutel "Over ons".
+	var DICT_LC = {};
+	Object.keys(DICT).forEach(function (k) { DICT_LC[k.toLowerCase()] = DICT[k]; });
+	function lookup(src) { return DICT[src] || DICT_LC[src.toLowerCase()] || null; }
+
 	function translateTextNode(node) {
 		var raw = node.nodeValue;
 		if (!raw || !raw.trim()) return;
@@ -124,7 +129,8 @@
 		if (!node.__xgSrc) node.__xgSrc = key;
 		var src = node.__xgSrc;
 		if (LANG === 'nl') { node.nodeValue = raw.replace(key, src); return; }
-		var tr = DICT[src] && DICT[src][LANG];
+		var entry = lookup(src);
+		var tr = entry && entry[LANG];
 		if (tr) node.nodeValue = raw.replace(key, tr);
 	}
 	function translatePlaceholders(root) {
@@ -158,7 +164,7 @@
 		});
 	});
 
-	window.XGI18N = { setLang: setLang, t: function (s) { return (LANG !== 'nl' && DICT[s] && DICT[s][LANG]) || s; } };
+	window.XGI18N = { setLang: setLang, t: function (s) { var e = lookup(s); return (LANG !== 'nl' && e && e[LANG]) || s; } };
 
 	function boot() {
 		if (LANG !== 'nl') translateAll();
