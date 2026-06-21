@@ -9455,20 +9455,21 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
     edelmetalen: {
       steps:['Kies uw metaal','Kies uw categorie','Kies uw product'],
       opts:{
-        goud:      {lbl:'Goud',      desc:'Sieraden, munten, baren en tandgoud',
-          cats:{ sieraden:{lbl:'Sieraden',prods:['Ringen','Kettingen','Armbanden','Oorbellen']},
-                 munten:{lbl:'Munten',prods:['Krugerrand','Maple Leaf','Britannia','Philharmoniker']},
-                 baren:{lbl:'Baren',prods:['1g','5g','10g','20g','50g','100g','250g','500g','1 kg']},
-                 tandgoud:{lbl:'Tandgoud',prods:['14 karaat','18 karaat','22 karaat']} }},
-        zilver:    {lbl:'Zilver',    desc:'Bestek, munten en baren',
-          cats:{ bestek:{lbl:'Bestek',prods:['Lepels','Vorken','Sets']},
+        goud:      {lbl:'Goud',      desc:'Baren, munten en sloop/sieraden',
+          cats:{ baren:{lbl:'Baar',prods:['1g','5g','10g','20g','50g','100g','250g','500g','1 kg']},
+                 munten:{lbl:'Munten',prods:['Krugerrand','Maple Leaf','Britannia','Philharmoniker','Dukaat']},
+                 sloop:{lbl:'Sloop & sieraden',prods:['Ringen','Kettingen','Armbanden','Tandgoud']} }},
+        zilver:    {lbl:'Zilver',    desc:'Baren, munten en sloop',
+          cats:{ baren:{lbl:'Baar',prods:['100g','250g','500g','1 kg']},
                  munten:{lbl:'Munten',prods:['Maple Leaf','Britannia','Eagle']},
-                 baren:{lbl:'Baren',prods:['100g','250g','500g','1 kg']} }},
-        platina:   {lbl:'Platina',   desc:'Sieraden en baren',
-          cats:{ sieraden:{lbl:'Sieraden',prods:['Ringen','Kettingen']},
-                 baren:{lbl:'Baren',prods:['1g','10g','100g']} }},
-        palladium: {lbl:'Palladium', desc:'Baren en objecten',
-          cats:{ baren:{lbl:'Baren',prods:['1g','10g','100g']} }}
+                 sloop:{lbl:'Sloop & bestek',prods:['Bestek','Sieraden','Munten (sloop)']} }},
+        platina:   {lbl:'Platina',   desc:'Baren, munten en sloop',
+          cats:{ baren:{lbl:'Baar',prods:['1g','10g','100g']},
+                 munten:{lbl:'Munten',prods:['Platinum Eagle','Maple Leaf']},
+                 sloop:{lbl:'Sloop & sieraden',prods:['Ringen','Kettingen']} }},
+        palladium: {lbl:'Palladium', desc:'Baren en munten',
+          cats:{ baren:{lbl:'Baar',prods:['1g','10g','100g']},
+                 munten:{lbl:'Munten',prods:['Maple Leaf']} }}
       },
       ql: ['Gouden ring','Krugerrand','Goud baren','Tandgoud']
     },
@@ -9584,6 +9585,16 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
     });
   }
 
+  // Bestemmings-URL voor de wizard (echte verkooppagina's), met preset-params
+  // zodat de calculator op de doelpagina alvast goed staat.
+  function wizDestination(menu, s1, s2, prod){
+    const q='?preset='+encodeURIComponent(s1+'|'+(s2||'')+'|'+(prod||''));
+    if(menu==='edelmetalen') return '/edelmetalen-verkopen/'+s1+'-verkopen/'+q;
+    if(menu==='edelstenen')  return '/edelstenen-verkopen/'+s1+'-verkopen/'+q;
+    if(menu==='horloges')    return '/horloges-verkopen/'+q;
+    return '/'+q;
+  }
+
   function renderWizBody(){
     const body=document.getElementById('xgWizBody');
     const d=WIZ[ws.menu]; const s=ws.step;
@@ -9602,7 +9613,10 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
       let h='<div class="xg-options">';
       prods.forEach(p=>{ h+=`<div class="xg-opt" data-s3="${p}"><div class="xg-opt-title">${p}</div></div>`; });
       body.innerHTML=h+'</div>';
-      body.querySelectorAll('[data-s3]').forEach(el=>el.addEventListener('click',()=>{ ws.s3l=el.dataset.s3; ws.step=4; renderWiz(); }));
+      // 3-staps wizard: productkeuze navigeert direct naar de juiste pagina.
+      body.querySelectorAll('[data-s3]').forEach(el=>el.addEventListener('click',()=>{
+        location.href=wizDestination(ws.menu, ws.s1k, ws.s2k, el.dataset.s3);
+      }));
     } else {
       body.innerHTML=`<div class="xg-result">
         <div class="xg-result-check">✓</div>
