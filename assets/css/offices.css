@@ -1,0 +1,138 @@
+/* =====================================================================
+   XGOUD Kantoren (Offices) – Übersicht + Einzelseite
+   Marke = ROT, scharfkantig, Day/Dark über Tokens. Karte via Leaflet.
+   ===================================================================== */
+
+.xg-offices { max-width: var(--max-w, 1400px); margin: 0 auto; padding: 40px; color: var(--ink, #1c1a16); }
+
+/* ---- Intro ---- */
+.xg-offices-intro { margin-bottom: 32px; }
+.xg-offices-intro h1 { font-size: 48px; line-height: 1.05; margin: 0 0 14px; color: var(--ink, #1c1a16); }
+.xg-offices-intro p { font-size: 18px; line-height: 1.7; color: var(--ink-soft, #6b665c); margin: 0; max-width: 760px; }
+
+/* ---- HQ-Hervorhebung (Eindhoven) ---- */
+.xg-hq-banner {
+	display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+	background: linear-gradient(135deg, var(--red, #AE1E1E), var(--red-dark, #8C1717));
+	color: #fff; padding: 22px 26px; margin-bottom: 28px;
+}
+.xg-hq-banner .xg-hq-badge {
+	font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+	background: rgba(255,255,255,.18); padding: 6px 12px; flex-shrink: 0;
+}
+.xg-hq-banner strong { font-size: 20px; }
+.xg-hq-banner span { color: rgba(255,255,255,.85); font-size: 15px; }
+.xg-hq-banner .xg-hq-perk {
+	margin-left: auto; font-size: 14px; font-weight: 700;
+	background: #fff; color: var(--red, #AE1E1E); padding: 10px 16px;
+}
+
+/* ---- Such-/Filterleiste ---- */
+.xg-offices-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+.xg-offices-search {
+	flex: 1; min-width: 220px; display: flex; align-items: center; gap: 10px;
+	border: 1px solid var(--line, #e3ddd0); background: var(--white, #fff); padding: 12px 16px;
+}
+.xg-offices-search input { flex: 1; border: none; outline: none; background: transparent; font: 15px Arial, sans-serif; color: var(--ink, #1c1a16); }
+.xg-offices-count { display: flex; align-items: center; font-size: 14px; color: var(--ink-soft, #6b665c); padding: 0 4px; }
+
+/* ---- Layout: Karte + Liste ---- */
+.xg-offices-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start; }
+
+#xg-offices-map, .xg-office-map {
+	width: 100%; height: 560px;
+	border: 1px solid var(--line, #e3ddd0);
+	background: #e9e6df; position: sticky; top: 20px;
+}
+
+/* Liste */
+.xg-offices-list { display: flex; flex-direction: column; gap: 14px; max-height: 560px; overflow-y: auto; padding-right: 4px; }
+.xg-office-card {
+	display: block; text-align: left; cursor: pointer;
+	border: 1px solid var(--line, #e3ddd0); background: var(--white, #fff);
+	padding: 20px; transition: border-color .2s, box-shadow .2s, transform .2s;
+	position: relative;
+}
+.xg-office-card:hover, .xg-office-card.active {
+	border-color: var(--red, #AE1E1E);
+	box-shadow: 0 14px 34px rgba(17,17,17,.08);
+	transform: translateY(-2px);
+}
+.xg-office-card.is-hq { border-left: 4px solid var(--red, #AE1E1E); }
+.xg-office-card-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.xg-office-card h3 { font-size: 20px; margin: 0; color: var(--ink, #1c1a16); }
+.xg-office-card .xg-hq-tag {
+	font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+	color: var(--red, #AE1E1E); border: 1px solid var(--red, #AE1E1E); padding: 3px 7px; flex-shrink: 0;
+}
+.xg-office-card .xg-office-addr { font-size: 14px; color: var(--ink-soft, #6b665c); margin: 8px 0 0; line-height: 1.5; }
+.xg-office-card .xg-office-hours { font-size: 13px; color: var(--ink-soft, #6b665c); margin-top: 8px; }
+.xg-office-card .xg-office-hours b { color: var(--green, #1f9d55); }
+.xg-office-card-actions { display: flex; gap: 8px; margin-top: 14px; }
+.xg-office-btn {
+	display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+	font-size: 13px; font-weight: 700; padding: 9px 14px; text-decoration: none; cursor: pointer;
+	border: 1px solid var(--line, #e3ddd0); background: var(--white, #fff); color: var(--ink, #1c1a16);
+	transition: .15s ease;
+}
+.xg-office-btn:hover { border-color: var(--red, #AE1E1E); color: var(--red, #AE1E1E); }
+.xg-office-btn.primary { background: var(--red, #AE1E1E); border-color: var(--red, #AE1E1E); color: #fff; }
+.xg-office-btn.primary:hover { background: var(--red-dark, #8C1717); color: #fff; }
+
+/* Leaflet-Marker (HQ vs normal) */
+.xg-pin {
+	width: 28px; height: 28px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+	background: var(--red, #AE1E1E); border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,.3);
+}
+.xg-pin.hq { background: #c8a24a; width: 34px; height: 34px; }
+.xg-pin span { display: block; transform: rotate(45deg); color: #fff; text-align: center; line-height: 24px; font-weight: 700; font-size: 13px; }
+
+/* Leaflet-Popup im Markenstil */
+.leaflet-popup-content-wrapper { border-radius: 0; }
+.xg-popup h4 { margin: 0 0 4px; font-size: 16px; color: #111; }
+.xg-popup p { margin: 0 0 8px; font-size: 13px; color: #555; line-height: 1.5; }
+.xg-popup a { font-size: 13px; font-weight: 700; color: var(--red, #AE1E1E); text-decoration: none; }
+
+/* =====================================================================
+   EINZELSEITE  (Detail + Maps + Route)
+   ===================================================================== */
+.xg-office-single { max-width: var(--max-w, 1400px); margin: 0 auto; padding: 40px; }
+.xg-office-hero { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 26px; }
+.xg-office-hero h1 { font-size: 46px; margin: 0; color: var(--ink, #1c1a16); }
+.xg-office-hero .xg-hq-tag {
+	font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+	background: var(--red, #AE1E1E); color: #fff; padding: 6px 12px; margin-top: 12px;
+}
+.xg-office-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 30px; align-items: start; }
+
+.xg-office-info { display: flex; flex-direction: column; gap: 22px; }
+.xg-office-block { border: 1px solid var(--line, #e3ddd0); background: var(--white, #fff); padding: 24px; }
+.xg-office-block h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--ink-soft, #6b665c); margin: 0 0 14px; padding-bottom: 10px; border-bottom: 2px solid var(--red, #AE1E1E); display: inline-block; }
+.xg-office-row { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; font-size: 15px; color: var(--ink, #1c1a16); }
+.xg-office-row svg { width: 18px; height: 18px; color: var(--red, #AE1E1E); flex-shrink: 0; margin-top: 2px; }
+
+.xg-hours-table { width: 100%; border-collapse: collapse; }
+.xg-hours-table td { padding: 8px 0; font-size: 15px; border-bottom: 1px solid var(--line, #e3ddd0); color: var(--ink, #1c1a16); }
+.xg-hours-table td:last-child { text-align: right; font-weight: 700; }
+.xg-hours-table tr.today td { color: var(--red, #AE1E1E); }
+.xg-hours-table tr.closed td:last-child { color: var(--ink-soft, #6b665c); font-weight: 400; }
+
+.xg-office-cta { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.xg-office-cta .xg-office-btn { padding: 14px 18px; font-size: 15px; }
+
+.xg-office-mapcol { position: sticky; top: 20px; }
+.xg-office-mapcol .xg-office-map { height: 460px; margin-bottom: 14px; }
+.xg-office-embed { width: 100%; height: 320px; border: 1px solid var(--line, #e3ddd0); }
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+	.xg-offices-layout, .xg-office-grid { grid-template-columns: 1fr; }
+	#xg-offices-map, .xg-office-map { position: static; height: 380px; }
+	.xg-offices-list { max-height: none; overflow: visible; }
+	.xg-office-mapcol { position: static; }
+}
+@media (max-width: 560px) {
+	.xg-offices, .xg-office-single { padding: 24px 16px; }
+	.xg-offices-intro h1, .xg-office-hero h1 { font-size: 34px; }
+	.xg-hq-banner .xg-hq-perk { margin-left: 0; }
+}

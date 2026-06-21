@@ -844,11 +844,14 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
    FOOTER
    ========================================================== */
 .xg-footer-wrap { position: relative; overflow: hidden; }
-.footer { background: var(--cream); padding: 52px 40px 0; font-size: 14px; color: var(--ink-soft); position: relative; z-index: 1; }
+/* Footer-Padding NICHT auf .footer (das würde die 1400er-Breite nach innen
+   verschieben und gegenüber Header/Content versetzen). Stattdessen auf
+   footer__top/__bottom mit max-width + 40px – exakt bündig zu Header/Content. */
+.footer { background: var(--cream); padding: 0; font-size: 14px; color: var(--ink-soft); position: relative; z-index: 1; }
 .footer__top {
   display: grid;
   grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
-  gap: 40px; max-width: var(--max-w); margin: 0 auto; padding-bottom: 44px;
+  gap: 40px; max-width: var(--max-w); margin: 0 auto; padding: 52px 40px 44px;
 }
 .footer__col { display: flex; flex-direction: column; }
 .footer__logo { line-height: 1; margin-bottom: 4px; }
@@ -899,7 +902,7 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
 .footer__trust-box p { margin: 0; font-size: 12px; line-height: 1.5; color: var(--ink-soft); }
 .footer__bottom {
   border-top: 1px solid var(--red);
-  max-width: var(--max-w); margin: 0 auto; padding: 20px 0;
+  max-width: var(--max-w); margin: 0 auto; padding: 20px 40px;
   display: flex; align-items: center; justify-content: space-between;
   gap: 20px; flex-wrap: wrap; font-size: 12px; color: var(--ink-soft);
   position: relative; z-index: 1;

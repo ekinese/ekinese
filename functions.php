@@ -19,3 +19,4 @@ require_once get_theme_file_path( 'inc/setup.php' );
 require_once get_theme_file_path( 'inc/patterns.php' );
 require_once get_theme_file_path( 'inc/block-styles.php' );
 require_once get_theme_file_path( 'inc/taxonomies.php' );
+require_once get_theme_file_path( 'inc/offices.php' );
