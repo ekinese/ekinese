@@ -163,8 +163,36 @@ function ekinese_enqueue_assets() {
 		 *          (Swiss Forex / iDex) + wp_xg_margins. Das JS bleibt
 		 *          unverändert – nur die Datenquelle wechselt.
 		 */
-		wp_localize_script( 'ekinese-calculator', 'XG_CALC_DATA', ekinese_calculator_data() );
+		$calc_data = ekinese_calculator_data();
+		// Performance: de zware productlijst (606 items) alleen meesturen op
+		// pagina's die daadwerkelijk een calculator tonen.
+		if ( ! ekinese_page_has_calculator() ) {
+			unset( $calc_data['products'] );
+		}
+		wp_localize_script( 'ekinese-calculator', 'XG_CALC_DATA', $calc_data );
 	}
+}
+
+/**
+ * Heeft de huidige pagina (waarschijnlijk) een calculator?
+ * Hero (front), productpagina's, categorie-/verkooparchieven, of inhoud met
+ * een .xg-calc / hero-calculator-blok.
+ */
+function ekinese_page_has_calculator() {
+	if ( is_front_page() || is_singular( 'xg_product' ) || is_post_type_archive( 'xg_product' ) ) {
+		return true;
+	}
+	if ( is_tax( array( 'xg_verkoop_cat', 'xg_term_cat' ) ) ) {
+		return true;
+	}
+	if ( is_singular() ) {
+		$post = get_post();
+		if ( $post && ( false !== strpos( $post->post_content, 'xg-calc' ) || false !== strpos( $post->post_content, 'hero-calculator' ) || has_block( 'ekinese/product-detail', $post ) ) ) {
+			return true;
+		}
+	}
+	/** Forceren waar nodig (bv. losse landingspagina's). */
+	return (bool) apply_filters( 'ekinese_page_has_calculator', false );
 }
 add_action( 'wp_enqueue_scripts', 'ekinese_enqueue_assets' );
 
