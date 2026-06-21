@@ -94,16 +94,20 @@ const css = [
 	'assets/css/header-footer.css',
 	'assets/css/blueprint.css',
 	'assets/css/calculator.css',
-	'assets/css/chat.css'
+	'assets/css/chat.css',
+	'assets/css/locale.css',
+	'assets/css/newsletter.css'
 ].map(read).join('\n\n');
 
 const js = [
 	'assets/js/theme.js',
+	'assets/js/locale.js',
 	'assets/js/header-footer.js',
 	'assets/js/blueprint.js',
 	'assets/js/calculator.js',
 	'assets/js/chat.js',
-	'assets/js/search-assist.js'
+	'assets/js/search-assist.js',
+	'assets/js/newsletter.js'
 ].map(read).join('\n;\n');
 
 const html = `<!DOCTYPE html>
@@ -139,6 +143,7 @@ ${header}
 
 <main>
 ${sections}
+<section class="xg-newsletter" style="margin:40px auto"><div class="xg-newsletter-inner"><div class="xg-newsletter-text"><h2>Blijf op de hoogte</h2><p>Ontvang de actuele goudprijs en aanbiedingen.</p></div><form class="xg-newsletter-form"><input type="email" required placeholder="Uw e-mailadres"><input type="text" placeholder="Stad (optioneel)"><button type="submit">Aanmelden</button></form><div class="xg-newsletter-msg"></div></div></section>
 </main>
 
 ${footer}
@@ -150,7 +155,7 @@ ${footer}
 
 <script>
 window.XG_CALC_DATA = ${JSON.stringify(calcData, null, 1)};
-window.XG_CHAT = { open: true }; /* Demo: lokaler Fallback-Bot (kein Server) */
+window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fallback-Bot (kein Server) */
 </script>
 <script>
 ${js}

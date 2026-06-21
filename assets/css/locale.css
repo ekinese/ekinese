@@ -1,0 +1,27 @@
+/* XGOUD Locale-/Controls-Popover (taal + valuta + thema) in de nav. */
+.xg-ctrl { position: relative; }
+.xg-ctrl-btn {
+	display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+	border: 1px solid var(--line,#e3ddd0); background: var(--white,#fff);
+	padding: 7px 12px; font: 700 12px Arial, sans-serif; color: var(--ink,#1c1a16);
+	letter-spacing: .3px; transition: border-color .15s;
+}
+.xg-ctrl-btn:hover { border-color: var(--red,#AE1E1E); }
+.xg-ctrl-btn svg { width: 15px; height: 15px; }
+.xg-ctrl-pop {
+	position: absolute; top: calc(100% + 10px); right: 0; width: 230px; z-index: 99999;
+	background: var(--white,#fff); border: 1px solid var(--line,#e3ddd0); border-top: 2px solid var(--red,#AE1E1E);
+	box-shadow: var(--shadow,0 12px 40px rgba(0,0,0,.12)); padding: 14px;
+	opacity: 0; visibility: hidden; transform: translateY(8px); transition: .2s;
+}
+.xg-ctrl.open .xg-ctrl-pop { opacity: 1; visibility: visible; transform: none; }
+.xg-ctrl-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-soft,#6b665c); margin: 4px 0 6px; }
+.xg-ctrl-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.xg-ctrl-opt {
+	border: 1px solid var(--line,#e3ddd0); background: var(--white,#fff); color: var(--ink,#1c1a16);
+	font: 700 12px Arial, sans-serif; padding: 6px 10px; cursor: pointer; transition: .15s;
+}
+.xg-ctrl-opt:hover { border-color: var(--red,#AE1E1E); }
+.xg-ctrl-opt.active { background: var(--red,#AE1E1E); border-color: var(--red,#AE1E1E); color: #fff; }
+.xg-ctrl-theme { display: flex; align-items: center; justify-content: space-between; padding-top: 4px; border-top: 1px solid var(--line,#e3ddd0); }
+.xg-ctrl-theme span { font-size: 12px; font-weight: 700; color: var(--ink,#1c1a16); }

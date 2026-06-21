@@ -1,0 +1,16 @@
+/* XGOUD Newsletter-Banner (CTA-Stil, rot/gold, scharfkantig). */
+.xg-newsletter { max-width: var(--max-w,1400px); margin: 0 auto; padding: 0 40px; }
+.xg-newsletter-inner {
+	background: linear-gradient(135deg, var(--red,#AE1E1E), var(--red-dark,#8C1717));
+	color: #fff; padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center;
+}
+.xg-newsletter-text h2 { margin: 0 0 8px; font-size: 30px; line-height: 1.1; }
+.xg-newsletter-text p { margin: 0; font-size: 16px; color: rgba(255,255,255,.9); }
+.xg-newsletter-form { display: flex; flex-wrap: wrap; gap: 10px; }
+.xg-newsletter-form input { flex: 1; min-width: 160px; height: 52px; border: none; padding: 0 16px; font: 15px Arial, sans-serif; }
+.xg-newsletter-form button { height: 52px; padding: 0 28px; border: none; background: #fff; color: var(--red,#AE1E1E); font-weight: 700; cursor: pointer; transition: .2s; }
+.xg-newsletter-form button:hover { background: var(--gold,#c8a24a); color: #111; }
+.xg-newsletter-msg { grid-column: 1 / -1; font-weight: 700; }
+.xg-newsletter-msg.ok { color: #c8f7d4; }
+.xg-newsletter-msg.err { color: #ffd2d2; }
+@media (max-width: 800px){ .xg-newsletter-inner { grid-template-columns: 1fr; } }

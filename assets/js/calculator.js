@@ -43,10 +43,12 @@
 	   HELFER
 	===================================================================== */
 	function euro(n) {
-		return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: DATA.currency || 'EUR', maximumFractionDigits: 0 }).format(isFinite(n) ? n : 0);
+		if (window.XGLocale && window.XGLocale.format) return window.XGLocale.format(isFinite(n) ? n : 0, 0);
+			return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: DATA.currency || 'EUR', maximumFractionDigits: 0 }).format(isFinite(n) ? n : 0);
 	}
 	function euro2(n) {
-		return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: DATA.currency || 'EUR', maximumFractionDigits: 2 }).format(isFinite(n) ? n : 0);
+		if (window.XGLocale && window.XGLocale.format) return window.XGLocale.format(isFinite(n) ? n : 0, 2);
+			return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: DATA.currency || 'EUR', maximumFractionDigits: 2 }).format(isFinite(n) ? n : 0);
 	}
 	function pct(n) { return (n * 100).toFixed(1).replace('.', ',') + ' %'; }
 	function h(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }

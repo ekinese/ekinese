@@ -3582,6 +3582,53 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 .xg-sa-sugg a:hover { border-color: var(--red,#AE1E1E); background: var(--red-soft,rgba(174,30,30,.07)); }
 
 
+/* XGOUD Locale-/Controls-Popover (taal + valuta + thema) in de nav. */
+.xg-ctrl { position: relative; }
+.xg-ctrl-btn {
+	display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+	border: 1px solid var(--line,#e3ddd0); background: var(--white,#fff);
+	padding: 7px 12px; font: 700 12px Arial, sans-serif; color: var(--ink,#1c1a16);
+	letter-spacing: .3px; transition: border-color .15s;
+}
+.xg-ctrl-btn:hover { border-color: var(--red,#AE1E1E); }
+.xg-ctrl-btn svg { width: 15px; height: 15px; }
+.xg-ctrl-pop {
+	position: absolute; top: calc(100% + 10px); right: 0; width: 230px; z-index: 99999;
+	background: var(--white,#fff); border: 1px solid var(--line,#e3ddd0); border-top: 2px solid var(--red,#AE1E1E);
+	box-shadow: var(--shadow,0 12px 40px rgba(0,0,0,.12)); padding: 14px;
+	opacity: 0; visibility: hidden; transform: translateY(8px); transition: .2s;
+}
+.xg-ctrl.open .xg-ctrl-pop { opacity: 1; visibility: visible; transform: none; }
+.xg-ctrl-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-soft,#6b665c); margin: 4px 0 6px; }
+.xg-ctrl-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.xg-ctrl-opt {
+	border: 1px solid var(--line,#e3ddd0); background: var(--white,#fff); color: var(--ink,#1c1a16);
+	font: 700 12px Arial, sans-serif; padding: 6px 10px; cursor: pointer; transition: .15s;
+}
+.xg-ctrl-opt:hover { border-color: var(--red,#AE1E1E); }
+.xg-ctrl-opt.active { background: var(--red,#AE1E1E); border-color: var(--red,#AE1E1E); color: #fff; }
+.xg-ctrl-theme { display: flex; align-items: center; justify-content: space-between; padding-top: 4px; border-top: 1px solid var(--line,#e3ddd0); }
+.xg-ctrl-theme span { font-size: 12px; font-weight: 700; color: var(--ink,#1c1a16); }
+
+
+/* XGOUD Newsletter-Banner (CTA-Stil, rot/gold, scharfkantig). */
+.xg-newsletter { max-width: var(--max-w,1400px); margin: 0 auto; padding: 0 40px; }
+.xg-newsletter-inner {
+	background: linear-gradient(135deg, var(--red,#AE1E1E), var(--red-dark,#8C1717));
+	color: #fff; padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center;
+}
+.xg-newsletter-text h2 { margin: 0 0 8px; font-size: 30px; line-height: 1.1; }
+.xg-newsletter-text p { margin: 0; font-size: 16px; color: rgba(255,255,255,.9); }
+.xg-newsletter-form { display: flex; flex-wrap: wrap; gap: 10px; }
+.xg-newsletter-form input { flex: 1; min-width: 160px; height: 52px; border: none; padding: 0 16px; font: 15px Arial, sans-serif; }
+.xg-newsletter-form button { height: 52px; padding: 0 28px; border: none; background: #fff; color: var(--red,#AE1E1E); font-weight: 700; cursor: pointer; transition: .2s; }
+.xg-newsletter-form button:hover { background: var(--gold,#c8a24a); color: #111; }
+.xg-newsletter-msg { grid-column: 1 / -1; font-weight: 700; }
+.xg-newsletter-msg.ok { color: #c8f7d4; }
+.xg-newsletter-msg.err { color: #ffd2d2; }
+@media (max-width: 800px){ .xg-newsletter-inner { grid-template-columns: 1fr; } }
+
+
 /* ---- Test-Toolbar ---- */
 .tst-toolbar {
 	position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
@@ -3723,7 +3770,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
           </div>
         </div>
 
-        <div class="xg-theme-host" data-xg-theme-toggle></div>
+        <div class="xg-ctrl-host" data-xg-controls></div>
 
         <a href="/afspraak/" class="xg-cta">Plan afspraak</a>
 
@@ -4303,6 +4350,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 </div>
 </section>
+<section class="xg-newsletter" style="margin:40px auto"><div class="xg-newsletter-inner"><div class="xg-newsletter-text"><h2>Blijf op de hoogte</h2><p>Ontvang de actuele goudprijs en aanbiedingen.</p></div><form class="xg-newsletter-form"><input type="email" required placeholder="Uw e-mailadres"><input type="text" placeholder="Stad (optioneel)"><button type="submit">Aanmelden</button></form><div class="xg-newsletter-msg"></div></div></section>
 </main>
 
 <!-- ===== FOOTER WRAP ===== -->
@@ -4747,7 +4795,7 @@ window.XG_CALC_DATA = {
  ],
  "currency": "EUR"
 };
-window.XG_CHAT = { open: true }; /* Demo: lokaler Fallback-Bot (kein Server) */
+window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fallback-Bot (kein Server) */
 </script>
 <script>
 /**
@@ -4828,6 +4876,102 @@ window.XG_CHAT = { open: true }; /* Demo: lokaler Fallback-Bot (kein Server) */
 	};
 
 	init(); // so früh wie möglich (kein FOUC-Flash)
+	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+	else boot();
+})();
+
+;
+/**
+ * XGOUD Locale: taal + valuta + thema in één compacte nav-control (popover),
+ * zodat de navigatie niet vol raakt. Onthoudt de keuze (localStorage),
+ * zet <html lang>, en biedt window.XGLocale.format() voor de calculator.
+ */
+(function () {
+	'use strict';
+
+	var LANGS = [['nl', 'NL'], ['de', 'DE'], ['en', 'EN'], ['fr', 'FR'], ['es', 'ES']];
+	// Statische koersen t.o.v. EUR (later vervangbaar door live rates).
+	var CUR = {
+		EUR: { rate: 1, symbol: '€', locale: 'nl-NL' },
+		USD: { rate: 1.08, symbol: '$', locale: 'en-US' },
+		GBP: { rate: 0.85, symbol: '£', locale: 'en-GB' },
+		CHF: { rate: 0.96, symbol: 'CHF ', locale: 'de-CH' }
+	};
+	var KEY = 'xg-locale';
+
+	var state = { lang: 'nl', currency: 'EUR' };
+	try { Object.assign(state, JSON.parse(localStorage.getItem(KEY)) || {}); } catch (e) {}
+
+	function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} document.cookie = 'xg_locale=' + state.lang + ';path=/;max-age=31536000'; }
+
+	function apply() {
+		document.documentElement.lang = state.lang;
+		save();
+		document.dispatchEvent(new CustomEvent('xg:locale-change', { detail: state }));
+	}
+
+	window.XGLocale = {
+		get: function () { return Object.assign({}, state); },
+		format: function (amount, decimals) {
+			var c = CUR[state.currency] || CUR.EUR;
+			return new Intl.NumberFormat(c.locale, { style: 'currency', currency: state.currency, maximumFractionDigits: decimals == null ? 2 : decimals }).format((amount || 0) * c.rate);
+		}
+	};
+
+	function build(host) {
+		host.classList.add('xg-ctrl');
+		host.innerHTML =
+			'<button class="xg-ctrl-btn" aria-label="Taal en valuta">' +
+				'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"/></svg>' +
+				'<span class="xg-ctrl-cur">' + state.lang.toUpperCase() + ' · ' + state.currency + '</span>' +
+			'</button>' +
+			'<div class="xg-ctrl-pop">' +
+				'<div class="xg-ctrl-label">Taal</div><div class="xg-ctrl-row xg-ctrl-langs"></div>' +
+				'<div class="xg-ctrl-label">Valuta</div><div class="xg-ctrl-row xg-ctrl-curs"></div>' +
+				'<div class="xg-ctrl-theme"><span>Thema</span><span data-xg-theme-toggle></span></div>' +
+			'</div>';
+
+		var btn = host.querySelector('.xg-ctrl-btn');
+		var pop = host.querySelector('.xg-ctrl-pop');
+		var label = host.querySelector('.xg-ctrl-cur');
+		btn.addEventListener('click', function (e) { e.stopPropagation(); host.classList.toggle('open'); });
+		document.addEventListener('click', function (e) { if (!host.contains(e.target)) host.classList.remove('open'); });
+
+		var langs = host.querySelector('.xg-ctrl-langs');
+		LANGS.forEach(function (l) {
+			var b = document.createElement('button');
+			b.className = 'xg-ctrl-opt' + (state.lang === l[0] ? ' active' : '');
+			b.textContent = l[1];
+			b.addEventListener('click', function () {
+				state.lang = l[0]; apply();
+				langs.querySelectorAll('.xg-ctrl-opt').forEach(function (x) { x.classList.remove('active'); });
+				b.classList.add('active'); label.textContent = state.lang.toUpperCase() + ' · ' + state.currency;
+			});
+			langs.appendChild(b);
+		});
+
+		var curs = host.querySelector('.xg-ctrl-curs');
+		Object.keys(CUR).forEach(function (c) {
+			var b = document.createElement('button');
+			b.className = 'xg-ctrl-opt' + (state.currency === c ? ' active' : '');
+			b.textContent = c;
+			b.addEventListener('click', function () {
+				state.currency = c; apply();
+				curs.querySelectorAll('.xg-ctrl-opt').forEach(function (x) { x.classList.remove('active'); });
+				b.classList.add('active'); label.textContent = state.lang.toUpperCase() + ' · ' + state.currency;
+			});
+			curs.appendChild(b);
+		});
+
+		// Theme-Switch in das Popover mounten (sobald theme.js bereit ist).
+		var themeHost = host.querySelector('[data-xg-theme-toggle]');
+		if (window.XGTheme && window.XGTheme.mount) window.XGTheme.mount(themeHost);
+	}
+
+	function boot() {
+		document.documentElement.lang = state.lang;
+		document.querySelectorAll('[data-xg-controls]').forEach(build);
+	}
 	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
 	else boot();
 })();
@@ -5460,10 +5604,12 @@ window.XG_CHAT = { open: true }; /* Demo: lokaler Fallback-Bot (kein Server) */
 	   HELFER
 	===================================================================== */
 	function euro(n) {
-		return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: DATA.currency || 'EUR', maximumFractionDigits: 0 }).format(isFinite(n) ? n : 0);
+		if (window.XGLocale && window.XGLocale.format) return window.XGLocale.format(isFinite(n) ? n : 0, 0);
+			return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: DATA.currency || 'EUR', maximumFractionDigits: 0 }).format(isFinite(n) ? n : 0);
 	}
 	function euro2(n) {
-		return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: DATA.currency || 'EUR', maximumFractionDigits: 2 }).format(isFinite(n) ? n : 0);
+		if (window.XGLocale && window.XGLocale.format) return window.XGLocale.format(isFinite(n) ? n : 0, 2);
+			return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: DATA.currency || 'EUR', maximumFractionDigits: 2 }).format(isFinite(n) ? n : 0);
 	}
 	function pct(n) { return (n * 100).toFixed(1).replace('.', ',') + ' %'; }
 	function h(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
@@ -6539,6 +6685,29 @@ window.XG_CHAT = { open: true }; /* Demo: lokaler Fallback-Bot (kein Server) */
 		return { reply: reply, suggestions: s };
 	}
 	function escapeHtml(s) { return String(s || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+})();
+
+;
+/** XGOUD Newsletter-Banner: aanmelden via REST (window.XG_NEWSLETTER.rest). */
+(function () {
+	'use strict';
+	var CFG = window.XG_NEWSLETTER || {};
+	document.querySelectorAll('.xg-newsletter-form').forEach(function (form) {
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var wrap = form.closest('.xg-newsletter') || document;
+			var msg = wrap.querySelector('.xg-newsletter-msg');
+			var email = (form.querySelector('input[type=email]') || {}).value || '';
+			var city = (form.querySelector('input[type=text]') || {}).value || '';
+			if (!/.+@.+\..+/.test(email)) { if (msg) { msg.className = 'xg-newsletter-msg err'; msg.textContent = 'Vul een geldig e-mailadres in.'; } return; }
+			var payload = { email: email, city: city, source: location.href, lang: document.documentElement.lang || 'nl' };
+			function ok() { if (msg) { msg.className = 'xg-newsletter-msg ok'; msg.textContent = 'Bedankt voor uw aanmelding!'; } form.reset(); }
+			if (CFG.rest && window.fetch) {
+				fetch(CFG.rest, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+					.then(function (r) { return r.json(); }).then(ok).catch(ok);
+			} else { ok(); }
+		});
+	});
 })();
 
 </script>

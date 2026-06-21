@@ -73,6 +73,16 @@ function ekinese_enqueue_assets() {
 		);
 	}
 
+	// Locale-Control (Sprache/Währung/Theme) – nach theme.js, vor Header.
+	$loc_css = get_theme_file_path( 'assets/css/locale.css' );
+	if ( file_exists( $loc_css ) ) {
+		wp_enqueue_style( 'ekinese-locale', get_theme_file_uri( 'assets/css/locale.css' ), array( 'ekinese-theme' ), (string) filemtime( $loc_css ) );
+	}
+	$loc_js = get_theme_file_path( 'assets/js/locale.js' );
+	if ( file_exists( $loc_js ) ) {
+		wp_enqueue_script( 'ekinese-locale', get_theme_file_uri( 'assets/js/locale.js' ), array( 'ekinese-theme' ), (string) filemtime( $loc_js ), true );
+	}
+
 	// Header & Footer System (eigenständige Komponente: Ticker, Mega-Menu, Suche).
 	$hf_css = get_theme_file_path( 'assets/css/header-footer.css' );
 	if ( file_exists( $hf_css ) ) {
@@ -252,7 +262,8 @@ function ekinese_calculator_data() {
 			'fluor'   => array(
 				'None' => 1.00, 'Faint' => 0.98, 'Medium' => 0.94, 'Strong' => 0.88,
 			),
-			'anchor'  => 9000,
+			// Anchor (€/ct, 1ct D/IF/Excellent) – aus IDEX-Cron-Cache, sonst Mock.
+			'anchor'  => function_exists( 'ekinese_idex_anchor' ) ? ekinese_idex_anchor() : 9000,
 		),
 		// Zertifizierungs-Labore für Diamanten & Edelsteine.
 		'labs' => array( 'GIA', 'IGI', 'HRD', 'Geen certificaat' ),
