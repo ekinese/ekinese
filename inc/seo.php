@@ -92,6 +92,27 @@ function ekinese_jsonld() {
 		);
 	}
 
+	// Kantoor (LocalBusiness per stad).
+	if ( is_singular( 'xg_office' ) ) {
+		$id = get_the_ID();
+		$graph[] = array(
+			'@type'       => 'LocalBusiness',
+			'name'        => 'XGOUD ' . get_the_title( $id ),
+			'url'         => get_permalink( $id ),
+			'telephone'   => get_post_meta( $id, 'phone', true ),
+			'email'       => get_post_meta( $id, 'email', true ),
+			'parentOrganization' => array( '@id' => $b['url'] . '#org' ),
+			'address'     => array(
+				'@type'           => 'PostalAddress',
+				'streetAddress'   => get_post_meta( $id, 'street', true ),
+				'postalCode'      => get_post_meta( $id, 'postcode', true ),
+				'addressLocality' => get_post_meta( $id, 'city', true ),
+				'addressCountry'  => 'NL',
+			),
+			'geo'         => array( '@type' => 'GeoCoordinates', 'latitude' => get_post_meta( $id, 'lat', true ), 'longitude' => get_post_meta( $id, 'lng', true ) ),
+		);
+	}
+
 	// Breadcrumbs.
 	if ( is_singular() && ! is_front_page() ) {
 		$items = array(
