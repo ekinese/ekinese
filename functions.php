@@ -44,3 +44,5 @@ require_once get_theme_file_path( 'inc/rewards.php' );
 require_once get_theme_file_path( 'inc/lottery.php' );
 require_once get_theme_file_path( 'inc/partners.php' );
 require_once get_theme_file_path( 'inc/inventory.php' );
+require_once get_theme_file_path( 'inc/hr.php' );
+require_once get_theme_file_path( 'inc/accounting.php' );
