@@ -109,13 +109,16 @@ function ekinese_account_data( WP_REST_Request $req ) {
 	if ( ! $email ) {
 		return new WP_Error( 'unauthorized', __( 'Ongeldige of verlopen link.', 'ekinese' ), array( 'status' => 401 ) );
 	}
-	return rest_ensure_response( array(
+	$data = array(
 		'email'        => $email,
 		'appointments' => ekinese_account_collect( 'xg_appointment', $email, array( 'date', 'time', 'service', 'status', 'proforma' ) ),
 		'tickets'      => ekinese_account_collect( 'xg_ticket', $email, array( 'reference', 'subject', 'status' ) ),
 		'pickups'      => ekinese_account_collect( 'xg_pickup', $email, array( 'reference', 'status' ) ),
 		'alerts'       => ekinese_account_collect( 'xg_price_alert', $email, array( 'metal', 'direction', 'target', 'active' ) ),
-	) );
+	);
+	/** Modules (rewards, loterij, portfolio) kunnen het overzicht uitbreiden. */
+	$data = apply_filters( 'ekinese_account_data', $data, $email );
+	return rest_ensure_response( $data );
 }
 
 /* =====================================================================

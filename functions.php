@@ -40,3 +40,4 @@ require_once get_theme_file_path( 'inc/heatmap.php' );
 require_once get_theme_file_path( 'inc/loyalty.php' );
 require_once get_theme_file_path( 'inc/i18n.php' );
 require_once get_theme_file_path( 'inc/seo-index.php' );
+require_once get_theme_file_path( 'inc/rewards.php' );
