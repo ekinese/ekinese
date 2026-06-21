@@ -6,6 +6,7 @@
  * Aufruf:  node build-test.js
  */
 const fs = require('fs');
+const { execSync } = require('child_process');
 
 function read(p) { return fs.readFileSync(p, 'utf8'); }
 
@@ -13,11 +14,13 @@ function read(p) { return fs.readFileSync(p, 'utf8'); }
 function stripBlocks(s) {
 	return s.replace(/<!--\s*\/?wp:[^>]*?-->/g, '');
 }
-// PHP-Header am Anfang einer Pattern-Datei entfernen
-function stripPhp(s) {
-	return s.replace(/^<\?php[\s\S]*?\?>\s*/, '');
+// Pattern via PHP-CLI rendern (die Patterns rufen die Sektions-Library auf),
+// danach Gutenberg-Kommentare entfernen.
+function pattern(file) {
+	var code = 'define("ABSPATH","/tmp/");require "inc/blueprint-sections.php";ob_start();include "patterns/' + file + '";echo ob_get_clean();';
+	var out = execSync('php -d display_errors=0 -r ' + JSON.stringify(code), { encoding: 'utf8' });
+	return stripBlocks(out).trim();
 }
-function pattern(file) { return stripBlocks(stripPhp(read('patterns/' + file))).trim(); }
 
 const { diamantenVerkopen, productPage } = require('./demo-content.js');
 
@@ -99,7 +102,8 @@ const js = [
 	'assets/js/header-footer.js',
 	'assets/js/blueprint.js',
 	'assets/js/calculator.js',
-	'assets/js/chat.js'
+	'assets/js/chat.js',
+	'assets/js/search-assist.js'
 ].map(read).join('\n;\n');
 
 const html = `<!DOCTYPE html>

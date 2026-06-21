@@ -75,3 +75,15 @@
 	.xg-chat-panel { right: 8px; bottom: 8px; width: calc(100vw - 16px); height: calc(100vh - 16px); }
 	.xg-chat-fab { right: 16px; bottom: 16px; }
 }
+
+/* =====================================================================
+   Such-Assistent (im Header-Such-Overlay)
+   ===================================================================== */
+.xg-sa { width: 660px; max-width: 90vw; margin: 12px auto 0; background: var(--white,#fff); border-top: 2px solid var(--red,#AE1E1E); padding: 16px 18px; }
+.xg-sa-head { display: flex; gap: 12px; align-items: flex-start; }
+.xg-sa-ava { width: 34px; height: 34px; background: var(--red,#AE1E1E); color: #fff; font-weight: 900; font-size: 12px; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.xg-sa-head strong { font-size: 13px; color: var(--ink,#1c1a16); }
+.xg-sa-reply { font-size: 14px; color: var(--ink-soft,#6b665c); margin-top: 3px; line-height: 1.5; }
+.xg-sa-sugg { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.xg-sa-sugg a { font-size: 13px; font-weight: 700; color: var(--red,#AE1E1E); border: 1px solid var(--line,#e3ddd0); padding: 8px 12px; text-decoration: none; transition: .15s; }
+.xg-sa-sugg a:hover { border-color: var(--red,#AE1E1E); background: var(--red-soft,rgba(174,30,30,.07)); }

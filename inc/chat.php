@@ -258,8 +258,15 @@ function ekinese_enqueue_chat_assets() {
 		wp_localize_script( 'ekinese-chat', 'XG_CHAT', array(
 			'rest_message' => esc_url_raw( rest_url( 'ekinese/v1/chat/message' ) ),
 			'rest_upload'  => esc_url_raw( rest_url( 'ekinese/v1/chat/upload' ) ),
+			'rest_assist'  => esc_url_raw( rest_url( 'ekinese/v1/assist' ) ),
 			'open'         => ekinese_chat_is_open(),
 		) );
+	}
+
+	// Such-Assistent (hängt sich an das Header-Such-Overlay).
+	$sa = get_theme_file_path( 'assets/js/search-assist.js' );
+	if ( file_exists( $sa ) ) {
+		wp_enqueue_script( 'ekinese-search-assist', get_theme_file_uri( 'assets/js/search-assist.js' ), array( 'ekinese-chat' ), (string) filemtime( $sa ), true );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'ekinese_enqueue_chat_assets' );
