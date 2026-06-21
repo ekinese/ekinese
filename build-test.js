@@ -17,8 +17,26 @@ function stripBlocks(s) {
 // Pattern via PHP-CLI rendern (die Patterns rufen die Sektions-Library auf),
 // danach Gutenberg-Kommentare entfernen.
 function pattern(file) {
-	var code = 'define("ABSPATH","/tmp/");require "inc/blueprint-sections.php";ob_start();include "patterns/' + file + '";echo ob_get_clean();';
-	var out = execSync('php -d display_errors=0 -r ' + JSON.stringify(code), { encoding: 'utf8' });
+	// Via een tijdelijk PHP-script (geen -r) → geen shell-expansie van $-variabelen.
+	// Lichte shims voor WP-escaping/i18n zodat patterns die deze gebruiken (o.a.
+	// de juridische pagina's) ook buiten WordPress renderen.
+	var php = '<?php\n'
+		+ 'define("ABSPATH","/tmp/");\n'
+		+ 'function esc_html($s){return htmlspecialchars((string)$s,ENT_QUOTES);}\n'
+		+ 'function esc_attr($s){return htmlspecialchars((string)$s,ENT_QUOTES);}\n'
+		+ 'function esc_url($s){return (string)$s;}\n'
+		+ 'function esc_html__($s){return $s;}\n'
+		+ 'function esc_html_e($s){echo $s;}\n'
+		+ 'function __($s){return $s;}\n'
+		+ 'function _e($s){echo $s;}\n'
+		+ 'function wp_kses_post($s){return $s;}\n'
+		+ 'function home_url($s=""){return $s;}\n'
+		+ 'function get_theme_file_uri($s=""){return $s;}\n'
+		+ 'require "inc/blueprint-sections.php";\n'
+		+ 'ob_start();include "patterns/' + file + '";echo ob_get_clean();\n';
+	var tmp = '.tst-render.php';
+	fs.writeFileSync(tmp, php);
+	var out = execSync('php -d display_errors=1 ' + tmp, { encoding: 'utf8' });
 	return stripBlocks(out).trim();
 }
 
@@ -27,14 +45,52 @@ const { diamantenVerkopen, productPage } = require('./demo-content.js');
 const header = stripBlocks(read('parts/header.html')).trim();
 const footer = stripBlocks(read('parts/footer.html')).trim();
 
+// Veilig een pattern renderen; bij een fout een nette placeholder tonen i.p.v.
+// de hele build te laten crashen (sommige patterns gebruiken dynamische blocks).
+function safePattern(file) {
+	try {
+		var out = pattern(file);
+		return out && out.trim() ? out : '<section class="xg-container" style="padding:80px 40px"><p style="opacity:.5">[' + file + ' – dynamische inhoud, alleen in WordPress]</p></section>';
+	} catch (e) {
+		return '<section class="xg-container" style="padding:80px 40px"><p style="opacity:.5">[' + file + ' niet renderbaar buiten WordPress]</p></section>';
+	}
+}
+
 const pages = {
-	diamanten:   { label: '★ Diamanten (klaar)', html: diamantenVerkopen },
-	hero:        { label: 'Hero + Calculator', html: pattern('hero-calculator.php') },
-	edelmetalen: { label: 'Edelmetalen',       html: pattern('blueprint-edelmetalen.php') },
-	edelstenen:  { label: 'Edelstenen',        html: pattern('blueprint-edelstenen.php') },
-	horloges:    { label: 'Horloges',          html: pattern('blueprint-horloges.php') },
-	verkoop:     { label: 'Verkoop-Blaupause', html: pattern('blueprint-verkoop.php') },
-	product:     { label: '★ Produkt: Krugerrand', html: productPage }
+	home:        { label: '★ Home',            html: safePattern('page-home.php') },
+	hero:        { label: 'Hero + Calculator', html: safePattern('hero-calculator.php') },
+	diamanten:   { label: '★ Diamanten',       html: diamantenVerkopen },
+	edelmetalen: { label: 'Edelmetalen',       html: safePattern('blueprint-edelmetalen.php') },
+	edelstenen:  { label: 'Edelstenen',        html: safePattern('blueprint-edelstenen.php') },
+	horloges:    { label: 'Horloges',          html: safePattern('blueprint-horloges.php') },
+	verkoop:     { label: 'Verkoop-Blaupause', html: safePattern('blueprint-verkoop.php') },
+	product:     { label: '★ Produkt: Krugerrand', html: productPage },
+	'cat-goud':  { label: 'Categorie: Goud',   html: safePattern('cat-goud.php') },
+	'cat-zilver':{ label: 'Categorie: Zilver', html: safePattern('cat-zilver.php') },
+	'cat-platina':{label: 'Categorie: Platina',html: safePattern('cat-platina.php') },
+	overons:     { label: 'Over ons',          html: safePattern('page-over-ons.php') },
+	'oo-verhaal':{ label: '— Ons verhaal',     html: safePattern('over-ons-verhaal.php') },
+	'oo-experts':{ label: '— Team/Experts',    html: safePattern('over-ons-experts.php') },
+	'oo-bedrijf':{ label: '— Bedrijf',         html: safePattern('over-ons-bedrijf.php') },
+	'oo-reviews':{ label: '— Beoordelingen',   html: safePattern('over-ons-beoordelingen.php') },
+	'oo-cert':   { label: '— Certificaten',    html: safePattern('over-ons-certificaten.php') },
+	'oo-partner':{ label: '— Partners',        html: safePattern('over-ons-partners.php') },
+	'oo-nieuws': { label: '— Nieuws',          html: safePattern('over-ons-nieuws.php') },
+	'oo-pers':   { label: '— Pers',            html: safePattern('over-ons-pers.php') },
+	'oo-vac':    { label: '— Vacatures',       html: safePattern('over-ons-vacatures.php') },
+	services:    { label: 'Service',           html: safePattern('page-services.php') },
+	'sv-taxatie':{ label: '— Gratis taxatie',  html: safePattern('services-taxatie.php') },
+	'sv-thuis':  { label: '— Thuisbezoek',     html: safePattern('services-thuisbezoek.php') },
+	'sv-inruil': { label: '— Inruilen',        html: safePattern('services-inruilen.php') },
+	'sv-faq':    { label: '— FAQ',             html: safePattern('services-faq.php') },
+	'sv-hoe':    { label: '— Hoe werkt het',   html: safePattern('services-hoe-werkt-het.php') },
+	'sv-kantoor':{ label: '— Kantoorbezoek',   html: safePattern('services-kantoorbezoek.php') },
+	'sv-ophaal': { label: '— Ophaalservice',   html: safePattern('services-ophaalservice.php') },
+	'sv-zakelijk':{label: '— Zakelijk',        html: safePattern('services-zakelijk.php') },
+	contact:     { label: 'Contact',           html: safePattern('contact.php') },
+	privacy:     { label: 'Privacy',           html: safePattern('page-privacy.php') },
+	terms:       { label: 'Voorwaarden',       html: safePattern('page-terms.php') },
+	cookies:     { label: 'Cookies',           html: safePattern('page-cookies.php') }
 };
 
 // Mock-Daten = Struktur aus inc/setup.php
@@ -80,7 +136,7 @@ const calcData = {
 };
 
 const nav = Object.keys(pages).map((k, i) =>
-	`<button class="tst-tab${i===0?' active':''}" data-go="${k}">${pages[k].label}</button>`
+	`<option value="${k}"${i===0?' selected':''}>${pages[k].label}</option>`
 ).join('');
 
 const sections = Object.keys(pages).map((k, i) =>
@@ -96,7 +152,9 @@ const css = [
 	'assets/css/calculator.css',
 	'assets/css/chat.css',
 	'assets/css/locale.css',
-	'assets/css/newsletter.css'
+	'assets/css/newsletter.css',
+	'assets/css/offices.css',
+	'assets/css/charity.css'
 ].map(read).join('\n\n');
 
 const js = [
@@ -123,19 +181,25 @@ ${css}
 /* ---- Test-Toolbar ---- */
 .tst-toolbar {
 	position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
-	z-index: 100002; display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+	z-index: 100002; display: flex; gap: 8px; align-items: center;
 	background: var(--white,#fff); border: 1px solid var(--line,#ddd);
-	box-shadow: 0 12px 40px rgba(0,0,0,.2); padding: 8px; border-radius: 40px; max-width: 94vw;
+	box-shadow: 0 12px 40px rgba(0,0,0,.2); padding: 8px 12px; border-radius: 40px; max-width: 94vw;
+}
+.tst-label { font: 700 11px Arial, sans-serif; letter-spacing: .5px; color: var(--red,#AE1E1E); white-space: nowrap; }
+.tst-select {
+	font: 700 13px Arial, sans-serif; color: var(--ink,#222);
+	border: 1px solid var(--line,#ddd); background: #fff; padding: 8px 12px;
+	border-radius: 30px; cursor: pointer; max-width: 52vw;
 }
 .tst-tab {
-	border: none; background: transparent; cursor: pointer;
-	font: 700 12px Arial, sans-serif; letter-spacing: .5px;
-	color: var(--ink-soft,#666); padding: 8px 14px; border-radius: 30px;
-	transition: background .2s, color .2s;
+	border: none; background: var(--red,#AE1E1E); color: #fff; cursor: pointer;
+	font: 700 12px Arial, sans-serif; letter-spacing: .3px;
+	padding: 8px 14px; border-radius: 30px; white-space: nowrap;
 }
-.tst-tab:hover { color: var(--red,#AE1E1E); }
-.tst-tab.active { background: var(--red,#AE1E1E); color: #fff; }
-.tst-fill { margin-left: 6px; }
+.tst-nav-btn {
+	border: 1px solid var(--line,#ddd); background:#fff; color: var(--ink,#222);
+	cursor: pointer; font: 700 14px Arial; width: 34px; height: 34px; border-radius: 50%;
+}
 </style>
 </head>
 <body>
@@ -150,8 +214,11 @@ ${sections}
 ${footer}
 
 <div class="tst-toolbar">
-	${nav}
-	<button class="tst-tab tst-fill" id="tstFill">Demo-tekst aan/uit</button>
+	<span class="tst-label">XGOUD</span>
+	<button class="tst-nav-btn" id="tstPrev" title="Vorige">‹</button>
+	<select class="tst-select" id="tstSelect">${nav}</select>
+	<button class="tst-nav-btn" id="tstNext" title="Volgende">›</button>
+	<button class="tst-tab" id="tstFill">Demo-tekst</button>
 </div>
 
 <script>
@@ -162,15 +229,19 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 ${js}
 </script>
 <script>
-/* Seiten-Umschaltung */
-document.querySelectorAll('.tst-tab[data-go]').forEach(function (b) {
-	b.addEventListener('click', function () {
-		document.querySelectorAll('.tst-tab[data-go]').forEach(function (x) { x.classList.remove('active'); });
-		b.classList.add('active');
-		var go = b.getAttribute('data-go');
-		document.querySelectorAll('.tst-page').forEach(function (p) { p.hidden = (p.getAttribute('data-page') !== go); });
-		window.scrollTo(0, 0);
-	});
+/* Seiten-Umschaltung via Dropdown + Pfeile */
+var tstSelect = document.getElementById('tstSelect');
+function showPage(go) {
+	document.querySelectorAll('.tst-page').forEach(function (p) { p.hidden = (p.getAttribute('data-page') !== go); });
+	tstSelect.value = go;
+	window.scrollTo(0, 0);
+}
+tstSelect.addEventListener('change', function () { showPage(this.value); });
+document.getElementById('tstPrev').addEventListener('click', function () {
+	var i = tstSelect.selectedIndex; if (i > 0) { tstSelect.selectedIndex = i - 1; showPage(tstSelect.value); }
+});
+document.getElementById('tstNext').addEventListener('click', function () {
+	var i = tstSelect.selectedIndex; if (i < tstSelect.options.length - 1) { tstSelect.selectedIndex = i + 1; showPage(tstSelect.value); }
 });
 
 /* Demo-Text (Nederlands) in leere Gutenberg-Blöcke – standardmäßig AN,
@@ -205,6 +276,8 @@ applyFill(true); // Demo-Text beim Laden direkt anzeigen
 </script>
 </body>
 </html>`;
+
+try { fs.unlinkSync('.tst-render.php'); } catch (e) { /* nooit fataal */ }
 
 fs.writeFileSync('test-suite.html', html);
 console.log('test-suite.html geschrieben (' + (html.length / 1024).toFixed(0) + ' KB) – vollständig eigenständig');
