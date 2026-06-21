@@ -244,7 +244,7 @@ html[data-theme="dark"] {
   --neutral:   #888880;
   --white:     #ffffff;
   --font:      Arial, Helvetica, sans-serif;
-  --max-w:     1400px;
+  --max-w:     100%;   /* volle schermbreedte op desktop (frame), 40px gutter via padding */
   --shadow:    0 12px 40px rgba(0,0,0,0.11);
   --topbar-h:  52px;
   --header-h:  84px;
@@ -1183,6 +1183,26 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
   .footer__bottom-partners { display: none; }
   .xg-ti { min-width: 130px; padding: 0 12px; }
   .xg-ti-price { font-size: 13px; }
+
+  /* Footer-Akkordeon (Mobile) – Navigatiekolommen inklapbaar. */
+  nav.footer__col { border-bottom: 1px solid var(--line, rgba(0,0,0,.1)); padding-bottom: 12px; }
+  nav.footer__col .footer__heading {
+    margin: 0; padding: 14px 0; cursor: pointer; position: relative;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  nav.footer__col .footer__heading::after {
+    content: ""; width: 9px; height: 9px; border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor; transform: rotate(45deg);
+    transition: transform .25s ease; margin-right: 4px; opacity: .7;
+  }
+  nav.footer__col.is-open .footer__heading::after { transform: rotate(-135deg); }
+  nav.footer__col .footer__link,
+  nav.footer__col .footer__trust-box {
+    max-height: 0; overflow: hidden; opacity: 0;
+    transition: max-height .3s ease, opacity .2s ease, margin .3s ease;
+  }
+  nav.footer__col.is-open .footer__link { max-height: 60px; opacity: 1; }
+  nav.footer__col.is-open .footer__trust-box { max-height: 200px; opacity: 1; }
 }
 
 
@@ -1219,6 +1239,26 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
     .xg-blueprint .xg-grid-2,
     .xg-blueprint .xg-grid-3,
     .xg-blueprint .xg-grid-4 { grid-template-columns: 1fr; }
+}
+
+/* =========================
+   MOBIEL – geen horizontale overflow, brede elementen scrollen netjes
+========================= */
+@media (max-width: 767px) {
+    html, body { overflow-x: hidden; max-width: 100%; }
+    .xg-blueprint img,
+    .xg-blueprint iframe,
+    .xg-blueprint video { max-width: 100%; height: auto; }
+    /* Brede tabellen horizontaal scrollbaar i.p.v. de pagina te verbreden. */
+    .xg-blueprint .xg-spec-table,
+    .xg-blueprint .xg-table-scroll { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .xg-blueprint .xg-spec-table table { min-width: 480px; }
+    /* Horizontaal scrollende kaartrijen op touch (geen afgekapte kolommen). */
+    .xg-blueprint .xg-hscroll {
+        display: flex; gap: 14px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory; padding-bottom: 8px; margin: 0 -16px; padding-left: 16px; padding-right: 16px;
+    }
+    .xg-blueprint .xg-hscroll > * { flex: 0 0 82%; scroll-snap-align: start; }
 }
 
 /* =========================
@@ -2871,6 +2911,27 @@ a.xg-final-btn:hover {
     .xg-blueprint .xg-reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
 
+/* Specificatie-tabel (productpagina): label-kolom licht i.p.v. zwart. */
+.xg-spec-table th {
+    background: #faf8f2;
+    color: #111;
+    text-align: left;
+    font-weight: 700;
+    border-bottom: 1px solid #ececec;
+}
+[data-theme="dark"] .xg-spec-table th { background: #262320; color: #f3efe8; border-color: #34302b; }
+.xg-c-card[href]:hover { text-decoration: none; }
+
+/* Juridische / tekstpagina's (Privacy, Voorwaarden, Cookies). */
+.xg-legal { max-width: 860px; margin: 0 auto; padding: 60px 40px; color: var(--ink, #1c1a16); }
+.xg-legal h1 { font-size: 44px; line-height: 1.1; margin: 0 0 10px; color: var(--ink, #1c1a16); }
+.xg-legal .xg-legal-upd { color: var(--ink-soft, #6b665c); font-size: 14px; margin-bottom: 30px; }
+.xg-legal h2 { font-size: 24px; margin: 36px 0 12px; color: var(--ink, #1c1a16); padding-top: 16px; border-top: 1px solid var(--line, #e3ddd0); }
+.xg-legal h3 { font-size: 18px; margin: 22px 0 8px; color: var(--ink, #1c1a16); }
+.xg-legal p, .xg-legal li { font-size: 16px; line-height: 1.8; color: var(--ink-soft, #4a463e); }
+.xg-legal ul { padding-left: 22px; }
+.xg-legal a { color: var(--red, #AE1E1E); }
+
 
 /* =====================================================================
    XGOUD Smart Calculator  ·  Wizard
@@ -3629,22 +3690,245 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 @media (max-width: 800px){ .xg-newsletter-inner { grid-template-columns: 1fr; } }
 
 
+/* =====================================================================
+   XGOUD Kantoren (Offices) – Übersicht + Einzelseite
+   Marke = ROT, scharfkantig, Day/Dark über Tokens. Karte via Leaflet.
+   ===================================================================== */
+
+.xg-offices { max-width: var(--max-w, 1400px); margin: 0 auto; padding: 40px; color: var(--ink, #1c1a16); }
+
+/* ---- Intro ---- */
+.xg-offices-intro { margin-bottom: 32px; }
+.xg-offices-intro h1 { font-size: 48px; line-height: 1.05; margin: 0 0 14px; color: var(--ink, #1c1a16); }
+.xg-offices-intro p { font-size: 18px; line-height: 1.7; color: var(--ink-soft, #6b665c); margin: 0; max-width: 760px; }
+
+/* ---- HQ-Hervorhebung (Eindhoven) ---- */
+.xg-hq-banner {
+	display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+	background: linear-gradient(135deg, var(--red, #AE1E1E), var(--red-dark, #8C1717));
+	color: #fff; padding: 22px 26px; margin-bottom: 28px;
+}
+.xg-hq-banner .xg-hq-badge {
+	font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+	background: rgba(255,255,255,.18); padding: 6px 12px; flex-shrink: 0;
+}
+.xg-hq-banner strong { font-size: 20px; }
+.xg-hq-banner span { color: rgba(255,255,255,.85); font-size: 15px; }
+.xg-hq-banner .xg-hq-perk {
+	margin-left: auto; font-size: 14px; font-weight: 700;
+	background: #fff; color: var(--red, #AE1E1E); padding: 10px 16px;
+}
+
+/* ---- Such-/Filterleiste ---- */
+.xg-offices-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+.xg-offices-search {
+	flex: 1; min-width: 220px; display: flex; align-items: center; gap: 10px;
+	border: 1px solid var(--line, #e3ddd0); background: var(--white, #fff); padding: 12px 16px;
+}
+.xg-offices-search input { flex: 1; border: none; outline: none; background: transparent; font: 15px Arial, sans-serif; color: var(--ink, #1c1a16); }
+.xg-offices-count { display: flex; align-items: center; font-size: 14px; color: var(--ink-soft, #6b665c); padding: 0 4px; }
+
+/* ---- Layout: Karte + Liste ---- */
+.xg-offices-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start; }
+
+#xg-offices-map, .xg-office-map {
+	width: 100%; height: 560px;
+	border: 1px solid var(--line, #e3ddd0);
+	background: #e9e6df; position: sticky; top: 20px;
+}
+
+/* Liste */
+.xg-offices-list { display: flex; flex-direction: column; gap: 14px; max-height: 560px; overflow-y: auto; padding-right: 4px; }
+.xg-office-card {
+	display: block; text-align: left; cursor: pointer;
+	border: 1px solid var(--line, #e3ddd0); background: var(--white, #fff);
+	padding: 20px; transition: border-color .2s, box-shadow .2s, transform .2s;
+	position: relative;
+}
+.xg-office-card:hover, .xg-office-card.active {
+	border-color: var(--red, #AE1E1E);
+	box-shadow: 0 14px 34px rgba(17,17,17,.08);
+	transform: translateY(-2px);
+}
+.xg-office-card.is-hq { border-left: 4px solid var(--red, #AE1E1E); }
+.xg-office-card-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.xg-office-card h3 { font-size: 20px; margin: 0; color: var(--ink, #1c1a16); }
+.xg-office-card .xg-hq-tag {
+	font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+	color: var(--red, #AE1E1E); border: 1px solid var(--red, #AE1E1E); padding: 3px 7px; flex-shrink: 0;
+}
+.xg-office-card .xg-office-addr { font-size: 14px; color: var(--ink-soft, #6b665c); margin: 8px 0 0; line-height: 1.5; }
+.xg-office-card .xg-office-hours { font-size: 13px; color: var(--ink-soft, #6b665c); margin-top: 8px; }
+.xg-office-card .xg-office-hours b { color: var(--green, #1f9d55); }
+.xg-office-card-actions { display: flex; gap: 8px; margin-top: 14px; }
+.xg-office-btn {
+	display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+	font-size: 13px; font-weight: 700; padding: 9px 14px; text-decoration: none; cursor: pointer;
+	border: 1px solid var(--line, #e3ddd0); background: var(--white, #fff); color: var(--ink, #1c1a16);
+	transition: .15s ease;
+}
+.xg-office-btn:hover { border-color: var(--red, #AE1E1E); color: var(--red, #AE1E1E); }
+.xg-office-btn.primary { background: var(--red, #AE1E1E); border-color: var(--red, #AE1E1E); color: #fff; }
+.xg-office-btn.primary:hover { background: var(--red-dark, #8C1717); color: #fff; }
+
+/* Leaflet-Marker (HQ vs normal) */
+.xg-pin {
+	width: 28px; height: 28px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+	background: var(--red, #AE1E1E); border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,.3);
+}
+.xg-pin.hq { background: #c8a24a; width: 34px; height: 34px; }
+.xg-pin span { display: block; transform: rotate(45deg); color: #fff; text-align: center; line-height: 24px; font-weight: 700; font-size: 13px; }
+
+/* Leaflet-Popup im Markenstil */
+.leaflet-popup-content-wrapper { border-radius: 0; }
+.xg-popup h4 { margin: 0 0 4px; font-size: 16px; color: #111; }
+.xg-popup p { margin: 0 0 8px; font-size: 13px; color: #555; line-height: 1.5; }
+.xg-popup a { font-size: 13px; font-weight: 700; color: var(--red, #AE1E1E); text-decoration: none; }
+
+/* =====================================================================
+   EINZELSEITE  (Detail + Maps + Route)
+   ===================================================================== */
+.xg-office-single { max-width: var(--max-w, 1400px); margin: 0 auto; padding: 40px; }
+.xg-office-hero { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 26px; }
+.xg-office-hero h1 { font-size: 46px; margin: 0; color: var(--ink, #1c1a16); }
+.xg-office-hero .xg-hq-tag {
+	font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+	background: var(--red, #AE1E1E); color: #fff; padding: 6px 12px; margin-top: 12px;
+}
+.xg-office-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 30px; align-items: start; }
+
+.xg-office-info { display: flex; flex-direction: column; gap: 22px; }
+.xg-office-block { border: 1px solid var(--line, #e3ddd0); background: var(--white, #fff); padding: 24px; }
+.xg-office-block h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--ink-soft, #6b665c); margin: 0 0 14px; padding-bottom: 10px; border-bottom: 2px solid var(--red, #AE1E1E); display: inline-block; }
+.xg-office-row { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; font-size: 15px; color: var(--ink, #1c1a16); }
+.xg-office-row svg { width: 18px; height: 18px; color: var(--red, #AE1E1E); flex-shrink: 0; margin-top: 2px; }
+
+.xg-hours-table { width: 100%; border-collapse: collapse; }
+.xg-hours-table td { padding: 8px 0; font-size: 15px; border-bottom: 1px solid var(--line, #e3ddd0); color: var(--ink, #1c1a16); }
+.xg-hours-table td:last-child { text-align: right; font-weight: 700; }
+.xg-hours-table tr.today td { color: var(--red, #AE1E1E); }
+.xg-hours-table tr.closed td:last-child { color: var(--ink-soft, #6b665c); font-weight: 400; }
+
+.xg-office-cta { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.xg-office-cta .xg-office-btn { padding: 14px 18px; font-size: 15px; }
+
+.xg-office-mapcol { position: sticky; top: 20px; }
+.xg-office-mapcol .xg-office-map { height: 460px; margin-bottom: 14px; }
+.xg-office-embed { width: 100%; height: 320px; border: 1px solid var(--line, #e3ddd0); }
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+	.xg-offices-layout, .xg-office-grid { grid-template-columns: 1fr; }
+	#xg-offices-map, .xg-office-map { position: static; height: 380px; }
+	.xg-offices-list { max-height: none; overflow: visible; }
+	.xg-office-mapcol { position: static; }
+}
+@media (max-width: 560px) {
+	.xg-offices, .xg-office-single { padding: 24px 16px; }
+	.xg-offices-intro h1, .xg-office-hero h1 { font-size: 34px; }
+	.xg-hq-banner .xg-hq-perk { margin-left: 0; }
+}
+
+
+/* =====================================================================
+   XGOUD Charity – Transparenz-Board + Zertifikat
+   Rot primär, Gold für Beträge. Scharfkantig. Day/Dark über Tokens.
+   ===================================================================== */
+
+.xg-charity-board { max-width: var(--max-w, 1400px); margin: 0 auto; padding: 40px; }
+
+.xg-charity-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.xg-charity-tab {
+	border: 1px solid var(--line, #e3ddd0); background: var(--white, #fff);
+	color: var(--ink-soft, #6b665c); font: 700 13px Arial, sans-serif; letter-spacing: .3px;
+	padding: 11px 18px; cursor: pointer; transition: .15s ease;
+}
+.xg-charity-tab:hover { border-color: var(--gold, #c8a24a); color: var(--gold, #c8a24a); }
+.xg-charity-tab.active { background: var(--red, #AE1E1E); border-color: var(--red, #AE1E1E); color: #fff; }
+
+.xg-charity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.xg-charity-card {
+	border: 1px solid var(--line, #e3ddd0); background: var(--white, #fff);
+	padding: 22px; display: flex; flex-direction: column; gap: 14px;
+	box-shadow: 0 14px 34px rgba(17,17,17,.05);
+}
+.xg-charity-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.xg-charity-card-head h3 { margin: 0; font-size: 18px; color: var(--ink, #1c1a16); }
+.xg-charity-card-head span { font-size: 12px; color: var(--ink-soft, #6b665c); }
+
+.xg-charity-accrued {
+	display: flex; flex-direction: column; gap: 2px;
+	padding: 14px; border: 1px solid var(--gold, #c8a24a);
+	background: var(--gold-soft, rgba(200,162,74,.12));
+}
+.xg-charity-accrued span { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--ink-soft, #6b665c); }
+.xg-charity-accrued strong { font-size: 26px; font-weight: 800; color: var(--gold, #c8a24a); }
+
+.xg-charity-pay-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft, #6b665c); margin-bottom: 6px; }
+.xg-charity-payrow { display: flex; justify-content: space-between; font-size: 14px; padding: 6px 0; border-bottom: 1px dashed var(--line, #e3ddd0); }
+.xg-charity-payrow:last-child { border-bottom: none; }
+.xg-charity-payrow b { color: var(--red, #AE1E1E); }
+.xg-charity-payrow.muted span { color: var(--ink-soft, #6b665c); }
+.xg-charity-link { font-size: 13px; font-weight: 700; color: var(--red, #AE1E1E); text-decoration: none; margin-top: auto; }
+.xg-charity-link:hover { color: var(--red-dark, #8C1717); }
+.xg-charity-empty { color: var(--ink-soft, #6b665c); }
+
+@media (max-width: 900px) { .xg-charity-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .xg-charity-board { padding: 24px 16px; } .xg-charity-grid { grid-template-columns: 1fr; } }
+
+/* =====================================================================
+   ZERTIFIKAT (ekinese_render_certificate / [xg_certificate])
+   ===================================================================== */
+.xg-certificate {
+	max-width: 680px; margin: 30px auto; padding: 48px 54px; text-align: center;
+	background: var(--white, #fff);
+	border: 1px solid var(--gold, #c8a24a);
+	box-shadow: 0 24px 60px rgba(17,17,17,.10); position: relative;
+}
+.xg-certificate::before, .xg-certificate::after {
+	content: ""; position: absolute; left: 18px; right: 18px; height: 1px; background: var(--gold, #c8a24a); opacity: .5;
+}
+.xg-certificate::before { top: 14px; }
+.xg-certificate::after { bottom: 14px; }
+.xg-cert-brand { font-size: 26px; font-weight: 900; letter-spacing: 3px; color: var(--ink, #1c1a16); }
+.xg-cert-brand span { color: var(--red, #AE1E1E); }
+.xg-cert-kicker { margin-top: 10px; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold, #c8a24a); font-weight: 700; }
+.xg-certificate h2 { font-size: 30px; margin: 18px 0 10px; color: var(--ink, #1c1a16); }
+.xg-certificate p { font-size: 16px; line-height: 1.7; color: var(--ink-soft, #6b665c); margin: 6px 0; }
+.xg-certificate strong { color: var(--gold, #c8a24a); }
+.xg-cert-project { font-size: 22px; font-weight: 800; color: var(--red, #AE1E1E); margin: 12px 0; }
+.xg-cert-sub { font-style: italic; }
+.xg-cert-foot { display: flex; justify-content: space-between; margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--line, #e3ddd0); font-size: 13px; color: var(--ink-soft, #6b665c); }
+
+@media print {
+	body * { visibility: hidden; }
+	.xg-certificate, .xg-certificate * { visibility: visible; }
+	.xg-certificate { position: absolute; left: 0; top: 0; box-shadow: none; }
+}
+
+
 /* ---- Test-Toolbar ---- */
 .tst-toolbar {
 	position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
-	z-index: 100002; display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+	z-index: 100002; display: flex; gap: 8px; align-items: center;
 	background: var(--white,#fff); border: 1px solid var(--line,#ddd);
-	box-shadow: 0 12px 40px rgba(0,0,0,.2); padding: 8px; border-radius: 40px; max-width: 94vw;
+	box-shadow: 0 12px 40px rgba(0,0,0,.2); padding: 8px 12px; border-radius: 40px; max-width: 94vw;
+}
+.tst-label { font: 700 11px Arial, sans-serif; letter-spacing: .5px; color: var(--red,#AE1E1E); white-space: nowrap; }
+.tst-select {
+	font: 700 13px Arial, sans-serif; color: var(--ink,#222);
+	border: 1px solid var(--line,#ddd); background: #fff; padding: 8px 12px;
+	border-radius: 30px; cursor: pointer; max-width: 52vw;
 }
 .tst-tab {
-	border: none; background: transparent; cursor: pointer;
-	font: 700 12px Arial, sans-serif; letter-spacing: .5px;
-	color: var(--ink-soft,#666); padding: 8px 14px; border-radius: 30px;
-	transition: background .2s, color .2s;
+	border: none; background: var(--red,#AE1E1E); color: #fff; cursor: pointer;
+	font: 700 12px Arial, sans-serif; letter-spacing: .3px;
+	padding: 8px 14px; border-radius: 30px; white-space: nowrap;
 }
-.tst-tab:hover { color: var(--red,#AE1E1E); }
-.tst-tab.active { background: var(--red,#AE1E1E); color: #fff; }
-.tst-fill { margin-left: 6px; }
+.tst-nav-btn {
+	border: 1px solid var(--line,#ddd); background:#fff; color: var(--ink,#222);
+	cursor: pointer; font: 700 14px Arial; width: 34px; height: 34px; border-radius: 50%;
+}
 </style>
 </head>
 <body>
@@ -3840,7 +4124,89 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 </div><!-- /header system -->
 
 <main>
-<section class="tst-page" data-page="diamanten">
+<section class="tst-page" data-page="home"><div class="xg-blueprint">
+
+<section class="xg-hero-split">
+	<div class="xg-hero-split-text">
+		<div class="hero-kicker">GOUD · ZILVER · DIAMANTEN · HORLOGES</div>
+		<h1>Verkoop uw edelmetaal tegen de beste dagprijs</h1>
+		<p>Bij XGOUD krijgt u een eerlijke, transparante prijs — direct uitbetaald en met een vast deel voor het goede doel. Bereken hiernaast in enkele seconden uw waarde.</p>
+	</div>
+	<div class="xg-hero-split-calc">
+		<div class="xg-calc" data-mode="compact" data-only="metal"></div>
+	</div>
+</section>
+
+<div class="xg-charity-ticker">
+	<span class="xg-charity-ticker-label">XGOUD heeft deze maand aan goede doelen gegeven:</span>
+	<span class="xg-charity-ticker-amount" data-xg-charity-total>€ 65.168,36</span>
+	<div class="xg-charity-ticker-projects"><span>Scholen</span><span>Kinderdagverblijven</span><span>Vrouwenopvang</span><span>Sportcentra</span></div>
+</div>
+
+<section><div class="xg-container"><div class="xg-why">
+	<div class="xg-eyebrow">WAAROM XGOUD</div>
+	<h2>De vertrouwde inkoper sinds 2009</h2>
+	<p class="xg-intro">Eerlijke dagprijzen, deskundige taxatie en een persoonlijke aanpak — bij u thuis, op kantoor of via onze ophaalservice.</p>
+	<div class="xg-benefits">
+		<div class="xg-benefit"><span class="xg-b-num">01</span><span class="xg-b-title">Beste dagprijs</span><p>Vaste inkoopprijs voor edelmetaal op basis van de actuele spotkoers.</p></div>
+		<div class="xg-benefit"><span class="xg-b-num">02</span><span class="xg-b-title">Direct uitbetaald</span><p>Per bank of contant, meteen na akkoord.</p></div>
+		<div class="xg-benefit"><span class="xg-b-num">03</span><span class="xg-b-title">40+ vestigingen</span><p>Altijd een locatie bij u in de buurt, met Eindhoven als hoofdkantoor.</p></div>
+		<div class="xg-benefit"><span class="xg-b-num">04</span><span class="xg-b-title">Goed doel</span><p>Een vast deel van elke marge gaat naar een project in uw stad.</p></div>
+	</div>
+</div></div></section>
+
+<section><div class="xg-container"><div class="xg-steps-content">
+	<h2>Zo werkt het</h2>
+	<p>In vier eenvoudige stappen van edelmetaal naar geld.</p>
+</div><div class="xg-grid-4">
+	<div class="xg-step-card"><div class="xg-step-number">1</div><h3>Bereken</h3><p>Bepaal online een indicatie van uw waarde.</p></div>
+	<div class="xg-step-card"><div class="xg-step-number">2</div><h3>Afspraak</h3><p>Kies thuisbezoek, een kantoor of de ophaalservice.</p></div>
+	<div class="xg-step-card"><div class="xg-step-number">3</div><h3>Taxatie</h3><p>Onze expert taxeert en doet een transparant bod.</p></div>
+	<div class="xg-step-card"><div class="xg-step-number">4</div><h3>Uitbetaling</h3><p>Akkoord? Direct uitbetaald.</p></div>
+</div></div></section>
+
+<section><div class="xg-container">
+	<h2 class="xg-section-title">Wat kunt u verkopen?</h2>
+	<div class="xg-grid-4">
+		<a class="xg-c-card" href="/edelmetalen-verkopen/goud-verkopen/" style="text-decoration:none"><h3>Goud</h3><p>Baren, munten en sloopgoud.</p></a>
+		<a class="xg-c-card" href="/edelmetalen-verkopen/zilver-verkopen/" style="text-decoration:none"><h3>Zilver</h3><p>Baren en munten.</p></a>
+		<a class="xg-c-card" href="/edelstenen-verkopen/diamanten-verkopen/" style="text-decoration:none"><h3>Diamanten</h3><p>Volgens Rapaport getaxeerd.</p></a>
+		<a class="xg-c-card" href="/horloges-verkopen/" style="text-decoration:none"><h3>Horloges</h3><p>Luxe merken van alle soorten.</p></a>
+	</div>
+</div></section>
+
+<section><div class="xg-container">
+	<div class="xg-grid-2"><div class="xg-final-cta-content">
+		<h2>Klaar om te verkopen?</h2>
+		<p>Bereken uw waarde of maak direct een afspraak met een van onze experts.</p>
+	</div><div class="xg-final-cta-box">
+		<h3>Start vandaag nog</h3>
+		<div class="xg-final-list"><div class="xg-final-item">✓ Gratis taxatie</div><div class="xg-final-item">✓ Directe uitbetaling</div><div class="xg-final-item">✓ 100% verzekerd</div></div>
+		<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+	</div></div>
+</div></section>
+
+</div></section>
+<section class="tst-page" data-page="hero" hidden><section class="xg-hero-split">
+	<div class="xg-hero-split-text">
+
+
+
+<h1></h1>
+
+
+
+<p></p>
+
+
+
+	</div>
+	<div class="xg-hero-split-calc">
+		<!-- Hero: alleen edelmetaal (horloges/edelstenen via categoriepaginas). -->
+			<div class="xg-calc" data-mode="compact" data-only="metal"></div>
+	</div>
+</section></section>
+<section class="tst-page" data-page="diamanten" hidden>
 <div class="xg-blueprint">
 
 <div class="xg-charity-ticker">
@@ -4064,25 +4430,6 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 </div>
 </section>
-<section class="tst-page" data-page="hero" hidden><section class="xg-hero-split">
-	<div class="xg-hero-split-text">
-
-
-
-<h1></h1>
-
-
-
-<p></p>
-
-
-
-	</div>
-	<div class="xg-hero-split-calc">
-		<!-- Hero: alleen edelmetaal (horloges/edelstenen via categoriepaginas). -->
-			<div class="xg-calc" data-mode="compact" data-only="metal"></div>
-	</div>
-</section></section>
 <section class="tst-page" data-page="edelmetalen" hidden><div class="wp-block-group xg-blueprint">
 <section class="xg-hero-v2"><div class="xg-container"><h4 class="hero-kicker"></h4><h1></h1><p class="hero-lead"></p><div class="xg-hero-buttons"><div class="wp-block-button"><a class="wp-block-button__link xg-btn-gold"></a></div><div class="wp-block-button"><a class="wp-block-button__link xg-btn-outline"></a></div></div></div></section><section><div class="xg-container"><div class="xg-why"><p class="xg-eyebrow"></p><h2></h2><p class="xg-intro"></p><div class="xg-benefits"><div class="xg-benefit"><span class="xg-b-num">1</span><h3 class="xg-b-title"></h3><p></p></div><div class="xg-benefit"><span class="xg-b-num">2</span><h3 class="xg-b-title"></h3><p></p></div><div class="xg-benefit"><span class="xg-b-num">3</span><h3 class="xg-b-title"></h3><p></p></div><div class="xg-benefit"><span class="xg-b-num">4</span><h3 class="xg-b-title"></h3><p></p></div></div></div></div></section><section class="xg-row-3"><div class="xg-container"><h2 class="xg-section-title"></h2><div class="xg-grid-4"><div class="xg-c-card"><h3></h3><p></p></div><div class="xg-c-card"><h3></h3><p></p></div><div class="xg-c-card"><h3></h3><p></p></div><div class="xg-c-card"><h3></h3><p></p></div></div></div></section><section><div class="xg-container"><div class="xgoud-cta-modern"><div class="xgoud-cta-image" style="background:#ead9bd"></div><div class="xgoud-cta-content"><h2></h2><p class="xgoud-subtitle"></p><div class="wp-block-button"><a class="wp-block-button__link cta-button"></a></div></div></div></div></section><section><div class="xg-container"><div class="xg-steps-content"><h2></h2><p></p></div><div class="xg-grid-4"><div class="xg-step-card"><div class="xg-step-number">1</div><h3></h3><p></p></div><div class="xg-step-card"><div class="xg-step-number">2</div><h3></h3><p></p></div><div class="xg-step-card"><div class="xg-step-number">3</div><h3></h3><p></p></div><div class="xg-step-card"><div class="xg-step-number">4</div><h3></h3><p></p></div></div></div></section><section><div class="xg-container"><div class="xg-market-content"><h2></h2><p></p><div class="xg-formula-box"><div class="xg-formula-title"></div><p class="xg-formula"></p><p class="xg-formula-note"></p></div></div></div></section><section class="xg-price-section"><div class="xg-container"><h2></h2><p></p><div class="xg-table-wrapper"><figure class="wp-block-table xg-price-table"><table><thead><tr><th></th><th></th><th></th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table></figure></div></div></section><section><div class="xg-container"><div class="xg-eeat-content"><h2></h2><p></p></div><div class="xg-author-row"><div class="xg-author-card"><h2></h2><p class="xg-author-role"></p><p></p></div><div class="xg-author-card"><h2></h2><p class="xg-author-role"></p><p></p></div></div></div></section><section><div class="xg-container"><div class="xg-faq"><h2></h2><div class="xg-faq-list"><div class="xg-faq-item"><div class="xg-faq-question"><h3 class="xg-faq-q"></h3></div><div class="xg-faq-answer"><p></p></div></div><div class="xg-faq-item"><div class="xg-faq-question"><h3 class="xg-faq-q"></h3></div><div class="xg-faq-answer"><p></p></div></div><div class="xg-faq-item"><div class="xg-faq-question"><h3 class="xg-faq-q"></h3></div><div class="xg-faq-answer"><p></p></div></div><div class="xg-faq-item"><div class="xg-faq-question"><h3 class="xg-faq-q"></h3></div><div class="xg-faq-answer"><p></p></div></div></div></div></div></section><section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content"><h2></h2><p></p></div><div class="xg-final-cta-box"><h3></h3><div class="wp-block-button"><a class="wp-block-button__link xg-final-btn"></a></div></div></div></div></section></div></section>
 <section class="tst-page" data-page="edelstenen" hidden><div class="wp-block-group xg-blueprint">
@@ -4350,6 +4697,508 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
 </div>
 </section>
+<section class="tst-page" data-page="cat-goud" hidden><div class="wp-block-group xg-blueprint">
+
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">EDELMETALEN VERKOPEN</div>
+	<h1>Goud verkopen</h1>
+	<p class="hero-lead">Verkoop uw goud tegen de actuele dagprijs. Kies hieronder uw product voor de specificaties en een directe indicatie.</p>
+	<div class="xg-hero-buttons"><a class="xg-btn-gold" href="/afspraak/">Direct verkopen</a></div>
+</div></section>
+
+
+
+</div></section>
+<section class="tst-page" data-page="cat-zilver" hidden><div class="wp-block-group xg-blueprint">
+
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">EDELMETALEN VERKOPEN</div>
+	<h1>Zilver verkopen</h1>
+	<p class="hero-lead">Verkoop uw zilver tegen de actuele dagprijs. Kies hieronder uw product voor de specificaties en een directe indicatie.</p>
+	<div class="xg-hero-buttons"><a class="xg-btn-gold" href="/afspraak/">Direct verkopen</a></div>
+</div></section>
+
+
+
+</div></section>
+<section class="tst-page" data-page="cat-platina" hidden><div class="wp-block-group xg-blueprint">
+
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">EDELMETALEN VERKOPEN</div>
+	<h1>Platina verkopen</h1>
+	<p class="hero-lead">Verkoop uw platina tegen de actuele dagprijs. Kies hieronder uw product voor de specificaties en een directe indicatie.</p>
+	<div class="xg-hero-buttons"><a class="xg-btn-gold" href="/afspraak/">Direct verkopen</a></div>
+</div></section>
+
+
+
+</div></section>
+<section class="tst-page" data-page="overons" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">OVER XGOUD</div>
+	<h1>Vertrouwd in edelmetaal sinds 2009</h1>
+	<p class="hero-lead">XGOUD is uitgegroeid tot een van de meest betrouwbare inkopers van goud, zilver, diamanten en horloges in Nederland — met eerlijke prijzen en een hart voor het goede doel.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<div class="xg-eyebrow">ONZE MISSIE</div>
+	<h2>Eerlijk, transparant en betrokken</h2>
+	<p class="xg-intro">Wij geloven dat het verkopen van waardevolle bezittingen eerlijk en transparant moet zijn. Daarom werken wij met dagprijzen, gecertificeerde experts en een vast deel van elke marge voor lokale goede doelen.</p>
+	<div class="xg-benefits">
+		<div class="xg-benefit"><span class="xg-b-num">15+</span><span class="xg-b-title">Jaar ervaring</span><p>Sinds 2009 actief in de edelmetaalhandel.</p></div>
+		<div class="xg-benefit"><span class="xg-b-num">40+</span><span class="xg-b-title">Vestigingen</span><p>Door heel Nederland, hoofdkantoor in Eindhoven.</p></div>
+		<div class="xg-benefit"><span class="xg-b-num">4,8</span><span class="xg-b-title">Trustpilot</span><p>Op basis van duizenden beoordelingen.</p></div>
+		<div class="xg-benefit"><span class="xg-b-num">100%</span><span class="xg-b-title">Verzekerd</span><p>Elke transactie veilig en gedekt.</p></div>
+	</div>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Leer ons kennen</h2><p>Kom langs bij een van onze vestigingen of maak een afspraak.</p>
+</div><div class="xg-final-cta-box"><h3>Contact</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/kantoren/">Bekijk onze kantoren</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="oo-verhaal" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">OVER ONS</div>
+	<h1>Ons verhaal</h1>
+	<p class="hero-lead">Van een lokale goudhandel in Eindhoven tot een landelijk netwerk van vestigingen — dit is het verhaal van XGOUD.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Ons verhaal</h2>
+	<p class="xg-intro">XGOUD is in 2009 opgericht met één doel: het eerlijk en transparant maken van de inkoop van edelmetaal. Wat begon als een klein kantoor is uitgegroeid tot een vertrouwde naam in heel Nederland.</p>
+	<p class="xg-intro">Onze groei danken wij aan eerlijke dagprijzen, deskundige taxatie en een oprechte betrokkenheid bij de samenleving via onze goede doelen.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="oo-experts" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">OVER ONS</div>
+	<h1>Onze experts</h1>
+	<p class="hero-lead">Gecertificeerde taxateurs en gemmologen met jarenlange ervaring in goud, diamant en horloges.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Onze experts</h2>
+	<p class="xg-intro">Ons team bestaat uit GIA-gecertificeerde gemmologen en ervaren edelmetaal-taxateurs. Zij beoordelen elk object nauwkeurig en eerlijk.</p>
+	<p class="xg-intro">Door continue bijscholing blijven onze experts op de hoogte van de actuele markt en internationale standaarden zoals Rapaport.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="oo-bedrijf" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">OVER ONS</div>
+	<h1>Het bedrijf XGOUD</h1>
+	<p class="hero-lead">XGOUD is dé vertrouwde inkoper van goud, zilver, diamanten en luxe horloges in Nederland.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Wie is XGOUD?</h2>
+	<p class="xg-intro">Sinds 2009 koopt XGOUD edelmetalen en edelstenen in tegen eerlijke dagprijzen. Met meer dan 40 vestigingen en het hoofdkantoor in Eindhoven zijn wij altijd bij u in de buurt.</p>
+	<p class="xg-intro">Onze missie is transparantie: een heldere taxatie, een eerlijk bod en directe uitbetaling — met een vast deel van elke marge voor het goede doel.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="oo-reviews" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">VERTROUWEN</div>
+	<h1>Wat onze klanten zeggen</h1>
+	<p class="hero-lead">Duizenden klanten gingen u voor en waardeerden XGOUD met een topscore.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Beoordelingen en reviews</h2>
+	<p class="xg-intro">Eerlijkheid, snelheid en een persoonlijke aanpak — dat is wat onze klanten keer op keer benoemen. Op onafhankelijke reviewplatforms scoort XGOUD consequent hoog.</p>
+	<p class="xg-intro">Wij zijn trots op het vertrouwen dat onze klanten ons geven en blijven elke dag werken aan de beste service.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="oo-cert" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">VERTROUWEN</div>
+	<h1>Certificaten en keurmerken</h1>
+	<p class="hero-lead">XGOUD werkt volgens de hoogste standaarden en is aangesloten bij erkende instanties.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Onze certificeringen</h2>
+	<p class="xg-intro">Al onze taxaties verlopen volgens internationale richtlijnen. Voor diamanten hanteren wij de Rapaport-prijslijst en certificaten van GIA, IGI en HRD.</p>
+	<p class="xg-intro">Daarnaast zijn wij geregistreerd conform de Nederlandse wet- en regelgeving voor de inkoop van edelmetaal.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="oo-partner" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">VERTROUWEN</div>
+	<h1>Onze partners</h1>
+	<p class="hero-lead">XGOUD werkt samen met toonaangevende partners in de edelmetaal- en diamantsector.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Samenwerken met XGOUD</h2>
+	<p class="xg-intro">Van raffinaderijen tot certificeringsinstituten — onze partners helpen ons om u altijd de beste dagprijs en de hoogste betrouwbaarheid te bieden.</p>
+	<p class="xg-intro">Bent u een zakelijke partner en wilt u met ons samenwerken? Neem gerust contact met ons op.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="oo-nieuws" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">MEDIA</div>
+	<h1>Nieuws van XGOUD</h1>
+	<p class="hero-lead">Blijf op de hoogte van de laatste ontwikkelingen, marktinzichten en aankondigingen.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Actueel</h2>
+	<p class="xg-intro">In ons nieuwsoverzicht delen wij updates over goud- en zilverprijzen, nieuwe vestigingen en onze goede-doelenprojecten.</p>
+	<p class="xg-intro">Volg ons om geen enkele ontwikkeling te missen.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="oo-pers" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">MEDIA</div>
+	<h1>Pers en media</h1>
+	<p class="hero-lead">Journalist of redacteur? Op deze pagina vindt u alles voor uw publicatie over XGOUD.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Voor de pers</h2>
+	<p class="xg-intro">XGOUD wordt regelmatig geraadpleegd als expert op het gebied van edelmetaalprijzen en de inkoopmarkt. Voor interviews, beeldmateriaal of een persbericht staan wij u graag te woord.</p>
+	<p class="xg-intro">Neem voor persvragen contact op via info@xgoud.nl.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="oo-vac" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">VACATURES</div>
+	<h1>Werken bij XGOUD</h1>
+	<p class="hero-lead">Word onderdeel van een groeiend, betrokken team.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Werken bij XGOUD</h2>
+	<p class="xg-intro">Wij zijn regelmatig op zoek naar taxateurs, baliemedewerkers en buitendienst-experts.</p>
+	<p class="xg-intro">Interesse? Stuur uw motivatie en cv naar info@xgoud.nl.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="services" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">SERVICES</div>
+	<h1>Verkopen op uw manier</h1>
+	<p class="hero-lead">Kies de service die bij u past: een bezoek aan huis, langskomen op een van onze kantoren, of een verzekerde ophaalservice.</p>
+</div></section>
+<section><div class="xg-container">
+	<h2 class="xg-section-title">Onze diensten</h2>
+	<div class="xg-grid-3">
+		<div class="xg-c-card"><h3>Bezoek aan huis</h3><p>Onze gecertificeerde expert komt bij u langs voor een gratis taxatie en directe uitbetaling — veilig en discreet.</p></div>
+		<div class="xg-c-card"><h3>In een vestiging</h3><p>Bezoek een van onze 40+ kantoren. Eindhoven is ons hoofdkantoor en 6 dagen per week geopend.</p></div>
+		<div class="xg-c-card"><h3>Ophaalservice</h3><p>Volledig verzekerde ophaling per koerier, ideaal voor grotere partijen.</p></div>
+	</div>
+</div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Welke service past bij u?</h2><p>Maak een afspraak en wij regelen de rest.</p>
+</div><div class="xg-final-cta-box"><h3>Plan direct</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ Gratis &amp; vrijblijvend</div><div class="xg-final-item">✓ Verzekerd</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="sv-taxatie" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">SERVICES</div>
+	<h1>Taxatie</h1>
+	<p class="hero-lead">Gratis, deskundige taxatie van goud, diamant en horloges.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Taxatie</h2>
+	<p class="xg-intro">Onze experts taxeren uw object op basis van actuele marktprijzen en internationale standaarden.</p>
+	<p class="xg-intro">De taxatie is altijd gratis en vrijblijvend — u beslist zelf of u verkoopt.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="sv-thuis" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">SERVICES</div>
+	<h1>Bezoek aan huis</h1>
+	<p class="hero-lead">Onze expert komt gratis en vrijblijvend bij u langs voor taxatie en directe uitbetaling.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Bezoek aan huis</h2>
+	<p class="xg-intro">Liever niet de deur uit? Onze gecertificeerde expert komt bij u thuis, taxeert ter plaatse en betaalt direct uit — veilig, discreet en verzekerd.</p>
+	<p class="xg-intro">Ideaal voor grotere partijen of wanneer u waarde hecht aan privacy.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="sv-inruil" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">DIENSTEN</div>
+	<h1>Inruilen bij XGOUD</h1>
+	<p class="hero-lead">Ruil uw oude goud of sieraden in en gebruik de waarde voor iets nieuws.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Hoe werkt inruilen?</h2>
+	<p class="xg-intro">Heeft u sieraden of edelmetaal dat u niet meer draagt? Bij XGOUD taxeren wij uw stukken en kunt u de waarde direct laten uitbetalen of inruilen.</p>
+	<p class="xg-intro">Onze experts bepalen transparant de actuele waarde op basis van de dagprijs en het zuivere edelmetaalgehalte.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="sv-faq" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">HULP</div>
+	<h1>Veelgestelde vragen</h1>
+	<p class="hero-lead">De antwoorden op de meest gestelde vragen over verkopen, taxeren en uitbetalen.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Hoe kunnen wij u helpen?</h2>
+	<p class="xg-intro">Of het nu gaat over de dagprijs, het maken van een afspraak of de uitbetaling — hieronder vindt u snel antwoord op uw vraag.</p>
+	<p class="xg-intro">Staat uw vraag er niet bij? Neem dan gerust contact met ons op via 085 060 3009 of info@xgoud.nl.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="sv-hoe" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">HULP</div>
+	<h1>Hoe werkt het?</h1>
+	<p class="hero-lead">In vier eenvoudige stappen van edelmetaal naar geld — eerlijk en transparant.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Van taxatie tot uitbetaling</h2>
+	<p class="xg-intro">Bereken eerst online een indicatie van uw waarde. Kies daarna voor een thuisbezoek, een kantoor of de ophaalservice. Onze expert taxeert uw stukken en doet een helder bod.</p>
+	<p class="xg-intro">Gaat u akkoord? Dan betalen wij direct uit, per bank of contant. Eenvoudiger kan het niet.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="sv-kantoor" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">SERVICES</div>
+	<h1>In een vestiging</h1>
+	<p class="hero-lead">Bezoek een van onze 40+ kantoren door heel Nederland.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>In een vestiging</h2>
+	<p class="xg-intro">Kom langs bij een vestiging bij u in de buurt. Eindhoven is ons hoofdkantoor en 6 dagen per week geopend.</p>
+	<p class="xg-intro">Geen afspraak nodig, maar online plannen kan voor een snellere afhandeling.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="sv-ophaal" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">SERVICES</div>
+	<h1>Ophaalservice</h1>
+	<p class="hero-lead">Verzekerde ophaling per koerier, ideaal voor grotere partijen.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Ophaalservice</h2>
+	<p class="xg-intro">Voor omvangrijke partijen edelmetaal bieden wij een volledig verzekerde ophaalservice aan.</p>
+	<p class="xg-intro">Wij stemmen een moment met u af en zorgen voor een veilige afhandeling.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="sv-zakelijk" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">SERVICES</div>
+	<h1>Zakelijke klanten</h1>
+	<p class="hero-lead">Maatwerk en scherpe condities voor bedrijven en handelaren.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Zakelijke klanten</h2>
+	<p class="xg-intro">Bent u juwelier, handelaar of bedrijf? Wij bieden zakelijke inkoop met maatwerkafspraken en snelle afhandeling.</p>
+	<p class="xg-intro">Neem contact op voor een persoonlijk gesprek over de mogelijkheden.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="contact" hidden><div class="xg-blueprint">
+<section class="xg-hero-v2"><div class="xg-container">
+	<div class="hero-kicker">CONTACT</div>
+	<h1>Neem contact op met XGOUD</h1>
+	<p class="hero-lead">Heeft u een vraag of wilt u een afspraak maken? Wij staan voor u klaar.</p>
+</div></section>
+<section><div class="xg-container"><div class="xg-why">
+	<h2>Zo bereikt u ons</h2>
+	<p class="xg-intro">Bel ons op 085 060 3009 of mail naar info@xgoud.nl. Ons hoofdkantoor vindt u in Eindhoven, maar wij hebben meer dan 40 vestigingen door heel Nederland.</p>
+	<p class="xg-intro">Liever dat wij langskomen? Plan eenvoudig een gratis thuisbezoek via onze afspraakplanner.</p>
+</div></div></section>
+<section><div class="xg-container"><div class="xg-grid-2"><div class="xg-final-cta-content">
+	<h2>Vragen of direct verkopen?</h2><p>Onze experts helpen u graag verder.</p>
+</div><div class="xg-final-cta-box"><h3>Neem contact op</h3>
+	<div class="xg-final-list"><div class="xg-final-item">✓ 085 060 3009</div><div class="xg-final-item">✓ info@xgoud.nl</div></div>
+	<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+</div></div></div></section>
+</div></section>
+<section class="tst-page" data-page="privacy" hidden><article class="xg-blueprint"><div class="xg-legal">
+	<h1>Privacyverklaring</h1>
+	<p class="xg-legal-upd">Laatst bijgewerkt: 21-06-2026</p>
+
+	<p>XGOUD hecht veel waarde aan de bescherming van uw persoonsgegevens. In deze privacyverklaring leggen wij uit welke gegevens wij verwerken, waarom en hoe wij daarmee omgaan, in overeenstemming met de Algemene Verordening Gegevensbescherming (AVG).</p>
+
+	<h2>1. Verwerkingsverantwoordelijke</h2>
+	<p>XGOUD, Stratumsedijk 23, 5611 NA Eindhoven. E-mail: info@xgoud.nl. Telefoon: 085 060 3009.</p>
+
+	<h2>2. Welke gegevens verwerken wij</h2>
+	<ul>
+		<li>Contactgegevens (naam, e-mailadres, telefoonnummer, adres) bij een afspraak of aanvraag;</li>
+		<li>Gegevens over de aangeboden producten (taxatie, gewicht, gekozen goede doel);</li>
+		<li>Communicatie via chat, formulieren en e-mail, inclusief eventueel meegestuurde foto's;</li>
+		<li>Technische gegevens (IP-adres, browser) en cookievoorkeuren.</li>
+	</ul>
+
+	<h2>3. Doeleinden en grondslag</h2>
+	<ul>
+		<li>Het uitvoeren van een (ver)koopovereenkomst en afspraak (uitvoering overeenkomst);</li>
+		<li>Klantenservice en communicatie (gerechtvaardigd belang);</li>
+		<li>Wettelijke verplichtingen, zoals administratie en identificatie (wettelijke plicht);</li>
+		<li>Nieuwsbrief en notificaties, uitsluitend met uw toestemming.</li>
+	</ul>
+
+	<h2>4. Bewaartermijnen</h2>
+	<p>Wij bewaren uw gegevens niet langer dan noodzakelijk. Administratieve en fiscale gegevens bewaren wij conform de wettelijke bewaarplicht (doorgaans 7 jaar). Overige gegevens verwijderen wij zodra het doel is vervuld.</p>
+
+	<h2>5. Delen met derden</h2>
+	<p>Wij delen uw gegevens alleen met partijen die nodig zijn voor onze dienstverlening (zoals betalingsverwerking of een koeriersdienst) of wanneer wij daartoe wettelijk verplicht zijn. Met verwerkers sluiten wij verwerkersovereenkomsten.</p>
+
+	<h2>6. Beveiliging</h2>
+	<p>Wij nemen passende technische en organisatorische maatregelen om uw gegevens te beschermen tegen verlies of onrechtmatige verwerking.</p>
+
+	<h2>7. Uw rechten</h2>
+	<p>U heeft het recht op inzage, correctie, verwijdering, beperking, bezwaar en dataportabiliteit. Ook kunt u een gegeven toestemming intrekken. Neem hiervoor contact op via info@xgoud.nl. U kunt tevens een klacht indienen bij de Autoriteit Persoonsgegevens.</p>
+
+	<h2>8. Wijzigingen</h2>
+	<p>Wij kunnen deze privacyverklaring aanpassen. De meest actuele versie vindt u altijd op deze pagina.</p>
+</div></article></section>
+<section class="tst-page" data-page="terms" hidden><article class="xg-blueprint"><div class="xg-legal">
+	<h1>Algemene Voorwaarden</h1>
+	<p class="xg-legal-upd">Laatst bijgewerkt: 21-06-2026</p>
+
+	<h2>1. Definities</h2>
+	<p>In deze voorwaarden wordt verstaan onder "XGOUD": de onderneming gevestigd te Eindhoven die edelmetalen, edelstenen en horloges inkoopt. "Klant": iedere natuurlijke of rechtspersoon die producten aanbiedt of een afspraak maakt.</p>
+
+	<h2>2. Toepasselijkheid</h2>
+	<p>Deze voorwaarden zijn van toepassing op alle aanbiedingen, taxaties, afspraken en overeenkomsten tussen XGOUD en de klant.</p>
+
+	<h2>3. Taxatie en prijsindicatie</h2>
+	<p>Online berekeningen en indicaties zijn vrijblijvend en niet bindend. Voor edelmetalen geldt een vaste dagprijs op basis van de actuele spotkoers; voor edelstenen en horloges geldt een prijsindicatie. De definitieve prijs wordt vastgesteld na fysieke taxatie.</p>
+
+	<h2>4. Totstandkoming van de overeenkomst</h2>
+	<p>Een overeenkomst komt tot stand zodra de klant akkoord gaat met het definitieve bod na taxatie. De klant verklaart rechtmatig eigenaar te zijn van de aangeboden zaken.</p>
+
+	<h2>5. Identificatie</h2>
+	<p>XGOUD is wettelijk verplicht de identiteit van de klant vast te stellen. De klant dient een geldig legitimatiebewijs te tonen.</p>
+
+	<h2>6. Uitbetaling</h2>
+	<p>Uitbetaling vindt plaats per bankoverschrijving of, tot een wettelijk toegestaan bedrag, contant. Uitbetaling geschiedt na akkoord en eventuele controle van de aangeboden zaken.</p>
+
+	<h2>7. Afspraken en annulering</h2>
+	<p>Afspraken (bezoek aan huis, op kantoor of ophaalservice) kunnen kosteloos worden gewijzigd of geannuleerd via de link in uw bevestiging, tenzij anders vermeld.</p>
+
+	<h2>8. Goede doelen</h2>
+	<p>Van elke transactie gaat een vast deel van de marge naar een goed doel. De klant kan een categorie of concrete instelling kiezen. XGOUD bepaalt de uiteindelijke uitkering en periode.</p>
+
+	<h2>9. Aansprakelijkheid</h2>
+	<p>XGOUD is niet aansprakelijk voor indirecte schade. De aansprakelijkheid is in alle gevallen beperkt tot het bedrag van de betreffende transactie.</p>
+
+	<h2>10. Toepasselijk recht</h2>
+	<p>Op alle overeenkomsten is Nederlands recht van toepassing. Geschillen worden voorgelegd aan de bevoegde rechter in het arrondissement Oost-Brabant.</p>
+</div></article></section>
+<section class="tst-page" data-page="cookies" hidden><article class="xg-blueprint"><div class="xg-legal">
+	<h1>Cookiebeleid</h1>
+	<p class="xg-legal-upd">Laatst bijgewerkt: 21-06-2026</p>
+
+	<p>Deze website gebruikt cookies om goed te functioneren, uw voorkeuren te onthouden en het gebruik te analyseren. Hieronder leest u welke soorten cookies wij gebruiken.</p>
+
+	<h2>1. Wat zijn cookies</h2>
+	<p>Cookies zijn kleine tekstbestanden die op uw apparaat worden opgeslagen wanneer u onze website bezoekt.</p>
+
+	<h2>2. Welke cookies gebruiken wij</h2>
+	<h3>Functionele cookies (noodzakelijk)</h3>
+	<p>Onthouden bijvoorbeeld uw taal, valuta en thema (licht/donker). Deze zijn nodig voor een goede werking en worden zonder toestemming geplaatst.</p>
+	<h3>Analytische cookies</h3>
+	<p>Helpen ons het gebruik van de website te begrijpen, zodat wij deze kunnen verbeteren. Waar vereist plaatsen wij deze pas na uw toestemming.</p>
+	<h3>Marketingcookies</h3>
+	<p>Worden uitsluitend met uw toestemming geplaatst, bijvoorbeeld voor relevante advertenties.</p>
+
+	<h2>3. Cookies beheren</h2>
+	<p>U kunt uw toestemming op elk moment aanpassen via de cookie-instellingen, of cookies verwijderen via uw browserinstellingen.</p>
+
+	<h2>4. Wijzigingen</h2>
+	<p>Wij kunnen dit cookiebeleid aanpassen. De actuele versie staat altijd op deze pagina.</p>
+</div></article></section>
 <section class="xg-newsletter" style="margin:40px auto"><div class="xg-newsletter-inner"><div class="xg-newsletter-text"><h2>Blijf op de hoogte</h2><p>Ontvang de actuele goudprijs en aanbiedingen.</p></div><form class="xg-newsletter-form"><input type="email" required placeholder="Uw e-mailadres"><input type="text" placeholder="Stad (optioneel)"><button type="submit">Aanmelden</button></form><div class="xg-newsletter-msg"></div></div></section>
 </main>
 
@@ -4429,36 +5278,36 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 
       <nav class="footer__col">
         <h4 class="footer__heading">DIENSTEN</h4>
-        <a class="footer__link" href="#">Goud verkopen</a>
-        <a class="footer__link" href="#">Zilver verkopen</a>
-        <a class="footer__link" href="#">Diamanten verkopen</a>
-        <a class="footer__link" href="#">Luxe horloges verkopen</a>
-        <a class="footer__link" href="#">Edelstenen verkopen</a>
-        <a class="footer__link" href="#">Munten verkopen</a>
-        <a class="footer__link" href="#">Taxatie aan huis</a>
-        <a class="footer__link" href="#">Zakelijk verkopen</a>
+        <a class="footer__link" href="/edelmetalen-verkopen/goud-verkopen/">Goud verkopen</a>
+        <a class="footer__link" href="/edelmetalen-verkopen/zilver-verkopen/">Zilver verkopen</a>
+        <a class="footer__link" href="/edelstenen-verkopen/diamanten-verkopen/">Diamanten verkopen</a>
+        <a class="footer__link" href="/horloges-verkopen/">Luxe horloges verkopen</a>
+        <a class="footer__link" href="/edelstenen-verkopen/">Edelstenen verkopen</a>
+        <a class="footer__link" href="/edelmetalen-verkopen/munten-verkopen/">Munten verkopen</a>
+        <a class="footer__link" href="/service/thuisbezoek/">Taxatie aan huis</a>
+        <a class="footer__link" href="/service/zakelijk-verkopen/">Zakelijk verkopen</a>
       </nav>
 
       <nav class="footer__col">
         <h4 class="footer__heading">LOCATIES</h4>
-        <a class="footer__link footer__link--plain" href="#">Amsterdam</a>
-        <a class="footer__link footer__link--plain" href="#">Rotterdam</a>
-        <a class="footer__link footer__link--plain" href="#">Eindhoven</a>
-        <a class="footer__link footer__link--plain" href="#">Antwerpen</a>
-        <a class="footer__link footer__link--plain" href="#">Utrecht</a>
-        <a class="footer__link footer__link--plain" href="#">Brussel</a>
-        <a class="footer__link footer__link--plain" href="#">Den Haag</a>
-        <a class="footer__link footer__link--accent" href="#">Alle vestigingen →</a>
+        <a class="footer__link footer__link--plain" href="/kantoren/amsterdam/">Amsterdam</a>
+        <a class="footer__link footer__link--plain" href="/kantoren/rotterdam/">Rotterdam</a>
+        <a class="footer__link footer__link--plain" href="/kantoren/eindhoven/">Eindhoven</a>
+        <a class="footer__link footer__link--plain" href="/kantoren/antwerpen/">Antwerpen</a>
+        <a class="footer__link footer__link--plain" href="/kantoren/utrecht/">Utrecht</a>
+        <a class="footer__link footer__link--plain" href="/kantoren/brussel/">Brussel</a>
+        <a class="footer__link footer__link--plain" href="/kantoren/den-haag/">Den Haag</a>
+        <a class="footer__link footer__link--accent" href="/kantoren/">Alle vestigingen →</a>
       </nav>
 
       <nav class="footer__col">
         <h4 class="footer__heading">OVER XGOUD</h4>
-        <a class="footer__link footer__link--plain" href="#">Over ons</a>
-        <a class="footer__link footer__link--plain" href="#">Werkwijze</a>
-        <a class="footer__link footer__link--plain" href="#">Nieuws</a>
-        <a class="footer__link footer__link--plain" href="#">Vacatures</a>
-        <a class="footer__link footer__link--plain" href="#">Reviews</a>
-        <a class="footer__link footer__link--plain" href="#">Contact</a>
+        <a class="footer__link footer__link--plain" href="/over-ons/bedrijf/">Over ons</a>
+        <a class="footer__link footer__link--plain" href="/service/hoe-werkt-het/">Werkwijze</a>
+        <a class="footer__link footer__link--plain" href="/over-ons/nieuws/">Nieuws</a>
+        <a class="footer__link footer__link--plain" href="/over-ons/vacatures/">Vacatures</a>
+        <a class="footer__link footer__link--plain" href="/over-ons/beoordelingen/">Reviews</a>
+        <a class="footer__link footer__link--plain" href="/contact/">Contact</a>
         <div class="footer__trust-box">
           <svg class="footer__trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/></svg>
           <div><strong>Veilig en betrouwbaar</strong><p>Uw waardevolle spullen zijn bij ons in veilige handen.</p></div>
@@ -4488,8 +5337,11 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 </div>
 
 <div class="tst-toolbar">
-	<button class="tst-tab active" data-go="diamanten">★ Diamanten (klaar)</button><button class="tst-tab" data-go="hero">Hero + Calculator</button><button class="tst-tab" data-go="edelmetalen">Edelmetalen</button><button class="tst-tab" data-go="edelstenen">Edelstenen</button><button class="tst-tab" data-go="horloges">Horloges</button><button class="tst-tab" data-go="verkoop">Verkoop-Blaupause</button><button class="tst-tab" data-go="product">★ Produkt: Krugerrand</button>
-	<button class="tst-tab tst-fill" id="tstFill">Demo-tekst aan/uit</button>
+	<span class="tst-label">XGOUD</span>
+	<button class="tst-nav-btn" id="tstPrev" title="Vorige">‹</button>
+	<select class="tst-select" id="tstSelect"><option value="home" selected>★ Home</option><option value="hero">Hero + Calculator</option><option value="diamanten">★ Diamanten</option><option value="edelmetalen">Edelmetalen</option><option value="edelstenen">Edelstenen</option><option value="horloges">Horloges</option><option value="verkoop">Verkoop-Blaupause</option><option value="product">★ Produkt: Krugerrand</option><option value="cat-goud">Categorie: Goud</option><option value="cat-zilver">Categorie: Zilver</option><option value="cat-platina">Categorie: Platina</option><option value="overons">Over ons</option><option value="oo-verhaal">— Ons verhaal</option><option value="oo-experts">— Team/Experts</option><option value="oo-bedrijf">— Bedrijf</option><option value="oo-reviews">— Beoordelingen</option><option value="oo-cert">— Certificaten</option><option value="oo-partner">— Partners</option><option value="oo-nieuws">— Nieuws</option><option value="oo-pers">— Pers</option><option value="oo-vac">— Vacatures</option><option value="services">Service</option><option value="sv-taxatie">— Gratis taxatie</option><option value="sv-thuis">— Thuisbezoek</option><option value="sv-inruil">— Inruilen</option><option value="sv-faq">— FAQ</option><option value="sv-hoe">— Hoe werkt het</option><option value="sv-kantoor">— Kantoorbezoek</option><option value="sv-ophaal">— Ophaalservice</option><option value="sv-zakelijk">— Zakelijk</option><option value="contact">Contact</option><option value="privacy">Privacy</option><option value="terms">Voorwaarden</option><option value="cookies">Cookies</option></select>
+	<button class="tst-nav-btn" id="tstNext" title="Volgende">›</button>
+	<button class="tst-tab" id="tstFill">Demo-tekst</button>
 </div>
 
 <script>
@@ -5052,7 +5904,46 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 		'Blijf op de hoogte': d('Bleiben Sie informiert', 'Stay informed', 'Restez informé', 'Manténgase informado', 'Resta aggiornato', 'Haberdar olun', 'Bądź na bieżąco'),
 		'Onze kantoren': d('Unsere Filialen', 'Our offices', 'Nos agences', 'Nuestras oficinas', 'Le nostre sedi', 'Şubelerimiz', 'Nasze biura'),
 		'Hoofdkantoor': d('Hauptsitz', 'Head office', 'Siège', 'Sede central', 'Sede centrale', 'Genel merkez', 'Siedziba główna'),
-		'Route plannen': d('Route planen', 'Plan route', 'Itinéraire', 'Planificar ruta', 'Pianifica percorso', 'Rota planla', 'Zaplanuj trasę')
+		'Route plannen': d('Route planen', 'Plan route', 'Itinéraire', 'Planificar ruta', 'Pianifica percorso', 'Rota planla', 'Zaplanuj trasę'),
+
+		/* ---- Header / navigatie ---- */
+		'Edelmetalen': d('Edelmetalle', 'Precious metals', 'Métaux précieux', 'Metales preciosos', 'Metalli preziosi', 'Değerli metaller', 'Metale szlachetne'),
+		'Edelstenen': d('Edelsteine', 'Gemstones', 'Pierres précieuses', 'Piedras preciosas', 'Pietre preziose', 'Değerli taşlar', 'Kamienie szlachetne'),
+		'Horloges': d('Uhren', 'Watches', 'Montres', 'Relojes', 'Orologi', 'Saatler', 'Zegarki'),
+		'Dagprijzen': d('Tagespreise', 'Daily prices', 'Prix du jour', 'Precios diarios', 'Prezzi del giorno', 'Günlük fiyatlar', 'Ceny dnia'),
+		'Over ons': d('Über uns', 'About us', 'À propos', 'Sobre nosotros', 'Chi siamo', 'Hakkımızda', 'O nas'),
+		'Afspraak maken': d('Termin vereinbaren', 'Book appointment', 'Prendre rendez-vous', 'Reservar cita', 'Prenota appuntamento', 'Randevu al', 'Umów się'),
+		'Gratis taxatie': d('Kostenlose Schätzung', 'Free appraisal', 'Estimation gratuite', 'Tasación gratuita', 'Valutazione gratuita', 'Ücretsiz değerleme', 'Bezpłatna wycena'),
+		'Thuisbezoek': d('Hausbesuch', 'Home visit', 'Visite à domicile', 'Visita a domicilio', 'Visita a domicilio', 'Eve ziyaret', 'Wizyta domowa'),
+		'Inruilen': d('Eintauschen', 'Trade in', 'Reprise', 'Canjear', 'Permuta', 'Takas', 'Wymiana'),
+		'Hoe werkt het?': d('Wie funktioniert es?', 'How it works', 'Comment ça marche ?', '¿Cómo funciona?', 'Come funziona?', 'Nasıl çalışır?', 'Jak to działa?'),
+		'Alle vestigingen': d('Alle Filialen', 'All branches', 'Toutes les agences', 'Todas las oficinas', 'Tutte le sedi', 'Tüm şubeler', 'Wszystkie oddziały'),
+
+		/* ---- Mega-menu koppen ---- */
+		'Diensten': d('Leistungen', 'Services', 'Services', 'Servicios', 'Servizi', 'Hizmetler', 'Usługi'),
+		'Hulp': d('Hilfe', 'Help', 'Aide', 'Ayuda', 'Aiuto', 'Yardım', 'Pomoc'),
+		'Locaties': d('Standorte', 'Locations', 'Emplacements', 'Ubicaciones', 'Sedi', 'Konumlar', 'Lokalizacje'),
+		'Over XGOUD': d('Über XGOUD', 'About XGOUD', 'À propos de XGOUD', 'Sobre XGOUD', 'Su XGOUD', 'XGOUD hakkında', 'O XGOUD'),
+		'Vertrouwen': d('Vertrauen', 'Trust', 'Confiance', 'Confianza', 'Fiducia', 'Güven', 'Zaufanie'),
+		'Media': d('Medien', 'Media', 'Médias', 'Medios', 'Media', 'Medya', 'Media'),
+		'Grafieken': d('Diagramme', 'Charts', 'Graphiques', 'Gráficos', 'Grafici', 'Grafikler', 'Wykresy'),
+		'Markt': d('Markt', 'Market', 'Marché', 'Mercado', 'Mercato', 'Piyasa', 'Rynek'),
+		'Snel:': d('Schnell:', 'Quick:', 'Rapide :', 'Rápido:', 'Veloce:', 'Hızlı:', 'Szybko:'),
+
+		/* ---- Footer ---- */
+		'Contact': d('Kontakt', 'Contact', 'Contact', 'Contacto', 'Contatto', 'İletişim', 'Kontakt'),
+		'Beoordelingen': d('Bewertungen', 'Reviews', 'Avis', 'Reseñas', 'Recensioni', 'Değerlendirmeler', 'Opinie'),
+		'Reviews': d('Bewertungen', 'Reviews', 'Avis', 'Reseñas', 'Recensioni', 'Yorumlar', 'Opinie'),
+		'Certificaten': d('Zertifikate', 'Certificates', 'Certificats', 'Certificados', 'Certificati', 'Sertifikalar', 'Certyfikaty'),
+		'Partners': d('Partner', 'Partners', 'Partenaires', 'Socios', 'Partner', 'Ortaklar', 'Partnerzy'),
+		'Nieuws': d('Nachrichten', 'News', 'Actualités', 'Noticias', 'Notizie', 'Haberler', 'Aktualności'),
+		'Pers': d('Presse', 'Press', 'Presse', 'Prensa', 'Stampa', 'Basın', 'Prasa'),
+		'Vacatures': d('Stellenangebote', 'Careers', 'Carrières', 'Empleo', 'Lavora con noi', 'Kariyer', 'Kariera'),
+		'Werkwijze': d('Vorgehensweise', 'How we work', 'Méthode', 'Método', 'Metodo', 'Çalışma şekli', 'Sposób pracy'),
+		'Goud verkopen': d('Gold verkaufen', 'Sell gold', "Vendre de l'or", 'Vender oro', "Vendere oro", 'Altın sat', 'Sprzedaj złoto'),
+		'Zilver verkopen': d('Silber verkaufen', 'Sell silver', "Vendre de l'argent", 'Vender plata', 'Vendere argento', 'Gümüş sat', 'Sprzedaj srebro'),
+		'Diamanten verkopen': d('Diamanten verkaufen', 'Sell diamonds', 'Vendre des diamants', 'Vender diamantes', 'Vendere diamanti', 'Pırlanta sat', 'Sprzedaj diamenty'),
+		'Veilig en betrouwbaar': d('Sicher und zuverlässig', 'Safe and reliable', 'Sûr et fiable', 'Seguro y fiable', 'Sicuro e affidabile', 'Güvenli ve güvenilir', 'Bezpiecznie i niezawodnie')
 	};
 
 	var LANG = 'nl';
@@ -5467,17 +6358,17 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
     </div>
     <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="#">Goudprijs</a><a class="xg-ql" href="#">Zilverprijs</a><a class="xg-ql" href="#">Koersgrafiek</a></div>`,
     service:`<div class="xg-std-grid">
-      <div class="xg-std-col"><h3>Diensten</h3><a href="#">Gratis taxatie</a><a href="#">Thuisbezoek</a><a href="#">Inruilen</a></div>
-      <div class="xg-std-col"><h3>Hulp</h3><a href="#">FAQ</a><a href="#">Contact</a><a href="#">Hoe werkt het?</a></div>
-      <div class="xg-std-col"><h3>Locaties</h3><a href="#">Alle vestigingen</a><a href="#">Amsterdam</a><a href="#">Rotterdam</a></div>
+      <div class="xg-std-col"><h3>Diensten</h3><a href="/service/gratis-taxatie/">Gratis taxatie</a><a href="/service/thuisbezoek/">Thuisbezoek</a><a href="/service/inruilen/">Inruilen</a></div>
+      <div class="xg-std-col"><h3>Hulp</h3><a href="/service/faq/">FAQ</a><a href="/contact/">Contact</a><a href="/service/hoe-werkt-het/">Hoe werkt het?</a></div>
+      <div class="xg-std-col"><h3>Locaties</h3><a href="/kantoren/">Alle vestigingen</a><a href="/kantoren/amsterdam/">Amsterdam</a><a href="/kantoren/rotterdam/">Rotterdam</a></div>
     </div>
-    <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="#">Gratis taxatie</a><a class="xg-ql" href="#">Afspraak plannen</a></div>`,
+    <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="/service/gratis-taxatie/">Gratis taxatie</a><a class="xg-ql" href="/afspraak/">Afspraak plannen</a></div>`,
     overons:`<div class="xg-std-grid">
-      <div class="xg-std-col"><h3>Over XGOUD</h3><a href="#">Bedrijf</a><a href="#">Team</a><a href="#">Geschiedenis</a></div>
-      <div class="xg-std-col"><h3>Vertrouwen</h3><a href="#">Beoordelingen</a><a href="#">Certificaten</a><a href="#">Partners</a></div>
-      <div class="xg-std-col"><h3>Media</h3><a href="#">Nieuws</a><a href="#">Pers</a><a href="#">Vacatures</a></div>
+      <div class="xg-std-col"><h3>Over XGOUD</h3><a href="/over-ons/bedrijf/">Bedrijf</a><a href="/over-ons/team/">Team</a><a href="/over-ons/geschiedenis/">Geschiedenis</a></div>
+      <div class="xg-std-col"><h3>Vertrouwen</h3><a href="/over-ons/beoordelingen/">Beoordelingen</a><a href="/over-ons/certificaten/">Certificaten</a><a href="/over-ons/partners/">Partners</a></div>
+      <div class="xg-std-col"><h3>Media</h3><a href="/over-ons/nieuws/">Nieuws</a><a href="/over-ons/pers/">Pers</a><a href="/over-ons/vacatures/">Vacatures</a></div>
     </div>
-    <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="#">Reviews</a><a class="xg-ql" href="#">Vestigingen</a></div>`
+    <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="/over-ons/beoordelingen/">Reviews</a><a class="xg-ql" href="/kantoren/">Vestigingen</a></div>`
   };
 
   let ws={menu:null,step:1,s1k:null,s2k:null,s1l:null,s2l:null,s3l:null};
@@ -5603,6 +6494,15 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
   if(mobClose) mobClose.addEventListener('click',()=>{
     document.getElementById('xgMobMenu').classList.remove('open');
     document.body.style.overflow='';
+  });
+
+  /* Footer-accordion (alleen mobiel <=600px): klik op kop klapt kolom in/uit. */
+  const FOOT_MQ = window.matchMedia('(max-width: 600px)');
+  document.querySelectorAll('nav.footer__col .footer__heading').forEach(h=>{
+    h.addEventListener('click',()=>{
+      if(!FOOT_MQ.matches) return;
+      h.parentElement.classList.toggle('is-open');
+    });
   });
 
 })();
@@ -6841,15 +7741,19 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 
 </script>
 <script>
-/* Seiten-Umschaltung */
-document.querySelectorAll('.tst-tab[data-go]').forEach(function (b) {
-	b.addEventListener('click', function () {
-		document.querySelectorAll('.tst-tab[data-go]').forEach(function (x) { x.classList.remove('active'); });
-		b.classList.add('active');
-		var go = b.getAttribute('data-go');
-		document.querySelectorAll('.tst-page').forEach(function (p) { p.hidden = (p.getAttribute('data-page') !== go); });
-		window.scrollTo(0, 0);
-	});
+/* Seiten-Umschaltung via Dropdown + Pfeile */
+var tstSelect = document.getElementById('tstSelect');
+function showPage(go) {
+	document.querySelectorAll('.tst-page').forEach(function (p) { p.hidden = (p.getAttribute('data-page') !== go); });
+	tstSelect.value = go;
+	window.scrollTo(0, 0);
+}
+tstSelect.addEventListener('change', function () { showPage(this.value); });
+document.getElementById('tstPrev').addEventListener('click', function () {
+	var i = tstSelect.selectedIndex; if (i > 0) { tstSelect.selectedIndex = i - 1; showPage(tstSelect.value); }
+});
+document.getElementById('tstNext').addEventListener('click', function () {
+	var i = tstSelect.selectedIndex; if (i < tstSelect.options.length - 1) { tstSelect.selectedIndex = i + 1; showPage(tstSelect.value); }
 });
 
 /* Demo-Text (Nederlands) in leere Gutenberg-Blöcke – standardmäßig AN,
