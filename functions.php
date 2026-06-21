@@ -24,5 +24,6 @@ require_once get_theme_file_path( 'inc/scheduling.php' );
 require_once get_theme_file_path( 'inc/charity.php' );
 require_once get_theme_file_path( 'inc/chat.php' );
 require_once get_theme_file_path( 'inc/blueprint-sections.php' );
+require_once get_theme_file_path( 'inc/products.php' );
 require_once get_theme_file_path( 'inc/diamond.php' );
 require_once get_theme_file_path( 'inc/newsletter.php' );
