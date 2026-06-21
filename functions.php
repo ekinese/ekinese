@@ -50,3 +50,5 @@ require_once get_theme_file_path( 'inc/portfolio.php' );
 require_once get_theme_file_path( 'inc/marketplace.php' );
 require_once get_theme_file_path( 'inc/news.php' );
 require_once get_theme_file_path( 'inc/mail-flows.php' );
+require_once get_theme_file_path( 'inc/social.php' );
+require_once get_theme_file_path( 'inc/ads.php' );
