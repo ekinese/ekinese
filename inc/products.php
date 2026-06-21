@@ -438,3 +438,61 @@ function ekinese_register_products_rest() {
 	) );
 }
 add_action( 'rest_api_init', 'ekinese_register_products_rest' );
+
+/**
+ * Compacte productindex voor de calculator: per metaal en vorm een lijst van
+ * [naam, fijn gewicht (g), bruto gewicht (g)]. Alleen baren en munten (die per
+ * STUK verkocht worden); sloop gaat per gewicht en heeft geen productkeuze.
+ *
+ * Bron: data/products.json. Gecachet (object-cache + transient) zodat de
+ * calculator nooit 600+ posts of de JSON hoeft te parsen.
+ *
+ * @return array { goud:{ barren:[[naam,fijn,bruto],...], munt:[...] }, ... }
+ */
+function ekinese_calculator_products() {
+	$cached = wp_cache_get( 'calc_products', 'xg' );
+	if ( false !== $cached ) {
+		return $cached;
+	}
+	$data = get_transient( 'xg_calc_products' );
+	if ( false === $data ) {
+		$file = get_theme_file_path( 'data/products.json' );
+		$json = file_exists( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : array(); // phpcs:ignore
+		$metal_map = array( 'Gold' => 'goud', 'Silver' => 'zilver', 'Platinum' => 'platina', 'Palladium' => 'palladium' );
+		$form_map  = array( 'Baar' => 'barren', 'Munten' => 'munt', 'Munt' => 'munt' );
+		$data      = array();
+		foreach ( (array) $json as $metal_key => $forms ) {
+			$mcode = $metal_map[ $metal_key ] ?? null;
+			if ( ! $mcode || ! is_array( $forms ) ) {
+				continue;
+			}
+			foreach ( $forms as $form_key => $items ) {
+				$fcode = $form_map[ $form_key ] ?? null;
+				if ( ! $fcode || ! is_array( $items ) ) {
+					continue; // o.a. "Sloop" (per gewicht) overslaan
+				}
+				foreach ( $items as $p ) {
+					if ( empty( $p['name'] ) || empty( $p['weight'] ) ) {
+						continue;
+					}
+					$gross = (float) $p['weight'];
+					$fine  = isset( $p['fine_weight'] ) && $p['fine_weight'] ? (float) $p['fine_weight'] : 0.0;
+					if ( ! $fine ) {
+						// Afleiden uit carat/zuiverheid (per mille of karaat).
+						$carat = (float) str_replace( ',', '.', (string) ( $p['carat'] ?? '' ) );
+						if ( $carat > 100 ) {
+							$carat = $carat / 1000; // bv. 999,9 → 0,9999
+						} elseif ( $carat > 1 ) {
+							$carat = $carat / 24;   // karaat-fallback
+						}
+						$fine = $carat > 0 ? round( $gross * $carat, 4 ) : $gross;
+					}
+					$data[ $mcode ][ $fcode ][] = array( $p['name'], $fine, $gross );
+				}
+			}
+		}
+		set_transient( 'xg_calc_products', $data, DAY_IN_SECONDS );
+	}
+	wp_cache_set( 'calc_products', $data, 'xg' );
+	return $data;
+}

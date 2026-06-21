@@ -197,6 +197,8 @@ add_filter( 'script_loader_tag', 'ekinese_defer_scripts', 10, 2 );
  */
 function ekinese_calculator_data() {
 	$data = array(
+		// Echte producten (606 baren & munten) voor verkoop per stuk.
+		'products'  => function_exists( 'ekinese_calculator_products' ) ? ekinese_calculator_products() : array(),
 		// wp_xg_margins – später LIVE im Admin editierbar.
 		'margins'   => array(
 			'metal'         => 0.08,

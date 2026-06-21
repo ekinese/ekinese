@@ -94,7 +94,32 @@ const pages = {
 };
 
 // Mock-Daten = Struktur aus inc/setup.php
+// Compacte productindex (zelfde mapping als inc/products.php) → echte producten
+// in de preview-calculator (per stuk: baar/munt).
+function buildProductIndex() {
+	try {
+		const raw = JSON.parse(read('data/products.json'));
+		const mm = { Gold: 'goud', Silver: 'zilver', Platinum: 'platina', Palladium: 'palladium' };
+		const fm = { Baar: 'barren', Munten: 'munt', Munt: 'munt' };
+		const out = {};
+		for (const mk of Object.keys(raw)) {
+			const mc = mm[mk]; if (!mc) continue;
+			for (const fk of Object.keys(raw[mk])) {
+				const fc = fm[fk]; if (!fc || !Array.isArray(raw[mk][fk])) continue;
+				for (const p of raw[mk][fk]) {
+					if (!p.name || !p.weight) continue;
+					let fine = p.fine_weight || 0;
+					if (!fine) { let c = parseFloat(String(p.carat).replace(',', '.')); if (c > 100) c /= 1000; else if (c > 1) c /= 24; fine = c > 0 ? +(p.weight * c).toFixed(4) : p.weight; }
+					(out[mc] = out[mc] || {})[fc] = (out[mc][fc] || []); out[mc][fc].push([p.name, fine, p.weight]);
+				}
+			}
+		}
+		return out;
+	} catch (e) { return {}; }
+}
+
 const calcData = {
+	products: buildProductIndex(),
 	margins: { metal: 0.08, diamond_range: 0.10, gem_range: 0.12, watch_range: 0.10, charity_share: 0.05 },
 	metals: { goud:{label:'Goud',spot:62.50}, zilver:{label:'Zilver',spot:0.78}, platina:{label:'Platina',spot:28.90}, palladium:{label:'Palladium',spot:30.10} },
 	metal_purities: {

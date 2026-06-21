@@ -79,17 +79,20 @@
 		// KERNLOGICA:
 		//   Baar/Munt  → verkoop PER STUK: vast gewicht per stuk × aantal stuks.
 		//   Sloop/sieraden → verkoop PER GEWICHT: opgegeven gram (+ staffel/staat).
-		var grams, condFactor = 1, tierBonus = 0;
+		var grams, condFactor = 1, tierBonus = 0, purityFactor;
 		if (f.form === 'sieraad') {
 			grams = parseFloat(f.weight) || 0;
+			purityFactor = purity;
 			DATA.jewelry_tiers.forEach(function (t) { if (grams >= t.min) tierBonus = t.bonus; });
 		} else {
 			var per = parseFloat(f.unit_weight) || 0;
 			var qty = parseInt(f.qty, 10) || 0;
 			grams = per * qty;
-			if (f.condition && DATA.conditions[f.condition]) condFactor = DATA.conditions[f.condition].factor;
+			// Echt product → unit_weight is FIJN gewicht (al zuiver), factor 1;
+			// fallback-preset → zuiverheid uit de selectie.
+			purityFactor = (f.unit_purity != null && f.unit_purity !== '') ? (parseFloat(f.unit_purity) || 0) : purity;
 		}
-		var market = metal.spot * grams * purity * condFactor;
+		var market = metal.spot * grams * purityFactor * condFactor;
 		var marginPct = Math.max(DATA.margins.metal - tierBonus, 0);
 		var marginAbs = market * marginPct;
 		var payout = market - marginAbs;
@@ -455,23 +458,35 @@
 			if (!state.form.form) state.form.form = 'barren';
 
 			var grid = h('div', 'xg-calc-grid');
-			// Vorm — bepaalt of we per stuk (baar/munt) of per gewicht (sloop) rekenen.
 			var sub = h('div', 'xg-calc-form-sub');
-			grid.appendChild(field('Vorm', seg('form', [['barren', 'Baar'], ['munt', 'Munt'], ['sieraad', 'Sloop & sieraden']], function () { buildMetalFields(sub); })));
-
-			// Reinheit: Gold → Karat, sonst → Legierung
-			var purEntries = Object.keys(DATA.metal_purities[state.form.metal]).map(function (key) {
-				var lbl = (state.form.metal === 'goud') ? (key + ' karaat') : (key + ' (' + DATA.purity_labels[key] + ')');
-				return [key, lbl];
-			});
-			var purLabel = (state.form.metal === 'goud') ? 'Karaat / gehalte' : 'Legering';
-			grid.appendChild(field(purLabel, sel('purity', purEntries)));
+			// Vorm — bepaalt of we per stuk (baar/munt) of per gewicht (sloop) rekenen.
+			grid.appendChild(field('Vorm', seg('form', [['barren', 'Baar'], ['munt', 'Munt'], ['sieraad', 'Sloop & sieraden']], function () {
+				state.form.product = null; state.form.unit_weight = null; state.form.unit_purity = null;
+				buildMetalFields(sub);
+			})));
 			wrap.appendChild(grid);
-
-			// Vorm-afhankelijke velden (per stuk vs. per gewicht).
 			wrap.appendChild(sub);
 			buildMetalFields(sub);
 		}
+
+		// Zuiverheid-veld (karaat/legering) — voor sloop en als fallback.
+		function purityField() {
+			var entries = Object.keys(DATA.metal_purities[state.form.metal] || {}).map(function (key) {
+				var lbl = (state.form.metal === 'goud') ? (key + ' karaat') : (key + ' (' + (DATA.purity_labels[key] || key) + ')');
+				return [key, lbl];
+			});
+			var label = (state.form.metal === 'goud') ? 'Karaat / gehalte' : 'Legering';
+			return field(label, sel('purity', entries));
+		}
+
+		// Geselecteerd product → fijn gewicht + zuiverheidsfactor 1 (al zuiver).
+		function applyProduct(prods) {
+			var p = prods[parseInt(state.form.product, 10) || 0];
+			if (!p) { return; }
+			state.form.unit_weight = p[1];
+			state.form.unit_purity = 1;
+		}
+		function fmtG(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
 
 		// Gangbare gewichten per stuk (gram) voor baren en munten.
 		var PIECE_WEIGHTS = {
@@ -483,19 +498,31 @@
 		function buildMetalFields(sub) {
 			sub.innerHTML = '';
 			if (state.form.form === 'sieraad') {
-				// PER GEWICHT: gram-slider + staat.
+				// PER GEWICHT: zuiverheid + staat + gram-slider.
 				var g = h('div', 'xg-calc-grid');
+				g.appendChild(purityField());
 				g.appendChild(field('Staat', sel('condition', Object.keys(DATA.conditions).map(function (k) { return [k, DATA.conditions[k].label]; }))));
 				sub.appendChild(g);
 				sub.appendChild(field('Totaal gewicht', rangeNum('weight', 0, 1000, 1, 'g', state.form.weight || 0), true, 'in gram'));
 			} else {
-				// PER STUK: gewicht per stuk + aantal.
-				var presets = PIECE_WEIGHTS[state.form.form] || PIECE_WEIGHTS.barren;
-				// purity-default niet door vorm overschrijven
+				// PER STUK: echte producten (606 baren & munten) → fijn gewicht
+				// staat vast, klant kiest alleen het aantal.
+				var prods = (DATA.products && DATA.products[state.form.metal] && DATA.products[state.form.metal][state.form.form]) || [];
 				var g2 = h('div', 'xg-calc-grid');
-				g2.appendChild(field('Gewicht per stuk', sel('unit_weight', presets), false, state.form.form === 'munt' ? 'standaardmunten' : 'standaardbaren'));
+				if (prods.length) {
+					var entries = prods.map(function (p, i) { return [String(i), p[0] + ' · ' + fmtG(p[2]) + ' g']; });
+					g2.appendChild(field('Product', sel('product', entries, function () { applyProduct(prods); }), true, state.form.form === 'munt' ? 'kies een munt' : 'kies een baar'));
+					g2.appendChild(field('Aantal stuks', num('qty', '1', '1', state.form.qty || 1)));
+					sub.appendChild(g2);
+					applyProduct(prods);
+					return;
+				}
+				// Fallback (geen DB): generieke gewichten + zuiverheid.
+				state.form.unit_purity = null;
+				g2.appendChild(field('Gewicht per stuk', sel('unit_weight', PIECE_WEIGHTS[state.form.form] || PIECE_WEIGHTS.barren), false, state.form.form === 'munt' ? 'standaardmunten' : 'standaardbaren'));
 				g2.appendChild(field('Aantal stuks', num('qty', '1', '1', state.form.qty || 1)));
 				sub.appendChild(g2);
+				sub.appendChild(purityField());
 			}
 		}
 
