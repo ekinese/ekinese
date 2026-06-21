@@ -1693,3 +1693,13 @@ a.xg-final-btn:hover {
 }
 [data-theme="dark"] .xg-spec-table th { background: #262320; color: #f3efe8; border-color: #34302b; }
 .xg-c-card[href]:hover { text-decoration: none; }
+
+/* Juridische / tekstpagina's (Privacy, Voorwaarden, Cookies). */
+.xg-legal { max-width: 860px; margin: 0 auto; padding: 60px 40px; color: var(--ink, #1c1a16); }
+.xg-legal h1 { font-size: 44px; line-height: 1.1; margin: 0 0 10px; color: var(--ink, #1c1a16); }
+.xg-legal .xg-legal-upd { color: var(--ink-soft, #6b665c); font-size: 14px; margin-bottom: 30px; }
+.xg-legal h2 { font-size: 24px; margin: 36px 0 12px; color: var(--ink, #1c1a16); padding-top: 16px; border-top: 1px solid var(--line, #e3ddd0); }
+.xg-legal h3 { font-size: 18px; margin: 22px 0 8px; color: var(--ink, #1c1a16); }
+.xg-legal p, .xg-legal li { font-size: 16px; line-height: 1.8; color: var(--ink-soft, #4a463e); }
+.xg-legal ul { padding-left: 22px; }
+.xg-legal a { color: var(--red, #AE1E1E); }
