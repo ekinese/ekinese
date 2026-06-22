@@ -191,6 +191,64 @@ function ekinese_install_verkopen_tree() {
 		}
 	}
 
+	// L3 horloge-merken (onder horloges). De collectie (xg_watch) is de
+	// productpagina (L4) en krijgt zijn permalink via inc/verkopen.php.
+	if ( ! empty( $gid['horloges'] ) && function_exists( 'ekinese_watch_seed_data' ) ) {
+		foreach ( array_keys( ekinese_watch_seed_data() ) as $brand ) {
+			$bslug = sanitize_title( $brand );
+			$title = $brand . ' verkopen';
+			$block = sprintf(
+				'<!-- wp:ekinese/watch-list {"brand":"%s","title":"%s","limit":48} /-->',
+				esc_attr( $brand ),
+				esc_attr( $title )
+			);
+			$upsert( $bslug, $title, $block, $gid['horloges'] );
+		}
+	}
+
+	// L3 edelstenen (steen) + L4 categorieën (onder edelstenen). Leaf = xg_gemstone.
+	if ( ! empty( $gid['edelstenen'] ) && function_exists( 'ekinese_gemstone_seed_data' ) ) {
+		foreach ( ekinese_gemstone_seed_data() as $stone => $cats ) {
+			$sslug = sanitize_title( $stone );
+			$sblock = sprintf(
+				'<!-- wp:ekinese/gemstone-list {"stone":"%s","title":"%s","limit":96} /-->',
+				esc_attr( $stone ),
+				esc_attr( $stone . ' verkopen' )
+			);
+			$sid = $upsert( $sslug, $stone . ' verkopen', $sblock, $gid['edelstenen'] );
+			if ( ! $sid ) {
+				continue;
+			}
+			foreach ( array_keys( $cats ) as $cat ) {
+				// Alleen aanmaken als er edelstenen zijn voor deze steen + categorie.
+				$has = get_posts(
+					array(
+						'post_type'   => 'xg_gemstone',
+						'post_status' => 'publish',
+						'numberposts' => 1,
+						'fields'      => 'ids',
+						'meta_query'  => array(
+							'relation' => 'AND',
+							array( 'key' => 'stone', 'value' => $stone ),
+							array( 'key' => 'category', 'value' => $cat ),
+						),
+					)
+				);
+				if ( empty( $has ) ) {
+					continue;
+				}
+				$ctitle = sprintf( '%s %s verkopen', $stone, $cat );
+				$cblock = sprintf(
+					'<!-- wp:ekinese/gemstone-list {"stone":"%s","category":"%s","title":"%s","limit":96} /-->',
+					esc_attr( $stone ),
+					esc_attr( $cat ),
+					esc_attr( $ctitle )
+				);
+				$upsert( sanitize_title( $cat ), $ctitle, $cblock, $sid );
+			}
+		}
+	}
+
 	return $count;
 }
 
@@ -251,7 +309,15 @@ function ekinese_run_install() {
 	if ( function_exists( 'ekinese_import_products' ) ) {
 		$report['products'] = (int) ekinese_import_products();
 	}
-	// Verkopen-boom (5 niveaus) NA de product-import, zodat lege L4-categorieën
+	// Horloges + edelstenen seeden VÓÓR de verkopen-boom, zodat L3/L4 alleen
+	// worden aangemaakt waar producten bestaan.
+	if ( function_exists( 'ekinese_seed_watches' ) ) {
+		$report['watches'] = (int) ekinese_seed_watches();
+	}
+	if ( function_exists( 'ekinese_seed_gemstones' ) ) {
+		$report['gemstones'] = (int) ekinese_seed_gemstones();
+	}
+	// Verkopen-boom (5 niveaus) NA de imports, zodat lege L4-categorieën
 	// kunnen worden overgeslagen. Telt extra pagina's mee in het rapport.
 	$report['pages'] += (int) ekinese_install_verkopen_tree();
 	// Oude *-verkopen-pagina's opruimen, zodat de nieuwe /verkopen/-structuur de
@@ -266,9 +332,7 @@ function ekinese_run_install() {
 	if ( function_exists( 'ekinese_seed_lexicon' ) ) {
 		ekinese_seed_lexicon();
 	}
-	if ( function_exists( 'ekinese_seed_watches' ) ) {
-		$report['watches'] = (int) ekinese_seed_watches();
-	}
+	// (horloges + edelstenen worden hierboven, vóór de verkopen-boom, geseed.)
 	flush_rewrite_rules( false );
 	update_option( 'xg_installed', gmdate( 'c' ) );
 	return $report;
@@ -279,7 +343,7 @@ add_action( 'admin_menu', function () {
 	add_submenu_page( 'tools.php', __( 'XGOUD installatie', 'ekinese' ), __( 'XGOUD setup', 'ekinese' ), 'manage_options', 'xg-install', function () {
 		if ( isset( $_POST['xg_install_nonce'] ) && wp_verify_nonce( sanitize_key( $_POST['xg_install_nonce'] ), 'xg_install' ) ) {
 			$r = ekinese_run_install();
-			echo '<div class="notice notice-success"><p>' . esc_html( sprintf( 'Klaar: %d pagina\'s, %d producten, %d locaties, %d horloges.', $r['pages'] ?? 0, $r['products'] ?? 0, $r['locations'] ?? 0, $r['watches'] ?? 0 ) ) . '</p></div>';
+			echo '<div class="notice notice-success"><p>' . esc_html( sprintf( 'Klaar: %d pagina\'s, %d producten, %d locaties, %d horloges, %d edelstenen.', $r['pages'] ?? 0, $r['products'] ?? 0, $r['locations'] ?? 0, $r['watches'] ?? 0, $r['gemstones'] ?? 0 ) ) . '</p></div>';
 		}
 		$done = get_option( 'xg_installed' );
 		echo '<div class="wrap"><h1>XGOUD installatie</h1>';

@@ -236,7 +236,7 @@ function ekinese_sitemap_output() {
 	if ( false === $xml ) {
 		$urls = array( home_url( '/' ) );
 		$q    = get_posts( array(
-			'post_type'      => array( 'page', 'post', 'xg_product', 'xg_office', 'xg_charity_project' ),
+			'post_type'      => array( 'page', 'post', 'xg_product', 'xg_watch', 'xg_gemstone', 'xg_office', 'xg_charity_project' ),
 			'posts_per_page' => -1,
 			'post_status'    => 'publish',
 			'fields'         => 'ids',

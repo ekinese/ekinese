@@ -337,16 +337,35 @@
     edelstenen: {
       steps:['Kies uw steen','Kies uw categorie','Kies uw gewicht'],
       opts:{
-        diamanten:{lbl:'Diamanten',desc:'Losse diamanten', cats:{ los:{lbl:'Losse Diamanten',prods:['0.25 ct','0.50 ct','1.00 ct','2.00 ct']} }},
-        saffieren:{lbl:'Saffieren',desc:'Natuurlijke saffieren', cats:{ los:{lbl:'Losse saffieren',prods:['Blauw','Geel','Roze']} }}
+        diamant:{lbl:'Diamant',desc:'Geslepen en ruwe diamanten',
+          cats:{ geslepen:{lbl:'Geslepen',prods:['0,25 ct','0,50 ct','1,00 ct','2,00 ct','3,00 ct']},
+                 ruw:{lbl:'Ruw',prods:['1 ct','2 ct','5 ct']} }},
+        saffier:{lbl:'Saffier',desc:'Natuurlijke saffieren',
+          cats:{ blauw:{lbl:'Blauw',prods:['1 ct','2 ct','3 ct']},
+                 geel:{lbl:'Geel',prods:['1 ct','2 ct']},
+                 roze:{lbl:'Roze',prods:['1 ct','2 ct']} }},
+        smaragd:{lbl:'Smaragd',desc:'Geslepen smaragden',
+          cats:{ geslepen:{lbl:'Geslepen',prods:['0,50 ct','1,00 ct','2,00 ct']} }},
+        robijn:{lbl:'Robijn',desc:'Geslepen robijnen',
+          cats:{ geslepen:{lbl:'Geslepen',prods:['0,50 ct','1,00 ct','2,00 ct']} }}
       },
-      ql:['Diamanten ring','Losse diamant','Saffier']
+      ql:['Diamant 1 ct','Blauwe saffier','Smaragd']
     },
     horloges: {
-      steps:['Kies uw merk','Kies uw collectie','Kies uw model'],
+      steps:['Kies uw merk','Kies uw collectie','Bekijk'],
       opts:{
-        rolex:{lbl:'Rolex',desc:'Sporters en klassiekers', cats:{ submariner:{lbl:'Submariner',prods:['Date','No Date']}, datejust:{lbl:'Datejust',prods:['36mm','41mm']} }},
-        omega:{lbl:'Omega',desc:'Speedmaster en meer', cats:{ speedmaster:{lbl:'Speedmaster',prods:['Moonwatch','Professional']} }}
+        rolex:{lbl:'Rolex',desc:'Sporters en klassiekers', cats:{ submariner:{lbl:'Submariner',prods:['Alle uitvoeringen']}, datejust:{lbl:'Datejust',prods:['Alle uitvoeringen']}, daytona:{lbl:'Daytona',prods:['Alle uitvoeringen']}, 'gmt-master-ii':{lbl:'GMT-Master II',prods:['Alle uitvoeringen']}, 'oyster-perpetual':{lbl:'Oyster Perpetual',prods:['Alle uitvoeringen']}, 'sea-dweller':{lbl:'Sea-Dweller',prods:['Alle uitvoeringen']}, 'day-date':{lbl:'Day-Date',prods:['Alle uitvoeringen']}, explorer:{lbl:'Explorer',prods:['Alle uitvoeringen']} }},
+        omega:{lbl:'Omega',desc:'Speedmaster en meer', cats:{ speedmaster:{lbl:'Speedmaster',prods:['Alle uitvoeringen']}, seamaster:{lbl:'Seamaster',prods:['Alle uitvoeringen']}, constellation:{lbl:'Constellation',prods:['Alle uitvoeringen']}, 'de-ville':{lbl:'De Ville',prods:['Alle uitvoeringen']} }},
+        'patek-philippe':{lbl:'Patek Philippe',desc:'Nautilus, Aquanaut e.a.', cats:{ nautilus:{lbl:'Nautilus',prods:['Alle uitvoeringen']}, aquanaut:{lbl:'Aquanaut',prods:['Alle uitvoeringen']}, calatrava:{lbl:'Calatrava',prods:['Alle uitvoeringen']}, complications:{lbl:'Complications',prods:['Alle uitvoeringen']} }},
+        'audemars-piguet':{lbl:'Audemars Piguet',desc:'Royal Oak e.a.', cats:{ 'royal-oak':{lbl:'Royal Oak',prods:['Alle uitvoeringen']}, 'royal-oak-offshore':{lbl:'Royal Oak Offshore',prods:['Alle uitvoeringen']}, 'code-11-59':{lbl:'Code 11.59',prods:['Alle uitvoeringen']} }},
+        cartier:{lbl:'Cartier',desc:'Santos, Tank e.a.', cats:{ santos:{lbl:'Santos',prods:['Alle uitvoeringen']}, tank:{lbl:'Tank',prods:['Alle uitvoeringen']}, 'ballon-bleu':{lbl:'Ballon Bleu',prods:['Alle uitvoeringen']}, panthere:{lbl:'Panthère',prods:['Alle uitvoeringen']} }},
+        breitling:{lbl:'Breitling',desc:'Navitimer e.a.', cats:{ navitimer:{lbl:'Navitimer',prods:['Alle uitvoeringen']}, superocean:{lbl:'Superocean',prods:['Alle uitvoeringen']}, chronomat:{lbl:'Chronomat',prods:['Alle uitvoeringen']}, avenger:{lbl:'Avenger',prods:['Alle uitvoeringen']} }},
+        iwc:{lbl:'IWC',desc:'Portugieser, Pilot e.a.', cats:{ portugieser:{lbl:'Portugieser',prods:['Alle uitvoeringen']}, pilot:{lbl:'Pilot',prods:['Alle uitvoeringen']}, portofino:{lbl:'Portofino',prods:['Alle uitvoeringen']}, aquatimer:{lbl:'Aquatimer',prods:['Alle uitvoeringen']} }},
+        'jaeger-lecoultre':{lbl:'Jaeger-LeCoultre',desc:'Reverso e.a.', cats:{ reverso:{lbl:'Reverso',prods:['Alle uitvoeringen']}, master:{lbl:'Master',prods:['Alle uitvoeringen']}, polaris:{lbl:'Polaris',prods:['Alle uitvoeringen']} }},
+        tudor:{lbl:'Tudor',desc:'Black Bay e.a.', cats:{ 'black-bay':{lbl:'Black Bay',prods:['Alle uitvoeringen']}, pelagos:{lbl:'Pelagos',prods:['Alle uitvoeringen']}, ranger:{lbl:'Ranger',prods:['Alle uitvoeringen']} }},
+        'tag-heuer':{lbl:'TAG Heuer',desc:'Carrera e.a.', cats:{ carrera:{lbl:'Carrera',prods:['Alle uitvoeringen']}, monaco:{lbl:'Monaco',prods:['Alle uitvoeringen']}, aquaracer:{lbl:'Aquaracer',prods:['Alle uitvoeringen']} }},
+        panerai:{lbl:'Panerai',desc:'Luminor e.a.', cats:{ luminor:{lbl:'Luminor',prods:['Alle uitvoeringen']}, radiomir:{lbl:'Radiomir',prods:['Alle uitvoeringen']}, submersible:{lbl:'Submersible',prods:['Alle uitvoeringen']} }},
+        'vacheron-constantin':{lbl:'Vacheron Constantin',desc:'Overseas e.a.', cats:{ overseas:{lbl:'Overseas',prods:['Alle uitvoeringen']}, patrimony:{lbl:'Patrimony',prods:['Alle uitvoeringen']}, traditionnelle:{lbl:'Traditionnelle',prods:['Alle uitvoeringen']} }}
       },
       ql:['Rolex Submariner','Rolex Datejust','Omega Speedmaster']
     }
@@ -446,18 +465,18 @@
     });
   }
 
-  // Bestemmings-URL voor de wizard, binnen de /verkopen/-structuur (5 niveaus),
-  // met preset-param zodat de calculator op de doelpagina alvast goed staat.
-  // s1 = metaal-slug (goud/zilver/…), s2 = categorie-slug (baren/munten/sloop).
+  // Bestemmings-URL voor de wizard, binnen de /verkopen/-structuur, met preset
+  // zodat de calculator op de doelpagina alvast goed staat. De WIZ-keys (s1/s2)
+  // zijn al slugs en komen 1-op-1 overeen met de pagina-/permalink-structuur:
+  //   edelmetalen : /verkopen/edelmetalen/{metaal}/{categorie}/
+  //   edelstenen  : /verkopen/edelstenen/{steen}/{categorie}/
+  //   horloges    : /verkopen/horloges/{merk}/{collectie}/   (collectie = product)
   function wizDestination(menu, s1, s2, prod){
-    const q='?preset='+encodeURIComponent(s1+'|'+(s2||'')+'|'+(prod||''));
-    // Edelmetalen heeft volledige L3/L4-pagina's; edelstenen/horloges (nog) niet.
-    if(menu==='edelmetalen' && s1 && s2) return '/verkopen/edelmetalen/'+s1+'/'+s2+'/'+q;
-    if(menu==='edelmetalen' && s1)       return '/verkopen/edelmetalen/'+s1+'/'+q;
-    if(menu==='edelmetalen')             return '/verkopen/edelmetalen/'+q;
-    if(menu==='edelstenen')              return '/verkopen/edelstenen/'+q;
-    if(menu==='horloges')                return '/verkopen/horloges/'+q;
-    return '/verkopen/'+q;
+    const q='?preset='+encodeURIComponent((s1||'')+'|'+(s2||'')+'|'+(prod||''));
+    let path='/verkopen/'+menu+'/';
+    if(s1) path+=s1+'/';
+    if(s1 && s2) path+=s2+'/';
+    return path+q;
   }
 
   function renderWizBody(){

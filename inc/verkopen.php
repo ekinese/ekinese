@@ -94,13 +94,81 @@ function ekinese_verkopen_product_path( $id ) {
 }
 
 /* =====================================================================
-   PRODUCT-PERMALINK  (post_type_link)
+   HORLOGES  (xg_watch → /verkopen/horloges/{merk}/{collectie}/)
+   Merk → collectie (4 niveaus): de collectie-post is de productpagina.
+===================================================================== */
+
+/** Pad voor een horloge, of null als brand/collection ontbreekt. */
+function ekinese_verkopen_watch_path( $id ) {
+	$brand = get_post_meta( $id, 'brand', true );
+	$coll  = get_post_meta( $id, 'collection', true );
+	if ( empty( $brand ) || empty( $coll ) ) {
+		return null;
+	}
+	return sprintf( 'verkopen/horloges/%s/%s', sanitize_title( $brand ), sanitize_title( $coll ) );
+}
+
+/** Merk-naam bij merk-slug (bron: watch-seed-data). */
+function ekinese_verkopen_watch_brand_by_slug( $slug ) {
+	if ( ! function_exists( 'ekinese_watch_seed_data' ) ) {
+		return null;
+	}
+	foreach ( array_keys( ekinese_watch_seed_data() ) as $brand ) {
+		if ( sanitize_title( $brand ) === $slug ) {
+			return $brand;
+		}
+	}
+	return null;
+}
+
+/** Collectie-naam bij (merk-naam, collectie-slug). */
+function ekinese_verkopen_watch_coll_by_slug( $brand, $slug ) {
+	if ( ! function_exists( 'ekinese_watch_seed_data' ) ) {
+		return null;
+	}
+	$data = ekinese_watch_seed_data();
+	foreach ( ( $data[ $brand ] ?? array() ) as $coll ) {
+		if ( sanitize_title( $coll ) === $slug ) {
+			return $coll;
+		}
+	}
+	return null;
+}
+
+/* =====================================================================
+   EDELSTENEN  (xg_gemstone → /verkopen/edelstenen/{steen}/{categorie}/{slug}/)
+===================================================================== */
+
+/** Pad voor een edelsteen, of null als steen/categorie ontbreekt. */
+function ekinese_verkopen_gemstone_path( $id ) {
+	$stone = get_post_meta( $id, 'stone', true );
+	$cat   = get_post_meta( $id, 'category', true );
+	if ( empty( $stone ) || empty( $cat ) ) {
+		return null;
+	}
+	$name = get_post_field( 'post_name', $id );
+	if ( ! $name ) {
+		return null;
+	}
+	return sprintf( 'verkopen/edelstenen/%s/%s/%s', sanitize_title( $stone ), sanitize_title( $cat ), $name );
+}
+
+/* =====================================================================
+   PERMALINKS  (post_type_link voor xg_product, xg_watch én xg_gemstone)
 ===================================================================== */
 function ekinese_verkopen_product_permalink( $url, $post ) {
-	if ( ! $post || 'xg_product' !== $post->post_type || 'publish' !== $post->post_status ) {
+	if ( ! $post || 'publish' !== $post->post_status ) {
 		return $url;
 	}
-	$path = ekinese_verkopen_product_path( $post->ID );
+	if ( 'xg_product' === $post->post_type ) {
+		$path = ekinese_verkopen_product_path( $post->ID );
+	} elseif ( 'xg_watch' === $post->post_type ) {
+		$path = ekinese_verkopen_watch_path( $post->ID );
+	} elseif ( 'xg_gemstone' === $post->post_type ) {
+		$path = ekinese_verkopen_gemstone_path( $post->ID );
+	} else {
+		return $url;
+	}
 	if ( null === $path ) {
 		return $url;
 	}
@@ -112,15 +180,75 @@ add_filter( 'post_type_link', 'ekinese_verkopen_product_permalink', 10, 2 );
    REWRITE  (5-segments pad → product)
 ===================================================================== */
 function ekinese_verkopen_rewrite() {
-	// Exact 5 segmenten: verkopen/{groep}/{metaal}/{categorie}/{product}.
-	// 'top' zodat deze regel vóór de generieke pagina-regels wint.
+	// Edelmetalen-product (5 segmenten, leaf = xg_product, globaal-unieke slug).
 	add_rewrite_rule(
-		'^verkopen/[^/]+/[^/]+/[^/]+/([^/]+)/?$',
+		'^verkopen/edelmetalen/[^/]+/[^/]+/([^/]+)/?$',
 		'index.php?xg_product=$matches[1]',
+		'top'
+	);
+	// Edelstenen-product (5 segmenten, leaf = xg_gemstone).
+	add_rewrite_rule(
+		'^verkopen/edelstenen/[^/]+/[^/]+/([^/]+)/?$',
+		'index.php?xg_gemstone=$matches[1]',
+		'top'
+	);
+	// Horloge (4 segmenten): /verkopen/horloges/{merk}/{collectie}/.
+	// Wordt via de request-filter naar het juiste xg_watch-bericht vertaald.
+	add_rewrite_rule(
+		'^verkopen/horloges/([^/]+)/([^/]+)/?$',
+		'index.php?xg_watch_merk=$matches[1]&xg_watch_coll=$matches[2]',
 		'top'
 	);
 }
 add_action( 'init', 'ekinese_verkopen_rewrite' );
+
+/** Eigen query-vars registreren (horloge-resolver). */
+function ekinese_verkopen_query_vars( $vars ) {
+	$vars[] = 'xg_watch_merk';
+	$vars[] = 'xg_watch_coll';
+	return $vars;
+}
+add_filter( 'query_vars', 'ekinese_verkopen_query_vars' );
+
+/**
+ * Vertaalt /verkopen/horloges/{merk}/{collectie}/ naar het concrete xg_watch.
+ * Merk+collectie zijn samen uniek; reverse-mapping via de watch-seed-data.
+ */
+function ekinese_verkopen_resolve_watch( $qv ) {
+	if ( empty( $qv['xg_watch_merk'] ) || empty( $qv['xg_watch_coll'] ) ) {
+		return $qv;
+	}
+	$merk_slug = $qv['xg_watch_merk'];
+	$coll_slug = $qv['xg_watch_coll'];
+	unset( $qv['xg_watch_merk'], $qv['xg_watch_coll'] );
+
+	$brand = ekinese_verkopen_watch_brand_by_slug( $merk_slug );
+	$coll  = $brand ? ekinese_verkopen_watch_coll_by_slug( $brand, $coll_slug ) : null;
+	if ( $brand && $coll ) {
+		$found = get_posts(
+			array(
+				'post_type'   => 'xg_watch',
+				'post_status' => 'publish',
+				'numberposts' => 1,
+				'fields'      => 'ids',
+				'meta_query'  => array(
+					'relation' => 'AND',
+					array( 'key' => 'brand', 'value' => $brand ),
+					array( 'key' => 'collection', 'value' => $coll ),
+				),
+			)
+		);
+		if ( ! empty( $found ) ) {
+			$qv['post_type'] = 'xg_watch';
+			$qv['xg_watch']  = get_post_field( 'post_name', $found[0] );
+			return $qv;
+		}
+	}
+	// Niet gevonden → 404.
+	$qv['error'] = '404';
+	return $qv;
+}
+add_filter( 'request', 'ekinese_verkopen_resolve_watch' );
 
 /* =====================================================================
    301-REDIRECTS  (oude structuur → nieuwe)
@@ -144,10 +272,16 @@ function ekinese_verkopen_redirect_map() {
 }
 
 function ekinese_verkopen_redirects() {
-	// 1) Canonical voor producten: oud /product/{slug} (of elk ander pad) → nieuw pad.
+	// 1) Canonical: oud pad (/product/…, /horloges/…, /edelsteen/…) → nieuw.
+	$path = null;
 	if ( is_singular( 'xg_product' ) ) {
-		$id   = get_queried_object_id();
-		$path = ekinese_verkopen_product_path( $id );
+		$path = ekinese_verkopen_product_path( get_queried_object_id() );
+	} elseif ( is_singular( 'xg_watch' ) ) {
+		$path = ekinese_verkopen_watch_path( get_queried_object_id() );
+	} elseif ( is_singular( 'xg_gemstone' ) ) {
+		$path = ekinese_verkopen_gemstone_path( get_queried_object_id() );
+	}
+	if ( is_singular( array( 'xg_product', 'xg_watch', 'xg_gemstone' ) ) ) {
 		if ( $path ) {
 			$target  = home_url( user_trailingslashit( $path ) );
 			$current = home_url( add_query_arg( array() ) );
