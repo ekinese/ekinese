@@ -314,7 +314,7 @@
 
   const WIZ = {
     edelmetalen: {
-      steps:['Kies uw metaal','Kies uw categorie','Kies uw product'],
+      steps:['Kies uw metaal','Kies uw categorie'],
       opts:{
         goud:      {lbl:'Goud',      desc:'Baren, munten en sloop/sieraden',
           cats:{ baren:{lbl:'Baar',prods:['1g','5g','10g','20g','50g','100g','250g','500g','1 kg']},
@@ -335,7 +335,7 @@
       ql: ['Gouden ring','Krugerrand','Goud baren','Tandgoud']
     },
     edelstenen: {
-      steps:['Kies uw steen','Kies uw categorie','Kies uw gewicht'],
+      steps:['Kies uw steen','Kies uw categorie'],
       opts:{
         diamant:{lbl:'Diamant',desc:'Geslepen en ruwe diamanten',
           cats:{ geslepen:{lbl:'Geslepen',prods:['0,25 ct','0,50 ct','1,00 ct','2,00 ct','3,00 ct']},
@@ -352,22 +352,18 @@
       ql:['Diamant 1 ct','Blauwe saffier','Smaragd']
     },
     horloges: {
-      steps:['Kies uw merk','Kies uw collectie','Bekijk'],
+      // Alleen de bekendste merken in de wizard (de overige merken staan wél als
+      // pagina onder /verkopen/horloges/). Collectie = eindkeuze (geen extra stap).
+      steps:['Kies uw merk','Kies uw collectie'],
       opts:{
-        rolex:{lbl:'Rolex',desc:'Sporters en klassiekers', cats:{ submariner:{lbl:'Submariner',prods:['Alle uitvoeringen']}, datejust:{lbl:'Datejust',prods:['Alle uitvoeringen']}, daytona:{lbl:'Daytona',prods:['Alle uitvoeringen']}, 'gmt-master-ii':{lbl:'GMT-Master II',prods:['Alle uitvoeringen']}, 'oyster-perpetual':{lbl:'Oyster Perpetual',prods:['Alle uitvoeringen']}, 'sea-dweller':{lbl:'Sea-Dweller',prods:['Alle uitvoeringen']}, 'day-date':{lbl:'Day-Date',prods:['Alle uitvoeringen']}, explorer:{lbl:'Explorer',prods:['Alle uitvoeringen']} }},
-        omega:{lbl:'Omega',desc:'Speedmaster en meer', cats:{ speedmaster:{lbl:'Speedmaster',prods:['Alle uitvoeringen']}, seamaster:{lbl:'Seamaster',prods:['Alle uitvoeringen']}, constellation:{lbl:'Constellation',prods:['Alle uitvoeringen']}, 'de-ville':{lbl:'De Ville',prods:['Alle uitvoeringen']} }},
-        'patek-philippe':{lbl:'Patek Philippe',desc:'Nautilus, Aquanaut e.a.', cats:{ nautilus:{lbl:'Nautilus',prods:['Alle uitvoeringen']}, aquanaut:{lbl:'Aquanaut',prods:['Alle uitvoeringen']}, calatrava:{lbl:'Calatrava',prods:['Alle uitvoeringen']}, complications:{lbl:'Complications',prods:['Alle uitvoeringen']} }},
-        'audemars-piguet':{lbl:'Audemars Piguet',desc:'Royal Oak e.a.', cats:{ 'royal-oak':{lbl:'Royal Oak',prods:['Alle uitvoeringen']}, 'royal-oak-offshore':{lbl:'Royal Oak Offshore',prods:['Alle uitvoeringen']}, 'code-11-59':{lbl:'Code 11.59',prods:['Alle uitvoeringen']} }},
-        cartier:{lbl:'Cartier',desc:'Santos, Tank e.a.', cats:{ santos:{lbl:'Santos',prods:['Alle uitvoeringen']}, tank:{lbl:'Tank',prods:['Alle uitvoeringen']}, 'ballon-bleu':{lbl:'Ballon Bleu',prods:['Alle uitvoeringen']}, panthere:{lbl:'Panthère',prods:['Alle uitvoeringen']} }},
-        breitling:{lbl:'Breitling',desc:'Navitimer e.a.', cats:{ navitimer:{lbl:'Navitimer',prods:['Alle uitvoeringen']}, superocean:{lbl:'Superocean',prods:['Alle uitvoeringen']}, chronomat:{lbl:'Chronomat',prods:['Alle uitvoeringen']}, avenger:{lbl:'Avenger',prods:['Alle uitvoeringen']} }},
-        iwc:{lbl:'IWC',desc:'Portugieser, Pilot e.a.', cats:{ portugieser:{lbl:'Portugieser',prods:['Alle uitvoeringen']}, pilot:{lbl:'Pilot',prods:['Alle uitvoeringen']}, portofino:{lbl:'Portofino',prods:['Alle uitvoeringen']}, aquatimer:{lbl:'Aquatimer',prods:['Alle uitvoeringen']} }},
-        'jaeger-lecoultre':{lbl:'Jaeger-LeCoultre',desc:'Reverso e.a.', cats:{ reverso:{lbl:'Reverso',prods:['Alle uitvoeringen']}, master:{lbl:'Master',prods:['Alle uitvoeringen']}, polaris:{lbl:'Polaris',prods:['Alle uitvoeringen']} }},
-        tudor:{lbl:'Tudor',desc:'Black Bay e.a.', cats:{ 'black-bay':{lbl:'Black Bay',prods:['Alle uitvoeringen']}, pelagos:{lbl:'Pelagos',prods:['Alle uitvoeringen']}, ranger:{lbl:'Ranger',prods:['Alle uitvoeringen']} }},
-        'tag-heuer':{lbl:'TAG Heuer',desc:'Carrera e.a.', cats:{ carrera:{lbl:'Carrera',prods:['Alle uitvoeringen']}, monaco:{lbl:'Monaco',prods:['Alle uitvoeringen']}, aquaracer:{lbl:'Aquaracer',prods:['Alle uitvoeringen']} }},
-        panerai:{lbl:'Panerai',desc:'Luminor e.a.', cats:{ luminor:{lbl:'Luminor',prods:['Alle uitvoeringen']}, radiomir:{lbl:'Radiomir',prods:['Alle uitvoeringen']}, submersible:{lbl:'Submersible',prods:['Alle uitvoeringen']} }},
-        'vacheron-constantin':{lbl:'Vacheron Constantin',desc:'Overseas e.a.', cats:{ overseas:{lbl:'Overseas',prods:['Alle uitvoeringen']}, patrimony:{lbl:'Patrimony',prods:['Alle uitvoeringen']}, traditionnelle:{lbl:'Traditionnelle',prods:['Alle uitvoeringen']} }}
+        rolex:{lbl:'Rolex',desc:'Submariner, Daytona e.a.', cats:{ submariner:{lbl:'Submariner'}, datejust:{lbl:'Datejust'}, daytona:{lbl:'Daytona'}, 'gmt-master-ii':{lbl:'GMT-Master II'} }},
+        omega:{lbl:'Omega',desc:'Speedmaster, Seamaster', cats:{ speedmaster:{lbl:'Speedmaster'}, seamaster:{lbl:'Seamaster'}, constellation:{lbl:'Constellation'} }},
+        'patek-philippe':{lbl:'Patek Philippe',desc:'Nautilus, Aquanaut', cats:{ nautilus:{lbl:'Nautilus'}, aquanaut:{lbl:'Aquanaut'}, calatrava:{lbl:'Calatrava'} }},
+        'audemars-piguet':{lbl:'Audemars Piguet',desc:'Royal Oak', cats:{ 'royal-oak':{lbl:'Royal Oak'}, 'royal-oak-offshore':{lbl:'Royal Oak Offshore'} }},
+        cartier:{lbl:'Cartier',desc:'Santos, Tank', cats:{ santos:{lbl:'Santos'}, tank:{lbl:'Tank'}, 'ballon-bleu':{lbl:'Ballon Bleu'} }},
+        breitling:{lbl:'Breitling',desc:'Navitimer e.a.', cats:{ navitimer:{lbl:'Navitimer'}, superocean:{lbl:'Superocean'}, chronomat:{lbl:'Chronomat'} }}
       },
-      ql:['Rolex Submariner','Rolex Datejust','Omega Speedmaster']
+      ql:['Rolex Submariner','Rolex Daytona','Omega Speedmaster']
     }
   };
 
@@ -392,25 +388,34 @@
     <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="/over-ons/beoordelingen/">Reviews</a><a class="xg-ql" href="/kantoren/">Vestigingen</a></div>`
   };
 
-  let ws={menu:null,step:1,s1k:null,s2k:null,s1l:null,s2l:null,s3l:null};
+  // Stap 1 van de wizard: productgroep. Daarna duikt hij in WIZ[groep].
+  const GROUPS = {
+    edelmetalen:{lbl:'Edelmetalen',desc:'Goud, zilver, platina, palladium'},
+    edelstenen :{lbl:'Edelstenen', desc:'Diamant, saffier, smaragd, robijn'},
+    horloges   :{lbl:'Horloges',   desc:'Rolex, Omega, Patek Philippe e.a.'}
+  };
+
+  let ws={step:1,group:null,l2k:null,l2l:null,l3k:null,l3l:null};
+  let curMenu=null;
   let closeT=null;
 
   function openMega(key){
     clearTimeout(closeT);
     navItems.forEach(n=>n.classList.toggle('active', n.dataset.menu===key));
-    if(STD[key]){
-      megaContent.innerHTML=STD[key];
-    } else if(WIZ[key]){
-      if(ws.menu!==key){ ws={menu:key,step:1,s1k:null,s2k:null,s1l:null,s2l:null,s3l:null}; }
+    if(key==='verkopen'){
+      if(curMenu!=='verkopen'){ ws={step:1,group:null,l2k:null,l2l:null,l3k:null,l3l:null}; }
       renderWiz();
-    } else return;
+    } else if(STD[key]){
+      megaContent.innerHTML=STD[key];
+    } else { curMenu=null; return; }
+    curMenu=key;
     megaMenu.classList.add('active');
   }
   function closeMega(){
     closeT=setTimeout(()=>{
       megaMenu.classList.remove('active');
       navItems.forEach(n=>n.classList.remove('active'));
-      ws.menu=null;
+      curMenu=null;
     },200);
   }
   navItems.forEach(i=>{ i.addEventListener('mouseenter',()=>openMega(i.dataset.menu)); i.addEventListener('mouseleave',closeMega); });
@@ -421,16 +426,27 @@
 
   function sc(n){ return ws.step>n?'xg-step done':ws.step===n?'xg-step active':'xg-step'; }
 
+  // Labels per stap: [Productgroep, ...stappen van de gekozen groep].
+  function wizLabels(){
+    const base=['Productgroep'];
+    return ws.group ? base.concat(WIZ[ws.group].steps.map(s=>s.replace('Kies uw ',''))) : base.concat(['Type','Categorie','Product']);
+  }
+
   function renderWiz(){
-    const d=WIZ[ws.menu]; const s=ws.step;
-    const pct=s===2?33:s===3?66:s===4?100:0;
-    const stepLbl=s<4?d.steps[s-1]:'Uw keuze';
-    const catQls=s===2&&ws.s1k ? Object.values(d.opts[ws.s1k].cats).map(c=>`<a class="xg-ql" href="#">${c.lbl}</a>`).join('') : '';
-    const qlItems = s===2&&ws.s1k ? catQls : d.ql.map(l=>`<a class="xg-ql" href="#">${l}</a>`).join('');
+    const labels=wizLabels(); const total=labels.length; const s=ws.step;
+    const chosen=[ ws.group?GROUPS[ws.group].lbl:null, ws.l2l, ws.l3l ];
+    const topLbl = s===1 ? 'Kies uw productgroep' : (WIZ[ws.group].steps[s-2]||'Uw keuze');
+    const pct = total>1 ? ((s-1)/(total-1))*100 : 0;
+    let dots='';
+    for(let i=1;i<=total;i++){
+      dots+=`<div class="${sc(i)}"><div class="xg-step-num">${s>i?'✓':i}</div><div class="xg-step-lbl">${chosen[i-1]||labels[i-1]}</div></div>`;
+    }
+    const qlSrc = ws.group ? WIZ[ws.group].ql : ['Goud verkopen','Rolex','Diamant'];
+    const qlItems = qlSrc.map(l=>`<a class="xg-ql" href="#">${l}</a>`).join('');
 
     megaContent.innerHTML=`<div class="xg-wizard">
       <div class="xg-wiz-top">
-        <div class="xg-wiz-label">${stepLbl}</div>
+        <div class="xg-wiz-label">${topLbl}</div>
         <div class="xg-wiz-search">
           <span class="xg-wiz-search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></span>
           <input type="text" placeholder="Snel zoeken…" id="xgWizSI">
@@ -439,23 +455,19 @@
       </div>
       <div class="xg-progress">
         <div class="xg-prog-line"><div class="xg-prog-fill" style="width:${pct}%"></div></div>
-        <div class="xg-prog-steps">
-          <div class="${sc(1)}"><div class="xg-step-num">${s>1?'✓':'1'}</div><div class="xg-step-lbl">${ws.s1l||d.steps[0].replace('Kies uw ','')}</div></div>
-          <div class="${sc(2)}"><div class="xg-step-num">${s>2?'✓':'2'}</div><div class="xg-step-lbl">${ws.s2l||d.steps[1].replace('Kies uw ','')}</div></div>
-          <div class="${sc(3)}"><div class="xg-step-num">${s>3?'✓':'3'}</div><div class="xg-step-lbl">${ws.s3l||d.steps[2].replace('Kies uw ','')}</div></div>
-        </div>
+        <div class="xg-prog-steps">${dots}</div>
       </div>
       <div id="xgWizBody"></div>
-      ${s<4?`<div class="xg-quicklinks"><span class="xg-ql-label">Populair:</span>${qlItems}</div>`:''}
+      <div class="xg-quicklinks"><span class="xg-ql-label">Populair:</span>${qlItems}</div>
     </div>`;
 
     renderWizBody();
 
     const bb=document.getElementById('xgBackBtn');
     if(bb) bb.addEventListener('click',()=>{
-      if(s===2){ws.step=1;ws.s1k=null;ws.s1l=null;}
-      else if(s===3){ws.step=2;ws.s2k=null;ws.s2l=null;}
-      else if(s===4){ws.step=3;ws.s3l=null;}
+      if(ws.step===2){ws.step=1;ws.group=null;}
+      else if(ws.step===3){ws.step=2;ws.l2k=null;ws.l2l=null;}
+      else if(ws.step===4){ws.step=3;ws.l3k=null;ws.l3l=null;}
       renderWiz();
     });
     const si=document.getElementById('xgWizSI');
@@ -465,53 +477,42 @@
     });
   }
 
-  // Bestemmings-URL voor de wizard, binnen de /verkopen/-structuur, met preset
-  // zodat de calculator op de doelpagina alvast goed staat. De WIZ-keys (s1/s2)
-  // zijn al slugs en komen 1-op-1 overeen met de pagina-/permalink-structuur:
-  //   edelmetalen : /verkopen/edelmetalen/{metaal}/{categorie}/
-  //   edelstenen  : /verkopen/edelstenen/{steen}/{categorie}/
-  //   horloges    : /verkopen/horloges/{merk}/{collectie}/   (collectie = product)
-  function wizDestination(menu, s1, s2, prod){
+  // Bestemmings-URL voor de wizard, binnen de /verkopen/-structuur, met preset.
+  // s1 = type-slug (metaal/steen/merk), s2 = categorie-slug (categorie/collectie):
+  //   /verkopen/{groep}/{s1}/{s2}/
+  function wizDestination(group, s1, s2, prod){
     const q='?preset='+encodeURIComponent((s1||'')+'|'+(s2||'')+'|'+(prod||''));
-    let path='/verkopen/'+menu+'/';
+    let path='/verkopen/'+group+'/';
     if(s1) path+=s1+'/';
     if(s1 && s2) path+=s2+'/';
     return path+q;
   }
 
   function renderWizBody(){
-    const body=document.getElementById('xgWizBody');
-    const d=WIZ[ws.menu]; const s=ws.step;
+    const body=document.getElementById('xgWizBody'); const s=ws.step;
+    // Stap 1: productgroep.
     if(s===1){
       let h='<div class="xg-options">';
-      Object.entries(d.opts).forEach(([k,v])=>{ h+=`<div class="xg-opt" data-s1="${k}"><div class="xg-opt-title">${v.lbl}</div><div class="xg-opt-desc">${v.desc}</div></div>`; });
+      Object.entries(GROUPS).forEach(([k,v])=>{ h+=`<div class="xg-opt" data-g="${k}"><div class="xg-opt-title">${v.lbl}</div><div class="xg-opt-desc">${v.desc}</div></div>`; });
       body.innerHTML=h+'</div>';
-      body.querySelectorAll('[data-s1]').forEach(el=>el.addEventListener('click',()=>{ ws.s1k=el.dataset.s1; ws.s1l=d.opts[ws.s1k].lbl; ws.step=2; renderWiz(); }));
-    } else if(s===2){
+      body.querySelectorAll('[data-g]').forEach(el=>el.addEventListener('click',()=>{ ws.group=el.dataset.g; ws.step=2; renderWiz(); }));
+      return;
+    }
+    const d=WIZ[ws.group];
+    // Stap 2: type (metaal/steen/merk).
+    if(s===2){
       let h='<div class="xg-options">';
-      Object.entries(d.opts[ws.s1k].cats).forEach(([k,v])=>{ h+=`<div class="xg-opt" data-s2="${k}"><div class="xg-opt-title">${v.lbl}</div></div>`; });
+      Object.entries(d.opts).forEach(([k,v])=>{ h+=`<div class="xg-opt" data-l2="${k}"><div class="xg-opt-title">${v.lbl}</div><div class="xg-opt-desc">${v.desc||''}</div></div>`; });
       body.innerHTML=h+'</div>';
-      body.querySelectorAll('[data-s2]').forEach(el=>el.addEventListener('click',()=>{ ws.s2k=el.dataset.s2; ws.s2l=d.opts[ws.s1k].cats[ws.s2k].lbl; ws.step=3; renderWiz(); }));
-    } else if(s===3){
-      const prods=d.opts[ws.s1k].cats[ws.s2k].prods;
-      let h='<div class="xg-options">';
-      prods.forEach(p=>{ h+=`<div class="xg-opt" data-s3="${p}"><div class="xg-opt-title">${p}</div></div>`; });
-      body.innerHTML=h+'</div>';
-      // 3-staps wizard: productkeuze navigeert direct naar de juiste pagina.
-      body.querySelectorAll('[data-s3]').forEach(el=>el.addEventListener('click',()=>{
-        location.href=wizDestination(ws.menu, ws.s1k, ws.s2k, el.dataset.s3);
-      }));
+      body.querySelectorAll('[data-l2]').forEach(el=>el.addEventListener('click',()=>{ ws.l2k=el.dataset.l2; ws.l2l=d.opts[ws.l2k].lbl; ws.step=3; renderWiz(); }));
+    // Stap 3 (laatste): categorie/collectie → naar de overzichtspagina met producten.
     } else {
-      body.innerHTML=`<div class="xg-result">
-        <div class="xg-result-check">✓</div>
-        <h3>Uw keuze</h3>
-        <div class="xg-result-sum">
-          <div><strong>${d.steps[0].replace('Kies uw ','')}:</strong> ${ws.s1l}</div>
-          <div><strong>${d.steps[1].replace('Kies uw ','')}:</strong> ${ws.s2l}</div>
-          <div><strong>${d.steps[2].replace('Kies uw ','')}:</strong> ${ws.s3l}</div>
-        </div>
-        <a href="${wizDestination(ws.menu, ws.s1k, ws.s2k)}" class="xg-result-cta">Bekijk pagina →</a>
-      </div>`;
+      let h='<div class="xg-options">';
+      Object.entries(d.opts[ws.l2k].cats).forEach(([k,v])=>{ h+=`<div class="xg-opt" data-l3="${k}"><div class="xg-opt-title">${v.lbl}</div></div>`; });
+      body.innerHTML=h+'</div>';
+      body.querySelectorAll('[data-l3]').forEach(el=>el.addEventListener('click',()=>{
+        location.href=wizDestination(ws.group, ws.l2k, el.dataset.l3);
+      }));
     }
   }
 
@@ -543,11 +544,11 @@
   const mobWiz     = document.getElementById('xgMobWiz');
   const mobWizBody = document.getElementById('xgMobWizBody');
   const mobWizBack = document.getElementById('xgMobWizBack');
-  let mws = { menu:null, step:1, s1k:null, s2k:null, s1l:null, s2l:null };
+  let mws = { step:1, group:null, l2k:null, l2l:null, l3k:null, l3l:null };
 
-  function openMobWiz(key){
-    if(!WIZ[key] || !mobWiz || !mobNav) return;
-    mws = { menu:key, step:1, s1k:null, s2k:null, s1l:null, s2l:null };
+  function openMobWiz(){
+    if(!mobWiz || !mobNav) return;
+    mws = { step:1, group:null, l2k:null, l2l:null, l3k:null, l3l:null };
     mobNav.hidden = true;
     mobWiz.hidden = false;
     renderMobWiz();
@@ -559,46 +560,46 @@
   }
   function renderMobWiz(){
     if(!mobWizBody) return;
-    const d = WIZ[mws.menu]; const s = mws.step;
-    const crumb = [d.steps[0].replace('Kies uw ','')];
-    if(mws.s1l) crumb.push(mws.s1l);
-    if(mws.s2l) crumb.push(mws.s2l);
+    const s = mws.step;
+    const crumb = ['Productgroep'];
+    if(mws.group) crumb[0] = GROUPS[mws.group].lbl;
+    if(mws.l2l) crumb.push(mws.l2l);
+    if(mws.l3l) crumb.push(mws.l3l);
+    const d = mws.group ? WIZ[mws.group] : null;
+    const label = s===1 ? 'Kies uw productgroep' : (d.steps[s-2]||'Uw keuze');
     let items = '';
     if(s===1){
-      Object.entries(d.opts).forEach(([k,v])=>{
-        items += `<button type="button" class="xg-mob-opt" data-k="${k}"><strong>${v.lbl}</strong><span>${v.desc||''}</span></button>`;
+      Object.entries(GROUPS).forEach(([k,v])=>{
+        items += `<button type="button" class="xg-mob-opt" data-g="${k}"><strong>${v.lbl}</strong><span>${v.desc||''}</span></button>`;
       });
     } else if(s===2){
-      Object.entries(d.opts[mws.s1k].cats).forEach(([k,v])=>{
-        items += `<button type="button" class="xg-mob-opt" data-k="${k}"><strong>${v.lbl}</strong></button>`;
+      Object.entries(d.opts).forEach(([k,v])=>{
+        items += `<button type="button" class="xg-mob-opt" data-l2="${k}"><strong>${v.lbl}</strong><span>${v.desc||''}</span></button>`;
       });
     } else {
-      d.opts[mws.s1k].cats[mws.s2k].prods.forEach(p=>{
-        items += `<button type="button" class="xg-mob-opt" data-p="${p}"><strong>${p}</strong></button>`;
+      Object.entries(d.opts[mws.l2k].cats).forEach(([k,v])=>{
+        items += `<button type="button" class="xg-mob-opt" data-l3="${k}"><strong>${v.lbl}</strong></button>`;
       });
     }
     mobWizBody.innerHTML =
       `<div class="xg-mob-wiz-crumb">${crumb.join(' › ')}</div>
-       <div class="xg-mob-wiz-label">${s<4 ? d.steps[s-1] : 'Uw keuze'}</div>
+       <div class="xg-mob-wiz-label">${label}</div>
        <div class="xg-mob-opts">${items}</div>`;
 
-    mobWizBody.querySelectorAll('[data-k]').forEach(el=>el.addEventListener('click',()=>{
-      const k = el.dataset.k;
-      if(s===1){ mws.s1k=k; mws.s1l=d.opts[k].lbl; mws.step=2; }
-      else     { mws.s2k=k; mws.s2l=d.opts[mws.s1k].cats[k].lbl; mws.step=3; }
-      renderMobWiz();
-    }));
-    mobWizBody.querySelectorAll('[data-p]').forEach(el=>el.addEventListener('click',()=>{
-      location.href = wizDestination(mws.menu, mws.s1k, mws.s2k, el.dataset.p);
+    mobWizBody.querySelectorAll('[data-g]').forEach(el=>el.addEventListener('click',()=>{ mws.group=el.dataset.g; mws.step=2; renderMobWiz(); }));
+    mobWizBody.querySelectorAll('[data-l2]').forEach(el=>el.addEventListener('click',()=>{ mws.l2k=el.dataset.l2; mws.l2l=d.opts[mws.l2k].lbl; mws.step=3; renderMobWiz(); }));
+    mobWizBody.querySelectorAll('[data-l3]').forEach(el=>el.addEventListener('click',()=>{
+      location.href = wizDestination(mws.group, mws.l2k, el.dataset.l3);
     }));
   }
   if(mobWizBack) mobWizBack.addEventListener('click',()=>{
-    if(mws.step===3){ mws.step=2; mws.s2k=null; mws.s2l=null; renderMobWiz(); }
-    else if(mws.step===2){ mws.step=1; mws.s1k=null; mws.s1l=null; renderMobWiz(); }
+    if(mws.step===4){ mws.step=3; mws.l3k=null; mws.l3l=null; renderMobWiz(); }
+    else if(mws.step===3){ mws.step=2; mws.l2k=null; mws.l2l=null; renderMobWiz(); }
+    else if(mws.step===2){ mws.step=1; mws.group=null; renderMobWiz(); }
     else { closeMobWiz(); }
   });
   document.querySelectorAll('[data-mobwiz]').forEach(b=>{
-    b.addEventListener('click',()=>openMobWiz(b.dataset.mobwiz));
+    b.addEventListener('click',()=>openMobWiz());
   });
 
   /* Footer-accordion (alleen mobiel <=600px): klik op kop klapt kolom in/uit. */

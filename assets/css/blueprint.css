@@ -1847,9 +1847,10 @@ html[data-theme="dark"] .xg-livesale-body { color: #f3efe8; }
 .xg-sticky-cta-txt { font-weight: 700; font-size: 15px; }
 .xg-sticky-cta-btn { background: var(--gold,#D0AC4B); color: #161412; font-weight: 800; padding: 11px 22px; white-space: nowrap; }
 .xg-sticky-cta-btn:hover { filter: brightness(1.05); }
-/* Op desktop discreter: rechts uitgelijnd, niet volle breedte. */
+/* Op desktop discreter: rechts uitgelijnd, niet volle breedte. Boven de chat-knop
+   (rechtsonder) geplaatst zodat ze elkaar niet overlappen. */
 @media (min-width: 768px) {
-    .xg-sticky-cta { left: auto; right: 24px; bottom: 24px; border-radius: 0; max-width: 380px; }
+    .xg-sticky-cta { left: auto; right: 24px; bottom: 96px; border-radius: 0; max-width: 360px; }
 }
 
 /* =========================

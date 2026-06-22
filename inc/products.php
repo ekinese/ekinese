@@ -317,7 +317,17 @@ function ekinese_render_product_list( $attr ) {
 	ob_start();
 	echo '<section><div class="xg-container">';
 	if ( ! empty( $attr['title'] ) ) {
-		echo '<h2 class="xg-section-title">' . esc_html( $attr['title'] ) . '</h2>';
+		// Titel linkt naar de categorie-pagina (L4) wanneer metaal+categorie bekend zijn.
+		$title_html = esc_html( $attr['title'] );
+		if ( ! empty( $attr['metal'] ) && ! empty( $attr['category'] ) && function_exists( 'ekinese_verkopen_metal_slugs' ) ) {
+			$ms = ekinese_verkopen_metal_slugs();
+			$cs = ekinese_verkopen_cat_slugs();
+			if ( isset( $ms[ $attr['metal'] ], $cs[ $attr['category'] ] ) ) {
+				$cat_url    = home_url( '/verkopen/edelmetalen/' . $ms[ $attr['metal'] ] . '/' . $cs[ $attr['category'] ] . '/' );
+				$title_html = '<a href="' . esc_url( $cat_url ) . '">' . esc_html( $attr['title'] ) . '</a>';
+			}
+		}
+		echo '<h2 class="xg-section-title">' . $title_html . '</h2>'; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 	echo '<div class="xg-grid-4">';
 	foreach ( $posts as $p ) {

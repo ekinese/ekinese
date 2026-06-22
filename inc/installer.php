@@ -123,6 +123,13 @@ function ekinese_install_verkopen_tree() {
 		return 0;
 	};
 
+	// Wrapt dynamische lijst-blokken in een .xg-blueprint-groep, zodat de
+	// layout-CSS (.xg-blueprint .xg-container/.xg-grid-4) greift (anders rendert
+	// het grid niet → "reusachtige boxen").
+	$bp = function ( $inner ) {
+		return '<!-- wp:group {"className":"xg-blueprint"} --><div class="wp-block-group xg-blueprint">' . $inner . '</div><!-- /wp:group -->';
+	};
+
 	// L1.
 	$vk = $upsert( 'verkopen', 'Verkopen', ekinese_pattern_content( 'verkopen-hub' ), 0 );
 	if ( ! $vk ) {
@@ -181,12 +188,12 @@ function ekinese_install_verkopen_tree() {
 				continue;
 			}
 			$title = sprintf( '%s %s verkopen', $m['label'], ucfirst( $cslug ) );
-			$block = sprintf(
+			$block = $bp( sprintf(
 				'<!-- wp:ekinese/product-list {"metal":"%s","category":"%s","title":"%s","limit":120} /-->',
 				esc_attr( $m['meta'] ),
 				esc_attr( $cmeta ),
 				esc_attr( $title )
-			);
+			) );
 			$upsert( $cslug, $title, $block, $mid );
 		}
 	}
@@ -197,11 +204,11 @@ function ekinese_install_verkopen_tree() {
 		foreach ( array_keys( ekinese_watch_seed_data() ) as $brand ) {
 			$bslug = sanitize_title( $brand );
 			$title = $brand . ' verkopen';
-			$block = sprintf(
+			$block = $bp( sprintf(
 				'<!-- wp:ekinese/watch-list {"brand":"%s","title":"%s","limit":48} /-->',
 				esc_attr( $brand ),
 				esc_attr( $title )
-			);
+			) );
 			$upsert( $bslug, $title, $block, $gid['horloges'] );
 		}
 	}
@@ -210,11 +217,11 @@ function ekinese_install_verkopen_tree() {
 	if ( ! empty( $gid['edelstenen'] ) && function_exists( 'ekinese_gemstone_seed_data' ) ) {
 		foreach ( ekinese_gemstone_seed_data() as $stone => $cats ) {
 			$sslug = sanitize_title( $stone );
-			$sblock = sprintf(
+			$sblock = $bp( sprintf(
 				'<!-- wp:ekinese/gemstone-list {"stone":"%s","title":"%s","limit":96} /-->',
 				esc_attr( $stone ),
 				esc_attr( $stone . ' verkopen' )
-			);
+			) );
 			$sid = $upsert( $sslug, $stone . ' verkopen', $sblock, $gid['edelstenen'] );
 			if ( ! $sid ) {
 				continue;
@@ -238,12 +245,12 @@ function ekinese_install_verkopen_tree() {
 					continue;
 				}
 				$ctitle = sprintf( '%s %s verkopen', $stone, $cat );
-				$cblock = sprintf(
+				$cblock = $bp( sprintf(
 					'<!-- wp:ekinese/gemstone-list {"stone":"%s","category":"%s","title":"%s","limit":96} /-->',
 					esc_attr( $stone ),
 					esc_attr( $cat ),
 					esc_attr( $ctitle )
-				);
+				) );
 				$upsert( sanitize_title( $cat ), $ctitle, $cblock, $sid );
 			}
 		}
