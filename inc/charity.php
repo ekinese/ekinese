@@ -344,3 +344,85 @@ function ekinese_charity_column( $col, $id ) {
 	}
 }
 add_action( 'manage_xg_charity_project_posts_custom_column', 'ekinese_charity_column', 10, 2 );
+
+/* =====================================================================
+   CHARITY-KAART  "Waar XGOUD helpt"  (Leaflet) + animatie-teller
+===================================================================== */
+/** Bekende NL/BE-stadcoördinaten (fallback wanneer er geen kantoor is). */
+function ekinese_city_coords() {
+	return array(
+		'amsterdam' => array( 52.3676, 4.9041 ), 'rotterdam' => array( 51.9244, 4.4777 ),
+		'den haag' => array( 52.0705, 4.3007 ), 'utrecht' => array( 52.0907, 5.1214 ),
+		'eindhoven' => array( 51.4416, 5.4697 ), 'groningen' => array( 53.2194, 6.5665 ),
+		'tilburg' => array( 51.5555, 5.0913 ), 'almere' => array( 52.3508, 5.2647 ),
+		'breda' => array( 51.5719, 4.7683 ), 'nijmegen' => array( 51.8126, 5.8372 ),
+		'enschede' => array( 52.2215, 6.8937 ), 'haarlem' => array( 52.3874, 4.6462 ),
+		'arnhem' => array( 51.9851, 5.8987 ), 'zwolle' => array( 52.5168, 6.0830 ),
+		'amersfoort' => array( 52.1561, 5.3878 ), 'maastricht' => array( 50.8514, 5.6910 ),
+		'leiden' => array( 52.1601, 4.4970 ), 'dordrecht' => array( 51.8133, 4.6901 ),
+		'antwerpen' => array( 51.2194, 4.4025 ), 'brussel' => array( 50.8503, 4.3517 ),
+		'gent' => array( 51.0543, 3.7174 ), 'brugge' => array( 51.2093, 3.2247 ),
+	);
+}
+
+/** Projecten met coördinaten voor de kaart. */
+function ekinese_charity_map_points() {
+	$offices = function_exists( 'ekinese_get_offices' ) ? ekinese_get_offices() : array();
+	$by_city = array();
+	foreach ( $offices as $o ) {
+		if ( ! empty( $o['city'] ) && $o['lat'] && $o['lng'] ) {
+			$by_city[ strtolower( $o['city'] ) ] = array( $o['lat'], $o['lng'] );
+		}
+	}
+	$coords = ekinese_city_coords();
+	$points = array();
+	foreach ( ekinese_charity_projects_grouped() as $cat ) {
+		foreach ( $cat['projects'] as $pr ) {
+			$city = strtolower( trim( (string) ( $pr['city'] ?? '' ) ) );
+			$ll   = $by_city[ $city ] ?? ( $coords[ $city ] ?? null );
+			if ( ! $ll ) {
+				continue;
+			}
+			$points[] = array(
+				'name'  => $pr['name'],
+				'city'  => $pr['city'],
+				'cat'   => $cat['label'] ?? '',
+				'lat'   => $ll[0],
+				'lng'   => $ll[1],
+				'total' => function_exists( 'ekinese_charity_total_since' ) ? 0 : 0,
+			);
+		}
+	}
+	return $points;
+}
+
+function ekinese_register_charity_map() {
+	register_block_type( 'ekinese/charity-map', array( 'render_callback' => 'ekinese_render_charity_map' ) );
+}
+add_action( 'init', 'ekinese_register_charity_map' );
+
+function ekinese_render_charity_map() {
+	$total = function_exists( 'ekinese_charity_total_since' ) ? ekinese_charity_total_since() : 0;
+	ob_start();
+	echo '<section><div class="xg-container"><div class="xg-charity-map-wrap">';
+	echo '<div class="xg-charity-map-head"><div class="xg-eyebrow">GOEDE DOELEN</div><h2>Waar XGOUD helpt</h2>';
+	echo '<p class="xg-intro">Een vast deel van elke marge gaat naar projecten in heel Nederland en België. Samen hebben wij al bijgedragen:</p>';
+	echo '<div class="xg-charity-counter" data-to="' . esc_attr( round( $total, 2 ) ) . '">€ 0</div></div>';
+	echo '<div id="xg-charity-map" class="xg-charity-map"></div>';
+	echo '</div></div></section>';
+	return ob_get_clean();
+}
+
+/** Leaflet + charity-map-assets laden waar het blok staat. */
+add_action( 'wp_enqueue_scripts', function () {
+	if ( ! is_singular() || ! has_block( 'ekinese/charity-map' ) ) {
+		return;
+	}
+	wp_enqueue_style( 'leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', array(), '1.9.4' );
+	wp_enqueue_script( 'leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', array(), '1.9.4', true );
+	$js = get_theme_file_path( 'assets/js/charity-map.js' );
+	if ( file_exists( $js ) ) {
+		wp_enqueue_script( 'ekinese-charity-map', get_theme_file_uri( 'assets/js/charity-map.js' ), array( 'leaflet' ), (string) filemtime( $js ), true );
+		wp_localize_script( 'ekinese-charity-map', 'XG_CHARITY_MAP', ekinese_charity_map_points() );
+	}
+} );

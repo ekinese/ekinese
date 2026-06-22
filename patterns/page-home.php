@@ -29,6 +29,8 @@
 	<div class="xg-charity-ticker-projects"><span>Scholen</span><span>Kinderdagverblijven</span><span>Vrouwenopvang</span><span>Sportcentra</span></div>
 </div>
 
+<!-- wp:ekinese/charity-map /-->
+
 <section><div class="xg-container"><div class="xg-why">
 	<div class="xg-eyebrow">WAAROM XGOUD</div>
 	<h2>De vertrouwde inkoper sinds 2009</h2>

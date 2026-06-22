@@ -4051,6 +4051,16 @@ html[data-theme="dark"] .xg-loyalty-bar { background: #2a2620; }
 	.xg-certificate { position: absolute; left: 0; top: 0; box-shadow: none; }
 }
 
+/* Charity-kaart "Waar XGOUD helpt" */
+.xg-charity-map-wrap { padding: 10px 0; }
+.xg-charity-map-head { text-align: center; max-width: 760px; margin: 0 auto 28px; }
+.xg-charity-counter { font-size: 44px; font-weight: 800; letter-spacing: -1px; color: var(--gold,#c8a24a); margin-top: 10px; }
+.xg-charity-map { height: 460px; width: 100%; border: 1px solid var(--line,#e3ddd0); }
+.xg-charity-pin { color: #AE1E1E; font-size: 20px; text-align: center; line-height: 26px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.3)); }
+.xg-charity-pin span { display: block; }
+html[data-theme="dark"] .xg-charity-map { border-color: #34302b; }
+@media (max-width: 600px) { .xg-charity-map { height: 360px; } .xg-charity-counter { font-size: 34px; } }
+
 
 /* ---- Test-Toolbar ---- */
 .tst-toolbar {
@@ -4287,6 +4297,8 @@ html[data-theme="dark"] .xg-loyalty-bar { background: #2a2620; }
 	<span class="xg-charity-ticker-amount" data-xg-charity-total>€ 65.168,36</span>
 	<div class="xg-charity-ticker-projects"><span>Scholen</span><span>Kinderdagverblijven</span><span>Vrouwenopvang</span><span>Sportcentra</span></div>
 </div>
+
+<section><div class="xg-container"><div class="xg-charity-map-wrap"><div class="xg-charity-map-head"><div class="xg-eyebrow">GOEDE DOELEN</div><h2>Waar XGOUD helpt</h2><p class="xg-intro">Een vast deel van elke marge gaat naar projecten in heel Nederland en België.</p><div class="xg-charity-counter" data-to="65168.36">€ 65.168,36</div></div><div class="xg-charity-map" style="display:flex;align-items:center;justify-content:center;color:#6b665c">Interactieve kaart (Leaflet) – zichtbaar in WordPress</div></div></div></section>
 
 <section><div class="xg-container"><div class="xg-why">
 	<div class="xg-eyebrow">WAAROM XGOUD</div>

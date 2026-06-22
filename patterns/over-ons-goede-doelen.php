@@ -9,6 +9,7 @@
 ?>
 <!-- wp:html -->
 <div class="xg-blueprint">
+<!-- wp:ekinese\/charity-map \/-->
 <section class="xg-hero-v2"><div class="xg-container">
 	<div class="hero-kicker">OVER ONS</div>
 	<h1>Goede doelen</h1>

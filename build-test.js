@@ -45,6 +45,12 @@ function pattern(file) {
 		'<tr><td>Platina</td><td>€ 28,90</td><td><strong>€ 26,59</strong></td></tr>' +
 		'<tr><td>Palladium</td><td>€ 30,10</td><td><strong>€ 27,69</strong></td></tr>' +
 		'</tbody></table></div></div></section>');
+	// Demo voor de charity-kaart (Leaflet + data server-side).
+	out = out.replace(/<!--\s*wp:ekinese\/charity-map[^>]*?-->/g,
+		'<section><div class="xg-container"><div class="xg-charity-map-wrap"><div class="xg-charity-map-head"><div class="xg-eyebrow">GOEDE DOELEN</div><h2>Waar XGOUD helpt</h2>' +
+		'<p class="xg-intro">Een vast deel van elke marge gaat naar projecten in heel Nederland en België.</p>' +
+		'<div class="xg-charity-counter" data-to="65168.36">€ 65.168,36</div></div>' +
+		'<div class="xg-charity-map" style="display:flex;align-items:center;justify-content:center;color:#6b665c">Interactieve kaart (Leaflet) – zichtbaar in WordPress</div></div></div></section>');
 	// Demo voor de koersgrafiek (server-rendered in WordPress).
 	out = out.replace(/<!--\s*wp:ekinese\/price-chart[^>]*?-->/g,
 		'<section><div class="xg-container"><div class="xg-chart"><div class="xg-chart-head"><h2>Goudprijs – koersverloop</h2>' +
