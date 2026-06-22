@@ -355,7 +355,7 @@
   const STD = {
     dagprijzen:`<div class="xg-std-grid">
       <div class="xg-std-col"><h3>Dagprijzen</h3><a href="/dagprijzen/goudprijs/">Goudprijs vandaag</a><a href="/dagprijzen/zilverprijs/">Zilverprijs vandaag</a><a href="/dagprijzen/platinaprijs/">Platinaprijs vandaag</a><a href="/dagprijzen/palladiumprijs/">Palladiumprijs</a></div>
-      <div class="xg-std-col"><h3>Overzicht</h3><a href="/dagprijzen/">Alle dagprijzen</a><a href="/inkoopprijzen/">Inkoopprijzen</a><a href="/edelmetalen-verkopen/">Edelmetaal verkopen</a></div>
+      <div class="xg-std-col"><h3>Overzicht</h3><a href="/dagprijzen/">Alle dagprijzen</a><a href="/inkoopprijzen/">Inkoopprijzen</a><a href="/verkopen/edelmetalen/">Edelmetaal verkopen</a></div>
       <div class="xg-std-col"><h3>Markt</h3><a href="/lexicon/spotprijs/">Wat is de spotprijs?</a><a href="/lexicon/troy-ounce/">Troy ounce</a><a href="/lexicon/fineness-zuiverheid/">Zuiverheid</a></div>
     </div>
     <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="/dagprijzen/goudprijs/">Goudprijs</a><a class="xg-ql" href="/dagprijzen/zilverprijs/">Zilverprijs</a><a class="xg-ql" href="/dagprijzen/">Alle prijzen</a></div>`,
@@ -446,14 +446,18 @@
     });
   }
 
-  // Bestemmings-URL voor de wizard (echte verkooppagina's), met preset-params
-  // zodat de calculator op de doelpagina alvast goed staat.
+  // Bestemmings-URL voor de wizard, binnen de /verkopen/-structuur (5 niveaus),
+  // met preset-param zodat de calculator op de doelpagina alvast goed staat.
+  // s1 = metaal-slug (goud/zilver/…), s2 = categorie-slug (baren/munten/sloop).
   function wizDestination(menu, s1, s2, prod){
     const q='?preset='+encodeURIComponent(s1+'|'+(s2||'')+'|'+(prod||''));
-    if(menu==='edelmetalen') return '/edelmetalen-verkopen/'+s1+'-verkopen/'+q;
-    if(menu==='edelstenen')  return '/edelstenen-verkopen/'+s1+'-verkopen/'+q;
-    if(menu==='horloges')    return '/horloges-verkopen/'+q;
-    return '/'+q;
+    // Edelmetalen heeft volledige L3/L4-pagina's; edelstenen/horloges (nog) niet.
+    if(menu==='edelmetalen' && s1 && s2) return '/verkopen/edelmetalen/'+s1+'/'+s2+'/'+q;
+    if(menu==='edelmetalen' && s1)       return '/verkopen/edelmetalen/'+s1+'/'+q;
+    if(menu==='edelmetalen')             return '/verkopen/edelmetalen/'+q;
+    if(menu==='edelstenen')              return '/verkopen/edelstenen/'+q;
+    if(menu==='horloges')                return '/verkopen/horloges/'+q;
+    return '/verkopen/'+q;
   }
 
   function renderWizBody(){
@@ -487,7 +491,7 @@
           <div><strong>${d.steps[1].replace('Kies uw ','')}:</strong> ${ws.s2l}</div>
           <div><strong>${d.steps[2].replace('Kies uw ','')}:</strong> ${ws.s3l}</div>
         </div>
-        <a href="/${ws.s1k}/${ws.s2k}/" class="xg-result-cta">Bekijk pagina →</a>
+        <a href="${wizDestination(ws.menu, ws.s1k, ws.s2k)}" class="xg-result-cta">Bekijk pagina →</a>
       </div>`;
     }
   }
@@ -509,6 +513,73 @@
   if(mobClose) mobClose.addEventListener('click',()=>{
     document.getElementById('xgMobMenu').classList.remove('open');
     document.body.style.overflow='';
+    closeMobWiz();
+  });
+
+  /* ==========================================================
+     MOBILE WIZARD  (drill-down in het mobiele menu-paneel)
+     Hergebruikt WIZ-data + wizDestination(); eigen state (mws).
+     ========================================================== */
+  const mobNav     = document.getElementById('xgMobNav');
+  const mobWiz     = document.getElementById('xgMobWiz');
+  const mobWizBody = document.getElementById('xgMobWizBody');
+  const mobWizBack = document.getElementById('xgMobWizBack');
+  let mws = { menu:null, step:1, s1k:null, s2k:null, s1l:null, s2l:null };
+
+  function openMobWiz(key){
+    if(!WIZ[key] || !mobWiz || !mobNav) return;
+    mws = { menu:key, step:1, s1k:null, s2k:null, s1l:null, s2l:null };
+    mobNav.hidden = true;
+    mobWiz.hidden = false;
+    renderMobWiz();
+  }
+  function closeMobWiz(){
+    if(!mobWiz || !mobNav) return;
+    mobWiz.hidden = true;
+    mobNav.hidden = false;
+  }
+  function renderMobWiz(){
+    if(!mobWizBody) return;
+    const d = WIZ[mws.menu]; const s = mws.step;
+    const crumb = [d.steps[0].replace('Kies uw ','')];
+    if(mws.s1l) crumb.push(mws.s1l);
+    if(mws.s2l) crumb.push(mws.s2l);
+    let items = '';
+    if(s===1){
+      Object.entries(d.opts).forEach(([k,v])=>{
+        items += `<button type="button" class="xg-mob-opt" data-k="${k}"><strong>${v.lbl}</strong><span>${v.desc||''}</span></button>`;
+      });
+    } else if(s===2){
+      Object.entries(d.opts[mws.s1k].cats).forEach(([k,v])=>{
+        items += `<button type="button" class="xg-mob-opt" data-k="${k}"><strong>${v.lbl}</strong></button>`;
+      });
+    } else {
+      d.opts[mws.s1k].cats[mws.s2k].prods.forEach(p=>{
+        items += `<button type="button" class="xg-mob-opt" data-p="${p}"><strong>${p}</strong></button>`;
+      });
+    }
+    mobWizBody.innerHTML =
+      `<div class="xg-mob-wiz-crumb">${crumb.join(' › ')}</div>
+       <div class="xg-mob-wiz-label">${s<4 ? d.steps[s-1] : 'Uw keuze'}</div>
+       <div class="xg-mob-opts">${items}</div>`;
+
+    mobWizBody.querySelectorAll('[data-k]').forEach(el=>el.addEventListener('click',()=>{
+      const k = el.dataset.k;
+      if(s===1){ mws.s1k=k; mws.s1l=d.opts[k].lbl; mws.step=2; }
+      else     { mws.s2k=k; mws.s2l=d.opts[mws.s1k].cats[k].lbl; mws.step=3; }
+      renderMobWiz();
+    }));
+    mobWizBody.querySelectorAll('[data-p]').forEach(el=>el.addEventListener('click',()=>{
+      location.href = wizDestination(mws.menu, mws.s1k, mws.s2k, el.dataset.p);
+    }));
+  }
+  if(mobWizBack) mobWizBack.addEventListener('click',()=>{
+    if(mws.step===3){ mws.step=2; mws.s2k=null; mws.s2l=null; renderMobWiz(); }
+    else if(mws.step===2){ mws.step=1; mws.s1k=null; mws.s1l=null; renderMobWiz(); }
+    else { closeMobWiz(); }
+  });
+  document.querySelectorAll('[data-mobwiz]').forEach(b=>{
+    b.addEventListener('click',()=>openMobWiz(b.dataset.mobwiz));
   });
 
   /* Footer-accordion (alleen mobiel <=600px): klik op kop klapt kolom in/uit. */

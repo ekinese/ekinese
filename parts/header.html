@@ -163,14 +163,19 @@
       <a href="tel:0850603009" class="xg-mob-phone">085 060 3009</a>
       <a href="/afspraak/" class="xg-mob-cta">Plan afspraak</a>
     </div>
-    <nav class="xg-mob-nav">
-      <a href="/edelmetalen/">Edelmetalen <span>›</span></a>
-      <a href="/edelstenen/">Edelstenen <span>›</span></a>
-      <a href="/horloges/">Horloges <span>›</span></a>
+    <nav class="xg-mob-nav" id="xgMobNav">
+      <button type="button" class="xg-mob-link" data-mobwiz="edelmetalen">Edelmetalen <span>›</span></button>
+      <button type="button" class="xg-mob-link" data-mobwiz="edelstenen">Edelstenen <span>›</span></button>
+      <button type="button" class="xg-mob-link" data-mobwiz="horloges">Horloges <span>›</span></button>
       <a href="/dagprijzen/">Dagprijzen <span>›</span></a>
       <a href="/service/">Service <span>›</span></a>
       <a href="/over-ons/">Over Ons <span>›</span></a>
     </nav>
+    <!-- Mobiele wizard (drill-down per categorie); standaard verborgen -->
+    <div class="xg-mob-wiz" id="xgMobWiz" hidden>
+      <button type="button" class="xg-mob-wiz-back" id="xgMobWizBack">‹ Menu</button>
+      <div class="xg-mob-wiz-body" id="xgMobWizBody"></div>
+    </div>
     <div class="xg-mob-contact">
       <a href="https://wa.me/31850603009">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 3.5A12 12 0 0 0 3.5 20.5L2 22l1.7-1.7A12 12 0 1 0 20.5 3.5z"/></svg>
@@ -180,7 +185,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
         info@xgoud.nl
       </a>
-      <a href="/vestigingen/">
+      <a href="/kantoren/">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
         Vestigingen
       </a>

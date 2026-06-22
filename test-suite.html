@@ -968,22 +968,47 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
   text-transform: uppercase; letter-spacing: 1px;
 }
 .xg-mob-nav { display: flex; flex-direction: column; flex: 1; }
-.xg-mob-nav a {
-  display: flex; align-items: center;
+.xg-mob-nav a,
+.xg-mob-link {
+  display: flex; align-items: center; width: 100%;
   padding: 15px 20px; font-size: 14px; font-weight: 700;
-  color: var(--ink); border-bottom: 1px solid var(--line);
-  text-transform: uppercase; letter-spacing: .5px;
+  color: var(--ink); border: none; border-bottom: 1px solid var(--line);
+  background: none; text-align: left; cursor: pointer; font-family: inherit;
+  text-transform: uppercase; letter-spacing: .5px; min-height: 52px;
   transition: color .15s, background .15s; position: relative;
 }
-.xg-mob-nav a::after {
+.xg-mob-nav a::after,
+.xg-mob-link::after {
   content: '';
   position: absolute; left: 0; top: 0; bottom: 0;
   width: 0; background: var(--red);
   transition: width .15s;
 }
-.xg-mob-nav a:hover { color: var(--red); background: var(--red-soft); }
-.xg-mob-nav a:hover::after { width: 3px; }
-.xg-mob-nav a span { margin-left: auto; font-size: 16px; color: var(--ink-soft); }
+.xg-mob-nav a:hover, .xg-mob-link:hover { color: var(--red); background: var(--red-soft); }
+.xg-mob-nav a:hover::after, .xg-mob-link:hover::after { width: 3px; }
+.xg-mob-nav a span, .xg-mob-link span { margin-left: auto; font-size: 16px; color: var(--ink-soft); }
+
+/* Mobiele wizard (drill-down) binnen het menu-paneel */
+.xg-mob-wiz { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow-y: auto; }
+.xg-mob-wiz-back {
+  display: flex; align-items: center; gap: 6px;
+  padding: 14px 20px; font-size: 13px; font-weight: 700;
+  color: var(--red); background: var(--red-soft); border: none;
+  border-bottom: 1px solid var(--line); cursor: pointer; font-family: inherit;
+  text-transform: uppercase; letter-spacing: .5px; min-height: 48px;
+}
+.xg-mob-wiz-crumb { padding: 14px 20px 4px; font-size: 12px; color: var(--ink-soft); letter-spacing: .5px; }
+.xg-mob-wiz-label { padding: 0 20px 12px; font-size: 18px; font-weight: 800; color: var(--ink); }
+.xg-mob-opts { display: flex; flex-direction: column; }
+.xg-mob-opt {
+  display: flex; flex-direction: column; gap: 2px; width: 100%;
+  padding: 14px 20px; min-height: 56px; text-align: left;
+  background: none; border: none; border-bottom: 1px solid var(--line);
+  cursor: pointer; font-family: inherit; transition: background .15s;
+}
+.xg-mob-opt:hover, .xg-mob-opt:active { background: var(--red-soft); }
+.xg-mob-opt strong { font-size: 15px; font-weight: 700; color: var(--ink); }
+.xg-mob-opt span { font-size: 12px; color: var(--ink-soft); }
 .xg-mob-contact {
   padding: 16px 20px;
   border-top: 1px solid var(--line);
@@ -4743,14 +4768,19 @@ html[data-theme="dark"] .xgoud-toc-item:hover { background: #1d1b19; }
       <a href="tel:0850603009" class="xg-mob-phone">085 060 3009</a>
       <a href="/afspraak/" class="xg-mob-cta">Plan afspraak</a>
     </div>
-    <nav class="xg-mob-nav">
-      <a href="/edelmetalen/">Edelmetalen <span>›</span></a>
-      <a href="/edelstenen/">Edelstenen <span>›</span></a>
-      <a href="/horloges/">Horloges <span>›</span></a>
+    <nav class="xg-mob-nav" id="xgMobNav">
+      <button type="button" class="xg-mob-link" data-mobwiz="edelmetalen">Edelmetalen <span>›</span></button>
+      <button type="button" class="xg-mob-link" data-mobwiz="edelstenen">Edelstenen <span>›</span></button>
+      <button type="button" class="xg-mob-link" data-mobwiz="horloges">Horloges <span>›</span></button>
       <a href="/dagprijzen/">Dagprijzen <span>›</span></a>
       <a href="/service/">Service <span>›</span></a>
       <a href="/over-ons/">Over Ons <span>›</span></a>
     </nav>
+    <!-- Mobiele wizard (drill-down per categorie); standaard verborgen -->
+    <div class="xg-mob-wiz" id="xgMobWiz" hidden>
+      <button type="button" class="xg-mob-wiz-back" id="xgMobWizBack">‹ Menu</button>
+      <div class="xg-mob-wiz-body" id="xgMobWizBody"></div>
+    </div>
     <div class="xg-mob-contact">
       <a href="https://wa.me/31850603009">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 3.5A12 12 0 0 0 3.5 20.5L2 22l1.7-1.7A12 12 0 1 0 20.5 3.5z"/></svg>
@@ -4760,7 +4790,7 @@ html[data-theme="dark"] .xgoud-toc-item:hover { background: #1d1b19; }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
         info@xgoud.nl
       </a>
-      <a href="/vestigingen/">
+      <a href="/kantoren/">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
         Vestigingen
       </a>
@@ -4818,10 +4848,10 @@ html[data-theme="dark"] .xgoud-toc-item:hover { background: #1d1b19; }
 <section><div class="xg-container">
 	<h2 class="xg-section-title">Wat kunt u verkopen?</h2>
 	<div class="xg-grid-4">
-		<a class="xg-c-card" href="/edelmetalen-verkopen/goud-verkopen/" style="text-decoration:none"><h3>Goud</h3><p>Baren, munten en sloopgoud.</p></a>
-		<a class="xg-c-card" href="/edelmetalen-verkopen/zilver-verkopen/" style="text-decoration:none"><h3>Zilver</h3><p>Baren en munten.</p></a>
-		<a class="xg-c-card" href="/edelstenen-verkopen/diamanten-verkopen/" style="text-decoration:none"><h3>Diamanten</h3><p>Volgens Rapaport getaxeerd.</p></a>
-		<a class="xg-c-card" href="/horloges-verkopen/" style="text-decoration:none"><h3>Horloges</h3><p>Luxe merken van alle soorten.</p></a>
+		<a class="xg-c-card" href="/verkopen/edelmetalen/goud/" style="text-decoration:none"><h3>Goud</h3><p>Baren, munten en sloopgoud.</p></a>
+		<a class="xg-c-card" href="/verkopen/edelmetalen/zilver/" style="text-decoration:none"><h3>Zilver</h3><p>Baren en munten.</p></a>
+		<a class="xg-c-card" href="/verkopen/edelstenen/" style="text-decoration:none"><h3>Diamanten</h3><p>Volgens Rapaport getaxeerd.</p></a>
+		<a class="xg-c-card" href="/verkopen/horloges/" style="text-decoration:none"><h3>Horloges</h3><p>Luxe merken van alle soorten.</p></a>
 	</div>
 </div></section>
 
@@ -5966,12 +5996,12 @@ html[data-theme="dark"] .xgoud-toc-item:hover { background: #1d1b19; }
 
       <nav class="footer__col">
         <h4 class="footer__heading">DIENSTEN</h4>
-        <a class="footer__link" href="/edelmetalen-verkopen/goud-verkopen/">Goud verkopen</a>
-        <a class="footer__link" href="/edelmetalen-verkopen/zilver-verkopen/">Zilver verkopen</a>
-        <a class="footer__link" href="/edelstenen-verkopen/diamanten-verkopen/">Diamanten verkopen</a>
-        <a class="footer__link" href="/horloges-verkopen/">Luxe horloges verkopen</a>
-        <a class="footer__link" href="/edelstenen-verkopen/">Edelstenen verkopen</a>
-        <a class="footer__link" href="/edelmetalen-verkopen/munten-verkopen/">Munten verkopen</a>
+        <a class="footer__link" href="/verkopen/edelmetalen/goud/">Goud verkopen</a>
+        <a class="footer__link" href="/verkopen/edelmetalen/zilver/">Zilver verkopen</a>
+        <a class="footer__link" href="/verkopen/edelstenen/">Diamanten verkopen</a>
+        <a class="footer__link" href="/verkopen/horloges/">Luxe horloges verkopen</a>
+        <a class="footer__link" href="/verkopen/edelstenen/">Edelstenen verkopen</a>
+        <a class="footer__link" href="/verkopen/edelmetalen/goud/munten/">Munten verkopen</a>
         <a class="footer__link" href="/service/thuisbezoek/">Taxatie aan huis</a>
         <a class="footer__link" href="/service/zakelijk-verkopen/">Zakelijk verkopen</a>
       </nav>
@@ -10163,7 +10193,7 @@ try { if (!localStorage.getItem('xg-theme')) localStorage.setItem('xg-theme', 'l
   const STD = {
     dagprijzen:`<div class="xg-std-grid">
       <div class="xg-std-col"><h3>Dagprijzen</h3><a href="/dagprijzen/goudprijs/">Goudprijs vandaag</a><a href="/dagprijzen/zilverprijs/">Zilverprijs vandaag</a><a href="/dagprijzen/platinaprijs/">Platinaprijs vandaag</a><a href="/dagprijzen/palladiumprijs/">Palladiumprijs</a></div>
-      <div class="xg-std-col"><h3>Overzicht</h3><a href="/dagprijzen/">Alle dagprijzen</a><a href="/inkoopprijzen/">Inkoopprijzen</a><a href="/edelmetalen-verkopen/">Edelmetaal verkopen</a></div>
+      <div class="xg-std-col"><h3>Overzicht</h3><a href="/dagprijzen/">Alle dagprijzen</a><a href="/inkoopprijzen/">Inkoopprijzen</a><a href="/verkopen/edelmetalen/">Edelmetaal verkopen</a></div>
       <div class="xg-std-col"><h3>Markt</h3><a href="/lexicon/spotprijs/">Wat is de spotprijs?</a><a href="/lexicon/troy-ounce/">Troy ounce</a><a href="/lexicon/fineness-zuiverheid/">Zuiverheid</a></div>
     </div>
     <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="/dagprijzen/goudprijs/">Goudprijs</a><a class="xg-ql" href="/dagprijzen/zilverprijs/">Zilverprijs</a><a class="xg-ql" href="/dagprijzen/">Alle prijzen</a></div>`,
@@ -10254,14 +10284,18 @@ try { if (!localStorage.getItem('xg-theme')) localStorage.setItem('xg-theme', 'l
     });
   }
 
-  // Bestemmings-URL voor de wizard (echte verkooppagina's), met preset-params
-  // zodat de calculator op de doelpagina alvast goed staat.
+  // Bestemmings-URL voor de wizard, binnen de /verkopen/-structuur (5 niveaus),
+  // met preset-param zodat de calculator op de doelpagina alvast goed staat.
+  // s1 = metaal-slug (goud/zilver/…), s2 = categorie-slug (baren/munten/sloop).
   function wizDestination(menu, s1, s2, prod){
     const q='?preset='+encodeURIComponent(s1+'|'+(s2||'')+'|'+(prod||''));
-    if(menu==='edelmetalen') return '/edelmetalen-verkopen/'+s1+'-verkopen/'+q;
-    if(menu==='edelstenen')  return '/edelstenen-verkopen/'+s1+'-verkopen/'+q;
-    if(menu==='horloges')    return '/horloges-verkopen/'+q;
-    return '/'+q;
+    // Edelmetalen heeft volledige L3/L4-pagina's; edelstenen/horloges (nog) niet.
+    if(menu==='edelmetalen' && s1 && s2) return '/verkopen/edelmetalen/'+s1+'/'+s2+'/'+q;
+    if(menu==='edelmetalen' && s1)       return '/verkopen/edelmetalen/'+s1+'/'+q;
+    if(menu==='edelmetalen')             return '/verkopen/edelmetalen/'+q;
+    if(menu==='edelstenen')              return '/verkopen/edelstenen/'+q;
+    if(menu==='horloges')                return '/verkopen/horloges/'+q;
+    return '/verkopen/'+q;
   }
 
   function renderWizBody(){
@@ -10295,7 +10329,7 @@ try { if (!localStorage.getItem('xg-theme')) localStorage.setItem('xg-theme', 'l
           <div><strong>${d.steps[1].replace('Kies uw ','')}:</strong> ${ws.s2l}</div>
           <div><strong>${d.steps[2].replace('Kies uw ','')}:</strong> ${ws.s3l}</div>
         </div>
-        <a href="/${ws.s1k}/${ws.s2k}/" class="xg-result-cta">Bekijk pagina →</a>
+        <a href="${wizDestination(ws.menu, ws.s1k, ws.s2k)}" class="xg-result-cta">Bekijk pagina →</a>
       </div>`;
     }
   }
@@ -10317,6 +10351,73 @@ try { if (!localStorage.getItem('xg-theme')) localStorage.setItem('xg-theme', 'l
   if(mobClose) mobClose.addEventListener('click',()=>{
     document.getElementById('xgMobMenu').classList.remove('open');
     document.body.style.overflow='';
+    closeMobWiz();
+  });
+
+  /* ==========================================================
+     MOBILE WIZARD  (drill-down in het mobiele menu-paneel)
+     Hergebruikt WIZ-data + wizDestination(); eigen state (mws).
+     ========================================================== */
+  const mobNav     = document.getElementById('xgMobNav');
+  const mobWiz     = document.getElementById('xgMobWiz');
+  const mobWizBody = document.getElementById('xgMobWizBody');
+  const mobWizBack = document.getElementById('xgMobWizBack');
+  let mws = { menu:null, step:1, s1k:null, s2k:null, s1l:null, s2l:null };
+
+  function openMobWiz(key){
+    if(!WIZ[key] || !mobWiz || !mobNav) return;
+    mws = { menu:key, step:1, s1k:null, s2k:null, s1l:null, s2l:null };
+    mobNav.hidden = true;
+    mobWiz.hidden = false;
+    renderMobWiz();
+  }
+  function closeMobWiz(){
+    if(!mobWiz || !mobNav) return;
+    mobWiz.hidden = true;
+    mobNav.hidden = false;
+  }
+  function renderMobWiz(){
+    if(!mobWizBody) return;
+    const d = WIZ[mws.menu]; const s = mws.step;
+    const crumb = [d.steps[0].replace('Kies uw ','')];
+    if(mws.s1l) crumb.push(mws.s1l);
+    if(mws.s2l) crumb.push(mws.s2l);
+    let items = '';
+    if(s===1){
+      Object.entries(d.opts).forEach(([k,v])=>{
+        items += `<button type="button" class="xg-mob-opt" data-k="${k}"><strong>${v.lbl}</strong><span>${v.desc||''}</span></button>`;
+      });
+    } else if(s===2){
+      Object.entries(d.opts[mws.s1k].cats).forEach(([k,v])=>{
+        items += `<button type="button" class="xg-mob-opt" data-k="${k}"><strong>${v.lbl}</strong></button>`;
+      });
+    } else {
+      d.opts[mws.s1k].cats[mws.s2k].prods.forEach(p=>{
+        items += `<button type="button" class="xg-mob-opt" data-p="${p}"><strong>${p}</strong></button>`;
+      });
+    }
+    mobWizBody.innerHTML =
+      `<div class="xg-mob-wiz-crumb">${crumb.join(' › ')}</div>
+       <div class="xg-mob-wiz-label">${s<4 ? d.steps[s-1] : 'Uw keuze'}</div>
+       <div class="xg-mob-opts">${items}</div>`;
+
+    mobWizBody.querySelectorAll('[data-k]').forEach(el=>el.addEventListener('click',()=>{
+      const k = el.dataset.k;
+      if(s===1){ mws.s1k=k; mws.s1l=d.opts[k].lbl; mws.step=2; }
+      else     { mws.s2k=k; mws.s2l=d.opts[mws.s1k].cats[k].lbl; mws.step=3; }
+      renderMobWiz();
+    }));
+    mobWizBody.querySelectorAll('[data-p]').forEach(el=>el.addEventListener('click',()=>{
+      location.href = wizDestination(mws.menu, mws.s1k, mws.s2k, el.dataset.p);
+    }));
+  }
+  if(mobWizBack) mobWizBack.addEventListener('click',()=>{
+    if(mws.step===3){ mws.step=2; mws.s2k=null; mws.s2l=null; renderMobWiz(); }
+    else if(mws.step===2){ mws.step=1; mws.s1k=null; mws.s1l=null; renderMobWiz(); }
+    else { closeMobWiz(); }
+  });
+  document.querySelectorAll('[data-mobwiz]').forEach(b=>{
+    b.addEventListener('click',()=>openMobWiz(b.dataset.mobwiz));
   });
 
   /* Footer-accordion (alleen mobiel <=600px): klik op kop klapt kolom in/uit. */

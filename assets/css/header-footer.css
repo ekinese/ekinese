@@ -692,22 +692,47 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
   text-transform: uppercase; letter-spacing: 1px;
 }
 .xg-mob-nav { display: flex; flex-direction: column; flex: 1; }
-.xg-mob-nav a {
-  display: flex; align-items: center;
+.xg-mob-nav a,
+.xg-mob-link {
+  display: flex; align-items: center; width: 100%;
   padding: 15px 20px; font-size: 14px; font-weight: 700;
-  color: var(--ink); border-bottom: 1px solid var(--line);
-  text-transform: uppercase; letter-spacing: .5px;
+  color: var(--ink); border: none; border-bottom: 1px solid var(--line);
+  background: none; text-align: left; cursor: pointer; font-family: inherit;
+  text-transform: uppercase; letter-spacing: .5px; min-height: 52px;
   transition: color .15s, background .15s; position: relative;
 }
-.xg-mob-nav a::after {
+.xg-mob-nav a::after,
+.xg-mob-link::after {
   content: '';
   position: absolute; left: 0; top: 0; bottom: 0;
   width: 0; background: var(--red);
   transition: width .15s;
 }
-.xg-mob-nav a:hover { color: var(--red); background: var(--red-soft); }
-.xg-mob-nav a:hover::after { width: 3px; }
-.xg-mob-nav a span { margin-left: auto; font-size: 16px; color: var(--ink-soft); }
+.xg-mob-nav a:hover, .xg-mob-link:hover { color: var(--red); background: var(--red-soft); }
+.xg-mob-nav a:hover::after, .xg-mob-link:hover::after { width: 3px; }
+.xg-mob-nav a span, .xg-mob-link span { margin-left: auto; font-size: 16px; color: var(--ink-soft); }
+
+/* Mobiele wizard (drill-down) binnen het menu-paneel */
+.xg-mob-wiz { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow-y: auto; }
+.xg-mob-wiz-back {
+  display: flex; align-items: center; gap: 6px;
+  padding: 14px 20px; font-size: 13px; font-weight: 700;
+  color: var(--red); background: var(--red-soft); border: none;
+  border-bottom: 1px solid var(--line); cursor: pointer; font-family: inherit;
+  text-transform: uppercase; letter-spacing: .5px; min-height: 48px;
+}
+.xg-mob-wiz-crumb { padding: 14px 20px 4px; font-size: 12px; color: var(--ink-soft); letter-spacing: .5px; }
+.xg-mob-wiz-label { padding: 0 20px 12px; font-size: 18px; font-weight: 800; color: var(--ink); }
+.xg-mob-opts { display: flex; flex-direction: column; }
+.xg-mob-opt {
+  display: flex; flex-direction: column; gap: 2px; width: 100%;
+  padding: 14px 20px; min-height: 56px; text-align: left;
+  background: none; border: none; border-bottom: 1px solid var(--line);
+  cursor: pointer; font-family: inherit; transition: background .15s;
+}
+.xg-mob-opt:hover, .xg-mob-opt:active { background: var(--red-soft); }
+.xg-mob-opt strong { font-size: 15px; font-weight: 700; color: var(--ink); }
+.xg-mob-opt span { font-size: 12px; color: var(--ink-soft); }
 .xg-mob-contact {
   padding: 16px 20px;
   border-top: 1px solid var(--line);

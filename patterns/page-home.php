@@ -58,10 +58,10 @@
 <section><div class="xg-container">
 	<h2 class="xg-section-title">Wat kunt u verkopen?</h2>
 	<div class="xg-grid-4">
-		<a class="xg-c-card" href="/edelmetalen-verkopen/goud-verkopen/" style="text-decoration:none"><h3>Goud</h3><p>Baren, munten en sloopgoud.</p></a>
-		<a class="xg-c-card" href="/edelmetalen-verkopen/zilver-verkopen/" style="text-decoration:none"><h3>Zilver</h3><p>Baren en munten.</p></a>
-		<a class="xg-c-card" href="/edelstenen-verkopen/diamanten-verkopen/" style="text-decoration:none"><h3>Diamanten</h3><p>Volgens Rapaport getaxeerd.</p></a>
-		<a class="xg-c-card" href="/horloges-verkopen/" style="text-decoration:none"><h3>Horloges</h3><p>Luxe merken van alle soorten.</p></a>
+		<a class="xg-c-card" href="/verkopen/edelmetalen/goud/" style="text-decoration:none"><h3>Goud</h3><p>Baren, munten en sloopgoud.</p></a>
+		<a class="xg-c-card" href="/verkopen/edelmetalen/zilver/" style="text-decoration:none"><h3>Zilver</h3><p>Baren en munten.</p></a>
+		<a class="xg-c-card" href="/verkopen/edelstenen/" style="text-decoration:none"><h3>Diamanten</h3><p>Volgens Rapaport getaxeerd.</p></a>
+		<a class="xg-c-card" href="/verkopen/horloges/" style="text-decoration:none"><h3>Horloges</h3><p>Luxe merken van alle soorten.</p></a>
 	</div>
 </div></section>
 

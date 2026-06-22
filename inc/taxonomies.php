@@ -28,14 +28,17 @@ function ekinese_register_verkoop_taxonomy() {
 		'xg_verkoop_cat',
 		array( 'page' ),
 		array(
+			// Hinweis: Der öffentliche URL-Namespace "/verkopen/" wird jetzt vom
+			// hierarchischen WP-Seitenbaum (inc/installer.php) + dem Produkt-Rewrite
+			// (inc/verkopen.php) belegt. Diese (ungenutzte) Taxonomie wird daher
+			// nicht-öffentlich/ohne Rewrite gehalten, um Slug-Kollisionen zu vermeiden.
 			'hierarchical'      => true,
-			'public'            => true,
+			'public'            => false,
+			'publicly_queryable' => false,
+			'show_ui'           => true,
 			'show_in_rest'      => true,
 			'show_admin_column' => true,
-			'rewrite'           => array(
-				'slug'         => 'verkopen',
-				'hierarchical' => true,
-			),
+			'rewrite'           => false,
 			'labels'            => array(
 				'name'          => __( 'Verkoop-Kategorien', 'ekinese' ),
 				'singular_name' => __( 'Verkoop-Kategorie', 'ekinese' ),

@@ -36,15 +36,8 @@ function ekinese_install_pages() {
 		'afspraak'              => array( 'Afspraak maken', 'hero-calculator', null ),
 		'mijn-xgoud'            => array( 'Mijn XGOUD', '<!-- wp:ekinese/account /-->', null ),
 		'rit'                   => array( 'XGOUD Rit', '<!-- wp:ekinese/driver-app /-->', null ),
-		// Edelmetalen.
-		'edelmetalen-verkopen'  => array( 'Edelmetalen verkopen', 'blueprint-edelmetalen', null ),
-		'goud-verkopen'         => array( 'Goud verkopen', 'cat-goud', 'edelmetalen-verkopen' ),
-		'zilver-verkopen'       => array( 'Zilver verkopen', 'cat-zilver', 'edelmetalen-verkopen' ),
-		'platina-verkopen'      => array( 'Platina verkopen', 'cat-platina', 'edelmetalen-verkopen' ),
-		'palladium-verkopen'    => array( 'Palladium verkopen', 'cat-palladium', 'edelmetalen-verkopen' ),
-		// Edelstenen / horloges.
-		'edelstenen-verkopen'   => array( 'Edelstenen verkopen', 'blueprint-edelstenen', null ),
-		'horloges-verkopen'     => array( 'Horloges verkopen', 'blueprint-horloges', null ),
+		// Edelmetalen / Edelstenen / Horloges: zie ekinese_install_verkopen_tree()
+		// (hiërarchische /verkopen/-structuur, 5 niveaus). Bewust NIET hier.
 		// Dagprijzen.
 		'dagprijzen'            => array( 'Dagprijzen', 'price-dagprijzen', null ),
 		'goudprijs'             => array( 'Goudprijs vandaag', 'price-goudprijs', 'dagprijzen' ),
@@ -84,6 +77,138 @@ function ekinese_install_pages() {
 		'voorwaarden'           => array( 'Algemene voorwaarden', 'page-terms', null ),
 		'cookies'               => array( 'Cookiebeleid', 'page-cookies', null ),
 	);
+}
+
+/**
+ * Bouwt de hiërarchische /verkopen/-structuur (L1–L4) als WP-pagina's.
+ * Idempotent: matcht bestaande kinderen op (post_name + parent).
+ * L4-categorieën worden alleen aangemaakt als er ten minste 1 product is
+ * (voorkomt dunne, lege landingspagina's). Geeft het aantal upserts terug.
+ *
+ * @return int
+ */
+function ekinese_install_verkopen_tree() {
+	if ( ! function_exists( 'ekinese_verkopen_metal_slugs' ) ) {
+		return 0;
+	}
+	$count = 0;
+
+	$upsert = function ( $name, $title, $content, $parent ) use ( &$count ) {
+		$existing = get_posts(
+			array(
+				'post_type'   => 'page',
+				'name'        => $name,
+				'post_parent' => $parent,
+				'post_status' => 'any',
+				'numberposts' => 1,
+				'fields'      => 'ids',
+			)
+		);
+		$postarr = array(
+			'post_type'    => 'page',
+			'post_status'  => 'publish',
+			'post_title'   => $title,
+			'post_name'    => $name,
+			'post_content' => $content,
+			'post_parent'  => $parent,
+		);
+		if ( ! empty( $existing ) ) {
+			$postarr['ID'] = (int) $existing[0];
+		}
+		$pid = wp_insert_post( $postarr );
+		if ( ! is_wp_error( $pid ) && $pid ) {
+			$count++;
+			return (int) $pid;
+		}
+		return 0;
+	};
+
+	// L1.
+	$vk = $upsert( 'verkopen', 'Verkopen', ekinese_pattern_content( 'verkopen-hub' ), 0 );
+	if ( ! $vk ) {
+		return 0;
+	}
+
+	// L2 productgroepen.
+	$groups = array(
+		'edelmetalen' => array( 'Edelmetalen verkopen', 'blueprint-edelmetalen' ),
+		'edelstenen'  => array( 'Edelstenen verkopen', 'blueprint-edelstenen' ),
+		'horloges'    => array( 'Horloges verkopen', 'blueprint-horloges' ),
+	);
+	$gid = array();
+	foreach ( $groups as $slug => $g ) {
+		$gid[ $slug ] = $upsert( $slug, $g[0], ekinese_pattern_content( $g[1] ), $vk );
+	}
+
+	// L3 metalen (onder edelmetalen) + L4 categorieën.
+	$metals = array(
+		'goud'      => array( 'label' => 'Goud', 'pattern' => 'cat-goud', 'meta' => 'gold' ),
+		'zilver'    => array( 'label' => 'Zilver', 'pattern' => 'cat-zilver', 'meta' => 'silver' ),
+		'platina'   => array( 'label' => 'Platina', 'pattern' => 'cat-platina', 'meta' => 'platinum' ),
+		'palladium' => array( 'label' => 'Palladium', 'pattern' => 'cat-palladium', 'meta' => 'palladium' ),
+	);
+	// L4 categorie-slug → category-meta.
+	$cats = array(
+		'baren'  => 'Baar',
+		'munten' => 'Munten',
+		'sloop'  => 'Sloop',
+	);
+
+	foreach ( $metals as $mslug => $m ) {
+		if ( empty( $gid['edelmetalen'] ) ) {
+			break;
+		}
+		$mid = $upsert( $mslug, $m['label'] . ' verkopen', ekinese_pattern_content( $m['pattern'] ), $gid['edelmetalen'] );
+		if ( ! $mid ) {
+			continue;
+		}
+		foreach ( $cats as $cslug => $cmeta ) {
+			// Alleen aanmaken als er producten zijn voor dit metaal + categorie.
+			$has = get_posts(
+				array(
+					'post_type'   => 'xg_product',
+					'post_status' => 'publish',
+					'numberposts' => 1,
+					'fields'      => 'ids',
+					'meta_query'  => array(
+						'relation' => 'AND',
+						array( 'key' => 'metal', 'value' => $m['meta'] ),
+						array( 'key' => 'category', 'value' => $cmeta ),
+					),
+				)
+			);
+			if ( empty( $has ) ) {
+				continue;
+			}
+			$title = sprintf( '%s %s verkopen', $m['label'], ucfirst( $cslug ) );
+			$block = sprintf(
+				'<!-- wp:ekinese/product-list {"metal":"%s","category":"%s","title":"%s","limit":120} /-->',
+				esc_attr( $m['meta'] ),
+				esc_attr( $cmeta ),
+				esc_attr( $title )
+			);
+			$upsert( $cslug, $title, $block, $mid );
+		}
+	}
+
+	return $count;
+}
+
+/**
+ * Verplaatst de oude platte *-verkopen-pagina's naar de prullenbak, zodat hun
+ * URL's vrijkomen voor de nieuwe /verkopen/-structuur en de 301-redirects
+ * (inc/verkopen.php) op een 404 kunnen ingrijpen. Idempotent.
+ */
+function ekinese_verkopen_cleanup_old_pages() {
+	if ( ! function_exists( 'ekinese_verkopen_redirect_map' ) ) {
+		return;
+	}
+	foreach ( array_keys( ekinese_verkopen_redirect_map() ) as $old_path ) {
+		$page = get_page_by_path( $old_path );
+		if ( $page && 'trash' !== $page->post_status ) {
+			wp_trash_post( $page->ID );
+		}
+	}
 }
 
 /** Voer de volledige installatie uit. */
@@ -126,6 +251,12 @@ function ekinese_run_install() {
 	if ( function_exists( 'ekinese_import_products' ) ) {
 		$report['products'] = (int) ekinese_import_products();
 	}
+	// Verkopen-boom (5 niveaus) NA de product-import, zodat lege L4-categorieën
+	// kunnen worden overgeslagen. Telt extra pagina's mee in het rapport.
+	$report['pages'] += (int) ekinese_install_verkopen_tree();
+	// Oude *-verkopen-pagina's opruimen, zodat de nieuwe /verkopen/-structuur de
+	// URL's bezit en de 301-redirects (inc/verkopen.php) kunnen werken.
+	ekinese_verkopen_cleanup_old_pages();
 	if ( function_exists( 'ekinese_import_locations' ) ) {
 		$report['locations'] = (int) ekinese_import_locations();
 	}
