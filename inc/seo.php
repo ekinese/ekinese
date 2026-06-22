@@ -158,6 +158,8 @@ function ekinese_meta_tags() {
 	}
 	$desc = trim( mb_substr( $desc, 0, 160 ) );
 	$url  = is_singular() ? get_permalink() : home_url( add_query_arg( array(), $GLOBALS['wp']->request ?? '' ) );
+	/** Modules kunnen de canonical overschrijven (bv. stadpagina → kantoor). */
+	$url  = apply_filters( 'ekinese_canonical_url', $url );
 	$img  = ( is_singular() && has_post_thumbnail() ) ? get_the_post_thumbnail_url( null, 'large' ) : ekinese_business()['logo'];
 
 	if ( $desc ) {

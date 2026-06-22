@@ -66,3 +66,8 @@ require_once get_theme_file_path( 'inc/calc-save.php' );
 require_once get_theme_file_path( 'inc/compare.php' );
 require_once get_theme_file_path( 'inc/year-review.php' );
 require_once get_theme_file_path( 'inc/savings-goal.php' );
+require_once get_theme_file_path( 'inc/city-pages.php' );
+require_once get_theme_file_path( 'inc/kennisbank.php' );
+require_once get_theme_file_path( 'inc/llms.php' );
+require_once get_theme_file_path( 'inc/faq.php' );
+require_once get_theme_file_path( 'inc/price-forecast.php' );

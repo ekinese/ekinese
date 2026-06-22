@@ -1971,3 +1971,77 @@ html[data-theme="dark"] .xg-ref-link input, html[data-theme="dark"] .xg-goal-for
 html[data-theme="dark"] .xg-yr-card { background: #1d1b19; border-color: #34302b; }
 html[data-theme="dark"] .xg-yr-row { color: #b3ad9f; }
 html[data-theme="dark"] .xg-yr-row strong { color: #f3efe8; }
+
+/* =========================
+   STAD-LANDINGPAGES (#15)
+========================= */
+.xg-citylp { padding: 56px 0; }
+.xg-citylp-cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin: 22px 0; }
+.xg-citylp-price { display: flex; flex-direction: column; padding: 10px 18px; background: #fbf7ea; border: 1px solid #ecdfae; }
+.xg-citylp-price-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: #9a7d2e; }
+.xg-citylp-price-val { font-size: 20px; font-weight: 800; color: #161412; }
+.xg-citylp-route a { color: var(--red,#AE1E1E); font-weight: 700; }
+.xg-citylp-body { margin: 30px 0; line-height: 1.8; color: #2a2722; }
+.xg-citylp-body h2, .xg-citylp-body h3, .xg-citylp-body h4 { color: #161412; margin: 1.4em 0 .5em; }
+.xg-citylp-body img { max-width: 100%; height: auto; }
+html[data-theme="dark"] .xg-citylp-price { background: #211e1a; border-color: #34302b; }
+html[data-theme="dark"] .xg-citylp-price-val { color: #f3efe8; }
+html[data-theme="dark"] .xg-citylp-body { color: #cfc9bd; }
+html[data-theme="dark"] .xg-citylp-body h2, html[data-theme="dark"] .xg-citylp-body h3, html[data-theme="dark"] .xg-citylp-body h4 { color: #f3efe8; }
+
+/* =========================
+   FAQ-ACCORDEON (#18, ook stad-FAQ)
+========================= */
+.xg-faq { padding: 40px 0; }
+.xg-faq-list, .xg-citylp-faq { max-width: 820px; }
+.xg-faq-item { border-bottom: 1px solid #e3ddd0; padding: 4px 0; }
+.xg-faq-item summary { cursor: pointer; padding: 16px 4px; font-weight: 700; font-size: 16px; color: #161412; list-style: none; position: relative; padding-right: 30px; }
+.xg-faq-item summary::-webkit-details-marker { display: none; }
+.xg-faq-item summary::after { content: "+"; position: absolute; right: 6px; top: 14px; font-size: 22px; font-weight: 400; color: var(--red,#AE1E1E); transition: transform .2s; }
+.xg-faq-item[open] summary::after { content: "−"; }
+.xg-faq-a { padding: 0 4px 18px; color: #57534b; line-height: 1.7; font-size: 15px; }
+html[data-theme="dark"] .xg-faq-item { border-color: #34302b; }
+html[data-theme="dark"] .xg-faq-item summary { color: #f3efe8; }
+html[data-theme="dark"] .xg-faq-a { color: #b3ad9f; }
+
+/* =========================
+   PRIJSPROGNOSE (#14)
+========================= */
+.xg-forecast { padding: 24px 0; }
+.xg-forecast-box { padding: 20px 24px; border: 1px solid #e3ddd0; border-left-width: 4px; background: #fff; max-width: 760px; }
+.xg-forecast-up { border-left-color: #1f9d55; }
+.xg-forecast-down { border-left-color: #c0392b; }
+.xg-forecast-flat { border-left-color: #9a948a; }
+.xg-forecast-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.xg-forecast-head h3 { margin: 0; font-size: 18px; color: #161412; }
+.xg-forecast-ico { font-size: 18px; }
+.xg-forecast-up .xg-forecast-ico { color: #1f9d55; }
+.xg-forecast-down .xg-forecast-ico { color: #c0392b; }
+.xg-forecast-txt { margin: 0 0 8px; color: #2a2722; line-height: 1.7; }
+.xg-forecast-disc { margin: 0; font-size: 12px; color: #8a847a; }
+html[data-theme="dark"] .xg-forecast-box { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-forecast-head h3, html[data-theme="dark"] .xg-forecast-txt { color: #f3efe8; }
+
+/* =========================
+   KENNISBANK (#16)
+========================= */
+.xg-kb { padding: 56px 0; }
+.xg-kb-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin: 28px 0 44px; }
+.xg-kb-card { display: block; padding: 22px; border: 1px solid #e3ddd0; background: #fff; text-decoration: none; transition: border-color .2s, transform .2s; }
+.xg-kb-card:hover { border-color: var(--gold,#D0AC4B); transform: translateY(-2px); }
+.xg-kb-card h3 { margin: 0 0 8px; color: #161412; font-size: 18px; }
+.xg-kb-card p { margin: 0 0 12px; color: #57534b; font-size: 14px; line-height: 1.6; }
+.xg-kb-more { color: var(--red,#AE1E1E); font-weight: 700; font-size: 13px; }
+.xg-kb-lexicon h2 { font-size: 24px; color: #161412; margin-bottom: 18px; }
+.xg-kb-catgroup { margin-bottom: 22px; }
+.xg-kb-catgroup h4 { margin: 0 0 8px; color: var(--gold-dark,#9a7d2e); text-transform: uppercase; letter-spacing: .5px; font-size: 13px; }
+.xg-kb-terms { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.xg-kb-terms a { color: #2a2722; text-decoration: none; border-bottom: 1px solid transparent; }
+.xg-kb-terms a:hover { border-bottom-color: var(--gold,#D0AC4B); }
+.xg-article { max-width: 820px; }
+.xg-article h2 { margin: 1.6em 0 .5em; color: #161412; }
+.xg-article p { line-height: 1.8; color: #2a2722; }
+@media (max-width: 767px) { .xg-kb-grid { grid-template-columns: 1fr; } }
+html[data-theme="dark"] .xg-kb-card { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-kb-card h3, html[data-theme="dark"] .xg-kb-lexicon h2, html[data-theme="dark"] .xg-article h2 { color: #f3efe8; }
+html[data-theme="dark"] .xg-kb-card p, html[data-theme="dark"] .xg-kb-terms a, html[data-theme="dark"] .xg-article p { color: #b3ad9f; }

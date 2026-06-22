@@ -76,6 +76,27 @@ function pattern(file) {
 		'<tr><td class="xg-cmp-feat">Marge vooraf zichtbaar</td><td class="xg-cmp-us"><span class="xg-cmp-yes">✓</span></td><td class="xg-cmp-them"><span class="xg-cmp-no">—</span></td></tr>' +
 		'<tr><td class="xg-cmp-feat">Deel naar goed doel</td><td class="xg-cmp-us"><span class="xg-cmp-yes">✓</span></td><td class="xg-cmp-them"><span class="xg-cmp-no">—</span></td></tr>' +
 		'</tbody></table></div><div class="xg-cmp-cta"><a class="xg-btn-gold" href="/afspraak/">Bereken uw waarde</a></div></div>');
+	// Demo voor het FAQ-blok (#18).
+	out = out.replace(/<!--\s*wp:ekinese\/faq[^>]*?-->/g,
+		'<section class="xg-faq"><div class="xg-container"><h2>Veelgestelde vragen</h2><div class="xg-faq-list">' +
+		'<details class="xg-faq-item" open><summary>Hoe verkoop ik mijn goud bij XGOUD?</summary><div class="xg-faq-a">U maakt online een afspraak, kiest kantoor/thuis/ophaal, en onze expert taxeert gratis. Bij akkoord betalen we direct uit.</div></details>' +
+		'<details class="xg-faq-item"><summary>Hoe wordt de prijs bepaald?</summary><div class="xg-faq-a">Op basis van de actuele spotprijs en het gehalte. U ziet de marge altijd vooraf.</div></details>' +
+		'<details class="xg-faq-item"><summary>Word ik direct uitbetaald?</summary><div class="xg-faq-a">Ja, na akkoord betalen wij direct uit, contant of per overboeking.</div></details>' +
+		'</div></div></section>');
+	// Demo voor de prijsprognose (#14).
+	out = out.replace(/<!--\s*wp:ekinese\/price-forecast[^>]*?-->/g,
+		'<section class="xg-forecast"><div class="xg-container"><div class="xg-forecast-box xg-forecast-up">' +
+		'<div class="xg-forecast-head"><span class="xg-forecast-ico">▲</span><h3>Trend goud</h3></div>' +
+		'<p class="xg-forecast-txt">Op basis van de trend van de afgelopen 30 dagen is de prijs van goud <strong>licht stijgend</strong>. Indicatief rond <strong>€ 64,80 / gram</strong> over 30 dagen (+3,7%).</p>' +
+		'<p class="xg-forecast-disc">Let op: indicatieve trendweergave, géén beleggingsadvies.</p></div></div></section>');
+	// Demo voor de kennisbank-hub (#16).
+	out = out.replace(/<!--\s*wp:ekinese\/kennisbank-hub[^>]*?-->/g,
+		'<section class="xg-kb"><div class="xg-container"><p class="xg-eyebrow">Kennisbank</p><h1>Alles over edelmetaal verkopen</h1>' +
+		'<p class="xg-intro">Praktische uitleg, zodat u goed voorbereid verkoopt.</p><div class="xg-kb-grid">' +
+		'<a class="xg-kb-card" href="#"><h3>Echt goud herkennen</h3><p>Stempels, magneettest en zuurtest.</p><span class="xg-kb-more">Lees meer ›</span></a>' +
+		'<a class="xg-kb-card" href="#"><h3>14 vs 18 karaat</h3><p>Het verschil in goudgehalte en waarde.</p><span class="xg-kb-more">Lees meer ›</span></a>' +
+		'<a class="xg-kb-card" href="#"><h3>Wat is sloopgoud waard?</h3><p>Hoe oude sieraden worden getaxeerd.</p><span class="xg-kb-more">Lees meer ›</span></a>' +
+		'</div></div></section>');
 	return stripBlocks(out).trim();
 }
 

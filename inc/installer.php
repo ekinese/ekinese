@@ -53,6 +53,10 @@ function ekinese_install_pages() {
 		'palladiumprijs'        => array( 'Palladiumprijs', 'price-palladiumprijs', 'dagprijzen' ),
 		'inkoopprijzen'         => array( 'Inkoopprijzen', 'price-inkoopprijzen', null ),
 		// Service.
+		'prijsgarantie'         => array( 'Prijsgarantie', 'page-prijsgarantie', null ),
+		'vergelijken'           => array( 'Vergelijken', 'page-vergelijken', null ),
+		'kennisbank'            => array( 'Kennisbank', 'kennisbank-hub', null ),
+
 		'service'               => array( 'Service', 'page-services', null ),
 		'gratis-taxatie'        => array( 'Gratis taxatie', 'services-taxatie', 'service' ),
 		'thuisbezoek'           => array( 'Thuisbezoek', 'services-thuisbezoek', 'service' ),
@@ -123,6 +127,9 @@ function ekinese_run_install() {
 	}
 	if ( function_exists( 'ekinese_import_locations' ) ) {
 		$report['locations'] = (int) ekinese_import_locations();
+	}
+	if ( function_exists( 'ekinese_import_cities' ) ) {
+		$report['cities'] = (int) ekinese_import_cities();
 	}
 	if ( function_exists( 'ekinese_seed_lexicon' ) ) {
 		ekinese_seed_lexicon();
