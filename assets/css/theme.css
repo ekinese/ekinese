@@ -212,3 +212,56 @@ html[data-theme="dark"] {
 	html, body, [class^="xg-"], [class^="footer"] { transition: none !important; }
 	.xg-theme-knob, .xg-theme-track, .xg-theme-ico { transition: none !important; }
 }
+
+/* =====================================================================
+   DARK MODE – ROBUSTE TEXT-/BOX-REGELS (vangt nieuwe componenten op)
+   Alle koppen licht, ook buiten .xg-blueprint (prijsblok, nieuws, account,
+   spec-tabellen, h4–h6 en sectie-titels).
+   ===================================================================== */
+html[data-theme="dark"] main h1,
+html[data-theme="dark"] main h2,
+html[data-theme="dark"] main h3,
+html[data-theme="dark"] main h4,
+html[data-theme="dark"] main h5,
+html[data-theme="dark"] main h6,
+html[data-theme="dark"] .xg-container h1,
+html[data-theme="dark"] .xg-container h2,
+html[data-theme="dark"] .xg-container h3,
+html[data-theme="dark"] .xg-container h4,
+html[data-theme="dark"] .xg-section-title,
+html[data-theme="dark"] .xg-c-card h3,
+html[data-theme="dark"] .xg-news-card h3,
+html[data-theme="dark"] .xg-acc-sec h3,
+html[data-theme="dark"] .xg-step-card h3,
+html[data-theme="dark"] .xg-final-cta-box h3,
+html[data-theme="dark"] .xg-benefit .xg-b-title {
+	color: #f3efe8;
+}
+
+/* Fließtext/secundair buiten .xg-blueprint */
+html[data-theme="dark"] main p,
+html[data-theme="dark"] .xg-container p,
+html[data-theme="dark"] .xg-c-card p,
+html[data-theme="dark"] .xg-news-meta,
+html[data-theme="dark"] .xg-acc-email {
+	color: #b3ad9f;
+}
+
+/* Spec-/data-tabellen (producten, prijzen, account) */
+html[data-theme="dark"] .xg-spec-table,
+html[data-theme="dark"] .xg-spec-table table { background: #1a1815; }
+html[data-theme="dark"] .xg-spec-table th { background: #2a2620; color: #f3efe8; border-color: #34302b; }
+html[data-theme="dark"] .xg-spec-table td { color: #cfc9bd; border-color: #34302b; }
+html[data-theme="dark"] .xg-spec-table tr:hover td { background: #211e1a; }
+
+/* Kaarten/boxen die als content-blok los staan */
+html[data-theme="dark"] main .xg-c-card,
+html[data-theme="dark"] .xg-container .xg-c-card,
+html[data-theme="dark"] .xg-acc-sec,
+html[data-theme="dark"] .xg-acc-stats .xg-c-card {
+	background: #1d1b19; border-color: #34302b;
+}
+html[data-theme="dark"] .xg-c-card:hover { border-color: var(--gold, #c8a24a); }
+
+/* Charity-ticker in dark */
+html[data-theme="dark"] .xg-charity-ticker { background: #1a1815; border-color: #34302b; }
