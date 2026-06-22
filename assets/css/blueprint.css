@@ -1806,7 +1806,7 @@ html[data-theme="dark"] .xg-tw-stats, html[data-theme="dark"] .xg-tw-press { bor
    LIVE-VERKOCHT TICKER (toast rechtsonder)
 ========================= */
 .xg-livesale {
-    position: fixed; left: 20px; bottom: 20px; z-index: 100040;
+    position: fixed; right: 20px; bottom: 20px; z-index: 100040;
     display: flex; align-items: center; gap: 12px;
     background: var(--white,#fff); border: 1px solid var(--line,#e3ddd0);
     box-shadow: 0 12px 40px rgba(0,0,0,.16); padding: 12px 16px 12px 14px;
@@ -1821,4 +1821,83 @@ html[data-theme="dark"] .xg-tw-stats, html[data-theme="dark"] .xg-tw-press { bor
 .xg-livesale-x { position: absolute; top: 4px; right: 6px; border: none; background: none; font-size: 16px; color: var(--ink-soft,#9a948a); cursor: pointer; line-height: 1; }
 html[data-theme="dark"] .xg-livesale { background: #1d1b19; border-color: #34302b; }
 html[data-theme="dark"] .xg-livesale-body { color: #f3efe8; }
-@media (max-width: 600px) { .xg-livesale { left: 12px; right: 12px; bottom: 12px; max-width: none; } }
+@media (max-width: 600px) { .xg-livesale { left: 12px; right: 12px; bottom: 76px; max-width: none; } }
+
+/* =========================
+   ZWEVENDE CONTACTKNOP (WhatsApp + bellen, linksonder)
+========================= */
+.xg-fcontact { position: fixed; left: 20px; bottom: 20px; z-index: 100030; display: flex; flex-direction: column; gap: 12px; }
+.xg-fcontact a { display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 50%; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.22); transition: transform .18s ease; }
+.xg-fcontact a:hover { transform: scale(1.06); }
+.xg-fcontact-wa { background: #25d366; }
+.xg-fcontact-tel { background: var(--red,#AE1E1E); }
+@media (max-width: 600px) { .xg-fcontact { left: 12px; bottom: 76px; gap: 10px; } .xg-fcontact a { width: 48px; height: 48px; } }
+
+/* =========================
+   STICKY CTA-BALK (onderaan, mobiel-first)
+========================= */
+.xg-sticky-cta {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 100020;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    background: var(--ink,#161412); color: #fff; padding: 12px 18px;
+    box-shadow: 0 -6px 24px rgba(0,0,0,.18);
+    transform: translateY(100%); transition: transform .28s ease;
+}
+.xg-sticky-cta.in { transform: translateY(0); }
+.xg-sticky-cta-txt { font-weight: 700; font-size: 15px; }
+.xg-sticky-cta-btn { background: var(--gold,#D0AC4B); color: #161412; font-weight: 800; padding: 11px 22px; white-space: nowrap; }
+.xg-sticky-cta-btn:hover { filter: brightness(1.05); }
+/* Op desktop discreter: rechts uitgelijnd, niet volle breedte. */
+@media (min-width: 768px) {
+    .xg-sticky-cta { left: auto; right: 24px; bottom: 24px; border-radius: 0; max-width: 380px; }
+}
+
+/* =========================
+   SKELETON-LOADING + REVEAL (micro-animaties)
+========================= */
+.xg-skeleton, .xg-skeleton * { color: transparent !important; }
+.xg-skeleton {
+    position: relative; min-height: 120px; overflow: hidden;
+    background: #eceae6;
+}
+.xg-skeleton::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent);
+    transform: translateX(-100%); animation: xgShimmer 1.3s infinite;
+}
+@keyframes xgShimmer { 100% { transform: translateX(100%); } }
+html[data-theme="dark"] .xg-skeleton { background: #211e1a; }
+html[data-theme="dark"] .xg-skeleton::after { background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); }
+.xg-reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+.xg-reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .xg-reveal { opacity: 1; transform: none; transition: none; } .xg-skeleton::after { animation: none; } }
+
+/* =========================
+   USP-TIJDLIJN (#5 "In 3 minuten verkocht")
+========================= */
+.xg-usp-timeline { padding: 64px 0; background: #fff; }
+html[data-theme="dark"] .xg-usp-timeline { background: #161412; }
+.xg-tl { list-style: none; margin: 38px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3,1fr); gap: 26px; position: relative; }
+.xg-tl-step { position: relative; padding-top: 18px; }
+/* Verbindingslijn tussen de stappen (desktop). */
+.xg-tl-step::before { content: ""; position: absolute; top: 26px; left: 52px; right: -26px; height: 2px; background: var(--line,#e3ddd0); z-index: 0; }
+.xg-tl-step:last-child::before { display: none; }
+.xg-tl-dot { position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; background: var(--red,#AE1E1E); color: #fff; font-size: 22px; font-weight: 800; }
+html[data-theme="dark"] .xg-tl-dot { background: var(--gold,#D0AC4B); color: #161412; }
+.xg-tl-body { margin-top: 16px; }
+.xg-tl-time { display: inline-block; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--gold-dark,#9a7d2e); font-weight: 800; margin-bottom: 6px; }
+.xg-tl-body h3 { font-size: 19px; margin: 0 0 8px; color: #161412; }
+.xg-tl-body p { margin: 0; color: #57534b; line-height: 1.6; font-size: 15px; }
+html[data-theme="dark"] .xg-tl-body h3 { color: #f3efe8; }
+html[data-theme="dark"] .xg-tl-body p { color: #b3ad9f; }
+.xg-tl-cta { margin-top: 36px; text-align: center; }
+/* Trapsgewijze onthulling. */
+.xg-tl-step:nth-child(2) { transition-delay: .12s; }
+.xg-tl-step:nth-child(3) { transition-delay: .24s; }
+@media (max-width: 767px) {
+    .xg-tl { grid-template-columns: 1fr; gap: 10px; }
+    .xg-tl-step { padding: 0 0 0 64px; min-height: 64px; }
+    .xg-tl-dot { position: absolute; left: 0; top: 0; }
+    .xg-tl-step::before { top: 52px; bottom: -10px; left: 25px; right: auto; width: 2px; height: auto; }
+    .xg-tl-body { margin-top: 0; }
+}

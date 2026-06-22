@@ -26,13 +26,33 @@
 	function toggle() { apply(current() === 'dark' ? 'light' : 'dark', true); }
 
 	// Initialwert: gespeichert > System > light
+	// Ohne gespeicherte Wahl: dark wenn System dunkel ODER abends/nachts (19–7 Uhr).
+	function autoDefault() {
+		var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+		var h = new Date().getHours();
+		var nightTime = (h >= 19 || h < 7);
+		return (sysDark || nightTime) ? 'dark' : 'light';
+	}
 	function init() {
 		var saved = null;
 		try { saved = localStorage.getItem(KEY); } catch (e) {}
-		if (!saved) {
-			saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+		apply(saved || autoDefault(), false);
+	}
+
+	// #7 Reveal-animaties: elementen met .xg-reveal faden in bij scroll.
+	function initReveal() {
+		var els = document.querySelectorAll('.xg-reveal');
+		if (!els.length) return;
+		if (!('IntersectionObserver' in window)) {
+			els.forEach(function (el) { el.classList.add('in'); });
+			return;
 		}
-		apply(saved, false);
+		var io = new IntersectionObserver(function (entries) {
+			entries.forEach(function (e) {
+				if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+			});
+		}, { rootMargin: '0px 0px -10% 0px' });
+		els.forEach(function (el) { io.observe(el); });
 	}
 
 	// Moderner Schalter (Sonne/Mond, gleitender Knopf)
@@ -65,6 +85,7 @@
 
 	function boot() {
 		document.querySelectorAll('[data-xg-theme-toggle]').forEach(buildToggle);
+		initReveal();
 	}
 
 	// API für andere Skripte (z.B. Calculator-internen Schalter)

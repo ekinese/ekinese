@@ -395,6 +395,8 @@ function ekinese_calculator_data() {
 		'currency' => 'EUR',
 		// REST-Ziel für den Terminplaner (Calculator-Checkout → Afspraak).
 		'rest_appointment' => esc_url_raw( rest_url( 'ekinese/v1/appointment' ) ),
+		// REST-Ziel für "Bewaar mijn berekening" (#9).
+		'rest_calc_save'   => esc_url_raw( rest_url( 'ekinese/v1/calc-save' ) ),
 	);
 
 	// Charity-Empfänger aus echten Projekten (CPT), falls vorhanden – sonst

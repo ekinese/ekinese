@@ -425,6 +425,16 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 .xg-calc-btn-dark { background: var(--xc-ink); color: var(--xc-bg); }
 .xg-calc-btn-dark:hover { opacity: .9; }
 
+/* #9 Bewaar mijn berekening */
+.xg-calc-save { margin-top: 10px; }
+.xg-calc-save-box { margin-top: 12px; padding: 14px; border: 1px solid var(--xc-line); background: var(--xc-bg-soft, rgba(0,0,0,.02)); }
+.xg-calc-save-lbl { margin: 0 0 8px; font-size: 13px; color: var(--xc-ink-soft, #6b665c); }
+.xg-calc-save-link, .xg-calc-save-mail { display: flex; gap: 8px; margin-bottom: 8px; }
+.xg-calc-save-box input { flex: 1; min-width: 0; padding: 9px 11px; border: 1px solid var(--xc-line); background: var(--xc-bg); color: var(--xc-ink); font-size: 13px; }
+.xg-calc-save-box button { white-space: nowrap; padding: 9px 14px; border: 1px solid var(--xc-line); background: var(--xc-ink); color: var(--xc-bg); font-weight: 700; font-size: 13px; cursor: pointer; }
+.xg-calc-save-box button:hover { background: var(--xc-red); border-color: var(--xc-red); color: #fff; }
+.xg-calc-save-msg { margin: 4px 0 0; font-size: 12px; color: var(--xc-ink-soft, #6b665c); min-height: 14px; }
+
 /* =========================================================
    CART (kombiniert – als View-Switch in EINEM Widget)
 ========================================================= */

@@ -161,6 +161,18 @@
 			} catch (e) {}
 		}
 
+			// #9 Deep-link: /afspraak/?calc=<base64url(token)> herstelt een bewaarde berekening.
+			try {
+				var qcalc = new URLSearchParams(location.search).get('calc');
+				if (qcalc) {
+					var b64 = qcalc.replace(/-/g, '+').replace(/_/g, '/');
+					while (b64.length % 4) b64 += '=';
+					var dec = JSON.parse(decodeURIComponent(escape(atob(b64))));
+					if (dec.t) state.type = dec.t;
+					if (dec.f) state.form = dec.f;
+				}
+			} catch (e) {}
+
 		/*
 		 * Scope/Lock für Hero, Kategorie- und Produktseiten:
 		 *   data-only="metal"          → Hero: nur Edelmetaal (kein Typ-Picker)
@@ -632,8 +644,64 @@
 			again.addEventListener('click', function () { state.type = null; state.form = {}; state.result = null; render(); });
 			res.appendChild(again);
 
+			// #9 Bewaar mijn berekening (deelbare deep-link + optioneel e-mailen).
+			var save = h('div', 'xg-calc-save');
+			var saveBtn = h('button', 'xg-calc-btn xg-calc-btn-ghost', ICON.heart ? '' : '');
+			saveBtn.textContent = 'Bewaar deze berekening';
+			saveBtn.addEventListener('click', function () { openSave(save, r); });
+			save.appendChild(saveBtn);
+			res.appendChild(save);
+
 			p.appendChild(res);
 			setPanel(p);
+		}
+
+		// Bouwt een compacte, deelbare token van type+form (base64url).
+		function calcToken() {
+			try {
+				var payload = { t: state.type, f: state.form };
+				var json = JSON.stringify(payload);
+				var b64 = btoa(unescape(encodeURIComponent(json)));
+				return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+			} catch (e) { return ''; }
+		}
+
+		function openSave(host, r) {
+			if (host.querySelector('.xg-calc-save-box')) return;
+			var token = calcToken();
+			var base = (location.origin || '') + '/afspraak/?calc=' + encodeURIComponent(token);
+			var box = h('div', 'xg-calc-save-box');
+			box.innerHTML =
+				'<p class="xg-calc-save-lbl">Bewaar uw berekening en kom later terug:</p>' +
+				'<div class="xg-calc-save-link"><input type="text" readonly value="' + base.replace(/"/g, '&quot;') + '"><button type="button" class="xg-calc-save-copy">Kopieer</button></div>' +
+				'<div class="xg-calc-save-mail"><input type="email" placeholder="E-mail (optioneel, ontvang de link)"><button type="button" class="xg-calc-save-send">Mail mij</button></div>' +
+				'<p class="xg-calc-save-msg" role="status"></p>';
+			host.appendChild(box);
+
+			var copyBtn = box.querySelector('.xg-calc-save-copy');
+			var linkInput = box.querySelector('.xg-calc-save-link input');
+			copyBtn.addEventListener('click', function () {
+				linkInput.select();
+				try { (navigator.clipboard ? navigator.clipboard.writeText(linkInput.value) : document.execCommand('copy')); copyBtn.textContent = 'Gekopieerd'; }
+				catch (e) { document.execCommand('copy'); copyBtn.textContent = 'Gekopieerd'; }
+				setTimeout(function () { copyBtn.textContent = 'Kopieer'; }, 1800);
+			});
+
+			var sendBtn = box.querySelector('.xg-calc-save-send');
+			var mailInput = box.querySelector('.xg-calc-save-mail input');
+			var msg = box.querySelector('.xg-calc-save-msg');
+			sendBtn.addEventListener('click', function () {
+				var email = (mailInput.value || '').trim();
+				if (!email || email.indexOf('@') < 1) { msg.textContent = 'Vul een geldig e-mailadres in.'; return; }
+				sendBtn.disabled = true; msg.textContent = 'Versturen…';
+				var rest = (DATA.rest_calc_save) || '/wp-json/ekinese/v1/calc-save';
+				fetch(rest, {
+					method: 'POST', headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ email: email, calc: token, label: typeLabel() + ' · ' + specLabel(), value: (r && r.indicative ? euro(r.low) + '–' + euro(r.high) : (r ? euro(r.low) : '')) })
+				}).then(function (res) { return res.json().then(function (d) { return { ok: res.ok, d: d }; }); })
+					.then(function (o) { msg.textContent = o.ok ? 'Verstuurd! Controleer uw inbox.' : (o.d && o.d.message ? o.d.message : 'Versturen mislukt.'); sendBtn.disabled = false; })
+					.catch(function () { msg.textContent = 'Netwerkfout. Probeer later opnieuw.'; sendBtn.disabled = false; });
+			});
 		}
 		function breakRow(l, v, cls) { return h('div', 'xg-calc-break-row' + (cls ? ' ' + cls : ''), '<span>' + l + '</span><b>' + v + '</b>'); }
 
