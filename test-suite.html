@@ -3145,9 +3145,10 @@ html[data-theme="dark"] .xg-livesale-body { color: #f3efe8; }
 @keyframes xgShimmer { 100% { transform: translateX(100%); } }
 html[data-theme="dark"] .xg-skeleton { background: #211e1a; }
 html[data-theme="dark"] .xg-skeleton::after { background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); }
-.xg-reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
-.xg-reveal.in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) { .xg-reveal { opacity: 1; transform: none; transition: none; } .xg-skeleton::after { animation: none; } }
+/* Reveal alleen verbergen wanneer JS aanwezig is (html.xg-js); zonder JS volledig zichtbaar. */
+html.xg-js .xg-reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+html.xg-js .xg-reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { html.xg-js .xg-reveal { opacity: 1; transform: none; transition: none; } .xg-skeleton::after { animation: none; } }
 
 /* =========================
    USP-TIJDLIJN (#5 "In 3 minuten verkocht")
@@ -4450,6 +4451,108 @@ html[data-theme="dark"] .xg-charity-map { border-color: #34302b; }
 @media (max-width: 600px) { .xg-charity-map { height: 360px; } .xg-charity-counter { font-size: 34px; } }
 
 
+/* =====================================================================
+   XGOUD – Dark-Mode aanvullende laag (ALLEEN actief in [data-theme="dark"]).
+   Wordt als laatste geladen. Raakt de light-modus NIET aan: elke regel is
+   met html[data-theme="dark"] gescoped. header-footer.css/offices/chat/
+   calculator zijn al getokeniseerd (theme.css kantelt de tokens); hier
+   dichten we de resterende gaten en zetten we een sterk vangnet voor
+   formuliervelden, zodat nergens wit-op-wit of zwart-op-zwart ontstaat.
+   Regel: Rood blijft, Goud als highlight; geen ronde hoeken.
+   ===================================================================== */
+
+/* Semantische dark-aliassen (handig voor toekomstige componenten). */
+html[data-theme="dark"] {
+	--surface:    #161412;
+	--surface-2:  #1d1b19;
+	--surface-3:  #211e1a;
+	--border-dk:  #34302b;
+	--text-dk:    #f3efe8;
+	--text-soft-dk:#b3ad9f;
+	--text-mute-dk:#8a847a;
+}
+
+/* ---------------------------------------------------------------
+   FORMULIERVELDEN – sterk vangnet (alle modules in één keer:
+   newsletter, chat, account, calculator-checkout, prijsalarm,
+   booking, zakelijk, spaardoel, referral …).
+--------------------------------------------------------------- */
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]),
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+	background: #211e1a;
+	color: #f3efe8;
+	border-color: #34302b;
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder { color: #8a847a; }
+html[data-theme="dark"] select option { background: #1d1b19; color: #f3efe8; }
+
+/* ---------------------------------------------------------------
+   NIEUWE COMPONENTEN – lichte accent-/inputvelden die nog niet
+   (volledig) gedekt waren.
+--------------------------------------------------------------- */
+/* Velden met expliciet witte achtergrond. */
+html[data-theme="dark"] .xg-ref-link input,
+html[data-theme="dark"] .xg-goal-form input,
+html[data-theme="dark"] .xg-hallmark-input,
+html[data-theme="dark"] .xg-pa-form select,
+html[data-theme="dark"] .xg-pa-form input,
+html[data-theme="dark"] .xg-booking-fields input,
+html[data-theme="dark"] .xg-biz-form input,
+html[data-theme="dark"] .xg-biz-form textarea,
+html[data-theme="dark"] .xg-booking-office,
+html[data-theme="dark"] .xg-calc-save-box input {
+	background: #211e1a; color: #f3efe8; border-color: #34302b;
+}
+
+/* Lichte "goud-getinte" accentvlakken → donker met gouden rand. */
+html[data-theme="dark"] .xg-guarantee,
+html[data-theme="dark"] .xg-guarantee--compact,
+html[data-theme="dark"] .xg-citylp-price,
+html[data-theme="dark"] .xg-cmp-table .xg-cmp-us {
+	background: #221d12;
+	border-color: #4a3d1e;
+}
+html[data-theme="dark"] .xg-cmp-table .xg-cmp-us { color: #f3efe8; }
+html[data-theme="dark"] .xg-citylp-price-val { color: #f3efe8; }
+
+/* Kaarten/boxen met witte achtergrond → donkere oppervlakken. */
+html[data-theme="dark"] .xg-forecast-box,
+html[data-theme="dark"] .xg-kb-card,
+html[data-theme="dark"] .xg-hallmark,
+html[data-theme="dark"] .xg-pa-box,
+html[data-theme="dark"] .xg-photo-box,
+html[data-theme="dark"] .xg-booking-app,
+html[data-theme="dark"] .xg-yr-card {
+	background: #1d1b19;
+	border-color: #34302b;
+}
+
+/* Hallmark-resultaat / drop-zones → donker. */
+html[data-theme="dark"] .xg-hallmark-result { background: #211e1a; }
+html[data-theme="dark"] .xg-hallmark-badge { background: #161412; }
+html[data-theme="dark"] .xg-hallmark-chip { background: #211e1a; border-color: #34302b; color: #b3ad9f; }
+html[data-theme="dark"] .xg-photo-drop { background: #211e1a; border-color: #3a342c; }
+html[data-theme="dark"] .xg-booking-slot { background: #211e1a; border-color: #34302b; color: #cfc9bd; }
+
+/* ---------------------------------------------------------------
+   BLUEPRINT – oude secties: enkele hardcoded waarden die buiten de
+   brede main/.xg-container-selectors uit theme.css vallen.
+--------------------------------------------------------------- */
+html[data-theme="dark"] .xg-hero-v2 .hero-lead { color: #b3ad9f; }
+html[data-theme="dark"] .xgoud-toc-header p { color: #b3ad9f; }
+html[data-theme="dark"] .xg-benefit p,
+html[data-theme="dark"] .xg-step-card p { color: #b3ad9f; }
+html[data-theme="dark"] .xg-benefit { background: #1d1b19; border-color: #34302b; }
+
+/* ---------------------------------------------------------------
+   Diversen: horizontale lijnen, zachte hovers.
+--------------------------------------------------------------- */
+html[data-theme="dark"] hr { border-color: #34302b; }
+html[data-theme="dark"] .xgoud-toc-item:hover { background: #1d1b19; }
+
+
 /* ---- Test-Toolbar ---- */
 .tst-toolbar {
 	position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
@@ -5253,8 +5356,8 @@ html[data-theme="dark"] .xg-charity-map { border-color: #34302b; }
 	<div class="xg-hero-buttons"><a class="xg-btn-gold" href="/afspraak/">Direct verkopen</a></div>
 </div></section>
 
-
-
+<section><div class="xg-container"><h2 class="xg-section-title">Baren</h2><div class="xg-grid-4"><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 1 g</h3><p>1 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 5 g</h3><p>5 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 10 g</h3><p>10 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 20 g</h3><p>20 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 50 g</h3><p>50 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 100 g</h3><p>100 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 250 g</h3><p>250 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 1 oz</h3><p>1 oz &middot; 999</p></a></div></div></section>
+<section><div class="xg-container"><h2 class="xg-section-title">Munten</h2><div class="xg-grid-4"><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 1 g</h3><p>1 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 5 g</h3><p>5 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 10 g</h3><p>10 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 20 g</h3><p>20 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 50 g</h3><p>50 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 100 g</h3><p>100 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 250 g</h3><p>250 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 1 oz</h3><p>1 oz &middot; 999</p></a></div></div></section>
 </div></section>
 <section class="tst-page" data-page="cat-zilver" hidden><div class="wp-block-group xg-blueprint">
 
@@ -5265,8 +5368,8 @@ html[data-theme="dark"] .xg-charity-map { border-color: #34302b; }
 	<div class="xg-hero-buttons"><a class="xg-btn-gold" href="/afspraak/">Direct verkopen</a></div>
 </div></section>
 
-
-
+<section><div class="xg-container"><h2 class="xg-section-title">Baren</h2><div class="xg-grid-4"><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 1 g</h3><p>1 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 5 g</h3><p>5 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 10 g</h3><p>10 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 20 g</h3><p>20 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 50 g</h3><p>50 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 100 g</h3><p>100 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 250 g</h3><p>250 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 1 oz</h3><p>1 oz &middot; 999</p></a></div></div></section>
+<section><div class="xg-container"><h2 class="xg-section-title">Munten</h2><div class="xg-grid-4"><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 1 g</h3><p>1 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 5 g</h3><p>5 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 10 g</h3><p>10 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 20 g</h3><p>20 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 50 g</h3><p>50 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 100 g</h3><p>100 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 250 g</h3><p>250 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 1 oz</h3><p>1 oz &middot; 999</p></a></div></div></section>
 </div></section>
 <section class="tst-page" data-page="cat-platina" hidden><div class="wp-block-group xg-blueprint">
 
@@ -5277,8 +5380,8 @@ html[data-theme="dark"] .xg-charity-map { border-color: #34302b; }
 	<div class="xg-hero-buttons"><a class="xg-btn-gold" href="/afspraak/">Direct verkopen</a></div>
 </div></section>
 
-
-
+<section><div class="xg-container"><h2 class="xg-section-title">Baren</h2><div class="xg-grid-4"><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 1 g</h3><p>1 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 5 g</h3><p>5 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 10 g</h3><p>10 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 20 g</h3><p>20 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 50 g</h3><p>50 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 100 g</h3><p>100 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 250 g</h3><p>250 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Baren 1 oz</h3><p>1 oz &middot; 999</p></a></div></div></section>
+<section><div class="xg-container"><h2 class="xg-section-title">Munten</h2><div class="xg-grid-4"><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 1 g</h3><p>1 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 5 g</h3><p>5 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 10 g</h3><p>10 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 20 g</h3><p>20 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 50 g</h3><p>50 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 100 g</h3><p>100 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 250 g</h3><p>250 g &middot; 24 kt</p></a><a class="xg-c-card" href="#" style="text-decoration:none"><h3>Munten 1 oz</h3><p>1 oz &middot; 999</p></a></div></div></section>
 </div></section>
 <section class="tst-page" data-page="overons" hidden><div class="xg-blueprint">
 <section class="xg-hero-v2"><div class="xg-container">
@@ -5927,6 +6030,7 @@ html[data-theme="dark"] .xg-charity-map { border-color: #34302b; }
 	<select class="tst-select" id="tstSelect"><option value="home" selected>★ Home</option><option value="hero">Hero + Calculator</option><option value="diamanten">★ Diamanten</option><option value="edelmetalen">Edelmetalen</option><option value="edelstenen">Edelstenen</option><option value="horloges">Horloges</option><option value="verkoop">Verkoop-Blaupause</option><option value="product">★ Produkt: Krugerrand</option><option value="cat-goud">Categorie: Goud</option><option value="cat-zilver">Categorie: Zilver</option><option value="cat-platina">Categorie: Platina</option><option value="overons">Over ons</option><option value="oo-verhaal">— Ons verhaal</option><option value="oo-experts">— Team/Experts</option><option value="oo-bedrijf">— Bedrijf</option><option value="oo-reviews">— Beoordelingen</option><option value="oo-cert">— Certificaten</option><option value="oo-partner">— Partners</option><option value="oo-nieuws">— Nieuws</option><option value="oo-pers">— Pers</option><option value="oo-vac">— Vacatures</option><option value="services">Service</option><option value="sv-taxatie">— Gratis taxatie</option><option value="sv-thuis">— Thuisbezoek</option><option value="sv-inruil">— Inruilen</option><option value="sv-faq">— FAQ</option><option value="sv-hoe">— Hoe werkt het</option><option value="sv-kantoor">— Kantoorbezoek</option><option value="sv-ophaal">— Ophaalservice</option><option value="sv-zakelijk">— Zakelijk</option><option value="dagprijzen">Dagprijzen</option><option value="goudprijs">— Goudprijs</option><option value="contact">Contact</option><option value="privacy">Privacy</option><option value="terms">Voorwaarden</option><option value="cookies">Cookies</option></select>
 	<button class="tst-nav-btn" id="tstNext" title="Volgende">›</button>
 	<button class="tst-tab" id="tstFill">Demo-tekst</button>
+	<button class="tst-tab" id="tstTheme" title="Light/Dark">🌙 Dark</button>
 </div>
 
 <script>
@@ -9289,6 +9393,8 @@ window.XG_CALC_DATA = {
  "currency": "EUR"
 };
 window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fallback-Bot (kein Server) */
+/* Preview start standaard in LIGHT (anders volgt theme.js de OS-instelling). */
+try { if (!localStorage.getItem('xg-theme')) localStorage.setItem('xg-theme', 'light'); } catch (e) {}
 </script>
 <script>
 /**
@@ -9319,14 +9425,14 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 	function toggle() { apply(current() === 'dark' ? 'light' : 'dark', true); }
 
 	// Initialwert: gespeichert > System > light
-	// Ohne gespeicherte Wahl: dark wenn System dunkel ODER abends/nachts (19–7 Uhr).
+	// Ohne gespeicherte Wahl: dark nur wenn das System dunkel ist (kein Zeitfenster).
 	function autoDefault() {
 		var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-		var h = new Date().getHours();
-		var nightTime = (h >= 19 || h < 7);
-		return (sysDark || nightTime) ? 'dark' : 'light';
+		return sysDark ? 'dark' : 'light';
 	}
 	function init() {
+		// JS ist da → Reveal-Verstecken aktivieren (CSS gated auf html.xg-js).
+		root.classList.add('xg-js');
 		var saved = null;
 		try { saved = localStorage.getItem(KEY); } catch (e) {}
 		apply(saved || autoDefault(), false);
@@ -9336,6 +9442,11 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 	function initReveal() {
 		var els = document.querySelectorAll('.xg-reveal');
 		if (!els.length) return;
+		// Elementen die al in beeld zijn meteen tonen; rest via observer.
+		function inView(el) {
+			var r = el.getBoundingClientRect();
+			return r.top < (window.innerHeight || document.documentElement.clientHeight) && r.bottom > 0;
+		}
 		if (!('IntersectionObserver' in window)) {
 			els.forEach(function (el) { el.classList.add('in'); });
 			return;
@@ -9345,7 +9456,11 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 				if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
 			});
 		}, { rootMargin: '0px 0px -10% 0px' });
-		els.forEach(function (el) { io.observe(el); });
+		els.forEach(function (el) { if (inView(el)) { el.classList.add('in'); } else { io.observe(el); } });
+		// Fail-safe: na ~1,2 s alles tonen — niets blijft ooit onzichtbaar.
+		setTimeout(function () {
+			document.querySelectorAll('.xg-reveal:not(.in)').forEach(function (el) { el.classList.add('in'); });
+		}, 1200);
 	}
 
 	// Moderner Schalter (Sonne/Mond, gleitender Knopf)
@@ -11591,6 +11706,19 @@ document.getElementById('tstPrev').addEventListener('click', function () {
 document.getElementById('tstNext').addEventListener('click', function () {
 	var i = tstSelect.selectedIndex; if (i < tstSelect.options.length - 1) { tstSelect.selectedIndex = i + 1; showPage(tstSelect.value); }
 });
+
+/* Light/Dark-Umschalter (gebruikt de echte theme.js-API). */
+var tstTheme = document.getElementById('tstTheme');
+function syncThemeLabel() {
+	var dark = (document.documentElement.getAttribute('data-theme') === 'dark');
+	tstTheme.textContent = dark ? '☀️ Light' : '🌙 Dark';
+}
+tstTheme.addEventListener('click', function () {
+	if (window.XGTheme && XGTheme.toggle) { XGTheme.toggle(); }
+	else { var d = document.documentElement; d.setAttribute('data-theme', d.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+	syncThemeLabel();
+});
+syncThemeLabel();
 
 /* Demo-Text (Nederlands) in leere Gutenberg-Blöcke – standardmäßig AN,
    damit die Klassen/Struktur sofort sichtbar sind. */

@@ -1868,9 +1868,10 @@ html[data-theme="dark"] .xg-livesale-body { color: #f3efe8; }
 @keyframes xgShimmer { 100% { transform: translateX(100%); } }
 html[data-theme="dark"] .xg-skeleton { background: #211e1a; }
 html[data-theme="dark"] .xg-skeleton::after { background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); }
-.xg-reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
-.xg-reveal.in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) { .xg-reveal { opacity: 1; transform: none; transition: none; } .xg-skeleton::after { animation: none; } }
+/* Reveal alleen verbergen wanneer JS aanwezig is (html.xg-js); zonder JS volledig zichtbaar. */
+html.xg-js .xg-reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+html.xg-js .xg-reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { html.xg-js .xg-reveal { opacity: 1; transform: none; transition: none; } .xg-skeleton::after { animation: none; } }
 
 /* =========================
    USP-TIJDLIJN (#5 "In 3 minuten verkocht")

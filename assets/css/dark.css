@@ -1,0 +1,100 @@
+/* =====================================================================
+   XGOUD – Dark-Mode aanvullende laag (ALLEEN actief in [data-theme="dark"]).
+   Wordt als laatste geladen. Raakt de light-modus NIET aan: elke regel is
+   met html[data-theme="dark"] gescoped. header-footer.css/offices/chat/
+   calculator zijn al getokeniseerd (theme.css kantelt de tokens); hier
+   dichten we de resterende gaten en zetten we een sterk vangnet voor
+   formuliervelden, zodat nergens wit-op-wit of zwart-op-zwart ontstaat.
+   Regel: Rood blijft, Goud als highlight; geen ronde hoeken.
+   ===================================================================== */
+
+/* Semantische dark-aliassen (handig voor toekomstige componenten). */
+html[data-theme="dark"] {
+	--surface:    #161412;
+	--surface-2:  #1d1b19;
+	--surface-3:  #211e1a;
+	--border-dk:  #34302b;
+	--text-dk:    #f3efe8;
+	--text-soft-dk:#b3ad9f;
+	--text-mute-dk:#8a847a;
+}
+
+/* ---------------------------------------------------------------
+   FORMULIERVELDEN – sterk vangnet (alle modules in één keer:
+   newsletter, chat, account, calculator-checkout, prijsalarm,
+   booking, zakelijk, spaardoel, referral …).
+--------------------------------------------------------------- */
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]),
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+	background: #211e1a;
+	color: #f3efe8;
+	border-color: #34302b;
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder { color: #8a847a; }
+html[data-theme="dark"] select option { background: #1d1b19; color: #f3efe8; }
+
+/* ---------------------------------------------------------------
+   NIEUWE COMPONENTEN – lichte accent-/inputvelden die nog niet
+   (volledig) gedekt waren.
+--------------------------------------------------------------- */
+/* Velden met expliciet witte achtergrond. */
+html[data-theme="dark"] .xg-ref-link input,
+html[data-theme="dark"] .xg-goal-form input,
+html[data-theme="dark"] .xg-hallmark-input,
+html[data-theme="dark"] .xg-pa-form select,
+html[data-theme="dark"] .xg-pa-form input,
+html[data-theme="dark"] .xg-booking-fields input,
+html[data-theme="dark"] .xg-biz-form input,
+html[data-theme="dark"] .xg-biz-form textarea,
+html[data-theme="dark"] .xg-booking-office,
+html[data-theme="dark"] .xg-calc-save-box input {
+	background: #211e1a; color: #f3efe8; border-color: #34302b;
+}
+
+/* Lichte "goud-getinte" accentvlakken → donker met gouden rand. */
+html[data-theme="dark"] .xg-guarantee,
+html[data-theme="dark"] .xg-guarantee--compact,
+html[data-theme="dark"] .xg-citylp-price,
+html[data-theme="dark"] .xg-cmp-table .xg-cmp-us {
+	background: #221d12;
+	border-color: #4a3d1e;
+}
+html[data-theme="dark"] .xg-cmp-table .xg-cmp-us { color: #f3efe8; }
+html[data-theme="dark"] .xg-citylp-price-val { color: #f3efe8; }
+
+/* Kaarten/boxen met witte achtergrond → donkere oppervlakken. */
+html[data-theme="dark"] .xg-forecast-box,
+html[data-theme="dark"] .xg-kb-card,
+html[data-theme="dark"] .xg-hallmark,
+html[data-theme="dark"] .xg-pa-box,
+html[data-theme="dark"] .xg-photo-box,
+html[data-theme="dark"] .xg-booking-app,
+html[data-theme="dark"] .xg-yr-card {
+	background: #1d1b19;
+	border-color: #34302b;
+}
+
+/* Hallmark-resultaat / drop-zones → donker. */
+html[data-theme="dark"] .xg-hallmark-result { background: #211e1a; }
+html[data-theme="dark"] .xg-hallmark-badge { background: #161412; }
+html[data-theme="dark"] .xg-hallmark-chip { background: #211e1a; border-color: #34302b; color: #b3ad9f; }
+html[data-theme="dark"] .xg-photo-drop { background: #211e1a; border-color: #3a342c; }
+html[data-theme="dark"] .xg-booking-slot { background: #211e1a; border-color: #34302b; color: #cfc9bd; }
+
+/* ---------------------------------------------------------------
+   BLUEPRINT – oude secties: enkele hardcoded waarden die buiten de
+   brede main/.xg-container-selectors uit theme.css vallen.
+--------------------------------------------------------------- */
+html[data-theme="dark"] .xg-hero-v2 .hero-lead { color: #b3ad9f; }
+html[data-theme="dark"] .xgoud-toc-header p { color: #b3ad9f; }
+html[data-theme="dark"] .xg-benefit p,
+html[data-theme="dark"] .xg-step-card p { color: #b3ad9f; }
+html[data-theme="dark"] .xg-benefit { background: #1d1b19; border-color: #34302b; }
+
+/* ---------------------------------------------------------------
+   Diversen: horizontale lijnen, zachte hovers.
+--------------------------------------------------------------- */
+html[data-theme="dark"] hr { border-color: #34302b; }
+html[data-theme="dark"] .xgoud-toc-item:hover { background: #1d1b19; }

@@ -129,6 +129,18 @@ function ekinese_enqueue_assets() {
 		);
 	}
 
+	// Dark-Mode aanvullende laag – ALS LAATSTE laden, zodat de dark-overrides
+	// onafhankelijk van de laadvolgorde winnen. Alleen actief in dark.
+	$dark_css = get_theme_file_path( 'assets/css/dark.css' );
+	if ( file_exists( $dark_css ) ) {
+		wp_enqueue_style(
+			'ekinese-dark',
+			get_theme_file_uri( 'assets/css/dark.css' ),
+			array( 'ekinese-theme', 'ekinese-blueprint' ),
+			(string) filemtime( $dark_css )
+		);
+	}
+
 	$bp_js = get_theme_file_path( 'assets/js/blueprint.js' );
 	if ( file_exists( $bp_js ) ) {
 		wp_enqueue_script(

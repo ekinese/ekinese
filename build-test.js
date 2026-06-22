@@ -122,6 +122,16 @@ function pattern(file) {
 		'<button class="xg-booking-slot">09:00</button><button class="xg-booking-slot is-sel">09:30</button><button class="xg-booking-slot">10:00</button><button class="xg-booking-slot">10:30</button></div></div>' +
 		'<div class="xg-booking-day"><div class="xg-booking-date">di 25 jun</div><div class="xg-booking-times"><button class="xg-booking-slot">11:00</button><button class="xg-booking-slot">11:30</button></div></div>' +
 		'</div></div></div></div></section>');
+	// Demo voor de productlijst (cat-pagina's).
+	out = out.replace(/<!--\s*wp:ekinese\/product-list(\s+(\{[^}]*\}))?\s*\/?-->/g, function (m, _g, json) {
+		var title = 'Producten';
+		try { if (json) { var a = JSON.parse(json); if (a.title) title = a.title; } } catch (e) {}
+		var demo = [['1 g', '24 kt'], ['5 g', '24 kt'], ['10 g', '24 kt'], ['20 g', '24 kt'], ['50 g', '24 kt'], ['100 g', '24 kt'], ['250 g', '24 kt'], ['1 oz', '999']];
+		var cards = demo.map(function (d) {
+			return '<a class="xg-c-card" href="#" style="text-decoration:none"><h3>' + title + ' ' + d[0] + '</h3><p>' + d[0] + ' &middot; ' + d[1] + '</p></a>';
+		}).join('');
+		return '<section><div class="xg-container"><h2 class="xg-section-title">' + title + '</h2><div class="xg-grid-4">' + cards + '</div></div></section>';
+	});
 	// Demo voor het zakelijk portaal (#23).
 	out = out.replace(/<!--\s*wp:ekinese\/business-portal[^>]*?-->/g,
 		'<section class="xg-biz"><div class="xg-container"><div class="xg-biz-box"><p class="xg-eyebrow">Zakelijk</p><h1>Zakelijk verkopen bij XGOUD</h1>' +
@@ -275,7 +285,8 @@ const css = [
 	'assets/css/locale.css',
 	'assets/css/newsletter.css',
 	'assets/css/offices.css',
-	'assets/css/charity.css'
+	'assets/css/charity.css',
+	'assets/css/dark.css'
 ].map(read).join('\n\n');
 
 const js = [
@@ -340,11 +351,14 @@ ${footer}
 	<select class="tst-select" id="tstSelect">${nav}</select>
 	<button class="tst-nav-btn" id="tstNext" title="Volgende">›</button>
 	<button class="tst-tab" id="tstFill">Demo-tekst</button>
+	<button class="tst-tab" id="tstTheme" title="Light/Dark">🌙 Dark</button>
 </div>
 
 <script>
 window.XG_CALC_DATA = ${JSON.stringify(calcData, null, 1)};
 window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fallback-Bot (kein Server) */
+/* Preview start standaard in LIGHT (anders volgt theme.js de OS-instelling). */
+try { if (!localStorage.getItem('xg-theme')) localStorage.setItem('xg-theme', 'light'); } catch (e) {}
 </script>
 <script>
 ${js}
@@ -364,6 +378,19 @@ document.getElementById('tstPrev').addEventListener('click', function () {
 document.getElementById('tstNext').addEventListener('click', function () {
 	var i = tstSelect.selectedIndex; if (i < tstSelect.options.length - 1) { tstSelect.selectedIndex = i + 1; showPage(tstSelect.value); }
 });
+
+/* Light/Dark-Umschalter (gebruikt de echte theme.js-API). */
+var tstTheme = document.getElementById('tstTheme');
+function syncThemeLabel() {
+	var dark = (document.documentElement.getAttribute('data-theme') === 'dark');
+	tstTheme.textContent = dark ? '☀️ Light' : '🌙 Dark';
+}
+tstTheme.addEventListener('click', function () {
+	if (window.XGTheme && XGTheme.toggle) { XGTheme.toggle(); }
+	else { var d = document.documentElement; d.setAttribute('data-theme', d.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+	syncThemeLabel();
+});
+syncThemeLabel();
 
 /* Demo-Text (Nederlands) in leere Gutenberg-Blöcke – standardmäßig AN,
    damit die Klassen/Struktur sofort sichtbar sind. */

@@ -26,14 +26,14 @@
 	function toggle() { apply(current() === 'dark' ? 'light' : 'dark', true); }
 
 	// Initialwert: gespeichert > System > light
-	// Ohne gespeicherte Wahl: dark wenn System dunkel ODER abends/nachts (19–7 Uhr).
+	// Ohne gespeicherte Wahl: dark nur wenn das System dunkel ist (kein Zeitfenster).
 	function autoDefault() {
 		var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-		var h = new Date().getHours();
-		var nightTime = (h >= 19 || h < 7);
-		return (sysDark || nightTime) ? 'dark' : 'light';
+		return sysDark ? 'dark' : 'light';
 	}
 	function init() {
+		// JS ist da → Reveal-Verstecken aktivieren (CSS gated auf html.xg-js).
+		root.classList.add('xg-js');
 		var saved = null;
 		try { saved = localStorage.getItem(KEY); } catch (e) {}
 		apply(saved || autoDefault(), false);
@@ -43,6 +43,11 @@
 	function initReveal() {
 		var els = document.querySelectorAll('.xg-reveal');
 		if (!els.length) return;
+		// Elementen die al in beeld zijn meteen tonen; rest via observer.
+		function inView(el) {
+			var r = el.getBoundingClientRect();
+			return r.top < (window.innerHeight || document.documentElement.clientHeight) && r.bottom > 0;
+		}
 		if (!('IntersectionObserver' in window)) {
 			els.forEach(function (el) { el.classList.add('in'); });
 			return;
@@ -52,7 +57,11 @@
 				if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
 			});
 		}, { rootMargin: '0px 0px -10% 0px' });
-		els.forEach(function (el) { io.observe(el); });
+		els.forEach(function (el) { if (inView(el)) { el.classList.add('in'); } else { io.observe(el); } });
+		// Fail-safe: na ~1,2 s alles tonen — niets blijft ooit onzichtbaar.
+		setTimeout(function () {
+			document.querySelectorAll('.xg-reveal:not(.in)').forEach(function (el) { el.classList.add('in'); });
+		}, 1200);
 	}
 
 	// Moderner Schalter (Sonne/Mond, gleitender Knopf)
