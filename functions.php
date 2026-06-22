@@ -59,3 +59,4 @@ require_once get_theme_file_path( 'inc/driver.php' );
 require_once get_theme_file_path( 'inc/installer.php' );
 require_once get_theme_file_path( 'inc/social-login.php' );
 require_once get_theme_file_path( 'inc/admin-menu.php' );
+require_once get_theme_file_path( 'inc/live-ticker.php' );
