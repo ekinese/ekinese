@@ -113,6 +113,24 @@ function pattern(file) {
 		'<section class="xg-photo"><div class="xg-container"><div class="xg-photo-box"><h3>Foto-taxatie</h3>' +
 		'<p class="xg-photo-soon">Foto-taxatie is <strong>binnenkort beschikbaar</strong>. Gebruik nu onze rekentool of maak een gratis afspraak.</p>' +
 		'<p><a class="xg-btn-gold" href="/afspraak/">Bereken uw waarde</a></p></div></div></section>');
+	// Demo voor de live-afspraak-kalender (#24).
+	out = out.replace(/<!--\s*wp:ekinese\/booking-slots[^>]*?-->/g,
+		'<section class="xg-booking"><div class="xg-container"><div class="xg-booking-app"><h3>Plan direct uw afspraak</h3>' +
+		'<p>Kies een kantoor en een beschikbaar tijdslot.</p><div class="xg-booking-mount">' +
+		'<label class="xg-booking-lbl">Kantoor</label><select class="xg-booking-office"><option>XGOUD Eindhoven (Eindhoven)</option></select>' +
+		'<div class="xg-booking-days"><div class="xg-booking-day"><div class="xg-booking-date">ma 24 jun</div><div class="xg-booking-times">' +
+		'<button class="xg-booking-slot">09:00</button><button class="xg-booking-slot is-sel">09:30</button><button class="xg-booking-slot">10:00</button><button class="xg-booking-slot">10:30</button></div></div>' +
+		'<div class="xg-booking-day"><div class="xg-booking-date">di 25 jun</div><div class="xg-booking-times"><button class="xg-booking-slot">11:00</button><button class="xg-booking-slot">11:30</button></div></div>' +
+		'</div></div></div></div></section>');
+	// Demo voor het zakelijk portaal (#23).
+	out = out.replace(/<!--\s*wp:ekinese\/business-portal[^>]*?-->/g,
+		'<section class="xg-biz"><div class="xg-container"><div class="xg-biz-box"><p class="xg-eyebrow">Zakelijk</p><h1>Zakelijk verkopen bij XGOUD</h1>' +
+		'<p class="xg-intro">Voor juweliers, pandhuizen en groothandel: scherpe, transparante condities.</p>' +
+		'<div class="xg-biz-perks xg-grid-3"><div class="xg-step-card"><h3>Eigen condities</h3><p>Vaste opslag op de spotprijs.</p></div>' +
+		'<div class="xg-step-card"><h3>Bulk-invoer</h3><p>Meerdere partijen in één keer.</p></div>' +
+		'<div class="xg-step-card"><h3>Snelle uitbetaling</h3><p>Korte doorlooptijd.</p></div></div>' +
+		'<form class="xg-biz-form"><h2>Account aanvragen</h2><div class="xg-biz-fields"><input placeholder="Bedrijfsnaam"><input placeholder="KvK-nummer"><input placeholder="Contactpersoon"><input placeholder="Zakelijk e-mailadres"></div>' +
+		'<button class="xg-final-btn" type="button">Aanvraag versturen</button></form></div></div></section>');
 	return stripBlocks(out).trim();
 }
 

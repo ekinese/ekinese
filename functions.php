@@ -74,3 +74,6 @@ require_once get_theme_file_path( 'inc/price-forecast.php' );
 require_once get_theme_file_path( 'inc/hallmark.php' );
 require_once get_theme_file_path( 'inc/ai-assistant.php' );
 require_once get_theme_file_path( 'inc/photo-appraisal.php' );
+require_once get_theme_file_path( 'inc/booking-slots.php' );
+require_once get_theme_file_path( 'inc/appraisal-cert.php' );
+require_once get_theme_file_path( 'inc/business-portal.php' );

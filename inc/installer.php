@@ -56,6 +56,7 @@ function ekinese_install_pages() {
 		'prijsgarantie'         => array( 'Prijsgarantie', 'page-prijsgarantie', null ),
 		'vergelijken'           => array( 'Vergelijken', 'page-vergelijken', null ),
 		'kennisbank'            => array( 'Kennisbank', 'kennisbank-hub', null ),
+		'zakelijk'              => array( 'Zakelijk verkopen', 'page-zakelijk', null ),
 
 		'service'               => array( 'Service', 'page-services', null ),
 		'gratis-taxatie'        => array( 'Gratis taxatie', 'services-taxatie', 'service' ),

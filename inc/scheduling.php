@@ -523,7 +523,7 @@ function ekinese_rest_create_appointment( WP_REST_Request $req ) {
 		return $id;
 	}
 
-	$map = array( 'first', 'last', 'email', 'phone', 'address', 'postcode', 'city', 'service', 'payout', 'charity_project', 'charity_recipient', 'market_total', 'payout_total', 'margin_total', 'charity_total' );
+	$map = array( 'first', 'last', 'email', 'phone', 'address', 'postcode', 'city', 'service', 'payout', 'charity_project', 'charity_recipient', 'market_total', 'payout_total', 'margin_total', 'charity_total', 'office_id', 'date', 'time' );
 	foreach ( $map as $k ) {
 		if ( isset( $d[ $k ] ) ) {
 			update_post_meta( $id, $k, sanitize_text_field( is_scalar( $d[ $k ] ) ? $d[ $k ] : '' ) );

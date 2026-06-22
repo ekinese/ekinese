@@ -95,7 +95,7 @@ function ekinese_account_collect( $type, $email, $fields ) {
 	) );
 	$out = array();
 	foreach ( $posts as $p ) {
-		$row = array( 'date' => get_the_date( 'Y-m-d', $p ) );
+		$row = array( '_id' => $p->ID, 'date' => get_the_date( 'Y-m-d', $p ) );
 		foreach ( $fields as $f ) {
 			$row[ $f ] = get_post_meta( $p->ID, $f, true );
 		}
