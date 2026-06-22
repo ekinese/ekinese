@@ -181,3 +181,38 @@ function ekinese_auction_save( $post_id ) {
 	}
 }
 add_action( 'save_post_xg_auction', 'ekinese_auction_save' );
+
+/* =====================================================================
+   ACCOUNT-INTEGRATIE – trouwstatus + voortgang naar volgende tier
+===================================================================== */
+add_filter( 'ekinese_account_data', function ( $data, $email ) {
+	$s     = ekinese_loyalty_status( $email );
+	$tiers = ekinese_loyalty_tiers();
+	ksort( $tiers );
+	$thresholds = array_keys( $tiers );
+	// Bepaal huidige drempel + volgende drempel voor een voortgangsbalk.
+	$cur_thr = 0;
+	foreach ( $thresholds as $thr ) {
+		if ( $s['count'] >= $thr ) {
+			$cur_thr = $thr;
+		}
+	}
+	$next_thr = $s['next_at'];
+	$progress = 100;
+	if ( null !== $next_thr && $next_thr > $cur_thr ) {
+		$progress = (int) round( ( $s['count'] - $cur_thr ) / ( $next_thr - $cur_thr ) * 100 );
+	}
+	$next_label = '';
+	if ( null !== $next_thr && isset( $tiers[ $next_thr ] ) ) {
+		$next_label = $tiers[ $next_thr ]['label'];
+	}
+	$data['loyalty'] = array(
+		'tier'       => $s['label'],
+		'bonus'      => round( $s['bonus'] * 100, 1 ),
+		'completed'  => $s['count'],
+		'to_next'    => $s['to_next'],
+		'next_tier'  => $next_label,
+		'progress'   => max( 0, min( 100, $progress ) ),
+	);
+	return $data;
+}, 13, 2 );

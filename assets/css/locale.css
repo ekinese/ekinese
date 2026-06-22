@@ -37,3 +37,14 @@
 .xg-social-apple { color: #111; }
 html[data-theme="dark"] .xg-social-btn { border-color: #34302b; color: #f3efe8; }
 html[data-theme="dark"] .xg-social-apple { color: #f3efe8; }
+
+/* Loyaliteit-voortgang (account) */
+.xg-loyalty { margin: 16px 0; padding: 16px; border: 1px solid var(--line,#e3ddd0); }
+.xg-loyalty-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.xg-loyalty-tier { font-weight: 800; font-size: 16px; color: var(--gold,#c8a24a); letter-spacing: .3px; }
+.xg-loyalty-bonus { font-size: 12px; font-weight: 700; color: var(--ink-soft,#6b665c); }
+.xg-loyalty-bar { height: 8px; background: var(--line,#ece7dd); overflow: hidden; }
+.xg-loyalty-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--gold,#c8a24a), var(--red,#AE1E1E)); transition: width .6s ease; }
+.xg-loyalty-next { font-size: 12px; color: var(--ink-soft,#6b665c); margin-top: 8px; }
+html[data-theme="dark"] .xg-loyalty { border-color: #34302b; }
+html[data-theme="dark"] .xg-loyalty-bar { background: #2a2620; }

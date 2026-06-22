@@ -74,6 +74,18 @@
 			html += '<div class="xg-c-card" style="padding:16px"><div style="font-size:22px;font-weight:700;color:var(--red,#AE1E1E)">' + c[1] + '</div><div style="font-size:12px;color:var(--ink-soft,#6b665c)">' + esc(c[0]) + '</div></div>';
 		});
 		html += '</div>';
+		var lo = d.loyalty;
+		if (lo) {
+			html += '<div class="xg-loyalty"><div class="xg-loyalty-head"><span class="xg-loyalty-tier">' + esc(lo.tier) + '</span>' +
+				'<span class="xg-loyalty-bonus">+' + esc(lo.bonus) + '% trouwbonus</span></div>' +
+				'<div class="xg-loyalty-bar"><span style="width:' + esc(lo.progress) + '%"></span></div>';
+			if (lo.next_tier && lo.to_next > 0) {
+				html += '<div class="xg-loyalty-next">Nog ' + esc(lo.to_next) + ' verkoop(en) tot ' + esc(lo.next_tier) + '</div>';
+			} else {
+				html += '<div class="xg-loyalty-next">Hoogste niveau bereikt — bedankt!</div>';
+			}
+			html += '</div>';
+		}
 		if (d.referral_url) {
 			html += '<p class="xg-acc-ref">Nodig vrienden uit en spaar punten: <code>' + esc(d.referral_url) + '</code></p>';
 		}
