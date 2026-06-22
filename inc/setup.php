@@ -82,6 +82,12 @@ function ekinese_enqueue_assets() {
 	if ( file_exists( $loc_js ) ) {
 		wp_enqueue_script( 'ekinese-locale', get_theme_file_uri( 'assets/js/locale.js' ), array( 'ekinese-theme' ), (string) filemtime( $loc_js ), true );
 	}
+	// Onboarding-rondleiding (eenmalig, front-end).
+	$ob = get_theme_file_path( 'assets/js/onboarding.js' );
+	if ( file_exists( $ob ) && ! is_admin() ) {
+		wp_enqueue_script( 'ekinese-onboarding', get_theme_file_uri( 'assets/js/onboarding.js' ), array(), (string) filemtime( $ob ), true );
+	}
+
 	// i18n.js alleen laden wanneer er iets te vertalen valt: op NL (default) is
 	// het overbodig (server rendert NL), dus besparen we de meeste bezoekers JS.
 	$cur_lang = function_exists( 'xg_current_lang' ) ? xg_current_lang() : 'nl';

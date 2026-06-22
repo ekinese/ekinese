@@ -1723,3 +1723,36 @@ a.xg-final-btn:hover {
 .xg-legal p, .xg-legal li { font-size: 16px; line-height: 1.8; color: var(--ink-soft, #4a463e); }
 .xg-legal ul { padding-left: 22px; }
 .xg-legal a { color: var(--red, #AE1E1E); }
+
+/* =========================
+   ONBOARDING-RONDLEIDING (self-built tour)
+========================= */
+.xg-ob-overlay {
+    position: fixed; inset: 0; z-index: 100050; cursor: pointer;
+    background: transparent;
+    box-shadow: 0 0 0 9999px rgba(10,8,6,.66);
+    /* highlight-venster */
+    clip-path: polygon(
+        0 0, 100% 0, 100% 100%, 0 100%, 0 0,
+        var(--x,0) var(--y,0),
+        var(--x,0) calc(var(--y,0) + var(--h,0)),
+        calc(var(--x,0) + var(--w,0)) calc(var(--y,0) + var(--h,0)),
+        calc(var(--x,0) + var(--w,0)) var(--y,0),
+        var(--x,0) var(--y,0)
+    );
+}
+.xg-ob-pop {
+    position: fixed; z-index: 100051; width: 300px; max-width: 90vw;
+    background: var(--white,#fff); border: 1px solid var(--line,#e3ddd0);
+    border-top: 3px solid var(--red,#AE1E1E); box-shadow: 0 18px 50px rgba(0,0,0,.28);
+    padding: 18px 18px 14px;
+}
+.xg-ob-step { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--gold,#c8a24a); text-transform: uppercase; margin-bottom: 6px; }
+.xg-ob-pop h4 { margin: 0 0 6px; font-size: 16px; color: var(--ink,#1a1a1a); }
+.xg-ob-pop p { margin: 0 0 14px; font-size: 13px; line-height: 1.6; color: var(--ink-soft,#6b665c); }
+.xg-ob-actions { display: flex; justify-content: space-between; gap: 10px; }
+.xg-ob-skip { background: none; border: none; color: var(--ink-soft,#6b665c); font-size: 13px; cursor: pointer; }
+.xg-ob-next { background: var(--red,#AE1E1E); color: #fff; border: none; padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.xg-ob-next:hover { background: var(--red-dark,#8e1818); }
+html[data-theme="dark"] .xg-ob-pop { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-ob-pop h4 { color: #f3efe8; }
