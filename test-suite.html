@@ -3079,6 +3079,176 @@ html[data-theme="dark"] .xg-tw-review blockquote { color: #f3efe8; }
 html[data-theme="dark"] .xg-tw-stats, html[data-theme="dark"] .xg-tw-press { border-color: #34302b; }
 @media (max-width: 767px) { .xg-tw-stats { grid-template-columns: 1fr 1fr; gap: 24px; } .xg-tw-num { font-size: 32px; } .xg-tw-review blockquote { font-size: 17px; } }
 
+/* =========================
+   LIVE-VERKOCHT TICKER (toast rechtsonder)
+========================= */
+.xg-livesale {
+    position: fixed; right: 20px; bottom: 20px; z-index: 100040;
+    display: flex; align-items: center; gap: 12px;
+    background: var(--white,#fff); border: 1px solid var(--line,#e3ddd0);
+    box-shadow: 0 12px 40px rgba(0,0,0,.16); padding: 12px 16px 12px 14px;
+    max-width: 320px; transform: translateY(20px); opacity: 0; pointer-events: none;
+    transition: opacity .4s ease, transform .4s ease;
+}
+.xg-livesale.in { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.xg-livesale-dot { width: 9px; height: 9px; border-radius: 50%; background: #1f9d55; flex-shrink: 0; box-shadow: 0 0 0 0 rgba(31,157,85,.5); animation: xgLsPulse 1.6s infinite; }
+@keyframes xgLsPulse { 70% { box-shadow: 0 0 0 7px rgba(31,157,85,0); } 100% { box-shadow: 0 0 0 0 rgba(31,157,85,0); } }
+.xg-livesale-body { font-size: 13px; line-height: 1.4; color: var(--ink,#1a1a1a); }
+.xg-livesale-body span { display: block; font-size: 11px; color: var(--ink-soft,#6b665c); margin-top: 2px; }
+.xg-livesale-x { position: absolute; top: 4px; right: 6px; border: none; background: none; font-size: 16px; color: var(--ink-soft,#9a948a); cursor: pointer; line-height: 1; }
+html[data-theme="dark"] .xg-livesale { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-livesale-body { color: #f3efe8; }
+@media (max-width: 600px) { .xg-livesale { left: 12px; right: 12px; bottom: 76px; max-width: none; } }
+
+/* =========================
+   ZWEVENDE CONTACTKNOP (WhatsApp + bellen, linksonder)
+========================= */
+.xg-fcontact { position: fixed; left: 20px; bottom: 20px; z-index: 100030; display: flex; flex-direction: column; gap: 12px; }
+.xg-fcontact a { display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 50%; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.22); transition: transform .18s ease; }
+.xg-fcontact a:hover { transform: scale(1.06); }
+.xg-fcontact-wa { background: #25d366; }
+.xg-fcontact-tel { background: var(--red,#AE1E1E); }
+@media (max-width: 600px) { .xg-fcontact { left: 12px; bottom: 76px; gap: 10px; } .xg-fcontact a { width: 48px; height: 48px; } }
+
+/* =========================
+   STICKY CTA-BALK (onderaan, mobiel-first)
+========================= */
+.xg-sticky-cta {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 100020;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    background: var(--ink,#161412); color: #fff; padding: 12px 18px;
+    box-shadow: 0 -6px 24px rgba(0,0,0,.18);
+    transform: translateY(100%); transition: transform .28s ease;
+}
+.xg-sticky-cta.in { transform: translateY(0); }
+.xg-sticky-cta-txt { font-weight: 700; font-size: 15px; }
+.xg-sticky-cta-btn { background: var(--gold,#D0AC4B); color: #161412; font-weight: 800; padding: 11px 22px; white-space: nowrap; }
+.xg-sticky-cta-btn:hover { filter: brightness(1.05); }
+/* Op desktop discreter: rechts uitgelijnd, niet volle breedte. */
+@media (min-width: 768px) {
+    .xg-sticky-cta { left: auto; right: 24px; bottom: 24px; border-radius: 0; max-width: 380px; }
+}
+
+/* =========================
+   SKELETON-LOADING + REVEAL (micro-animaties)
+========================= */
+.xg-skeleton, .xg-skeleton * { color: transparent !important; }
+.xg-skeleton {
+    position: relative; min-height: 120px; overflow: hidden;
+    background: #eceae6;
+}
+.xg-skeleton::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent);
+    transform: translateX(-100%); animation: xgShimmer 1.3s infinite;
+}
+@keyframes xgShimmer { 100% { transform: translateX(100%); } }
+html[data-theme="dark"] .xg-skeleton { background: #211e1a; }
+html[data-theme="dark"] .xg-skeleton::after { background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); }
+.xg-reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+.xg-reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .xg-reveal { opacity: 1; transform: none; transition: none; } .xg-skeleton::after { animation: none; } }
+
+/* =========================
+   USP-TIJDLIJN (#5 "In 3 minuten verkocht")
+========================= */
+.xg-usp-timeline { padding: 64px 0; background: #fff; }
+html[data-theme="dark"] .xg-usp-timeline { background: #161412; }
+.xg-tl { list-style: none; margin: 38px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3,1fr); gap: 26px; position: relative; }
+.xg-tl-step { position: relative; padding-top: 18px; }
+/* Verbindingslijn tussen de stappen (desktop). */
+.xg-tl-step::before { content: ""; position: absolute; top: 26px; left: 52px; right: -26px; height: 2px; background: var(--line,#e3ddd0); z-index: 0; }
+.xg-tl-step:last-child::before { display: none; }
+.xg-tl-dot { position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; background: var(--red,#AE1E1E); color: #fff; font-size: 22px; font-weight: 800; }
+html[data-theme="dark"] .xg-tl-dot { background: var(--gold,#D0AC4B); color: #161412; }
+.xg-tl-body { margin-top: 16px; }
+.xg-tl-time { display: inline-block; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--gold-dark,#9a7d2e); font-weight: 800; margin-bottom: 6px; }
+.xg-tl-body h3 { font-size: 19px; margin: 0 0 8px; color: #161412; }
+.xg-tl-body p { margin: 0; color: #57534b; line-height: 1.6; font-size: 15px; }
+html[data-theme="dark"] .xg-tl-body h3 { color: #f3efe8; }
+html[data-theme="dark"] .xg-tl-body p { color: #b3ad9f; }
+.xg-tl-cta { margin-top: 36px; text-align: center; }
+/* Trapsgewijze onthulling. */
+.xg-tl-step:nth-child(2) { transition-delay: .12s; }
+.xg-tl-step:nth-child(3) { transition-delay: .24s; }
+@media (max-width: 767px) {
+    .xg-tl { grid-template-columns: 1fr; gap: 10px; }
+    .xg-tl-step { padding: 0 0 0 64px; min-height: 64px; }
+    .xg-tl-dot { position: absolute; left: 0; top: 0; }
+    .xg-tl-step::before { top: 52px; bottom: -10px; left: 25px; right: auto; width: 2px; height: auto; }
+    .xg-tl-body { margin-top: 0; }
+}
+
+/* =========================
+   PRIJSGARANTIE-BADGE (#2)
+========================= */
+.xg-guarantee { display: flex; gap: 16px; align-items: flex-start; padding: 22px 24px; background: #fbf7ea; border: 1px solid #ecdfae; color: var(--red,#AE1E1E); }
+.xg-guarantee-ico { flex-shrink: 0; color: var(--gold-dark,#9a7d2e); }
+.xg-guarantee-body strong { display: block; font-size: 18px; color: #161412; margin-bottom: 4px; }
+.xg-guarantee-body p { margin: 0; color: #57534b; font-size: 15px; line-height: 1.6; }
+.xg-guarantee--compact { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; font-size: 13px; font-weight: 800; color: var(--red,#AE1E1E); border: 1px solid #ecdfae; background: #fbf7ea; }
+.xg-guarantee--compact svg { width: 18px; height: 18px; color: var(--gold-dark,#9a7d2e); }
+html[data-theme="dark"] .xg-guarantee, html[data-theme="dark"] .xg-guarantee--compact { background: #211e1a; border-color: #34302b; }
+html[data-theme="dark"] .xg-guarantee-body strong { color: #f3efe8; }
+html[data-theme="dark"] .xg-guarantee-body p { color: #b3ad9f; }
+html[data-theme="dark"] .xg-guarantee, html[data-theme="dark"] .xg-guarantee--compact { color: var(--gold,#D0AC4B); }
+
+/* Video-reviews (#4, klik-to-play) */
+.xg-tw-play { display: inline-flex; align-items: center; gap: 8px; margin: 0 auto 14px; padding: 9px 16px; border: 1px solid var(--red,#AE1E1E); background: transparent; color: var(--red,#AE1E1E); font-weight: 700; font-size: 14px; cursor: pointer; }
+.xg-tw-play:hover { background: var(--red,#AE1E1E); color: #fff; }
+.xg-tw-play-ico { font-size: 12px; }
+.xg-tw-video { max-width: 560px; margin: 0 auto 16px; aspect-ratio: 16/9; background: #000; }
+.xg-tw-video iframe, .xg-tw-video video { width: 100%; height: 100%; border: 0; display: block; }
+html[data-theme="dark"] .xg-tw-play { border-color: var(--gold,#D0AC4B); color: var(--gold,#D0AC4B); }
+html[data-theme="dark"] .xg-tw-play:hover { background: var(--gold,#D0AC4B); color: #161412; }
+
+/* =========================
+   VERGELIJKER (#3)
+========================= */
+.xg-compare { margin: 24px 0; }
+.xg-cmp-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.xg-cmp-table th, .xg-cmp-table td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #ececec; vertical-align: top; }
+.xg-cmp-table thead th { font-size: 13px; text-transform: uppercase; letter-spacing: .5px; color: #6b665c; border-bottom: 2px solid #e3ddd0; }
+.xg-cmp-table .xg-cmp-us { background: #fbf7ea; font-weight: 600; color: #161412; text-align: center; width: 22%; }
+.xg-cmp-table thead .xg-cmp-us { color: var(--red,#AE1E1E); font-weight: 800; }
+.xg-cmp-table .xg-cmp-them { text-align: center; color: #6b665c; width: 22%; }
+.xg-cmp-feat { color: #2a2722; }
+.xg-cmp-yes { color: #1f9d55; font-weight: 800; }
+.xg-cmp-no { color: #c2bcb0; }
+.xg-cmp-note { font-size: 13px; color: #8a847a; margin-top: 14px; }
+.xg-cmp-cta { margin-top: 22px; }
+html[data-theme="dark"] .xg-cmp-table th, html[data-theme="dark"] .xg-cmp-table td { border-color: #2a2723; }
+html[data-theme="dark"] .xg-cmp-table thead th { color: #b3ad9f; border-bottom-color: #34302b; }
+html[data-theme="dark"] .xg-cmp-table .xg-cmp-us { background: #211e1a; color: #f3efe8; }
+html[data-theme="dark"] .xg-cmp-feat { color: #e8e3d8; }
+html[data-theme="dark"] .xg-cmp-table .xg-cmp-them { color: #b3ad9f; }
+
+/* =========================
+   ACCOUNT – referral (#21), jaaroverzicht (#20), spaardoel (#22)
+========================= */
+.xg-ref-card p { color: #57534b; font-size: 14px; margin: 0 0 10px; }
+.xg-ref-link { display: flex; gap: 8px; margin-bottom: 12px; }
+.xg-ref-link input { flex: 1; min-width: 0; padding: 9px 11px; border: 1px solid #e3ddd0; background: #fff; font-size: 13px; }
+.xg-ref-copy, .xg-goal-save { padding: 9px 16px; border: 1px solid var(--ink,#161412); background: var(--ink,#161412); color: #fff; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.xg-ref-copy:hover, .xg-goal-save:hover { background: var(--red,#AE1E1E); border-color: var(--red,#AE1E1E); }
+.xg-ref-stat { font-size: 14px; color: #2a2722; margin-bottom: 8px; }
+.xg-ref-stat strong { color: var(--red,#AE1E1E); font-size: 18px; }
+.xg-ref-next { font-size: 12px; color: #8a847a; margin-top: 6px; }
+.xg-yr-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap: 14px; }
+.xg-yr-card { border: 1px solid #e3ddd0; padding: 16px; background: #fbf9f4; }
+.xg-yr-year { font-size: 22px; font-weight: 800; color: var(--red,#AE1E1E); margin-bottom: 10px; }
+.xg-yr-row { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; color: #57534b; }
+.xg-yr-row strong { color: #161412; }
+.xg-yr-charity strong { color: #1f9d55; }
+.xg-goal-form { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.xg-goal-form input { flex: 1; min-width: 120px; padding: 9px 11px; border: 1px solid #e3ddd0; background: #fff; font-size: 13px; }
+.xg-goal-meta { font-size: 13px; color: #57534b; margin-top: 6px; }
+.xg-goal-msg { font-size: 12px; color: #8a847a; margin-top: 8px; min-height: 14px; }
+html[data-theme="dark"] .xg-ref-link input, html[data-theme="dark"] .xg-goal-form input { background: #211e1a; border-color: #34302b; color: #f3efe8; }
+html[data-theme="dark"] .xg-yr-card { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-yr-row { color: #b3ad9f; }
+html[data-theme="dark"] .xg-yr-row strong { color: #f3efe8; }
+
 
 /* =====================================================================
    XGOUD Smart Calculator  ·  Wizard
@@ -3506,6 +3676,16 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 .xg-calc-btn-ghost:hover { border-color: var(--xc-red); color: var(--xc-red); }
 .xg-calc-btn-dark { background: var(--xc-ink); color: var(--xc-bg); }
 .xg-calc-btn-dark:hover { opacity: .9; }
+
+/* #9 Bewaar mijn berekening */
+.xg-calc-save { margin-top: 10px; }
+.xg-calc-save-box { margin-top: 12px; padding: 14px; border: 1px solid var(--xc-line); background: var(--xc-bg-soft, rgba(0,0,0,.02)); }
+.xg-calc-save-lbl { margin: 0 0 8px; font-size: 13px; color: var(--xc-ink-soft, #6b665c); }
+.xg-calc-save-link, .xg-calc-save-mail { display: flex; gap: 8px; margin-bottom: 8px; }
+.xg-calc-save-box input { flex: 1; min-width: 0; padding: 9px 11px; border: 1px solid var(--xc-line); background: var(--xc-bg); color: var(--xc-ink); font-size: 13px; }
+.xg-calc-save-box button { white-space: nowrap; padding: 9px 14px; border: 1px solid var(--xc-line); background: var(--xc-ink); color: var(--xc-bg); font-weight: 700; font-size: 13px; cursor: pointer; }
+.xg-calc-save-box button:hover { background: var(--xc-red); border-color: var(--xc-red); color: #fff; }
+.xg-calc-save-msg { margin: 4px 0 0; font-size: 12px; color: var(--xc-ink-soft, #6b665c); min-height: 14px; }
 
 /* =========================================================
    CART (kombiniert – als View-Switch in EINEM Widget)
@@ -8956,13 +9136,33 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 	function toggle() { apply(current() === 'dark' ? 'light' : 'dark', true); }
 
 	// Initialwert: gespeichert > System > light
+	// Ohne gespeicherte Wahl: dark wenn System dunkel ODER abends/nachts (19–7 Uhr).
+	function autoDefault() {
+		var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+		var h = new Date().getHours();
+		var nightTime = (h >= 19 || h < 7);
+		return (sysDark || nightTime) ? 'dark' : 'light';
+	}
 	function init() {
 		var saved = null;
 		try { saved = localStorage.getItem(KEY); } catch (e) {}
-		if (!saved) {
-			saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+		apply(saved || autoDefault(), false);
+	}
+
+	// #7 Reveal-animaties: elementen met .xg-reveal faden in bij scroll.
+	function initReveal() {
+		var els = document.querySelectorAll('.xg-reveal');
+		if (!els.length) return;
+		if (!('IntersectionObserver' in window)) {
+			els.forEach(function (el) { el.classList.add('in'); });
+			return;
 		}
-		apply(saved, false);
+		var io = new IntersectionObserver(function (entries) {
+			entries.forEach(function (e) {
+				if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+			});
+		}, { rootMargin: '0px 0px -10% 0px' });
+		els.forEach(function (el) { io.observe(el); });
 	}
 
 	// Moderner Schalter (Sonne/Mond, gleitender Knopf)
@@ -8995,6 +9195,7 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 
 	function boot() {
 		document.querySelectorAll('[data-xg-theme-toggle]').forEach(buildToggle);
+		initReveal();
 	}
 
 	// API für andere Skripte (z.B. Calculator-internen Schalter)
@@ -10075,6 +10276,18 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 			} catch (e) {}
 		}
 
+			// #9 Deep-link: /afspraak/?calc=<base64url(token)> herstelt een bewaarde berekening.
+			try {
+				var qcalc = new URLSearchParams(location.search).get('calc');
+				if (qcalc) {
+					var b64 = qcalc.replace(/-/g, '+').replace(/_/g, '/');
+					while (b64.length % 4) b64 += '=';
+					var dec = JSON.parse(decodeURIComponent(escape(atob(b64))));
+					if (dec.t) state.type = dec.t;
+					if (dec.f) state.form = dec.f;
+				}
+			} catch (e) {}
+
 		/*
 		 * Scope/Lock für Hero, Kategorie- und Produktseiten:
 		 *   data-only="metal"          → Hero: nur Edelmetaal (kein Typ-Picker)
@@ -10546,8 +10759,64 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 			again.addEventListener('click', function () { state.type = null; state.form = {}; state.result = null; render(); });
 			res.appendChild(again);
 
+			// #9 Bewaar mijn berekening (deelbare deep-link + optioneel e-mailen).
+			var save = h('div', 'xg-calc-save');
+			var saveBtn = h('button', 'xg-calc-btn xg-calc-btn-ghost', ICON.heart ? '' : '');
+			saveBtn.textContent = 'Bewaar deze berekening';
+			saveBtn.addEventListener('click', function () { openSave(save, r); });
+			save.appendChild(saveBtn);
+			res.appendChild(save);
+
 			p.appendChild(res);
 			setPanel(p);
+		}
+
+		// Bouwt een compacte, deelbare token van type+form (base64url).
+		function calcToken() {
+			try {
+				var payload = { t: state.type, f: state.form };
+				var json = JSON.stringify(payload);
+				var b64 = btoa(unescape(encodeURIComponent(json)));
+				return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+			} catch (e) { return ''; }
+		}
+
+		function openSave(host, r) {
+			if (host.querySelector('.xg-calc-save-box')) return;
+			var token = calcToken();
+			var base = (location.origin || '') + '/afspraak/?calc=' + encodeURIComponent(token);
+			var box = h('div', 'xg-calc-save-box');
+			box.innerHTML =
+				'<p class="xg-calc-save-lbl">Bewaar uw berekening en kom later terug:</p>' +
+				'<div class="xg-calc-save-link"><input type="text" readonly value="' + base.replace(/"/g, '&quot;') + '"><button type="button" class="xg-calc-save-copy">Kopieer</button></div>' +
+				'<div class="xg-calc-save-mail"><input type="email" placeholder="E-mail (optioneel, ontvang de link)"><button type="button" class="xg-calc-save-send">Mail mij</button></div>' +
+				'<p class="xg-calc-save-msg" role="status"></p>';
+			host.appendChild(box);
+
+			var copyBtn = box.querySelector('.xg-calc-save-copy');
+			var linkInput = box.querySelector('.xg-calc-save-link input');
+			copyBtn.addEventListener('click', function () {
+				linkInput.select();
+				try { (navigator.clipboard ? navigator.clipboard.writeText(linkInput.value) : document.execCommand('copy')); copyBtn.textContent = 'Gekopieerd'; }
+				catch (e) { document.execCommand('copy'); copyBtn.textContent = 'Gekopieerd'; }
+				setTimeout(function () { copyBtn.textContent = 'Kopieer'; }, 1800);
+			});
+
+			var sendBtn = box.querySelector('.xg-calc-save-send');
+			var mailInput = box.querySelector('.xg-calc-save-mail input');
+			var msg = box.querySelector('.xg-calc-save-msg');
+			sendBtn.addEventListener('click', function () {
+				var email = (mailInput.value || '').trim();
+				if (!email || email.indexOf('@') < 1) { msg.textContent = 'Vul een geldig e-mailadres in.'; return; }
+				sendBtn.disabled = true; msg.textContent = 'Versturen…';
+				var rest = (DATA.rest_calc_save) || '/wp-json/ekinese/v1/calc-save';
+				fetch(rest, {
+					method: 'POST', headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ email: email, calc: token, label: typeLabel() + ' · ' + specLabel(), value: (r && r.indicative ? euro(r.low) + '–' + euro(r.high) : (r ? euro(r.low) : '')) })
+				}).then(function (res) { return res.json().then(function (d) { return { ok: res.ok, d: d }; }); })
+					.then(function (o) { msg.textContent = o.ok ? 'Verstuurd! Controleer uw inbox.' : (o.d && o.d.message ? o.d.message : 'Versturen mislukt.'); sendBtn.disabled = false; })
+					.catch(function () { msg.textContent = 'Netwerkfout. Probeer later opnieuw.'; sendBtn.disabled = false; });
+			});
 		}
 		function breakRow(l, v, cls) { return h('div', 'xg-calc-break-row' + (cls ? ' ' + cls : ''), '<span>' + l + '</span><b>' + v + '</b>'); }
 

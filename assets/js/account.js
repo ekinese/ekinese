@@ -86,10 +86,56 @@
 			}
 			html += '</div>';
 		}
-		if (d.referral_url) {
-			html += '<p class="xg-acc-ref">Nodig vrienden uit en spaar punten: <code>' + esc(d.referral_url) + '</code></p>';
-		}
 		return html;
+	}
+
+	// #21 Referral-dashboard – uitnodig-link, aantal aanmeldingen, voortgang.
+	function referralCard(d) {
+		if (!d.referral_url) return '';
+		var count = d.referral_count != null ? d.referral_count : 0;
+		var next = 5; // mijlpaal voor extra beloning
+		var pct = Math.min(100, Math.round((count % next) / next * 100));
+		return '<section class="xg-acc-sec xg-ref-card">' +
+			'<h3>Vrienden uitnodigen</h3>' +
+			'<p>Deel uw persoonlijke link. U én uw vriend ontvangen spaarpunten zodra hij of zij zich aanmeldt.</p>' +
+			'<div class="xg-ref-link"><input type="text" readonly value="' + esc(d.referral_url) + '"><button type="button" class="xg-ref-copy" data-link="' + esc(d.referral_url) + '">Kopieer</button></div>' +
+			'<div class="xg-ref-stat"><strong>' + count + '</strong> aanmelding' + (count === 1 ? '' : 'en') + ' via uw link</div>' +
+			'<div class="xg-loyalty-bar"><span style="width:' + pct + '%"></span></div>' +
+			'<div class="xg-ref-next">Nog ' + (next - (count % next)) + ' tot uw volgende bonus</div>' +
+			'</section>';
+	}
+
+	// #20 Jaaroverzicht – deelbare "year in review"-kaarten.
+	function yearReviewCard(d) {
+		if (!d.year_review) return '';
+		var years = Object.keys(d.year_review).sort(function (a, b) { return b - a; });
+		if (!years.length) return '';
+		var cards = years.map(function (y) {
+			var v = d.year_review[y];
+			return '<div class="xg-yr-card">' +
+				'<div class="xg-yr-year">' + esc(y) + '</div>' +
+				'<div class="xg-yr-row"><span>Verkopen</span><strong>' + esc(v.count) + '</strong></div>' +
+				'<div class="xg-yr-row"><span>Uitbetaald</span><strong>€ ' + esc(v.payout) + '</strong></div>' +
+				'<div class="xg-yr-row xg-yr-charity"><span>Naar goede doelen</span><strong>€ ' + esc(v.charity) + '</strong></div>' +
+				'</div>';
+		}).join('');
+		return '<section class="xg-acc-sec"><h3>Mijn jaaroverzicht</h3><div class="xg-yr-grid">' + cards + '</div></section>';
+	}
+
+	// #22 Spaardoel – doel instellen, voortgang op portfoliowaarde.
+	function savingsCard(d) {
+		if (!d.savings) return '';
+		var s = d.savings, goal = s.goal || {}, target = goal.target || 0, cur = s.current || 0;
+		var pct = target > 0 ? Math.min(100, Math.round(cur / target * 100)) : 0;
+		var prog = target > 0
+			? '<div class="xg-loyalty-bar"><span style="width:' + pct + '%"></span></div><div class="xg-goal-meta">€ ' + esc(cur) + ' van € ' + esc(target) + ' (' + pct + '%)' + (goal.label ? ' · ' + esc(goal.label) : '') + '</div>'
+			: '<p class="xg-acc-empty">Nog geen doel ingesteld.</p>';
+		return '<section class="xg-acc-sec xg-goal-card" data-rest="' + esc(s.rest) + '">' +
+			'<h3>Mijn spaardoel</h3>' + prog +
+			'<div class="xg-goal-form"><input type="text" class="xg-goal-label" placeholder="Bijv. nieuwe keuken" value="' + esc(goal.label || '') + '">' +
+			'<input type="number" class="xg-goal-target" min="0" step="50" placeholder="Doelbedrag €" value="' + (target || '') + '">' +
+			'<button type="button" class="xg-goal-save">Opslaan</button></div>' +
+			'<div class="xg-goal-msg" role="status"></div></section>';
 	}
 
 	function renderDash(d) {
@@ -98,6 +144,9 @@
 		dash.innerHTML =
 			'<h2>Mijn XGOUD</h2><p class="xg-acc-email">' + esc(d.email) + '</p>' +
 			statCards(d) +
+			savingsCard(d) +
+			yearReviewCard(d) +
+			referralCard(d) +
 			section('Mijn portfolio', (d.portfolio || {}).items, [
 				{ key: 'name', label: 'Product' }, { key: 'qty', label: 'Aantal' },
 				{ key: 'value', label: 'Waarde (€)' }, { key: 'gain', label: 'Winst/verlies (€)' },
@@ -121,5 +170,41 @@
 				{ key: 'metal', label: 'Metaal' }, { key: 'direction', label: 'Richting' },
 				{ key: 'target', label: 'Doelprijs' }, { key: 'active', label: 'Actief' }
 			]);
+		bindDashEvents(d);
+	}
+
+	// Interacties in het dashboard (referral kopiëren, spaardoel opslaan).
+	function bindDashEvents(d) {
+		var copy = dash.querySelector('.xg-ref-copy');
+		if (copy) {
+			copy.addEventListener('click', function () {
+				var link = copy.getAttribute('data-link');
+				try { (navigator.clipboard ? navigator.clipboard.writeText(link) : null); } catch (e) {}
+				var inp = dash.querySelector('.xg-ref-link input');
+				if (inp) { inp.select(); try { document.execCommand('copy'); } catch (e) {} }
+				copy.textContent = 'Gekopieerd';
+				setTimeout(function () { copy.textContent = 'Kopieer'; }, 1800);
+			});
+		}
+		var goalCard = dash.querySelector('.xg-goal-card');
+		if (goalCard) {
+			var saveBtn = goalCard.querySelector('.xg-goal-save');
+			saveBtn.addEventListener('click', function () {
+				var target = parseFloat(goalCard.querySelector('.xg-goal-target').value) || 0;
+				var label = goalCard.querySelector('.xg-goal-label').value || '';
+				var msg = goalCard.querySelector('.xg-goal-msg');
+				saveBtn.disabled = true; msg.textContent = 'Opslaan…';
+				fetch(goalCard.getAttribute('data-rest'), {
+					method: 'POST', headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ token: token, target: target, label: label })
+				}).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+					.then(function (o) {
+						saveBtn.disabled = false;
+						if (o.ok) { msg.textContent = 'Doel opgeslagen.'; d.savings.goal = o.j.goal; d.savings.current = o.j.current; renderDash(d); }
+						else { msg.textContent = (o.j && o.j.message) || 'Opslaan mislukt.'; }
+					})
+					.catch(function () { saveBtn.disabled = false; msg.textContent = 'Netwerkfout.'; });
+			});
+		}
 	}
 })();

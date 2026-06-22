@@ -65,6 +65,17 @@ function pattern(file) {
 		'<polygon points="0,220 8,150 130,160 260,120 390,135 520,90 650,70 752,55 760,220" fill="url(#xgcd)"/>' +
 		'<polyline points="8,150 130,160 260,120 390,135 520,90 650,70 752,55" fill="none" stroke="#1f9d55" stroke-width="2.5" vector-effect="non-scaling-stroke"/></svg></div>' +
 		'<div class="xg-chart-meta"><span class="xg-chart-now">€ 62,50/g</span> <span class="xg-chart-delta" style="color:#1f9d55">▲ 4,1% (30d)</span> <span class="xg-chart-range">laag € 58,90 · hoog € 63,10</span></div></div></div></section>');
+	// Demo voor de prijsgarantie-badge (#2).
+	out = out.replace(/<!--\s*wp:ekinese\/price-guarantee[^>]*?-->/g,
+		'<div class="xg-guarantee"><div class="xg-guarantee-ico"><svg viewBox="0 0 24 24" width="26" height="26"><path fill="currentColor" d="M12 2l8 3v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3z"/></svg></div>' +
+		'<div class="xg-guarantee-body"><strong>Beste-prijsgarantie</strong><p>Vindt u binnen 7 dagen aantoonbaar een beter bod voor hetzelfde object? Dan evenaren wij dat bod.</p></div></div>');
+	// Demo voor de vergelijker (#3).
+	out = out.replace(/<!--\s*wp:ekinese\/compare-table[^>]*?-->/g,
+		'<div class="xg-compare"><div class="xg-table-scroll"><table class="xg-cmp-table"><thead><tr><th class="xg-cmp-feat">Wat u mag verwachten</th><th class="xg-cmp-us">XGOUD</th><th class="xg-cmp-them">Doorsnee inkoper</th></tr></thead><tbody>' +
+		'<tr><td class="xg-cmp-feat">Uitbetaling op actuele dagprijs</td><td class="xg-cmp-us"><span class="xg-cmp-yes">✓</span></td><td class="xg-cmp-them">Vaak lager</td></tr>' +
+		'<tr><td class="xg-cmp-feat">Marge vooraf zichtbaar</td><td class="xg-cmp-us"><span class="xg-cmp-yes">✓</span></td><td class="xg-cmp-them"><span class="xg-cmp-no">—</span></td></tr>' +
+		'<tr><td class="xg-cmp-feat">Deel naar goed doel</td><td class="xg-cmp-us"><span class="xg-cmp-yes">✓</span></td><td class="xg-cmp-them"><span class="xg-cmp-no">—</span></td></tr>' +
+		'</tbody></table></div><div class="xg-cmp-cta"><a class="xg-btn-gold" href="/afspraak/">Bereken uw waarde</a></div></div>');
 	return stripBlocks(out).trim();
 }
 

@@ -46,4 +46,28 @@
 		}, { threshold: .4 });
 		io.observe(stats);
 	}
+
+	// #4 Video-reviews: klik-to-play (privacy – geen autoload van externe embeds).
+	function toEmbed(url) {
+		var yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{6,})/);
+		if (yt) return 'https://www.youtube-nocookie.com/embed/' + yt[1] + '?autoplay=1&rel=0';
+		var vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+		if (vm) return 'https://player.vimeo.com/video/' + vm[1] + '?autoplay=1';
+		return null;
+	}
+	document.querySelectorAll('.xg-tw-review[data-video] .xg-tw-play').forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			var fig = btn.closest('.xg-tw-review');
+			var url = fig.getAttribute('data-video');
+			var embed = toEmbed(url);
+			var holder = document.createElement('div');
+			holder.className = 'xg-tw-video';
+			if (embed) {
+				holder.innerHTML = '<iframe src="' + embed.replace(/"/g, '&quot;') + '" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="Videoreview"></iframe>';
+			} else {
+				holder.innerHTML = '<video src="' + url.replace(/"/g, '&quot;') + '" controls autoplay playsinline></video>';
+			}
+			btn.replaceWith(holder);
+		});
+	});
 })();

@@ -42,8 +42,38 @@ function ekinese_press() {
 
 function ekinese_register_trust() {
 	register_block_type( 'ekinese/trust-wall', array( 'render_callback' => 'ekinese_render_trust' ) );
+	register_block_type( 'ekinese/price-guarantee', array(
+		'render_callback' => 'ekinese_render_price_guarantee',
+		'attributes'      => array(
+			'compact' => array( 'type' => 'boolean', 'default' => false ),
+		),
+	) );
 }
 add_action( 'init', 'ekinese_register_trust' );
+
+/**
+ * #2 Prijsgarantie-badge – herbruikbaar (hero/footer/pagina).
+ *
+ * @param array $attr Blok-attributen (compact = kleine variant).
+ * @return string HTML.
+ */
+function ekinese_render_price_guarantee( $attr = array() ) {
+	$compact = ! empty( $attr['compact'] );
+	$days    = (int) get_option( 'xg_guarantee_days', 7 );
+	$cls     = 'xg-guarantee' . ( $compact ? ' xg-guarantee--compact' : '' );
+	$shield  = '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12 2l8 3v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5l8-3zm-1 13l6-6-1.4-1.4L11 12.2 8.4 9.6 7 11l4 4z"/></svg>';
+	if ( $compact ) {
+		return '<span class="' . esc_attr( $cls ) . '">' . $shield . '<span>Beste-prijsgarantie</span></span>';
+	}
+	ob_start();
+	echo '<div class="' . esc_attr( $cls ) . '">';
+	echo '<div class="xg-guarantee-ico">' . $shield . '</div>';
+	echo '<div class="xg-guarantee-body">';
+	echo '<strong>Beste-prijsgarantie</strong>';
+	echo '<p>' . esc_html( sprintf( 'Vindt u binnen %d dagen aantoonbaar een beter bod voor hetzelfde object? Dan evenaren wij dat bod. Transparant en op basis van de actuele dagprijs.', $days ) ) . '</p>';
+	echo '</div></div>';
+	return ob_get_clean();
+}
 
 function ekinese_render_trust() {
 	$years = max( 1, (int) gmdate( 'Y' ) - ekinese_founded_year() );
@@ -69,8 +99,13 @@ function ekinese_render_trust() {
 	echo '<div class="xg-tw-reviews" data-rotate>';
 	foreach ( $reviews as $i => $r ) {
 		$stars = str_repeat( '★', (int) $r['stars'] ) . str_repeat( '☆', 5 - (int) $r['stars'] );
-		echo '<figure class="xg-tw-review' . ( 0 === $i ? ' active' : '' ) . '">';
+		$video = ! empty( $r['video'] ) ? esc_url( $r['video'] ) : '';
+		echo '<figure class="xg-tw-review' . ( 0 === $i ? ' active' : '' ) . '"' . ( $video ? ' data-video="' . $video . '"' : '' ) . '>';
 		echo '<div class="xg-tw-stars">' . esc_html( $stars ) . '</div>';
+		if ( $video ) {
+			// Klik-to-play (privacy: geen autoload van externe embeds).
+			echo '<button class="xg-tw-play" type="button" aria-label="Video afspelen"><span class="xg-tw-play-ico">▶</span> Bekijk videoreview</button>';
+		}
 		echo '<blockquote>' . esc_html( $r['text'] ) . '</blockquote>';
 		echo '<figcaption>' . esc_html( $r['name'] ) . ' · ' . esc_html( $r['city'] ) . '</figcaption>';
 		echo '</figure>';
@@ -109,12 +144,19 @@ add_action( 'admin_menu', function () {
 		if ( isset( $_POST['xg_trust_nonce'] ) && wp_verify_nonce( sanitize_key( $_POST['xg_trust_nonce'] ), 'xg_trust' ) ) {
 			update_option( 'xg_founded_year', (int) ( $_POST['xg_founded_year'] ?? 2009 ) );
 			update_option( 'xg_press', array_values( array_filter( array_map( 'sanitize_text_field', explode( ',', wp_unslash( $_POST['xg_press'] ?? '' ) ) ) ) ) );
-			// Reviews: één per regel "naam | stad | sterren | tekst".
+			update_option( 'xg_guarantee_days', max( 1, (int) ( $_POST['xg_guarantee_days'] ?? 7 ) ) );
+			// Reviews: één per regel "naam | stad | sterren | tekst | video-url(optioneel)".
 			$reviews = array();
 			foreach ( preg_split( '/\r?\n/', (string) wp_unslash( $_POST['xg_reviews'] ?? '' ) ) as $line ) {
 				$p = array_map( 'trim', explode( '|', $line ) );
 				if ( count( $p ) >= 4 ) {
-					$reviews[] = array( 'name' => sanitize_text_field( $p[0] ), 'city' => sanitize_text_field( $p[1] ), 'stars' => (int) $p[2], 'text' => sanitize_text_field( $p[3] ) );
+					$reviews[] = array(
+						'name'  => sanitize_text_field( $p[0] ),
+						'city'  => sanitize_text_field( $p[1] ),
+						'stars' => (int) $p[2],
+						'text'  => sanitize_text_field( $p[3] ),
+						'video' => isset( $p[4] ) && $p[4] ? esc_url_raw( $p[4] ) : '',
+					);
 				}
 			}
 			if ( $reviews ) {
@@ -122,12 +164,16 @@ add_action( 'admin_menu', function () {
 			}
 			echo '<div class="notice notice-success"><p>Opgeslagen.</p></div>';
 		}
-		$lines = array_map( function ( $r ) { return $r['name'] . ' | ' . $r['city'] . ' | ' . $r['stars'] . ' | ' . $r['text']; }, ekinese_reviews() );
+		$lines = array_map( function ( $r ) {
+			$base = $r['name'] . ' | ' . $r['city'] . ' | ' . $r['stars'] . ' | ' . $r['text'];
+			return ! empty( $r['video'] ) ? $base . ' | ' . $r['video'] : $base;
+		}, ekinese_reviews() );
 		echo '<div class="wrap"><h1>Reviews & pers</h1><form method="post"><table class="form-table">';
 		wp_nonce_field( 'xg_trust', 'xg_trust_nonce' );
 		echo '<tr><th>Opgericht in</th><td><input type="number" name="xg_founded_year" value="' . esc_attr( ekinese_founded_year() ) . '"></td></tr>';
+		echo '<tr><th>Prijsgarantie (dagen)</th><td><input type="number" name="xg_guarantee_days" value="' . esc_attr( (int) get_option( 'xg_guarantee_days', 7 ) ) . '"> <p class="description">Periode waarin XGOUD een aantoonbaar beter bod evenaart.</p></td></tr>';
 		echo '<tr><th>Pers (komma-gescheiden)</th><td><input type="text" name="xg_press" value="' . esc_attr( implode( ', ', ekinese_press() ) ) . '" class="large-text"></td></tr>';
-		echo '<tr><th>Reviews<br><small>naam | stad | sterren | tekst</small></th><td><textarea name="xg_reviews" rows="8" class="large-text code">' . esc_textarea( implode( "\n", $lines ) ) . '</textarea></td></tr>';
+		echo '<tr><th>Reviews<br><small>naam | stad | sterren | tekst | video-url (optioneel)</small></th><td><textarea name="xg_reviews" rows="8" class="large-text code">' . esc_textarea( implode( "\n", $lines ) ) . '</textarea></td></tr>';
 		echo '</table>';
 		submit_button();
 		echo '</form></div>';

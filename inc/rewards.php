@@ -113,6 +113,26 @@ function ekinese_referral_email( $code ) {
 	return $map[ strtoupper( sanitize_text_field( $code ) ) ] ?? '';
 }
 
+/** Aantal succesvolle referrals (aangemelde vrienden) van een e-mailadres. */
+function ekinese_referral_count( $email ) {
+	$email = sanitize_email( $email );
+	if ( ! $email ) {
+		return 0;
+	}
+	$q = get_posts( array(
+		'post_type'   => 'xg_reward',
+		'numberposts' => -1,
+		'post_status' => 'publish',
+		'fields'      => 'ids',
+		'meta_query'  => array(
+			'relation' => 'AND',
+			array( 'key' => 'email', 'value' => $email ),
+			array( 'key' => 'reason', 'value' => 'referral' ),
+		),
+	) );
+	return count( $q );
+}
+
 /* =====================================================================
    AUTOMATISCHE TOEKENNING – afgeronde afspraak
 ===================================================================== */
@@ -202,8 +222,9 @@ function ekinese_reward_referral( WP_REST_Request $req ) {
    ACCOUNT-INTEGRATIE – punten + referral in /account/data
 ===================================================================== */
 add_filter( 'ekinese_account_data', function ( $data, $email ) {
-	$data['points']        = ekinese_points_balance( $email );
-	$data['referral_code'] = ekinese_referral_code( $email );
-	$data['referral_url']  = add_query_arg( 'ref', ekinese_referral_code( $email ), home_url( '/' ) );
+	$data['points']         = ekinese_points_balance( $email );
+	$data['referral_code']  = ekinese_referral_code( $email );
+	$data['referral_url']   = add_query_arg( 'ref', ekinese_referral_code( $email ), home_url( '/' ) );
+	$data['referral_count'] = ekinese_referral_count( $email );
 	return $data;
 }, 10, 2 );
