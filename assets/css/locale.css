@@ -25,3 +25,15 @@
 .xg-ctrl-opt.active { background: var(--red,#AE1E1E); border-color: var(--red,#AE1E1E); color: #fff; }
 .xg-ctrl-theme { display: flex; align-items: center; justify-content: space-between; padding-top: 4px; border-top: 1px solid var(--line,#e3ddd0); }
 .xg-ctrl-theme span { font-size: 12px; font-weight: 700; color: var(--ink,#1c1a16); }
+
+/* Social login-knoppen (account) */
+.xg-social-login { margin-top: 18px; text-align: center; }
+.xg-social-or { display: block; font-size: 12px; color: var(--ink-soft,#6b665c); margin-bottom: 10px; position: relative; }
+.xg-social-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.xg-social-btn { flex: 1 1 30%; min-width: 96px; display: inline-flex; align-items: center; justify-content: center; height: 44px; border: 1px solid var(--line,#e3ddd0); font-weight: 700; font-size: 13px; text-decoration: none; color: var(--ink,#1a1a1a); transition: border-color .2s, background .2s; }
+.xg-social-btn:hover { border-color: var(--red,#AE1E1E); }
+.xg-social-google:hover { background: #fef7f6; }
+.xg-social-facebook { color: #1877f2; }
+.xg-social-apple { color: #111; }
+html[data-theme="dark"] .xg-social-btn { border-color: #34302b; color: #f3efe8; }
+html[data-theme="dark"] .xg-social-apple { color: #f3efe8; }

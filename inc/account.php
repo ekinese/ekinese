@@ -130,7 +130,8 @@ function ekinese_register_account_block() {
 add_action( 'init', 'ekinese_register_account_block' );
 
 function ekinese_render_account() {
-	return '<div class="xg-account" data-rest-login="' . esc_attr( esc_url_raw( rest_url( 'ekinese/v1/account/login' ) ) ) . '" data-rest-data="' . esc_attr( esc_url_raw( rest_url( 'ekinese/v1/account/data' ) ) ) . '"><div class="xg-account-login"><h2>Mijn XGOUD</h2><p>Vul uw e-mailadres in en ontvang een inloglink.</p><form class="xg-account-form"><input type="email" name="email" placeholder="uw@email.nl" required><button type="submit" class="xg-final-btn">Stuur inloglink</button></form><div class="xg-account-msg" role="status"></div></div><div class="xg-account-dash" hidden></div></div>';
+	$social = function_exists( 'ekinese_oauth_buttons' ) ? ekinese_oauth_buttons() : '';
+	return '<div class="xg-account" data-rest-login="' . esc_attr( esc_url_raw( rest_url( 'ekinese/v1/account/login' ) ) ) . '" data-rest-data="' . esc_attr( esc_url_raw( rest_url( 'ekinese/v1/account/data' ) ) ) . '"><div class="xg-account-login"><h2>Mijn XGOUD</h2><p>Vul uw e-mailadres in en ontvang een inloglink.</p><form class="xg-account-form"><input type="email" name="email" placeholder="uw@email.nl" required><button type="submit" class="xg-final-btn">Stuur inloglink</button></form>' . $social . '<div class="xg-account-msg" role="status"></div></div><div class="xg-account-dash" hidden></div></div>';
 }
 
 /** account.js laden waar het blok staat. */
