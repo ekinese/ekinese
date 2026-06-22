@@ -1776,3 +1776,28 @@ html[data-theme="dark"] .xg-chart { background: #1d1b19; border-color: #34302b; 
 html[data-theme="dark"] .xg-chart-head h2, html[data-theme="dark"] .xg-chart-now { color: #f3efe8; }
 html[data-theme="dark"] .xg-chart-tabs button { background: #211e1a; border-color: #34302b; color: #b3ad9f; }
 html[data-theme="dark"] .xg-chart-tabs button.active { background: var(--red,#AE1E1E); color: #fff; }
+
+/* =========================
+   TRUST-WALL (vertrouwen)
+========================= */
+.xg-trustwall { padding: 60px 0; background: #fff; }
+html[data-theme="dark"] .xg-trustwall { background: #161412; }
+.xg-tw-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; text-align: center; padding-bottom: 40px; border-bottom: 1px solid #ececec; }
+.xg-tw-num { font-size: 40px; font-weight: 800; color: var(--red,#AE1E1E); letter-spacing: -1px; }
+.xg-tw-lbl { font-size: 13px; color: #6b665c; text-transform: uppercase; letter-spacing: .5px; margin-top: 4px; }
+.xg-tw-reviews { position: relative; max-width: 760px; margin: 40px auto 0; text-align: center; min-height: 180px; }
+.xg-tw-review { display: none; }
+.xg-tw-review.active { display: block; animation: xgFade .5s ease; }
+@keyframes xgFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.xg-tw-stars { color: #1f9d55; font-size: 22px; letter-spacing: 3px; margin-bottom: 14px; }
+.xg-tw-review blockquote { font-size: 20px; line-height: 1.6; color: #222; margin: 0 0 14px; font-style: italic; }
+.xg-tw-review figcaption { font-weight: 700; color: #6b665c; font-size: 14px; }
+.xg-tw-dots { display: flex; gap: 8px; justify-content: center; margin-top: 22px; }
+.xg-tw-dot { width: 9px; height: 9px; border-radius: 50%; border: none; background: #d8d2c6; cursor: pointer; padding: 0; }
+.xg-tw-dot.active { background: var(--red,#AE1E1E); }
+.xg-tw-press { display: flex; flex-wrap: wrap; gap: 26px; align-items: center; justify-content: center; margin-top: 46px; padding-top: 30px; border-top: 1px solid #ececec; }
+.xg-tw-press-lbl { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #9a948a; }
+.xg-tw-press-item { font-family: Georgia, serif; font-size: 20px; font-weight: 700; color: #b8b2a6; filter: grayscale(1); }
+html[data-theme="dark"] .xg-tw-review blockquote { color: #f3efe8; }
+html[data-theme="dark"] .xg-tw-stats, html[data-theme="dark"] .xg-tw-press { border-color: #34302b; }
+@media (max-width: 767px) { .xg-tw-stats { grid-template-columns: 1fr 1fr; gap: 24px; } .xg-tw-num { font-size: 32px; } .xg-tw-review blockquote { font-size: 17px; } }

@@ -45,6 +45,11 @@ function pattern(file) {
 		'<tr><td>Platina</td><td>€ 28,90</td><td><strong>€ 26,59</strong></td></tr>' +
 		'<tr><td>Palladium</td><td>€ 30,10</td><td><strong>€ 27,69</strong></td></tr>' +
 		'</tbody></table></div></div></section>');
+	// Demo voor de trust-wall.
+	out = out.replace(/<!--\s*wp:ekinese\/trust-wall[^>]*?-->/g,
+		'<section class="xg-trustwall"><div class="xg-container"><div class="xg-tw-stats"><div class="xg-tw-stat"><div class="xg-tw-num">16+</div><div class="xg-tw-lbl">jaar ervaring</div></div><div class="xg-tw-stat"><div class="xg-tw-num">40+</div><div class="xg-tw-lbl">vestigingen</div></div><div class="xg-tw-stat"><div class="xg-tw-num">4,8/5</div><div class="xg-tw-lbl">klantbeoordeling</div></div><div class="xg-tw-stat"><div class="xg-tw-num">100%</div><div class="xg-tw-lbl">verzekerd</div></div></div>' +
+		'<div class="xg-tw-reviews"><figure class="xg-tw-review active"><div class="xg-tw-stars">★★★★★</div><blockquote>Snel, eerlijk en vriendelijk. Binnen een half uur getaxeerd en direct uitbetaald!</blockquote><figcaption>Mariska de V. · Amsterdam</figcaption></figure></div>' +
+		'<div class="xg-tw-press"><span class="xg-tw-press-lbl">Bekend van</span><span class="xg-tw-press-item">Telegraaf</span><span class="xg-tw-press-item">AD</span><span class="xg-tw-press-item">RTL Z</span><span class="xg-tw-press-item">Quote</span></div></div></section>');
 	// Demo voor de charity-kaart (Leaflet + data server-side).
 	out = out.replace(/<!--\s*wp:ekinese\/charity-map[^>]*?-->/g,
 		'<section><div class="xg-container"><div class="xg-charity-map-wrap"><div class="xg-charity-map-head"><div class="xg-eyebrow">GOEDE DOELEN</div><h2>Waar XGOUD helpt</h2>' +

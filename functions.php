@@ -41,6 +41,7 @@ require_once get_theme_file_path( 'inc/loyalty.php' );
 require_once get_theme_file_path( 'inc/i18n.php' );
 require_once get_theme_file_path( 'inc/seo-index.php' );
 require_once get_theme_file_path( 'inc/price-chart.php' );
+require_once get_theme_file_path( 'inc/trust.php' );
 require_once get_theme_file_path( 'inc/rewards.php' );
 require_once get_theme_file_path( 'inc/lottery.php' );
 require_once get_theme_file_path( 'inc/partners.php' );

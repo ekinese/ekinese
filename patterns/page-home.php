@@ -29,6 +29,8 @@
 	<div class="xg-charity-ticker-projects"><span>Scholen</span><span>Kinderdagverblijven</span><span>Vrouwenopvang</span><span>Sportcentra</span></div>
 </div>
 
+<!-- wp:ekinese/trust-wall /-->
+
 <!-- wp:ekinese/charity-map /-->
 
 <section><div class="xg-container"><div class="xg-why">
