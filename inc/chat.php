@@ -151,7 +151,41 @@ function ekinese_bot_next_open_days() {
 	return 'Voor een afspraak op ons hoofdkantoor in Eindhoven kunt u terecht op: ' . implode( ', ', $labels ) . '. Wilt u dat ik een afspraak voor u inplan?';
 }
 
-function ekinese_bot_reply( $text, $context = 'chat' ) {
+/**
+ * Meertalige bot: genereert het NL-antwoord en vertaalt het naar de taal van de
+ * bezoeker. Zo antwoordt de bot consistent in de gekozen taal i.p.v. altijd NL.
+ *
+ * @param string $text
+ * @param string $context
+ * @param string $lang    nl|de|en|fr|es|it|tr|pl
+ */
+function ekinese_bot_reply( $text, $context = 'chat', $lang = 'nl' ) {
+	$r = ekinese_bot_reply_nl( $text, $context );
+	if ( $lang && 'nl' !== $lang && ! empty( $r['reply'] ) ) {
+		$r['reply'] = ekinese_bot_translate( $r['reply'], $lang );
+	}
+	return $r;
+}
+
+/** Vertaal een (canned) botantwoord. Onbekende zinnen → NL/EN-fallback. */
+function ekinese_bot_translate( $reply, $lang ) {
+	static $map = null;
+	if ( null === $map ) {
+		$file = get_theme_file_path( 'data/bot-i18n.json' );
+		$map  = file_exists( $file ) ? ( json_decode( (string) file_get_contents( $file ), true ) ?: array() ) : array(); // phpcs:ignore
+	}
+	$key = trim( $reply );
+	if ( isset( $map[ $key ][ $lang ] ) && '' !== $map[ $key ][ $lang ] ) {
+		return $map[ $key ][ $lang ];
+	}
+	// Fallback: Engels indien beschikbaar (voor it/tr/pl zonder eigen vertaling).
+	if ( 'en' !== $lang && isset( $map[ $key ]['en'] ) && '' !== $map[ $key ]['en'] ) {
+		return $map[ $key ]['en'];
+	}
+	return $reply;
+}
+
+function ekinese_bot_reply_nl( $text, $context = 'chat' ) {
 	$t    = mb_strtolower( trim( $text ) );
 	$open = ekinese_chat_is_open();
 
@@ -237,8 +271,10 @@ function ekinese_register_chat_rest() {
 		'methods'             => 'POST',
 		'permission_callback' => '__return_true',
 		'callback'            => function ( WP_REST_Request $r ) {
-			$q = (string) ( $r->get_json_params()['q'] ?? '' );
-			return ekinese_bot_reply( $q, 'search' );
+			$p    = $r->get_json_params();
+			$q    = (string) ( $p['q'] ?? '' );
+			$lang = isset( $p['lang'] ) ? sanitize_key( (string) $p['lang'] ) : 'nl';
+			return ekinese_bot_reply( $q, 'search', $lang );
 		},
 	) );
 }
@@ -295,7 +331,9 @@ function ekinese_rest_chat_message( WP_REST_Request $req ) {
 		update_post_meta( $id, 'visitor_email', sanitize_email( $text ) );
 	}
 
-	$bot = ekinese_bot_reply( $text );
+	$lang = isset( $d['lang'] ) ? sanitize_key( (string) $d['lang'] ) : 'nl';
+	update_post_meta( $id, 'lang', $lang );
+	$bot = ekinese_bot_reply( $text, 'chat', $lang );
 	$messages[] = array( 'sender' => 'bot', 'text' => $bot['reply'], 'time' => gmdate( 'c' ) );
 	update_post_meta( $id, 'messages', wp_json_encode( $messages ) );
 

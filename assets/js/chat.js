@@ -108,7 +108,8 @@
 		var atts = pending.slice(); clearPreview();
 		addMsg('user', text, atts);
 		typing(true);
-		var body = { text: text, attachments: atts, id: session.id || 0, token: session.token || '' };
+		var lang = (document.documentElement.getAttribute('lang') || 'nl').slice(0, 2).toLowerCase();
+		var body = { text: text, attachments: atts, id: session.id || 0, token: session.token || '', lang: lang };
 		fetch(CFG.rest_message, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
 			.then(function (r) { return r.json(); })
 			.then(function (j) {
