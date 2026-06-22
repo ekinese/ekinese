@@ -97,6 +97,22 @@ function pattern(file) {
 		'<a class="xg-kb-card" href="#"><h3>14 vs 18 karaat</h3><p>Het verschil in goudgehalte en waarde.</p><span class="xg-kb-more">Lees meer ›</span></a>' +
 		'<a class="xg-kb-card" href="#"><h3>Wat is sloopgoud waard?</h3><p>Hoe oude sieraden worden getaxeerd.</p><span class="xg-kb-more">Lees meer ›</span></a>' +
 		'</div></div></section>');
+	// Demo voor de stempel-herkenner (#13).
+	out = out.replace(/<!--\s*wp:ekinese\/hallmark[^>]*?-->/g,
+		'<div class="xg-hallmark"><h3 class="xg-hallmark-title">Wat zegt het stempel?</h3>' +
+		'<p class="xg-hallmark-lead">Voer het stempel van uw sieraad in en zie het metaal en een prijsindicatie.</p>' +
+		'<div class="xg-hallmark-row"><input class="xg-hallmark-input" placeholder="bijv. 585, 750 of 925"><button class="xg-hallmark-btn">Herken</button></div>' +
+		'<div class="xg-hallmark-quick"><button class="xg-hallmark-chip">585</button><button class="xg-hallmark-chip">750</button><button class="xg-hallmark-chip">925</button><button class="xg-hallmark-chip">999</button></div>' +
+		'<div class="xg-hallmark-result is-hit"><div class="xg-hallmark-badge">585</div><div class="xg-hallmark-info"><strong>14 karaat goud</strong><span>Metaal: Goud · gehalte 58,5%</span><span class="xg-hallmark-price">Indicatie: ± € 36,56 per gram</span></div></div></div>');
+	// Demo voor het prijsalarm-widget (#19).
+	out = out.replace(/<!--\s*wp:ekinese\/price-alert[^>]*?-->/g,
+		'<section class="xg-pa"><div class="xg-container"><div class="xg-pa-box"><div class="xg-pa-head"><span class="xg-pa-ico">🔔</span><div><h3>Prijsalarm instellen</h3><p>Ontvang een mail zodra goud uw doelprijs bereikt.</p></div></div>' +
+		'<div class="xg-pa-form"><select><option>Goud</option></select><select><option>stijgt boven</option></select><input placeholder="€ / gram" value="62,50"><input placeholder="uw@email.nl"><button class="xg-pa-btn">Activeer</button></div></div></div></section>');
+	// Demo voor foto-taxatie (#11, scaffold-weergave).
+	out = out.replace(/<!--\s*wp:ekinese\/photo-appraisal[^>]*?-->/g,
+		'<section class="xg-photo"><div class="xg-container"><div class="xg-photo-box"><h3>Foto-taxatie</h3>' +
+		'<p class="xg-photo-soon">Foto-taxatie is <strong>binnenkort beschikbaar</strong>. Gebruik nu onze rekentool of maak een gratis afspraak.</p>' +
+		'<p><a class="xg-btn-gold" href="/afspraak/">Bereken uw waarde</a></p></div></div></section>');
 	return stripBlocks(out).trim();
 }
 

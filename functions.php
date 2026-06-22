@@ -71,3 +71,6 @@ require_once get_theme_file_path( 'inc/kennisbank.php' );
 require_once get_theme_file_path( 'inc/llms.php' );
 require_once get_theme_file_path( 'inc/faq.php' );
 require_once get_theme_file_path( 'inc/price-forecast.php' );
+require_once get_theme_file_path( 'inc/hallmark.php' );
+require_once get_theme_file_path( 'inc/ai-assistant.php' );
+require_once get_theme_file_path( 'inc/photo-appraisal.php' );

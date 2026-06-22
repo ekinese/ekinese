@@ -170,3 +170,52 @@ function ekinese_price_alert_check() {
 	}
 }
 add_action( 'xg_price_alert_check', 'ekinese_price_alert_check' );
+
+/* =====================================================================
+   #19 PRIJSALARM-WIDGET – compact blok ekinese/price-alert
+   Hergebruikt de bestaande /price-alert REST. Plaatsbaar op prijspagina's
+   en Home voor een prominente, laagdrempelige inschrijving.
+===================================================================== */
+add_action( 'init', function () {
+	register_block_type( 'ekinese/price-alert', array(
+		'render_callback' => 'ekinese_render_price_alert_widget',
+		'attributes'      => array(
+			'metal' => array( 'type' => 'string', 'default' => 'goud' ),
+		),
+	) );
+} );
+
+/** Render het compacte prijsalarm-widget. */
+function ekinese_render_price_alert_widget( $attr = array() ) {
+	$metal = isset( $attr['metal'] ) ? sanitize_key( $attr['metal'] ) : 'goud';
+	$spot  = function_exists( 'ekinese_metal_spot' ) ? (float) ekinese_metal_spot( $metal ) : 0;
+	$rest  = esc_url_raw( rest_url( 'ekinese/v1/price-alert' ) );
+	$rc    = trim( (string) get_option( 'xg_recaptcha_site', '' ) );
+	ob_start();
+	echo '<section class="xg-pa"><div class="xg-container"><div class="xg-pa-box" data-rest="' . esc_attr( $rest ) . '"' . ( $rc ? ' data-recaptcha="' . esc_attr( $rc ) . '"' : '' ) . '>';
+	echo '<div class="xg-pa-head"><span class="xg-pa-ico">🔔</span><div><h3>Prijsalarm instellen</h3><p>Ontvang een mail zodra ' . esc_html( $metal ) . ' uw doelprijs bereikt.</p></div></div>';
+	echo '<div class="xg-pa-form">';
+	echo '<select class="xg-pa-metal" aria-label="Metaal">';
+	foreach ( array( 'goud' => 'Goud', 'zilver' => 'Zilver', 'platina' => 'Platina', 'palladium' => 'Palladium' ) as $k => $l ) {
+		echo '<option value="' . esc_attr( $k ) . '"' . selected( $k, $metal, false ) . '>' . esc_html( $l ) . '</option>';
+	}
+	echo '</select>';
+	echo '<select class="xg-pa-dir" aria-label="Richting"><option value="above">stijgt boven</option><option value="below">daalt onder</option></select>';
+	echo '<input type="number" class="xg-pa-target" step="0.01" min="0" placeholder="€ / gram"' . ( $spot > 0 ? ' value="' . esc_attr( round( $spot, 2 ) ) . '"' : '' ) . ' aria-label="Doelprijs">';
+	echo '<input type="email" class="xg-pa-email" placeholder="uw@email.nl" aria-label="E-mail">';
+	echo '<button type="button" class="xg-pa-btn">Activeer</button>';
+	echo '</div><div class="xg-pa-msg" role="status"></div>';
+	echo '</div></div></section>';
+	return ob_get_clean();
+}
+
+/** Widget-JS laden waar het blok staat. */
+add_action( 'wp_enqueue_scripts', function () {
+	if ( ! is_singular() || ! has_block( 'ekinese/price-alert' ) ) {
+		return;
+	}
+	$js = get_theme_file_path( 'assets/js/price-alert.js' );
+	if ( file_exists( $js ) ) {
+		wp_enqueue_script( 'ekinese-price-alert', get_theme_file_uri( 'assets/js/price-alert.js' ), array(), (string) filemtime( $js ), true );
+	}
+} );

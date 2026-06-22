@@ -161,6 +161,17 @@ function ekinese_bot_next_open_days() {
  */
 function ekinese_bot_reply( $text, $context = 'chat', $lang = 'nl' ) {
 	$r = ekinese_bot_reply_nl( $text, $context );
+	// #12 AI-fallback: alleen wanneer de regel-bot geen treffer had én er een
+	// Anthropic-key is geconfigureerd, neemt de Claude-assistent het over.
+	if ( ! empty( $r['is_fallback'] ) && function_exists( 'ekinese_ai_assistant_reply' ) ) {
+		$ai = ekinese_ai_assistant_reply( $text, $lang );
+		if ( $ai ) {
+			$r['reply']    = $ai;
+			$r['ai']       = true;
+			$r['is_fallback'] = false;
+			return $r; // AI antwoordt al in de juiste taal.
+		}
+	}
 	if ( $lang && 'nl' !== $lang && ! empty( $r['reply'] ) ) {
 		$r['reply'] = ekinese_bot_translate( $r['reply'], $lang );
 	}
@@ -224,7 +235,7 @@ function ekinese_bot_reply_nl( $text, $context = 'chat' ) {
 	$fallback = $open
 		? 'Daar help ik u graag mee. Kunt u het iets specifieker omschrijven? Of wilt u dat een medewerker met u meekijkt?'
 		: 'Bedankt voor uw bericht! Wij zijn nu gesloten, maar laat uw vraag en e-mail achter — dan reageren wij zo snel mogelijk.';
-	return array( 'reply' => $fallback, 'quick' => array( 'Goud verkopen', 'Afspraak maken', 'Alle kantoren' ), 'suggestions' => ekinese_bot_suggestions( $t ) );
+	return array( 'reply' => $fallback, 'quick' => array( 'Goud verkopen', 'Afspraak maken', 'Alle kantoren' ), 'suggestions' => ekinese_bot_suggestions( $t ), 'is_fallback' => true );
 }
 
 /**

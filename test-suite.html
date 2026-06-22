@@ -3323,6 +3323,70 @@ html[data-theme="dark"] .xg-kb-card { background: #1d1b19; border-color: #34302b
 html[data-theme="dark"] .xg-kb-card h3, html[data-theme="dark"] .xg-kb-lexicon h2, html[data-theme="dark"] .xg-article h2 { color: #f3efe8; }
 html[data-theme="dark"] .xg-kb-card p, html[data-theme="dark"] .xg-kb-terms a, html[data-theme="dark"] .xg-article p { color: #b3ad9f; }
 
+/* =========================
+   STEMPEL-HERKENNER (#13)
+========================= */
+.xg-hallmark { max-width: 640px; padding: 26px; border: 1px solid #e3ddd0; background: #fff; }
+.xg-hallmark-title { margin: 0 0 6px; font-size: 20px; color: #161412; }
+.xg-hallmark-lead { margin: 0 0 16px; color: #57534b; font-size: 14px; line-height: 1.6; }
+.xg-hallmark-row { display: flex; gap: 8px; }
+.xg-hallmark-input { flex: 1; min-width: 0; padding: 11px 14px; border: 1px solid #e3ddd0; background: #fff; font-size: 16px; color: #161412; }
+.xg-hallmark-btn { padding: 11px 20px; border: none; background: var(--red,#AE1E1E); color: #fff; font-weight: 700; cursor: pointer; }
+.xg-hallmark-quick { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.xg-hallmark-chip { padding: 6px 14px; border: 1px solid #e3ddd0; background: #faf8f2; color: #57534b; font-weight: 700; cursor: pointer; }
+.xg-hallmark-chip:hover { border-color: var(--gold,#D0AC4B); }
+.xg-hallmark-result { margin-top: 18px; padding: 16px; border-left: 4px solid var(--gold,#D0AC4B); background: #fbf7ea; display: flex; gap: 14px; align-items: flex-start; }
+.xg-hallmark-result.is-miss { border-left-color: #c0392b; background: #fdecea; }
+.xg-hallmark-badge { font-size: 24px; font-weight: 800; color: var(--red,#AE1E1E); background: #fff; border: 1px solid #ecdfae; padding: 8px 12px; }
+.xg-hallmark-info { display: flex; flex-direction: column; gap: 2px; font-size: 14px; color: #2a2722; }
+.xg-hallmark-info strong { font-size: 16px; color: #161412; }
+.xg-hallmark-price { color: #1f9d55; font-weight: 700; margin-top: 4px; }
+.xg-hallmark-note { font-size: 12px; color: #8a847a; }
+.xg-hallmark-cta { margin: 18px 0 0; }
+html[data-theme="dark"] .xg-hallmark { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-hallmark-title, html[data-theme="dark"] .xg-hallmark-info strong { color: #f3efe8; }
+html[data-theme="dark"] .xg-hallmark-input { background: #211e1a; border-color: #34302b; color: #f3efe8; }
+html[data-theme="dark"] .xg-hallmark-result { background: #211e1a; }
+html[data-theme="dark"] .xg-hallmark-badge { background: #161412; }
+
+/* =========================
+   PRIJSALARM-WIDGET (#19)
+========================= */
+.xg-pa { padding: 32px 0; }
+.xg-pa-box { max-width: 820px; padding: 24px; border: 1px solid #e3ddd0; background: #fff; }
+.xg-pa-head { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
+.xg-pa-ico { font-size: 26px; }
+.xg-pa-head h3 { margin: 0 0 2px; font-size: 19px; color: #161412; }
+.xg-pa-head p { margin: 0; color: #57534b; font-size: 14px; }
+.xg-pa-form { display: grid; grid-template-columns: 1fr 1fr 1fr 1.4fr auto; gap: 8px; }
+.xg-pa-form select, .xg-pa-form input { padding: 10px 12px; border: 1px solid #e3ddd0; background: #fff; font-size: 14px; color: #161412; min-width: 0; }
+.xg-pa-btn { padding: 10px 18px; border: none; background: var(--gold,#D0AC4B); color: #161412; font-weight: 800; cursor: pointer; }
+.xg-pa-btn:hover { filter: brightness(1.05); }
+.xg-pa-msg { font-size: 13px; color: #57534b; margin-top: 10px; min-height: 16px; }
+@media (max-width: 767px) { .xg-pa-form { grid-template-columns: 1fr 1fr; } .xg-pa-btn { grid-column: 1 / -1; } }
+html[data-theme="dark"] .xg-pa-box { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-pa-head h3 { color: #f3efe8; }
+html[data-theme="dark"] .xg-pa-form select, html[data-theme="dark"] .xg-pa-form input { background: #211e1a; border-color: #34302b; color: #f3efe8; }
+
+/* =========================
+   FOTO-TAXATIE (#11)
+========================= */
+.xg-photo { padding: 32px 0; }
+.xg-photo-box { max-width: 700px; padding: 26px; border: 1px solid #e3ddd0; background: #fff; }
+.xg-photo-box h3 { margin: 0 0 8px; font-size: 20px; color: #161412; }
+.xg-photo-box p { color: #57534b; font-size: 14px; line-height: 1.6; }
+.xg-photo-drop { display: flex; align-items: center; justify-content: center; min-height: 120px; border: 2px dashed #d8d2c6; background: #faf8f2; cursor: pointer; margin: 14px 0; color: #8a847a; text-align: center; padding: 16px; }
+.xg-photo-drop input { display: none; }
+.xg-photo-btn { padding: 11px 22px; border: none; background: var(--red,#AE1E1E); color: #fff; font-weight: 700; cursor: pointer; }
+.xg-photo-btn:disabled { opacity: .5; cursor: not-allowed; }
+.xg-photo-result { margin-top: 18px; padding: 16px; border-left: 4px solid var(--gold,#D0AC4B); background: #fbf7ea; }
+.xg-photo-result.is-miss { border-left-color: #c0392b; background: #fdeceb; }
+.xg-photo-disc { font-size: 12px; color: #8a847a; margin: 8px 0 12px; }
+html[data-theme="dark"] .xg-photo-box { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-photo-box h3 { color: #f3efe8; }
+html[data-theme="dark"] .xg-photo-drop { background: #211e1a; border-color: #34302b; }
+html[data-theme="dark"] .xg-photo-result { background: #211e1a; }
+
 
 /* =====================================================================
    XGOUD Smart Calculator  ·  Wizard
