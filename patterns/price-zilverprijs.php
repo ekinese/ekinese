@@ -15,6 +15,7 @@
 	<p class="hero-lead">De actuele zilverprijs en onze inkoopprijs per gram fijn zilver.</p>
 </div></section>
 <!-- wp:ekinese/metal-prices {"metal":"zilver"} /-->
+<!-- wp:ekinese/price-chart {"metal":"zilver"} /-->
 <section><div class="xg-container"><div class="xg-why">
 	<h2>Zilver verkopen tegen de dagprijs</h2>
 	<p class="xg-intro">Wij kopen zilveren baren, munten en zilverwerk in tegen de actuele zilverkoers per gram fijn zilver.</p>

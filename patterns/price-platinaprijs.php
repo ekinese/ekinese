@@ -15,6 +15,7 @@
 	<p class="hero-lead">De actuele platinaprijs en onze inkoopprijs per gram fijn platina.</p>
 </div></section>
 <!-- wp:ekinese/metal-prices {"metal":"platina"} /-->
+<!-- wp:ekinese/price-chart {"metal":"platina"} /-->
 <section><div class="xg-container"><div class="xg-why">
 	<h2>Platina verkopen tegen de dagprijs</h2>
 	<p class="xg-intro">Platina is zeldzaam en waardevol. Wij kopen platina baren, munten en sieraden in tegen de actuele koers.</p>

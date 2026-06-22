@@ -3001,6 +3001,59 @@ a.xg-final-btn:hover {
 .xg-legal ul { padding-left: 22px; }
 .xg-legal a { color: var(--red, #AE1E1E); }
 
+/* =========================
+   ONBOARDING-RONDLEIDING (self-built tour)
+========================= */
+.xg-ob-overlay {
+    position: fixed; inset: 0; z-index: 100050; cursor: pointer;
+    background: transparent;
+    box-shadow: 0 0 0 9999px rgba(10,8,6,.66);
+    /* highlight-venster */
+    clip-path: polygon(
+        0 0, 100% 0, 100% 100%, 0 100%, 0 0,
+        var(--x,0) var(--y,0),
+        var(--x,0) calc(var(--y,0) + var(--h,0)),
+        calc(var(--x,0) + var(--w,0)) calc(var(--y,0) + var(--h,0)),
+        calc(var(--x,0) + var(--w,0)) var(--y,0),
+        var(--x,0) var(--y,0)
+    );
+}
+.xg-ob-pop {
+    position: fixed; z-index: 100051; width: 300px; max-width: 90vw;
+    background: var(--white,#fff); border: 1px solid var(--line,#e3ddd0);
+    border-top: 3px solid var(--red,#AE1E1E); box-shadow: 0 18px 50px rgba(0,0,0,.28);
+    padding: 18px 18px 14px;
+}
+.xg-ob-step { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--gold,#c8a24a); text-transform: uppercase; margin-bottom: 6px; }
+.xg-ob-pop h4 { margin: 0 0 6px; font-size: 16px; color: var(--ink,#1a1a1a); }
+.xg-ob-pop p { margin: 0 0 14px; font-size: 13px; line-height: 1.6; color: var(--ink-soft,#6b665c); }
+.xg-ob-actions { display: flex; justify-content: space-between; gap: 10px; }
+.xg-ob-skip { background: none; border: none; color: var(--ink-soft,#6b665c); font-size: 13px; cursor: pointer; }
+.xg-ob-next { background: var(--red,#AE1E1E); color: #fff; border: none; padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.xg-ob-next:hover { background: var(--red-dark,#8e1818); }
+html[data-theme="dark"] .xg-ob-pop { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-ob-pop h4 { color: #f3efe8; }
+
+/* =========================
+   KOERSGRAFIEK (price chart)
+========================= */
+.xg-chart { background: #fff; border: 1px solid #ececec; padding: 24px; }
+.xg-chart-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+.xg-chart-head h2 { font-size: 22px; margin: 0; color: #111; }
+.xg-chart-tabs { display: flex; gap: 6px; }
+.xg-chart-tabs button { border: 1px solid #e3ddd0; background: #fff; padding: 6px 14px; font-weight: 700; font-size: 13px; cursor: pointer; color: #6b665c; }
+.xg-chart-tabs button.active { background: var(--red,#AE1E1E); border-color: var(--red,#AE1E1E); color: #fff; }
+.xg-chart-canvas { width: 100%; }
+.xg-chart-svg { width: 100%; height: 220px; display: block; }
+.xg-chart-meta { display: flex; gap: 18px; flex-wrap: wrap; align-items: baseline; margin-top: 12px; font-size: 14px; }
+.xg-chart-now { font-size: 22px; font-weight: 800; color: #111; }
+.xg-chart-delta { font-weight: 700; }
+.xg-chart-range { color: #6b665c; font-size: 13px; }
+html[data-theme="dark"] .xg-chart { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-chart-head h2, html[data-theme="dark"] .xg-chart-now { color: #f3efe8; }
+html[data-theme="dark"] .xg-chart-tabs button { background: #211e1a; border-color: #34302b; color: #b3ad9f; }
+html[data-theme="dark"] .xg-chart-tabs button.active { background: var(--red,#AE1E1E); color: #fff; }
+
 
 /* =====================================================================
    XGOUD Smart Calculator  ·  Wizard
@@ -3739,6 +3792,29 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 .xg-ctrl-opt.active { background: var(--red,#AE1E1E); border-color: var(--red,#AE1E1E); color: #fff; }
 .xg-ctrl-theme { display: flex; align-items: center; justify-content: space-between; padding-top: 4px; border-top: 1px solid var(--line,#e3ddd0); }
 .xg-ctrl-theme span { font-size: 12px; font-weight: 700; color: var(--ink,#1c1a16); }
+
+/* Social login-knoppen (account) */
+.xg-social-login { margin-top: 18px; text-align: center; }
+.xg-social-or { display: block; font-size: 12px; color: var(--ink-soft,#6b665c); margin-bottom: 10px; position: relative; }
+.xg-social-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.xg-social-btn { flex: 1 1 30%; min-width: 96px; display: inline-flex; align-items: center; justify-content: center; height: 44px; border: 1px solid var(--line,#e3ddd0); font-weight: 700; font-size: 13px; text-decoration: none; color: var(--ink,#1a1a1a); transition: border-color .2s, background .2s; }
+.xg-social-btn:hover { border-color: var(--red,#AE1E1E); }
+.xg-social-google:hover { background: #fef7f6; }
+.xg-social-facebook { color: #1877f2; }
+.xg-social-apple { color: #111; }
+html[data-theme="dark"] .xg-social-btn { border-color: #34302b; color: #f3efe8; }
+html[data-theme="dark"] .xg-social-apple { color: #f3efe8; }
+
+/* Loyaliteit-voortgang (account) */
+.xg-loyalty { margin: 16px 0; padding: 16px; border: 1px solid var(--line,#e3ddd0); }
+.xg-loyalty-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.xg-loyalty-tier { font-weight: 800; font-size: 16px; color: var(--gold,#c8a24a); letter-spacing: .3px; }
+.xg-loyalty-bonus { font-size: 12px; font-weight: 700; color: var(--ink-soft,#6b665c); }
+.xg-loyalty-bar { height: 8px; background: var(--line,#ece7dd); overflow: hidden; }
+.xg-loyalty-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--gold,#c8a24a), var(--red,#AE1E1E)); transition: width .6s ease; }
+.xg-loyalty-next { font-size: 12px; color: var(--ink-soft,#6b665c); margin-top: 8px; }
+html[data-theme="dark"] .xg-loyalty { border-color: #34302b; }
+html[data-theme="dark"] .xg-loyalty-bar { background: #2a2620; }
 
 
 /* XGOUD Newsletter-Banner (CTA-Stil, rot/gold, scharfkantig). */
@@ -5160,6 +5236,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 	<p class="hero-lead">Bekijk de actuele spot- en inkoopprijzen voor goud, zilver, platina en palladium. Dagelijks meermaals bijgewerkt.</p>
 </div></section>
 <section><div class="xg-container"><div class="xg-spec-table"><table><thead><tr><th>Metaal</th><th>Spotprijs (€/g)</th><th>Inkoopprijs (€/g)</th></tr></thead><tbody><tr><td>Goud</td><td>€ 62,50</td><td><strong>€ 57,50</strong></td></tr><tr><td>Zilver</td><td>€ 0,78</td><td><strong>€ 0,72</strong></td></tr><tr><td>Platina</td><td>€ 28,90</td><td><strong>€ 26,59</strong></td></tr><tr><td>Palladium</td><td>€ 30,10</td><td><strong>€ 27,69</strong></td></tr></tbody></table></div></div></section>
+<section><div class="xg-container"><div class="xg-chart"><div class="xg-chart-head"><h2>Goudprijs – koersverloop</h2><div class="xg-chart-tabs"><button>7d</button><button class="active">30d</button><button>90d</button></div></div><div class="xg-chart-canvas"><svg viewBox="0 0 760 220" preserveAspectRatio="none" class="xg-chart-svg"><defs><linearGradient id="xgcd" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1f9d55" stop-opacity=".18"/><stop offset="100%" stop-color="#1f9d55" stop-opacity="0"/></linearGradient></defs><polygon points="0,220 8,150 130,160 260,120 390,135 520,90 650,70 752,55 760,220" fill="url(#xgcd)"/><polyline points="8,150 130,160 260,120 390,135 520,90 650,70 752,55" fill="none" stroke="#1f9d55" stroke-width="2.5" vector-effect="non-scaling-stroke"/></svg></div><div class="xg-chart-meta"><span class="xg-chart-now">€ 62,50/g</span> <span class="xg-chart-delta" style="color:#1f9d55">▲ 4,1% (30d)</span> <span class="xg-chart-range">laag € 58,90 · hoog € 63,10</span></div></div></div></section>
 <section><div class="xg-container"><div class="xg-why">
 	<h2>Hoe bepalen wij onze inkoopprijs?</h2>
 	<p class="xg-intro">Onze inkoopprijs volgt de internationale spotkoers (LBMA) per gram fijn metaal, minus een transparante, vaste marge. Zo weet u altijd waar u aan toe bent — eerlijk en marktconform.</p>
@@ -5178,6 +5255,7 @@ select.xg-calc-input { cursor: pointer; appearance: none;
 	<p class="hero-lead">De actuele goudprijs en onze inkoopprijs per gram fijn goud — meermaals per dag bijgewerkt.</p>
 </div></section>
 <section><div class="xg-container"><div class="xg-spec-table"><table><thead><tr><th>Metaal</th><th>Spotprijs (€/g)</th><th>Inkoopprijs (€/g)</th></tr></thead><tbody><tr><td>Goud</td><td>€ 62,50</td><td><strong>€ 57,50</strong></td></tr><tr><td>Zilver</td><td>€ 0,78</td><td><strong>€ 0,72</strong></td></tr><tr><td>Platina</td><td>€ 28,90</td><td><strong>€ 26,59</strong></td></tr><tr><td>Palladium</td><td>€ 30,10</td><td><strong>€ 27,69</strong></td></tr></tbody></table></div></div></section>
+<section><div class="xg-container"><div class="xg-chart"><div class="xg-chart-head"><h2>Goudprijs – koersverloop</h2><div class="xg-chart-tabs"><button>7d</button><button class="active">30d</button><button>90d</button></div></div><div class="xg-chart-canvas"><svg viewBox="0 0 760 220" preserveAspectRatio="none" class="xg-chart-svg"><defs><linearGradient id="xgcd" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1f9d55" stop-opacity=".18"/><stop offset="100%" stop-color="#1f9d55" stop-opacity="0"/></linearGradient></defs><polygon points="0,220 8,150 130,160 260,120 390,135 520,90 650,70 752,55 760,220" fill="url(#xgcd)"/><polyline points="8,150 130,160 260,120 390,135 520,90 650,70 752,55" fill="none" stroke="#1f9d55" stroke-width="2.5" vector-effect="non-scaling-stroke"/></svg></div><div class="xg-chart-meta"><span class="xg-chart-now">€ 62,50/g</span> <span class="xg-chart-delta" style="color:#1f9d55">▲ 4,1% (30d)</span> <span class="xg-chart-range">laag € 58,90 · hoog € 63,10</span></div></div></div></section>
 <section><div class="xg-container"><div class="xg-why">
 	<h2>Goud verkopen tegen de dagprijs</h2>
 	<p class="xg-intro">Wij kopen goud in alle vormen: baren, munten en sloopgoud. De inkoopprijs volgt de actuele goudkoers (LBMA) per gram fijn goud, minus een vaste marge.</p>
@@ -10851,7 +10929,8 @@ window.XG_CHAT = { open: true }; window.XG_NEWSLETTER = {}; /* Demo: lokaler Fal
 		var atts = pending.slice(); clearPreview();
 		addMsg('user', text, atts);
 		typing(true);
-		var body = { text: text, attachments: atts, id: session.id || 0, token: session.token || '' };
+		var lang = (document.documentElement.getAttribute('lang') || 'nl').slice(0, 2).toLowerCase();
+		var body = { text: text, attachments: atts, id: session.id || 0, token: session.token || '', lang: lang };
 		fetch(CFG.rest_message, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
 			.then(function (r) { return r.json(); })
 			.then(function (j) {

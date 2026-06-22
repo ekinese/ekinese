@@ -15,6 +15,7 @@
 	<p class="hero-lead">Bekijk de actuele spot- en inkoopprijzen voor goud, zilver, platina en palladium. Dagelijks meermaals bijgewerkt.</p>
 </div></section>
 <!-- wp:ekinese/metal-prices /-->
+<!-- wp:ekinese/price-chart {"metal":"goud"} /-->
 <section><div class="xg-container"><div class="xg-why">
 	<h2>Hoe bepalen wij onze inkoopprijs?</h2>
 	<p class="xg-intro">Onze inkoopprijs volgt de internationale spotkoers (LBMA) per gram fijn metaal, minus een transparante, vaste marge. Zo weet u altijd waar u aan toe bent — eerlijk en marktconform.</p>

@@ -15,6 +15,7 @@
 	<p class="hero-lead">De actuele palladiumprijs en onze inkoopprijs per gram fijn palladium.</p>
 </div></section>
 <!-- wp:ekinese/metal-prices {"metal":"palladium"} /-->
+<!-- wp:ekinese/price-chart {"metal":"palladium"} /-->
 <section><div class="xg-container"><div class="xg-why">
 	<h2>Palladium verkopen tegen de dagprijs</h2>
 	<p class="xg-intro">Palladium kent een sterk schommelende markt. Wij bieden een eerlijke inkoopprijs op basis van de actuele spotkoers.</p>

@@ -1756,3 +1756,23 @@ a.xg-final-btn:hover {
 .xg-ob-next:hover { background: var(--red-dark,#8e1818); }
 html[data-theme="dark"] .xg-ob-pop { background: #1d1b19; border-color: #34302b; }
 html[data-theme="dark"] .xg-ob-pop h4 { color: #f3efe8; }
+
+/* =========================
+   KOERSGRAFIEK (price chart)
+========================= */
+.xg-chart { background: #fff; border: 1px solid #ececec; padding: 24px; }
+.xg-chart-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+.xg-chart-head h2 { font-size: 22px; margin: 0; color: #111; }
+.xg-chart-tabs { display: flex; gap: 6px; }
+.xg-chart-tabs button { border: 1px solid #e3ddd0; background: #fff; padding: 6px 14px; font-weight: 700; font-size: 13px; cursor: pointer; color: #6b665c; }
+.xg-chart-tabs button.active { background: var(--red,#AE1E1E); border-color: var(--red,#AE1E1E); color: #fff; }
+.xg-chart-canvas { width: 100%; }
+.xg-chart-svg { width: 100%; height: 220px; display: block; }
+.xg-chart-meta { display: flex; gap: 18px; flex-wrap: wrap; align-items: baseline; margin-top: 12px; font-size: 14px; }
+.xg-chart-now { font-size: 22px; font-weight: 800; color: #111; }
+.xg-chart-delta { font-weight: 700; }
+.xg-chart-range { color: #6b665c; font-size: 13px; }
+html[data-theme="dark"] .xg-chart { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-chart-head h2, html[data-theme="dark"] .xg-chart-now { color: #f3efe8; }
+html[data-theme="dark"] .xg-chart-tabs button { background: #211e1a; border-color: #34302b; color: #b3ad9f; }
+html[data-theme="dark"] .xg-chart-tabs button.active { background: var(--red,#AE1E1E); color: #fff; }

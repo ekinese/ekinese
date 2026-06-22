@@ -45,6 +45,15 @@ function pattern(file) {
 		'<tr><td>Platina</td><td>€ 28,90</td><td><strong>€ 26,59</strong></td></tr>' +
 		'<tr><td>Palladium</td><td>€ 30,10</td><td><strong>€ 27,69</strong></td></tr>' +
 		'</tbody></table></div></div></section>');
+	// Demo voor de koersgrafiek (server-rendered in WordPress).
+	out = out.replace(/<!--\s*wp:ekinese\/price-chart[^>]*?-->/g,
+		'<section><div class="xg-container"><div class="xg-chart"><div class="xg-chart-head"><h2>Goudprijs – koersverloop</h2>' +
+		'<div class="xg-chart-tabs"><button>7d</button><button class="active">30d</button><button>90d</button></div></div>' +
+		'<div class="xg-chart-canvas"><svg viewBox="0 0 760 220" preserveAspectRatio="none" class="xg-chart-svg">' +
+		'<defs><linearGradient id="xgcd" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1f9d55" stop-opacity=".18"/><stop offset="100%" stop-color="#1f9d55" stop-opacity="0"/></linearGradient></defs>' +
+		'<polygon points="0,220 8,150 130,160 260,120 390,135 520,90 650,70 752,55 760,220" fill="url(#xgcd)"/>' +
+		'<polyline points="8,150 130,160 260,120 390,135 520,90 650,70 752,55" fill="none" stroke="#1f9d55" stroke-width="2.5" vector-effect="non-scaling-stroke"/></svg></div>' +
+		'<div class="xg-chart-meta"><span class="xg-chart-now">€ 62,50/g</span> <span class="xg-chart-delta" style="color:#1f9d55">▲ 4,1% (30d)</span> <span class="xg-chart-range">laag € 58,90 · hoog € 63,10</span></div></div></div></section>');
 	return stripBlocks(out).trim();
 }
 

@@ -15,6 +15,7 @@
 	<p class="hero-lead">De actuele goudprijs en onze inkoopprijs per gram fijn goud — meermaals per dag bijgewerkt.</p>
 </div></section>
 <!-- wp:ekinese/metal-prices {"metal":"goud"} /-->
+<!-- wp:ekinese/price-chart {"metal":"goud"} /-->
 <section><div class="xg-container"><div class="xg-why">
 	<h2>Goud verkopen tegen de dagprijs</h2>
 	<p class="xg-intro">Wij kopen goud in alle vormen: baren, munten en sloopgoud. De inkoopprijs volgt de actuele goudkoers (LBMA) per gram fijn goud, minus een vaste marge.</p>
