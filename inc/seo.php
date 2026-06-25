@@ -160,21 +160,37 @@ function ekinese_meta_tags() {
 	$url  = is_singular() ? get_permalink() : home_url( add_query_arg( array(), $GLOBALS['wp']->request ?? '' ) );
 	/** Modules kunnen de canonical overschrijven (bv. stadpagina → kantoor). */
 	$url  = apply_filters( 'ekinese_canonical_url', $url );
-	$img  = ( is_singular() && has_post_thumbnail() ) ? get_the_post_thumbnail_url( null, 'large' ) : ekinese_business()['logo'];
+	// Social-afbeelding: per-pagina veld → uitgelichte afbeelding → logo.
+	$img = '';
+	if ( is_singular() ) {
+		$img = get_post_meta( get_the_ID(), '_xg_og_image', true );
+		if ( ! $img && has_post_thumbnail() ) {
+			$img = get_the_post_thumbnail_url( null, 'large' );
+		}
+	}
+	if ( ! $img ) {
+		$img = ekinese_business()['logo'];
+	}
+	$title = wp_get_document_title();
 
 	if ( $desc ) {
 		echo '<meta name="description" content="' . esc_attr( $desc ) . '">' . "\n";
 	}
 	echo '<link rel="canonical" href="' . esc_url( $url ) . '">' . "\n";
-	echo '<meta property="og:type" content="website">' . "\n";
+	echo '<meta property="og:type" content="' . ( is_singular( array( 'post' ) ) ? 'article' : 'website' ) . '">' . "\n";
 	echo '<meta property="og:site_name" content="XGOUD">' . "\n";
-	echo '<meta property="og:title" content="' . esc_attr( wp_get_document_title() ) . '">' . "\n";
+	echo '<meta property="og:title" content="' . esc_attr( $title ) . '">' . "\n";
 	if ( $desc ) {
 		echo '<meta property="og:description" content="' . esc_attr( $desc ) . '">' . "\n";
 	}
 	echo '<meta property="og:url" content="' . esc_url( $url ) . '">' . "\n";
 	echo '<meta property="og:image" content="' . esc_url( $img ) . '">' . "\n";
 	echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
+	echo '<meta name="twitter:title" content="' . esc_attr( $title ) . '">' . "\n";
+	if ( $desc ) {
+		echo '<meta name="twitter:description" content="' . esc_attr( $desc ) . '">' . "\n";
+	}
+	echo '<meta name="twitter:image" content="' . esc_url( $img ) . '">' . "\n";
 }
 add_action( 'wp_head', 'ekinese_meta_tags', 5 );
 
@@ -184,35 +200,99 @@ function ekinese_robots( $robots ) {
 		$robots['noindex']  = true;
 		$robots['nofollow'] = true;
 	}
+	// Per-pagina noindex via het SEO-veld.
+	if ( is_singular() && get_post_meta( get_the_ID(), '_xg_noindex', true ) ) {
+		$robots['noindex'] = true;
+		$robots['follow']  = true;
+	}
 	return $robots;
 }
 add_filter( 'wp_robots', 'ekinese_robots' );
 
 /* =====================================================================
-   META-DESCRIPTION VELD (per pagina/product)
+   SEO-VELDEN per pagina/product (titel, description, social, index, canonical)
 ===================================================================== */
-function ekinese_meta_desc_box() {
-	foreach ( array( 'page', 'post', 'xg_product' ) as $pt ) {
-		add_meta_box( 'xg_seo', __( 'SEO – meta description', 'ekinese' ), 'ekinese_meta_desc_html', $pt, 'normal', 'low' );
+function ekinese_seo_box() {
+	foreach ( array( 'page', 'post', 'xg_product', 'xg_watch', 'xg_gemstone' ) as $pt ) {
+		add_meta_box( 'xg_seo', __( 'SEO', 'ekinese' ), 'ekinese_seo_html', $pt, 'normal', 'high' );
 	}
 }
-add_action( 'add_meta_boxes', 'ekinese_meta_desc_box' );
+add_action( 'add_meta_boxes', 'ekinese_seo_box' );
 
-function ekinese_meta_desc_html( $post ) {
+function ekinese_seo_html( $post ) {
 	wp_nonce_field( 'xg_seo_save', 'xg_seo_nonce' );
-	$v = esc_attr( get_post_meta( $post->ID, '_xg_meta_desc', true ) );
-	echo '<p><input type="text" name="xg_meta_desc" value="' . $v . '" maxlength="160" style="width:100%" placeholder="Korte meta description (max 160 tekens)…"></p>';
+	$title   = get_post_meta( $post->ID, '_xg_seo_title', true );
+	$desc    = get_post_meta( $post->ID, '_xg_meta_desc', true );
+	$ogimg   = get_post_meta( $post->ID, '_xg_og_image', true );
+	$canon   = get_post_meta( $post->ID, '_xg_canonical', true );
+	$noindex = get_post_meta( $post->ID, '_xg_noindex', true );
+	$auto_t  = wp_strip_all_tags( get_the_title( $post ) );
+
+	echo '<style>.xg-seo-f{margin:0 0 14px}.xg-seo-f label{display:block;font-weight:600;margin-bottom:4px}.xg-seo-f input[type=text]{width:100%}.xg-seo-c{color:#646970;font-size:12px;margin-top:3px}</style>';
+
+	echo '<div class="xg-seo-f"><label>SEO-titel <span class="xg-seo-c">(leeg = automatisch: "' . esc_html( $auto_t ) . '")</span></label>';
+	echo '<input type="text" name="xg_seo_title" value="' . esc_attr( $title ) . '" maxlength="70" placeholder="Titel zoals in Google (max ±60 tekens)"></div>';
+
+	echo '<div class="xg-seo-f"><label>Meta description</label>';
+	echo '<input type="text" name="xg_meta_desc" value="' . esc_attr( $desc ) . '" maxlength="160" placeholder="Korte omschrijving (max 160 tekens)…"></div>';
+
+	echo '<div class="xg-seo-f"><label>Social-afbeelding (Open Graph / Twitter) <span class="xg-seo-c">(URL; leeg = uitgelichte afbeelding of logo)</span></label>';
+	echo '<input type="text" name="xg_og_image" value="' . esc_attr( $ogimg ) . '" placeholder="https://…/afbeelding.jpg"></div>';
+
+	echo '<div class="xg-seo-f"><label>Canonical-URL <span class="xg-seo-c">(optioneel; leeg = deze pagina zelf)</span></label>';
+	echo '<input type="text" name="xg_canonical" value="' . esc_attr( $canon ) . '" placeholder="https://…"></div>';
+
+	echo '<div class="xg-seo-f"><label><input type="checkbox" name="xg_noindex" value="1" ' . checked( $noindex, '1', false ) . '> Niet indexeren (noindex) — verberg deze pagina voor Google</label></div>';
 }
 
-function ekinese_meta_desc_save( $post_id ) {
+function ekinese_seo_save( $post_id ) {
 	if ( ! isset( $_POST['xg_seo_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['xg_seo_nonce'] ), 'xg_seo_save' ) ) {
 		return;
 	}
-	if ( isset( $_POST['xg_meta_desc'] ) ) {
-		update_post_meta( $post_id, '_xg_meta_desc', sanitize_text_field( wp_unslash( $_POST['xg_meta_desc'] ) ) );
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
 	}
+	$text = array(
+		'xg_seo_title' => '_xg_seo_title',
+		'xg_meta_desc' => '_xg_meta_desc',
+	);
+	foreach ( $text as $field => $key ) {
+		if ( isset( $_POST[ $field ] ) ) {
+			update_post_meta( $post_id, $key, sanitize_text_field( wp_unslash( $_POST[ $field ] ) ) );
+		}
+	}
+	foreach ( array( 'xg_og_image' => '_xg_og_image', 'xg_canonical' => '_xg_canonical' ) as $field => $key ) {
+		if ( isset( $_POST[ $field ] ) ) {
+			update_post_meta( $post_id, $key, esc_url_raw( wp_unslash( $_POST[ $field ] ) ) );
+		}
+	}
+	update_post_meta( $post_id, '_xg_noindex', isset( $_POST['xg_noindex'] ) ? '1' : '' );
 }
-add_action( 'save_post', 'ekinese_meta_desc_save' );
+add_action( 'save_post', 'ekinese_seo_save' );
+
+/* ---- SEO-titel-override (exact, zonder site-naam-suffix) ---- */
+function ekinese_seo_document_title( $title ) {
+	if ( is_singular() ) {
+		$t = get_post_meta( get_the_ID(), '_xg_seo_title', true );
+		if ( $t ) {
+			return $t;
+		}
+	}
+	return $title;
+}
+add_filter( 'pre_get_document_title', 'ekinese_seo_document_title' );
+
+/* ---- Canonical-override per pagina (haakt op de bestaande filter) ---- */
+function ekinese_seo_canonical( $url ) {
+	if ( is_singular() ) {
+		$c = get_post_meta( get_the_ID(), '_xg_canonical', true );
+		if ( $c ) {
+			return $c;
+		}
+	}
+	return $url;
+}
+add_filter( 'ekinese_canonical_url', 'ekinese_seo_canonical' );
 
 /* =====================================================================
    EIGEN, GECACHTE XML-SITEMAP  →  /sitemap.xml
