@@ -51,6 +51,7 @@ require_once get_theme_file_path( 'inc/ratios.php' );
 require_once get_theme_file_path( 'inc/price-tabs.php' );
 require_once get_theme_file_path( 'inc/market.php' );
 require_once get_theme_file_path( 'inc/admin-dashboard.php' );
+require_once get_theme_file_path( 'inc/assistant.php' );
 require_once get_theme_file_path( 'inc/trust.php' );
 require_once get_theme_file_path( 'inc/rewards.php' );
 require_once get_theme_file_path( 'inc/lottery.php' );

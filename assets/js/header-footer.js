@@ -308,16 +308,7 @@
     searchOv.classList.remove('open'); searchIn.value='';
   });
   document.addEventListener('keydown', e=>{ if(e.key==='Escape' && searchOv) searchOv.classList.remove('open'); });
-
-  if(searchIn) searchIn.addEventListener('input',()=>{
-    const q=searchIn.value.toLowerCase().trim();
-    if(!q){ searchRs.innerHTML=`<div class="xg-sr-section"><div class="xg-sr-label">Typ om te zoeken</div></div>`; return; }
-    const matches=ALL_TERMS.filter(s=>s.toLowerCase().includes(q)).slice(0,7);
-    const iconSVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>`;
-    searchRs.innerHTML=matches.length
-      ? `<div class="xg-sr-section"><div class="xg-sr-label">Resultaten</div>${matches.map(s=>`<div class="xg-sr-item"><span class="xg-sr-icon">${iconSVG}</span>${s}</div>`).join('')}</div>`
-      : `<div class="xg-sr-section"><div style="padding:12px 0;color:var(--ink-soft);font-size:13px;">Geen resultaten gevonden</div></div>`;
-  });
+  // De invoer wordt door de AI-assistent (assets/js/assistant.js) afgehandeld.
 
   /* ==========================================================
      MEGA MENU — WIZARD
