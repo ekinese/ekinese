@@ -151,13 +151,29 @@ function ekinese_auction_bid( WP_REST_Request $req ) {
 	if ( $amount < $min ) {
 		return new WP_Error( 'too_low', sprintf( __( 'Minimaal bod is € %.2f.', 'ekinese' ), $min ), array( 'status' => 400 ) );
 	}
+	// Vorige hoogste bieder onthouden (voor de "overboden"-melding).
+	$prev_email = get_post_meta( $id, 'winner_email', true );
+
 	update_post_meta( $id, 'current_bid', $amount );
 	update_post_meta( $id, 'leader', md5( $email ) ); // pseudoniem voor publieke weergave
 	update_post_meta( $id, 'winner_email', $email );  // privé: voor winnaarsmelding (bod is bindend)
 	update_post_meta( $id, 'winner_name', $name );
 	update_post_meta( $id, 'bid_count', (int) get_post_meta( $id, 'bid_count', true ) + 1 );
+
+	$title = get_the_title( $id );
+	$url   = get_permalink( $id );
 	// Bevestiging — bod is bindend, geen herroeping.
-	wp_mail( $email, __( 'Uw bod is geregistreerd', 'ekinese' ), sprintf( "Bedankt! Uw bod van € %.2f op '%s' is geregistreerd. Let op: een bod is bindend.\n\nXGOUD", $amount, get_the_title( $id ) ) );
+	wp_mail( $email, __( 'Uw bod is geregistreerd', 'ekinese' ), sprintf( "Bedankt! Uw bod van € %.2f op '%s' is geregistreerd. Let op: een bod is bindend.\n\nXGOUD", $amount, $title ) );
+	if ( function_exists( 'ekinese_notify' ) ) {
+		ekinese_notify( $email, 'Uw bod is geregistreerd', sprintf( "Uw bod van € %s op '%s' is de hoogste.", number_format_i18n( $amount, 2 ), $title ), $url, 'bid' );
+	}
+	// Vorige bieder is overboden → melding + mail.
+	if ( $prev_email && is_email( $prev_email ) && $prev_email !== $email ) {
+		wp_mail( $prev_email, __( 'U bent overboden', 'ekinese' ), sprintf( "Er is een hoger bod uitgebracht op '%s'. Breng een nieuw bod uit als u nog wilt meedoen:\n%s\n\nXGOUD", $title, $url ) );
+		if ( function_exists( 'ekinese_notify' ) ) {
+			ekinese_notify( $prev_email, 'U bent overboden', sprintf( "Er is een hoger bod uitgebracht op '%s'.", $title ), $url, 'outbid' );
+		}
+	}
 
 	return rest_ensure_response( array( 'ok' => true, 'current_bid' => $amount, 'bid_count' => (int) get_post_meta( $id, 'bid_count', true ), 'min_next' => $amount + max( 1, round( $amount * 0.02, 2 ) ) ) );
 }

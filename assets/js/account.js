@@ -138,11 +138,29 @@
 			'<div class="xg-goal-msg" role="status"></div></section>';
 	}
 
+	function notifyCard(d) {
+		var items = d.notifications || [];
+		if (!items.length) return '';
+		var unread = d.notifications_unread || 0;
+		var rows = items.map(function (n) {
+			var inner = '<div class="xg-notif-dot"></div><div class="xg-notif-body"><strong>' + esc(n.title) + '</strong><span>' + esc(n.message) + '</span><time>' + esc(n.date) + '</time></div>';
+			var cls = 'xg-notif' + (n.read ? '' : ' is-new');
+			return n.url
+				? '<a class="' + cls + '" href="' + esc(n.url) + '">' + inner + '</a>'
+				: '<div class="' + cls + '">' + inner + '</div>';
+		}).join('');
+		return '<section class="xg-acc-sec xg-notifs"><h3>Meldingen' +
+			(unread ? ' <span class="xg-notif-badge">' + unread + '</span>' : '') +
+			(unread ? ' <button type="button" class="xg-notif-read">Alles gelezen</button>' : '') +
+			'</h3><div class="xg-notif-list">' + rows + '</div></section>';
+	}
+
 	function renderDash(d) {
 		if (loginBox) loginBox.hidden = true;
 		dash.hidden = false;
 		dash.innerHTML =
 			'<h2>Mijn XGOUD</h2><p class="xg-acc-email">' + esc(d.email) + '</p>' +
+			notifyCard(d) +
 			statCards(d) +
 			savingsCard(d) +
 			yearReviewCard(d) +
@@ -175,6 +193,19 @@
 
 	// Interacties in het dashboard (referral kopiëren, spaardoel opslaan).
 	function bindDashEvents(d) {
+		var notifRead = dash.querySelector('.xg-notif-read');
+		if (notifRead) {
+			notifRead.addEventListener('click', function () {
+				notifRead.disabled = true;
+				fetch(restData.replace('/account/data', '/account/notifications/read'), {
+					method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token })
+				}).then(function () {
+					dash.querySelectorAll('.xg-notif.is-new').forEach(function (el) { el.classList.remove('is-new'); });
+					var badge = dash.querySelector('.xg-notif-badge'); if (badge) badge.remove();
+					notifRead.remove();
+				}).catch(function () { notifRead.disabled = false; });
+			});
+		}
 		var copy = dash.querySelector('.xg-ref-copy');
 		if (copy) {
 			copy.addEventListener('click', function () {

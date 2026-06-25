@@ -195,8 +195,11 @@ function ekinese_auctions_close_due() {
 			wp_mail(
 				$winner,
 				sprintf( __( 'Gefeliciteerd — u heeft de veiling gewonnen: %s', 'ekinese' ), $title ),
-				sprintf( "Beste %s,\n\nU heeft de veiling '%s' gewonnen met een bod van %s. Wij nemen spoedig contact met u op voor de afhandeling.\n\nMet vriendelijke groet,\nXGOUD", $wname ?: '', $title, ekinese_auction_eur( $final ) )
+				sprintf( "Beste %s,\n\nU heeft de veiling '%s' gewonnen met een bod van %s. U ontvangt zo spoedig mogelijk een pro forma factuur. Na betaling volgt de definitieve factuur.\n\nMet vriendelijke groet,\nXGOUD", $wname ?: '', $title, ekinese_auction_eur( $final ) )
 			);
+			if ( function_exists( 'ekinese_notify' ) ) {
+				ekinese_notify( $winner, 'U heeft de veiling gewonnen!', sprintf( "Gefeliciteerd — u won '%s' met %s. U ontvangt een pro forma factuur.", $title, ekinese_auction_eur( $final ) ), get_permalink( $id ), 'won' );
+			}
 		}
 		$admin = function_exists( 'ekinese_business' ) ? ekinese_business()['email'] : get_option( 'admin_email' );
 		wp_mail( $admin, 'Veiling gesloten: ' . $title, sprintf( "De veiling '%s' is gesloten.\nEindbod: %s\nWinnaar: %s <%s>\n", $title, ekinese_auction_eur( $final ), $wname, $winner ) );

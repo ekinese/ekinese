@@ -39,6 +39,7 @@ require_once get_theme_file_path( 'inc/notifications.php' );
 require_once get_theme_file_path( 'inc/pickup.php' );
 require_once get_theme_file_path( 'inc/stats.php' );
 require_once get_theme_file_path( 'inc/account.php' );
+require_once get_theme_file_path( 'inc/notify.php' );
 require_once get_theme_file_path( 'inc/heatmap.php' );
 require_once get_theme_file_path( 'inc/loyalty.php' );
 require_once get_theme_file_path( 'inc/auctions.php' );

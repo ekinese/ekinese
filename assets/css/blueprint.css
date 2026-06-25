@@ -2188,6 +2188,24 @@ html[data-theme="dark"] .xg-form input, html[data-theme="dark"] .xg-form textare
 .xg-news-meta { display: block; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; color: #8a847a; margin-bottom: 8px; }
 .xg-news-card h3 { font-size: 17px; line-height: 1.35; }
 
+/* Meldingen-center (Mijn XGOUD) */
+.xg-notifs h3 { display: flex; align-items: center; gap: 10px; }
+.xg-notif-badge { background: #AE1E1E; color: #fff; font-size: 12px; font-weight: 800; min-width: 20px; height: 20px; line-height: 20px; text-align: center; padding: 0 6px; border-radius: 10px; }
+.xg-notif-read { margin-left: auto; font-size: 12px; font-weight: 700; color: #6b665c; background: none; border: 1px solid #d8d2c6; padding: 4px 10px; cursor: pointer; }
+.xg-notif-read:hover { color: #AE1E1E; border-color: #AE1E1E; }
+.xg-notif-list { display: flex; flex-direction: column; }
+.xg-notif { display: flex; gap: 12px; align-items: flex-start; padding: 12px 4px; border-bottom: 1px solid #ececec; text-decoration: none; color: inherit; }
+.xg-notif-dot { width: 8px; height: 8px; border-radius: 50%; background: transparent; margin-top: 7px; flex-shrink: 0; }
+.xg-notif.is-new { background: #fbf7ea; }
+.xg-notif.is-new .xg-notif-dot { background: #D0AC4B; }
+.xg-notif-body { display: flex; flex-direction: column; gap: 2px; }
+.xg-notif-body strong { font-size: 14px; color: #1c1a16; }
+.xg-notif-body span { font-size: 13px; color: #57534b; }
+.xg-notif-body time { font-size: 11px; color: #8a847a; }
+html[data-theme="dark"] .xg-notif.is-new { background: #221f1a; }
+html[data-theme="dark"] .xg-notif-body strong { color: #f3efe8; }
+html[data-theme="dark"] .xg-notif { border-color: #34302b; }
+
 /* Metaal-ratio */
 .xg-ratio-now { margin: 4px 0 18px; font-size: 16px; }
 .xg-ratio-now strong { font-size: 34px; font-weight: 800; color: var(--gold,#D0AC4B); margin-right: 8px; }
