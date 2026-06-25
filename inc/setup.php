@@ -25,7 +25,9 @@ function ekinese_setup() {
 	add_theme_support( 'html5', array( 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script' ) );
 
 	// Zusätzliche Editor-Stylesheets laden (für Front- und Editor-Konsistenz).
-	add_editor_style( 'assets/css/editor.css' );
+	// blueprint.css meeladen, zodat de bewerkbare patterns (hero, knoppen, kaarten,
+	// grids) er in de Gutenberg-editor net zo uitzien als op de echte pagina.
+	add_editor_style( array( 'assets/css/editor.css', 'assets/css/blueprint.css' ) );
 }
 add_action( 'after_setup_theme', 'ekinese_setup' );
 

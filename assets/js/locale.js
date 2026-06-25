@@ -51,61 +51,19 @@
 	};
 
 	function build(host) {
-		host.classList.add('xg-ctrl');
-		host.innerHTML =
-			'<button class="xg-ctrl-btn" aria-label="Taal en valuta">' +
-				'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"/></svg>' +
-				'<span class="xg-ctrl-cur">' + state.lang.toUpperCase() + ' · ' + state.currency + '</span>' +
-			'</button>' +
-			'<div class="xg-ctrl-pop">' +
-				'<div class="xg-ctrl-label">Taal</div><div class="xg-ctrl-row xg-ctrl-langs"></div>' +
-				'<div class="xg-ctrl-label">Valuta</div><div class="xg-ctrl-row xg-ctrl-curs"></div>' +
-				'<div class="xg-ctrl-theme"><span>Thema</span><span data-xg-theme-toggle></span></div>' +
-			'</div>';
+		// Sprache + Währung bewusst entfernt: de site is NL-only / EUR-only.
+		// Alleen de thema-schakelaar (licht/donker) blijft in de header.
+		host.classList.add('xg-ctrl', 'xg-ctrl--theme-only');
+		host.innerHTML = '';
+		var themeHost = document.createElement('span');
+		themeHost.setAttribute('data-xg-theme-toggle', '');
+		host.appendChild(themeHost);
 
-		var btn = host.querySelector('.xg-ctrl-btn');
-		var pop = host.querySelector('.xg-ctrl-pop');
-		var label = host.querySelector('.xg-ctrl-cur');
-		btn.addEventListener('click', function (e) { e.stopPropagation(); host.classList.toggle('open'); });
-		document.addEventListener('click', function (e) { if (!host.contains(e.target)) host.classList.remove('open'); });
-
-		var langs = host.querySelector('.xg-ctrl-langs');
-		LANGS.forEach(function (l) {
-			var b = document.createElement('button');
-			b.className = 'xg-ctrl-opt' + (state.lang === l[0] ? ' active' : '');
-			b.textContent = l[1];
-			b.addEventListener('click', function () {
-				if (l[0] === state.lang) return;
-				save(); // valuta-/voorkeur bewaren over de navigatie heen
-				// Productie: navigeren naar de server-gerenderde taal-URL (SEO-echt).
-				// Standalone preview (file://): geen server → client-vertaling als fallback.
-				if (location.protocol === 'file:') {
-					state.lang = l[0]; apply();
-					langs.querySelectorAll('.xg-ctrl-opt').forEach(function (x) { x.classList.remove('active'); });
-					b.classList.add('active'); label.textContent = state.lang.toUpperCase() + ' · ' + state.currency;
-				} else {
-					location.href = urlForLang(l[0]);
-				}
-			});
-			langs.appendChild(b);
-		});
-
-		var curs = host.querySelector('.xg-ctrl-curs');
-		Object.keys(CUR).forEach(function (c) {
-			var b = document.createElement('button');
-			b.className = 'xg-ctrl-opt' + (state.currency === c ? ' active' : '');
-			b.textContent = c;
-			b.addEventListener('click', function () {
-				state.currency = c; apply();
-				curs.querySelectorAll('.xg-ctrl-opt').forEach(function (x) { x.classList.remove('active'); });
-				b.classList.add('active'); label.textContent = state.lang.toUpperCase() + ' · ' + state.currency;
-			});
-			curs.appendChild(b);
-		});
-
-		// Theme-Switch in das Popover mounten (sobald theme.js bereit ist).
-		var themeHost = host.querySelector('[data-xg-theme-toggle]');
-		if (window.XGTheme && window.XGTheme.mount) window.XGTheme.mount(themeHost);
+		function mountTheme() {
+			if (window.XGTheme && window.XGTheme.mount) { window.XGTheme.mount(themeHost); return true; }
+			return false;
+		}
+		if (!mountTheme()) { window.addEventListener('load', mountTheme); }
 	}
 
 	function boot() {
