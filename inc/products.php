@@ -400,6 +400,16 @@ function ekinese_render_product_detail() {
 		</div></section>
 
 		<?php
+		// Koersgrafiek van het bijbehorende metaal (server-gerenderde SVG).
+		if ( function_exists( 'ekinese_render_price_chart' ) && function_exists( 'ekinese_verkopen_metal_slugs' ) ) {
+			$chart_metal = ekinese_verkopen_metal_slugs()[ $metal ] ?? '';
+			if ( $chart_metal ) {
+				echo ekinese_render_price_chart( array( 'metal' => $chart_metal, 'days' => 30 ) ); // phpcs:ignore WordPress.Security.EscapeOutput
+			}
+		}
+		?>
+
+		<?php
 		$related = ekinese_related_products( $id, 4 );
 		if ( $related ) :
 		?>

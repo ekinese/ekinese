@@ -152,7 +152,8 @@ function ekinese_price_chart_points( $metal, $days ) {
 
 /** Chart-JS laden waar het blok staat. */
 add_action( 'wp_enqueue_scripts', function () {
-	if ( ! is_singular() || ! has_block( 'ekinese/price-chart' ) ) {
+	// Ook op productpagina's (de detail-render injecteert daar een grafiek).
+	if ( ! is_singular() || ( ! has_block( 'ekinese/price-chart' ) && ! is_singular( 'xg_product' ) ) ) {
 		return;
 	}
 	$js = get_theme_file_path( 'assets/js/price-chart.js' );
