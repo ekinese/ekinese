@@ -97,7 +97,11 @@ function ekinese_account_collect( $type, $email, $fields ) {
 	foreach ( $posts as $p ) {
 		$row = array( '_id' => $p->ID, 'date' => get_the_date( 'Y-m-d', $p ) );
 		foreach ( $fields as $f ) {
-			$row[ $f ] = get_post_meta( $p->ID, $f, true );
+			$v = get_post_meta( $p->ID, $f, true );
+			// Lege meta de bestaande fallback (bijv. post-datum) niet laten overschrijven.
+			if ( '' !== $v || ! isset( $row[ $f ] ) ) {
+				$row[ $f ] = $v;
+			}
 		}
 		$out[] = $row;
 	}

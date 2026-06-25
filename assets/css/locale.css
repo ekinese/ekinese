@@ -59,6 +59,23 @@ html[data-theme="dark"] .xg-acc-email, html[data-theme="dark"] .xg-account-login
 html[data-theme="dark"] .xg-account-form input { background: #211e1a; border-color: #34302b; color: #f3efe8; }
 html[data-theme="dark"] .xg-acc-sec h3 { border-color: #34302b; }
 
+/* Zelfbediening-formulieren in het account (bezit/ticket/alarm) */
+.xg-acc-form { margin: 14px 0 4px; padding: 18px; border: 1px solid var(--line,#e3ddd0); background: #fff; }
+.xg-acc-form h4 { margin: 0 0 12px; font-size: 15px; font-weight: 800; }
+.xg-acc-form-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+.xg-acc-form-row > * { flex: 1 1 160px; }
+.xg-acc-form input, .xg-acc-form select, .xg-acc-form textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--line,#d8d2c6); background: #fff; font: inherit; }
+.xg-acc-form input:focus, .xg-acc-form select:focus, .xg-acc-form textarea:focus { outline: none; border-color: var(--gold,#D0AC4B); }
+.xg-acc-form textarea { display: block; margin-bottom: 10px; }
+.xg-acc-form button { background: var(--gold,#D0AC4B); color: #161412; font-weight: 800; border: none; padding: 11px 22px; cursor: pointer; font: inherit; }
+.xg-acc-form button:hover { filter: brightness(1.05); }
+.xg-acc-form button:disabled { opacity: .6; cursor: default; }
+.xg-acc-form-msg { margin-left: 12px; font-size: 13px; font-weight: 600; }
+.xg-acc-form-msg.is-ok { color: #1f9d55; }
+.xg-acc-form-msg.is-err { color: #d93636; }
+html[data-theme="dark"] .xg-acc-form { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-acc-form input, html[data-theme="dark"] .xg-acc-form select, html[data-theme="dark"] .xg-acc-form textarea { background: #211e1a; border-color: #34302b; color: #f3efe8; }
+
 /* Loyaliteit-voortgang (account) */
 .xg-loyalty { margin: 16px 0; padding: 16px; border: 1px solid var(--line,#e3ddd0); }
 .xg-loyalty-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }

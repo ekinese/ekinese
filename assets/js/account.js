@@ -13,6 +13,7 @@
 	var msg = root.querySelector('.xg-account-msg');
 	var restLogin = root.getAttribute('data-rest-login');
 	var restData = root.getAttribute('data-rest-data');
+	var apiBase = (restData || '').replace('/account/data', '');
 
 	function esc(s) {
 		return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
@@ -155,6 +156,42 @@
 			'</h3><div class="xg-notif-list">' + rows + '</div></section>';
 	}
 
+	// Zelfbediening-formulieren: bezit toevoegen, ticket aanmaken, prijsalarm.
+	// data-endpoint = REST-pad; data-token=1 stuurt het account-token mee.
+	function holdingForm() {
+		return '<form class="xg-acc-form" data-acc-form data-endpoint="' + apiBase + '/portfolio/add" data-token="1">' +
+			'<h4>Bezit toevoegen</h4>' +
+			'<div class="xg-acc-form-row">' +
+			'<input name="name" placeholder="Omschrijving (bijv. Krugerrand 1 oz)" required>' +
+			'<select name="metal"><option value="goud">Goud</option><option value="zilver">Zilver</option><option value="platina">Platina</option><option value="palladium">Palladium</option></select>' +
+			'</div>' +
+			'<div class="xg-acc-form-row">' +
+			'<input name="fine_weight" type="number" step="0.01" min="0" placeholder="Fijn gewicht (g)" required>' +
+			'<input name="qty" type="number" min="1" value="1" placeholder="Aantal">' +
+			'<input name="purchase_price" type="number" step="0.01" min="0" placeholder="Inkoopprijs € (totaal)">' +
+			'</div>' +
+			'<button type="submit">Toevoegen</button><span class="xg-acc-form-msg" role="status"></span></form>';
+	}
+	function ticketForm(d) {
+		return '<form class="xg-acc-form" data-acc-form data-endpoint="' + apiBase + '/ticket">' +
+			'<h4>Nieuw ticket</h4>' +
+			'<input type="hidden" name="email" value="' + esc(d.email) + '">' +
+			'<div class="xg-acc-form-row"><input name="subject" placeholder="Onderwerp" required></div>' +
+			'<textarea name="message" rows="3" placeholder="Uw vraag of bericht" required></textarea>' +
+			'<button type="submit">Versturen</button><span class="xg-acc-form-msg" role="status"></span></form>';
+	}
+	function alertForm(d) {
+		return '<form class="xg-acc-form" data-acc-form data-endpoint="' + apiBase + '/price-alert">' +
+			'<h4>Nieuw prijsalarm</h4>' +
+			'<input type="hidden" name="email" value="' + esc(d.email) + '">' +
+			'<div class="xg-acc-form-row">' +
+			'<select name="metal"><option value="goud">Goud</option><option value="zilver">Zilver</option><option value="platina">Platina</option><option value="palladium">Palladium</option></select>' +
+			'<select name="direction"><option value="above">Stijgt boven</option><option value="below">Daalt onder</option></select>' +
+			'<input name="target" type="number" step="0.01" min="0" placeholder="Doelprijs € per gram" required>' +
+			'</div>' +
+			'<button type="submit">Alarm instellen</button><span class="xg-acc-form-msg" role="status"></span></form>';
+	}
+
 	function renderDash(d) {
 		if (loginBox) loginBox.hidden = true;
 		dash.hidden = false;
@@ -170,6 +207,7 @@
 				{ key: 'value', label: 'Waarde (€)' }, { key: 'gain', label: 'Winst/verlies (€)' },
 				{ key: 'gain_pct', label: '%' }
 			]) +
+			holdingForm() +
 			section('Lopende loterijen', d.lotteries, [
 				{ key: 'title', label: 'Loterij' }, { key: 'prize', label: 'Prijs' },
 				{ key: 'cost', label: 'Inzet (punten)' }, { key: 'tickets', label: 'Loten' }
@@ -185,18 +223,59 @@
 			section('Tickets', d.tickets, [
 				{ key: 'reference', label: 'Referentie' }, { key: 'subject', label: 'Onderwerp' }, { key: 'status', label: 'Status' }
 			]) +
+			ticketForm(d) +
 			section('Zendingen', d.pickups, [
 				{ key: 'reference', label: 'Referentie' }, { key: 'status', label: 'Status' }
 			]) +
 			section('Prijsalarmen', d.alerts, [
 				{ key: 'metal', label: 'Metaal' }, { key: 'direction', label: 'Richting' },
 				{ key: 'target', label: 'Doelprijs' }, { key: 'active', label: 'Actief' }
-			]);
+			]) +
+			alertForm(d);
 		bindDashEvents(d);
+	}
+
+	// Dashboard opnieuw laden (na een wijziging) met hetzelfde token.
+	function reloadDash() {
+		fetch(restData + '?token=' + encodeURIComponent(token))
+			.then(function (r) { return r.ok ? r.json() : null; })
+			.then(function (d) { if (d) renderDash(d); })
+			.catch(function () {});
 	}
 
 	// Interacties in het dashboard (referral kopiëren, spaardoel opslaan).
 	function bindDashEvents(d) {
+		// Zelfbediening-formulieren (bezit/ticket/alarm) → POST naar REST.
+		dash.querySelectorAll('[data-acc-form]').forEach(function (f) {
+			f.addEventListener('submit', function (e) {
+				e.preventDefault();
+				var fmsg = f.querySelector('.xg-acc-form-msg');
+				var btn = f.querySelector('button[type="submit"]');
+				var body = {};
+				new FormData(f).forEach(function (v, k) { body[k] = v; });
+				if (f.getAttribute('data-token')) { body.token = token; }
+				if (btn) btn.disabled = true;
+				if (fmsg) { fmsg.textContent = 'Bezig…'; fmsg.className = 'xg-acc-form-msg'; }
+				fetch(f.getAttribute('data-endpoint'), {
+					method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+				}).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+					.then(function (o) {
+						if (btn) btn.disabled = false;
+						if (o.ok && o.j && o.j.ok) {
+							if (fmsg) { fmsg.textContent = 'Opgeslagen.'; fmsg.className = 'xg-acc-form-msg is-ok'; }
+							f.reset();
+							reloadDash();
+						} else if (fmsg) {
+							fmsg.textContent = (o.j && o.j.message) || 'Mislukt. Controleer de velden.';
+							fmsg.className = 'xg-acc-form-msg is-err';
+						}
+					}).catch(function () {
+						if (btn) btn.disabled = false;
+						if (fmsg) { fmsg.textContent = 'Netwerkfout.'; fmsg.className = 'xg-acc-form-msg is-err'; }
+					});
+			});
+		});
+
 		var notifRead = dash.querySelector('.xg-notif-read');
 		if (notifRead) {
 			notifRead.addEventListener('click', function () {

@@ -54,6 +54,13 @@ function ekinese_portfolio_for( $email ) {
 		$id    = $p->ID;
 		$buy   = (float) get_post_meta( $id, 'purchase_price', true );
 		$value = ekinese_holding_value( $id );
+		// Holdings zonder metaal/gewicht (bijv. automatisch uit een veiling) tonen
+		// we neutraal op de inkoopprijs i.p.v. als 100% verlies.
+		$metal = get_post_meta( $id, 'metal', true );
+		$fine  = (float) get_post_meta( $id, 'fine_weight', true );
+		if ( $value <= 0 && $buy > 0 && ( ! $metal || $fine <= 0 ) ) {
+			$value = $buy;
+		}
 		$out[] = array(
 			'id'       => $id,
 			'name'     => $p->post_title,

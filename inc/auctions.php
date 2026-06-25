@@ -346,6 +346,25 @@ function ekinese_auction_billing_save( $post_id ) {
 	}
 	update_post_meta( $post_id, 'charity_released', '1' );
 
+	// Auto: gewonnen + betaalde veiling toevoegen aan het portfolio van de koper.
+	$winner_email = get_post_meta( $post_id, 'winner_email', true );
+	if ( $winner_email && is_email( $winner_email ) && ! get_post_meta( $post_id, '_holding_id', true ) ) {
+		$hid = wp_insert_post( array(
+			'post_type'   => 'xg_holding',
+			'post_status' => 'publish',
+			'post_title'  => get_the_title( $post_id ),
+		) );
+		if ( $hid && ! is_wp_error( $hid ) ) {
+			update_post_meta( $hid, 'email', $winner_email );
+			update_post_meta( $hid, 'metal', get_post_meta( $post_id, 'metal', true ) );
+			update_post_meta( $hid, 'fine_weight', get_post_meta( $post_id, 'fine_weight', true ) );
+			update_post_meta( $hid, 'qty', 1 );
+			update_post_meta( $hid, 'purchase_price', (float) get_post_meta( $post_id, 'current_bid', true ) );
+			update_post_meta( $hid, 'purchase_date', gmdate( 'Y-m-d' ) );
+			update_post_meta( $post_id, '_holding_id', $hid );
+		}
+	}
+
 	$winner = get_post_meta( $post_id, 'winner_email', true );
 	$title  = get_the_title( $post_id );
 	$inv    = get_post_meta( $post_id, 'invoice_number', true );
