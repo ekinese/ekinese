@@ -178,6 +178,10 @@
 				{ key: 'date', label: 'Datum' }, { key: 'time', label: 'Tijd' },
 				{ key: 'service', label: 'Service' }, { key: 'status', label: 'Status' }
 			]) +
+			section('Mijn veilingen', d.auctions, [
+				{ key: 'title', label: 'Veiling' }, { key: 'amount', label: 'Eindbod' },
+				{ key: 'proforma', label: 'Pro forma' }, { key: 'invoice', label: 'Factuur' }, { key: 'paid', label: 'Betaald' }
+			]) +
 			section('Tickets', d.tickets, [
 				{ key: 'reference', label: 'Referentie' }, { key: 'subject', label: 'Onderwerp' }, { key: 'status', label: 'Status' }
 			]) +

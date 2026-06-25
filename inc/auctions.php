@@ -192,6 +192,11 @@ function ekinese_auctions_close_due() {
 		$wname  = get_post_meta( $id, 'winner_name', true );
 		$title  = get_the_title( $id );
 		if ( $winner && is_email( $winner ) ) {
+			// Pro forma factuur aanmaken (charity wordt PAS na betaling vrijgegeven).
+			if ( ! get_post_meta( $id, 'proforma_number', true ) ) {
+				update_post_meta( $id, 'proforma_number', 'PF-' . gmdate( 'Y' ) . '-' . $id );
+				update_post_meta( $id, 'proforma_date', gmdate( 'Y-m-d' ) );
+			}
 			// Spaarpunten voor de aankoop via de veiling.
 			$pts = 0;
 			if ( function_exists( 'ekinese_award_points' ) && function_exists( 'ekinese_reward_rules' ) && $final > 0 ) {
@@ -213,3 +218,108 @@ function ekinese_auctions_close_due() {
 		wp_mail( $admin, 'Veiling gesloten: ' . $title, sprintf( "De veiling '%s' is gesloten.\nEindbod: %s\nWinnaar: %s <%s>\n", $title, ekinese_auction_eur( $final ), $wname, $winner ) );
 	}
 }
+
+/* =====================================================================
+   CHARITY-VRIJGAVE: afgerekende veilingen tellen mee in het projecttotaal
+===================================================================== */
+add_filter( 'ekinese_charity_accrued_extra', function ( $extra, $project_id, $title ) {
+	$ids = get_posts( array(
+		'post_type'   => 'xg_auction',
+		'post_status' => 'publish',
+		'numberposts' => -1,
+		'fields'      => 'ids',
+		'meta_query'  => array(
+			'relation' => 'AND',
+			array( 'key' => 'charity_project', 'value' => $title ),
+			array( 'key' => 'charity_released', 'value' => '1' ),
+		),
+	) );
+	$sum = 0;
+	foreach ( $ids as $aid ) {
+		$sum += (float) get_post_meta( $aid, 'charity_amount', true );
+	}
+	return $extra + $sum;
+}, 10, 3 );
+
+/* =====================================================================
+   ADMIN: facturatie & betaling per veiling
+===================================================================== */
+add_action( 'add_meta_boxes', function () {
+	add_meta_box( 'xg_auction_billing', __( 'Facturatie & betaling', 'ekinese' ), 'ekinese_auction_billing_box', 'xg_auction', 'side', 'default' );
+} );
+
+function ekinese_auction_billing_box( $post ) {
+	wp_nonce_field( 'xg_auction_billing', 'xg_auction_billing_nonce' );
+	$pf   = get_post_meta( $post->ID, 'proforma_number', true );
+	$inv  = get_post_meta( $post->ID, 'invoice_number', true );
+	$paid = get_post_meta( $post->ID, 'paid', true );
+	$ca   = (float) get_post_meta( $post->ID, 'charity_amount', true );
+	$rel  = get_post_meta( $post->ID, 'charity_released', true );
+	echo '<p>Pro forma: <strong>' . esc_html( $pf ?: '—' ) . '</strong></p>';
+	echo '<p>Factuur: <strong>' . esc_html( $inv ?: '—' ) . '</strong></p>';
+	echo '<p><label><input type="checkbox" name="xg_auction_paid" value="1" ' . checked( $paid, '1', false ) . '> ' . esc_html__( 'Betaling ontvangen', 'ekinese' ) . '</label></p>';
+	echo '<p class="description">' . esc_html__( 'Bij “Betaling ontvangen” wordt de definitieve factuur aangemaakt en het goede-doel-aandeel', 'ekinese' ) . ' ' . ( $ca > 0 ? '(' . esc_html( ekinese_auction_eur( $ca ) ) . ') ' : '' ) . esc_html__( 'vrijgegeven voor het project.', 'ekinese' ) . ( $rel ? ' <strong>Vrijgegeven.</strong>' : '' ) . '</p>';
+}
+
+function ekinese_auction_billing_save( $post_id ) {
+	if ( ! isset( $_POST['xg_auction_billing_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['xg_auction_billing_nonce'] ), 'xg_auction_billing' ) ) {
+		return;
+	}
+	$paid = ! empty( $_POST['xg_auction_paid'] );
+	$was  = get_post_meta( $post_id, 'paid', true ) === '1';
+	update_post_meta( $post_id, 'paid', $paid ? '1' : '' );
+	if ( ! $paid || $was ) {
+		return; // niets nieuws.
+	}
+	// Definitieve factuur + charity vrijgeven (gebeurt PAS hier, na betaling).
+	if ( ! get_post_meta( $post_id, 'invoice_number', true ) ) {
+		update_post_meta( $post_id, 'invoice_number', 'INV-' . gmdate( 'Y' ) . '-' . $post_id );
+		update_post_meta( $post_id, 'invoice_date', gmdate( 'Y-m-d' ) );
+	}
+	update_post_meta( $post_id, 'charity_released', '1' );
+
+	$winner = get_post_meta( $post_id, 'winner_email', true );
+	$title  = get_the_title( $post_id );
+	$inv    = get_post_meta( $post_id, 'invoice_number', true );
+	$ca     = (float) get_post_meta( $post_id, 'charity_amount', true );
+	$proj   = get_post_meta( $post_id, 'charity_project', true );
+	if ( $winner && is_email( $winner ) ) {
+		$ctxt = $ca > 0 ? sprintf( ' Hiermee is %s vrijgegeven voor %s.', ekinese_auction_eur( $ca ), $proj ?: 'een goed doel' ) : '';
+		wp_mail( $winner, 'Uw factuur — ' . $title, sprintf( "Beste klant,\n\nWij hebben uw betaling voor '%s' ontvangen. Uw definitieve factuur is %s.%s\n\nMet vriendelijke groet,\nXGOUD", $title, $inv, $ctxt ) );
+		if ( function_exists( 'ekinese_notify' ) ) {
+			ekinese_notify( $winner, 'Betaling ontvangen — factuur beschikbaar', sprintf( "Wij ontvingen uw betaling voor '%s'. Factuur %s.", $title, $inv ), get_permalink( $post_id ), 'invoice' );
+		}
+	}
+}
+add_action( 'save_post_xg_auction', 'ekinese_auction_billing_save' );
+
+/* =====================================================================
+   ACCOUNT: gewonnen veilingen + facturatiestatus in "Mijn XGOUD"
+===================================================================== */
+add_filter( 'ekinese_account_data', function ( $data, $email ) {
+	$ids = get_posts( array(
+		'post_type'   => 'xg_auction',
+		'post_status' => 'publish',
+		'numberposts' => -1,
+		'fields'      => 'ids',
+		'meta_key'    => 'winner_email',
+		'meta_value'  => sanitize_email( $email ),
+	) );
+	$rows = array();
+	foreach ( $ids as $id ) {
+		if ( get_post_meta( $id, 'status', true ) !== 'closed' ) {
+			continue;
+		}
+		$rows[] = array(
+			'title'    => get_the_title( $id ),
+			'amount'   => ekinese_auction_eur( get_post_meta( $id, 'current_bid', true ) ),
+			'proforma' => get_post_meta( $id, 'proforma_number', true ) ?: '—',
+			'invoice'  => get_post_meta( $id, 'invoice_number', true ) ?: '—',
+			'paid'     => get_post_meta( $id, 'paid', true ) === '1' ? 'Ja' : 'Nee',
+		);
+	}
+	if ( $rows ) {
+		$data['auctions'] = $rows;
+	}
+	return $data;
+}, 10, 2 );

@@ -103,6 +103,8 @@ function ekinese_charity_accrued( $project_id ) {
 			$sum += (float) get_post_meta( $id, 'charity_total', true );
 		}
 	}
+	// Extra bijdragen (bv. afgerekende veilingen) — andere modules haken hierop in.
+	$sum += (float) apply_filters( 'ekinese_charity_accrued_extra', 0, $project_id, $title );
 	return max( 0, $sum - ekinese_charity_paid( $project_id ) );
 }
 
