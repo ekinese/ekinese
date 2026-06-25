@@ -2187,3 +2187,8 @@ html[data-theme="dark"] .xg-form input, html[data-theme="dark"] .xg-form textare
 .xg-news-card { display: block; }
 .xg-news-meta { display: block; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; color: #8a847a; margin-bottom: 8px; }
 .xg-news-card h3 { font-size: 17px; line-height: 1.35; }
+
+/* Metaal-ratio */
+.xg-ratio-now { margin: 4px 0 18px; font-size: 16px; }
+.xg-ratio-now strong { font-size: 34px; font-weight: 800; color: var(--gold,#D0AC4B); margin-right: 8px; }
+.xg-ratio-now span { color: #6b665c; }

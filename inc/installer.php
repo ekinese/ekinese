@@ -44,6 +44,14 @@ function ekinese_install_pages() {
 		'zilverprijs'           => array( 'Zilverprijs vandaag', 'price-zilverprijs', 'dagprijzen' ),
 		'platinaprijs'          => array( 'Platinaprijs vandaag', 'price-platinaprijs', 'dagprijzen' ),
 		'palladiumprijs'        => array( 'Palladiumprijs', 'price-palladiumprijs', 'dagprijzen' ),
+		// Metaal-ratio's (hub + 6 paren onder /dagprijzen/ratio/).
+		'ratio'                 => array( "Metaal-ratio's", 'ratio-hub', 'dagprijzen' ),
+		'goud-zilver'           => array( 'Goud/Zilver-ratio', ekinese_ratio_page_markup( 'goud', 'zilver' ), 'ratio' ),
+		'goud-platina'          => array( 'Goud/Platina-ratio', ekinese_ratio_page_markup( 'goud', 'platina' ), 'ratio' ),
+		'goud-palladium'        => array( 'Goud/Palladium-ratio', ekinese_ratio_page_markup( 'goud', 'palladium' ), 'ratio' ),
+		'platina-zilver'        => array( 'Platina/Zilver-ratio', ekinese_ratio_page_markup( 'platina', 'zilver' ), 'ratio' ),
+		'palladium-zilver'      => array( 'Palladium/Zilver-ratio', ekinese_ratio_page_markup( 'palladium', 'zilver' ), 'ratio' ),
+		'platina-palladium'     => array( 'Platina/Palladium-ratio', ekinese_ratio_page_markup( 'platina', 'palladium' ), 'ratio' ),
 		'inkoopprijzen'         => array( 'Inkoopprijzen', 'price-inkoopprijzen', null ),
 		// Service.
 		'prijsgarantie'         => array( 'Prijsgarantie', 'page-prijsgarantie', null ),
