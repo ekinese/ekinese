@@ -143,3 +143,40 @@ add_filter( 'ekinese_account_data', function ( $data, $email ) {
 	unset( $a );
 	return $data;
 }, 20, 2 );
+
+/* =====================================================================
+   E-MAIL het certificaat naar de klant zodra de afspraak is afgerond (#5)
+===================================================================== */
+function ekinese_cert_email_on_complete( $post_id ) {
+	if ( get_post_type( $post_id ) !== 'xg_appointment' ) {
+		return;
+	}
+	if ( wp_is_post_revision( $post_id ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ) {
+		return;
+	}
+	if ( get_post_meta( $post_id, 'status', true ) !== 'completed' ) {
+		return;
+	}
+	if ( get_post_meta( $post_id, '_cert_emailed', true ) ) {
+		return; // al verstuurd — niet opnieuw.
+	}
+	$email = get_post_meta( $post_id, 'email', true );
+	if ( ! is_email( $email ) ) {
+		return;
+	}
+	$first   = get_post_meta( $post_id, 'first', true );
+	$charity = (float) get_post_meta( $post_id, 'charity_total', true );
+	$url     = ekinese_cert_url( $post_id );
+
+	$body  = 'Beste ' . trim( $first ) . ",\n\n";
+	$body .= "Bedankt voor uw verkoop bij XGOUD.\n";
+	if ( $charity > 0 ) {
+		$body .= 'Met deze verkoop heeft u € ' . number_format( $charity, 2, ',', '.' ) . " bijgedragen aan een goed doel — hartelijk dank voor uw steun!\n";
+	}
+	$body .= "\nUw persoonlijke certificaat kunt u hier bekijken, opslaan en delen:\n" . $url . "\n\n";
+	$body .= "Met vriendelijke groet,\nXGOUD";
+
+	wp_mail( $email, 'Bedankt voor uw steun — uw XGOUD-certificaat', $body );
+	update_post_meta( $post_id, '_cert_emailed', '1' );
+}
+add_action( 'save_post_xg_appointment', 'ekinese_cert_email_on_complete', 30 );
