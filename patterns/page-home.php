@@ -1,6 +1,8 @@
 <?php
 /**
  * XGOUD – Startseite (Home). Conversion-gericht, SEO/H1-H4 correct.
+ * Dynamische blokken staan als zelfstandige siblings in een .xg-blueprint-group
+ * (anders renderen ze niet en missen ze de container-styling).
  *
  * @package Ekinese
  *
@@ -17,6 +19,13 @@
 		<div class="hero-kicker">GOUD · ZILVER · DIAMANTEN · HORLOGES</div>
 		<h1>Verkoop uw edelmetaal tegen de beste dagprijs</h1>
 		<p>Bij XGOUD krijgt u een eerlijke, transparante prijs — direct uitbetaald en met een vast deel voor het goede doel. Bereken hiernaast in enkele seconden uw waarde.</p>
+		<div class="xg-hero-split-cta">
+			<a class="xg-final-btn" href="/afspraak/">Maak een afspraak</a>
+			<a class="xg-hero-split-link" href="/dagprijzen/">Bekijk de dagprijzen →</a>
+		</div>
+		<div class="xg-hero-trust">
+			<span>★★★★★ 4,8/5 op Trustpilot</span><span>40+ vestigingen</span><span>100% verzekerd</span>
+		</div>
 	</div>
 	<div class="xg-hero-split-calc">
 		<div class="xg-calc" data-mode="compact" data-only="metal"></div>
@@ -29,9 +38,17 @@
 	<div class="xg-charity-ticker-projects"><span>Scholen</span><span>Kinderdagverblijven</span><span>Vrouwenopvang</span><span>Sportcentra</span></div>
 </div>
 
-<!-- wp:ekinese/trust-wall /-->
+</div>
+<!-- /wp:html -->
 
-<!-- wp:ekinese/charity-map /-->
+<!-- Live inkoopprijzen met metaal-tabs -->
+<!-- wp:group {"className":"xg-blueprint"} -->
+<div class="wp-block-group xg-blueprint"><!-- wp:ekinese/price-tabs /--></div>
+<!-- /wp:group -->
+
+<!-- Waarom XGOUD + Zo werkt het -->
+<!-- wp:html -->
+<div class="xg-blueprint">
 
 <section><div class="xg-container"><div class="xg-why">
 	<div class="xg-eyebrow">WAAROM XGOUD</div>
@@ -65,10 +82,85 @@
 	</div>
 </div></section>
 
+</div>
+<!-- /wp:html -->
+
+<!-- Veilingen — producten uit de veiling -->
+<!-- wp:group {"className":"xg-blueprint"} -->
+<div class="wp-block-group xg-blueprint"><!-- wp:ekinese/auctions {"limit":3} /-->
+<!-- wp:html --><div class="xg-container xg-home-more"><a class="xg-home-more-link" href="/veilingen/">Bekijk alle veilingen →</a></div><!-- /wp:html --></div>
+<!-- /wp:group -->
+
+<!-- Reviews / klantbeoordelingen -->
+<!-- wp:group {"className":"xg-blueprint"} -->
+<div class="wp-block-group xg-blueprint"><!-- wp:ekinese/trust-wall /--></div>
+<!-- /wp:group -->
+
+<!-- Nieuws-cards -->
+<!-- wp:group {"className":"xg-blueprint"} -->
+<div class="wp-block-group xg-blueprint"><!-- wp:html -->
+<section class="xg-home-head"><div class="xg-container"><div class="xg-eyebrow">NIEUWS &amp; MARKT</div><h2 class="xg-section-title">Laatste nieuws &amp; marktinzichten</h2></div></section>
+<!-- /wp:html -->
+<!-- wp:ekinese/news {"limit":6} /--></div>
+<!-- /wp:group -->
+
+<!-- Kaart + kantoor-cards -->
+<!-- wp:group {"className":"xg-blueprint"} -->
+<div class="wp-block-group xg-blueprint"><!-- wp:ekinese/offices-overview {"embed":true} /--></div>
+<!-- /wp:group -->
+
+<!-- FAQ -->
+<!-- wp:group {"className":"xg-blueprint"} -->
+<div class="wp-block-group xg-blueprint"><!-- wp:ekinese/faq /--></div>
+<!-- /wp:group -->
+
+<!-- Interne links (GEO/SEO) + slot-CTA -->
+<!-- wp:html -->
+<div class="xg-blueprint">
+
+<section class="xg-linkhub"><div class="xg-container">
+	<h2 class="xg-section-title">Goud verkopen in heel Nederland</h2>
+	<div class="xg-linkhub-grid">
+		<div class="xg-linkhub-col">
+			<h3>Populaire steden</h3>
+			<a href="/kantoren/amsterdam/">Goud verkopen Amsterdam</a>
+			<a href="/kantoren/rotterdam/">Goud verkopen Rotterdam</a>
+			<a href="/kantoren/den-haag/">Goud verkopen Den Haag</a>
+			<a href="/kantoren/utrecht/">Goud verkopen Utrecht</a>
+			<a href="/kantoren/eindhoven/">Goud verkopen Eindhoven</a>
+			<a href="/kantoren/">Alle vestigingen →</a>
+		</div>
+		<div class="xg-linkhub-col">
+			<h3>Wat u kunt verkopen</h3>
+			<a href="/verkopen/edelmetalen/goud/">Goud verkopen</a>
+			<a href="/verkopen/edelmetalen/zilver/">Zilver verkopen</a>
+			<a href="/verkopen/edelmetalen/platina/">Platina verkopen</a>
+			<a href="/verkopen/edelstenen/">Diamanten &amp; edelstenen</a>
+			<a href="/verkopen/horloges/">Luxe horloges</a>
+		</div>
+		<div class="xg-linkhub-col">
+			<h3>Dagprijzen &amp; kennis</h3>
+			<a href="/dagprijzen/goudprijs/">Goudprijs vandaag</a>
+			<a href="/dagprijzen/zilverprijs/">Zilverprijs vandaag</a>
+			<a href="/dagprijzen/ratio/goud-zilver/">Goud/zilver-ratio</a>
+			<a href="/kennisbank/">Kennisbank</a>
+			<a href="/service/faq/">Veelgestelde vragen</a>
+		</div>
+		<div class="xg-linkhub-col">
+			<h3>Service</h3>
+			<a href="/service/gratis-taxatie/">Gratis taxatie</a>
+			<a href="/service/thuisbezoek/">Thuisbezoek</a>
+			<a href="/service/zakelijk-verkopen/">Zakelijk verkopen</a>
+			<a href="/veilingen/">Veilingen</a>
+			<a href="/contact/">Contact</a>
+		</div>
+	</div>
+</div></section>
+
 <section><div class="xg-container">
 	<div class="xg-grid-2"><div class="xg-final-cta-content">
 		<h2>Klaar om te verkopen?</h2>
-		<p>Bereken uw waarde of maak direct een afspraak met een van onze experts.</p>
+		<p>Bereken uw waarde of maak direct een afspraak met een van onze experts. Eerlijk, snel en met een vast deel voor het goede doel.</p>
 	</div><div class="xg-final-cta-box">
 		<h3>Start vandaag nog</h3>
 		<div class="xg-final-list"><div class="xg-final-item">✓ Gratis taxatie</div><div class="xg-final-item">✓ Directe uitbetaling</div><div class="xg-final-item">✓ 100% verzekerd</div></div>

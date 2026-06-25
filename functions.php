@@ -48,6 +48,7 @@ require_once get_theme_file_path( 'inc/i18n.php' );
 require_once get_theme_file_path( 'inc/seo-index.php' );
 require_once get_theme_file_path( 'inc/price-chart.php' );
 require_once get_theme_file_path( 'inc/ratios.php' );
+require_once get_theme_file_path( 'inc/price-tabs.php' );
 require_once get_theme_file_path( 'inc/trust.php' );
 require_once get_theme_file_path( 'inc/rewards.php' );
 require_once get_theme_file_path( 'inc/lottery.php' );

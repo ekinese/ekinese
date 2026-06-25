@@ -2231,3 +2231,57 @@ html[data-theme="dark"] .xg-notif { border-color: #34302b; }
 .xg-ratio-now { margin: 4px 0 18px; font-size: 16px; }
 .xg-ratio-now strong { font-size: 34px; font-weight: 800; color: var(--gold,#D0AC4B); margin-right: 8px; }
 .xg-ratio-now span { color: #6b665c; }
+
+/* =========================
+   HOME — hero-extra's, prijs-tabs, linkhub
+========================= */
+.xg-hero-split-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 6px; }
+.xg-hero-split-link { font-weight: 700; color: #AE1E1E; }
+.xg-hero-split-link:hover { text-decoration: underline; }
+.xg-hero-trust { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 22px; font-size: 13px; font-weight: 600; color: #6b665c; }
+.xg-hero-trust span { white-space: nowrap; }
+
+/* Prijs-tabs */
+.xg-ptabs { padding: 70px 0; }
+.xg-ptabs-nav { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 26px 0 0; }
+.xg-ptab { background: #fff; border: 1px solid #e2ddd2; padding: 12px 26px; font: inherit; font-weight: 700; font-size: 15px; color: #2a2722; cursor: pointer; transition: .15s; }
+.xg-ptab:hover { border-color: #D0AC4B; }
+.xg-ptab.active { background: #161412; border-color: #161412; color: #fff; }
+.xg-ptabs-panels { max-width: 880px; margin: 0 auto; }
+.xg-ptab-panel { display: none; background: #fff; border: 1px solid #ececec; box-shadow: 0 12px 35px rgba(0,0,0,.05); padding: 34px; margin-top: -1px; }
+.xg-ptab-panel.active { display: block; }
+.xg-ptab-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #ececec; border: 1px solid #ececec; }
+.xg-ptab-cell { background: #fff; padding: 20px; text-align: center; }
+.xg-ptab-cell span { display: block; font-size: 12px; color: #6b665c; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+.xg-ptab-cell strong { font-size: 24px; font-weight: 800; }
+.xg-ptab-cell--buy { background: #faf6ec; }
+.xg-ptab-cell--buy strong { color: #AE1E1E; }
+.xg-ptab-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; margin-top: 26px; }
+.xg-ptab-link { font-weight: 700; color: #AE1E1E; }
+.xg-ptab-link:hover { text-decoration: underline; }
+.xg-ptabs-note { text-align: center; margin-top: 16px; font-size: 13px; color: #6b665c; }
+@media (max-width: 700px) { .xg-ptab-grid { grid-template-columns: repeat(2, 1fr); } .xg-ptab-panel { padding: 24px 18px; } }
+
+/* Home sectie-koppen + "meer"-links */
+.xg-home-head { padding-top: 70px; }
+.xg-home-more { text-align: center; padding: 6px 0 60px; }
+.xg-home-more-link { font-weight: 700; color: #AE1E1E; font-size: 15px; }
+.xg-home-more-link:hover { text-decoration: underline; }
+
+/* Interne-links hub (GEO/SEO) */
+.xg-linkhub { padding: 70px 0; background: #faf8f4; }
+.xg-linkhub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; margin-top: 30px; }
+.xg-linkhub-col h3 { font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 14px; color: #161412; }
+.xg-linkhub-col a { display: block; padding: 6px 0; color: #57534b; font-size: 15px; border-bottom: 1px solid transparent; }
+.xg-linkhub-col a:hover { color: #AE1E1E; }
+@media (max-width: 900px) { .xg-linkhub-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .xg-linkhub-grid { grid-template-columns: 1fr; } }
+
+html[data-theme="dark"] .xg-ptab { background: #1d1b19; border-color: #34302b; color: #f3efe8; }
+html[data-theme="dark"] .xg-ptab.active { background: #f3efe8; color: #161412; border-color: #f3efe8; }
+html[data-theme="dark"] .xg-ptab-panel { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-ptab-grid { background: #34302b; border-color: #34302b; }
+html[data-theme="dark"] .xg-ptab-cell { background: #1d1b19; }
+html[data-theme="dark"] .xg-ptab-cell--buy { background: #221f1a; }
+html[data-theme="dark"] .xg-linkhub { background: #161412; }
+html[data-theme="dark"] .xg-linkhub-col a { color: #b3ad9f; }

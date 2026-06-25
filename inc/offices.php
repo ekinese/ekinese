@@ -213,7 +213,10 @@ function ekinese_locations_import_page() {
 ===================================================================== */
 function ekinese_register_office_blocks() {
 	register_block_type( 'ekinese/office-detail', array( 'render_callback' => 'ekinese_render_office_detail' ) );
-	register_block_type( 'ekinese/offices-overview', array( 'render_callback' => 'ekinese_render_offices_overview' ) );
+	register_block_type( 'ekinese/offices-overview', array(
+		'attributes'      => array( 'embed' => array( 'type' => 'boolean', 'default' => false ) ),
+		'render_callback' => 'ekinese_render_offices_overview',
+	) );
 }
 add_action( 'init', 'ekinese_register_office_blocks' );
 
@@ -249,13 +252,17 @@ function ekinese_render_office_detail() {
 	return ob_get_clean();
 }
 
-function ekinese_render_offices_overview() {
+function ekinese_render_offices_overview( $attr = array() ) {
+	// Op de homepage als sectie ingebed → h2 i.p.v. h1 (één h1 per pagina).
+	$embed = ! empty( $attr['embed'] );
+	$tag   = $embed ? 'h2' : 'h1';
+	$head  = $embed ? 'Vind een vestiging bij u in de buurt' : 'Onze kantoren';
 	ob_start();
 	?>
 	<section class="xg-offices">
 		<div class="xg-offices-intro">
-			<h1>Onze kantoren</h1>
-			<p>Bezoek een van onze vestigingen in Nederland of laat onze expert bij u langskomen.</p>
+			<<?php echo esc_html( $tag ); ?>><?php echo esc_html( $head ); ?></<?php echo esc_html( $tag ); ?>>
+			<p>Bezoek een van onze 40+ vestigingen in Nederland en België of laat onze expert bij u langskomen.</p>
 		</div>
 		<div class="xg-hq-banner">
 			<span class="xg-hq-badge">Hoofdkantoor</span>
