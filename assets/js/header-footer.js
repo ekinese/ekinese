@@ -101,8 +101,20 @@
       });
     }
     track.innerHTML=html;
-    // Footer-ticker met exact dezelfde inhoud vullen (alleen weergave, geen dropdown).
-    const ftTrack=document.getElementById('xgTrackFt'); if(ftTrack) ftTrack.innerHTML=html;
+    // Footer-ticker met exact dezelfde inhoud vullen + eigen (omhoog) dropdown.
+    const ftTrack=document.getElementById('xgTrackFt');
+    if(ftTrack){
+      ftTrack.innerHTML=html;
+      ftTrack.querySelectorAll('.xg-ti').forEach(el=>{
+        el.addEventListener('click', e=>{
+          e.stopPropagation();
+          const idx=parseInt(el.dataset.idx);
+          const was=el.classList.contains('active');
+          closeFtDrop();
+          if(!was){ el.classList.add('active'); openFtDrop(el, METALS[idx]); }
+        });
+      });
+    }
     track.querySelectorAll('.xg-ti').forEach(el=>{
       el.addEventListener('click', e=>{
         e.stopPropagation();
@@ -254,7 +266,7 @@
     document.body.appendChild(div);
     activeFtDrop=div;
     if(ftBlurOv) ftBlurOv.classList.add('active');
-    document.getElementById('ftTrack').classList.add('paused');
+    const ftt=document.getElementById('xgTrackFt'); if(ftt) ftt.classList.add('paused');
 
     requestAnimationFrame(()=>{
       const dh=div.offsetHeight;
@@ -271,9 +283,9 @@
 
   function closeFtDrop(){
     if(activeFtDrop){ activeFtDrop.remove(); activeFtDrop=null; }
-    document.querySelectorAll('.ft-item').forEach(i=>i.classList.remove('active'));
+    document.querySelectorAll('#xgTrackFt .xg-ti').forEach(i=>i.classList.remove('active'));
     if(ftBlurOv) ftBlurOv.classList.remove('active');
-    const t=document.getElementById('ftTrack'); if(t) t.classList.remove('paused');
+    const t=document.getElementById('xgTrackFt'); if(t) t.classList.remove('paused');
   }
   document.addEventListener('click', e=>{ if(activeFtDrop&&!activeFtDrop.contains(e.target)) closeFtDrop(); });
   buildFtTicker();

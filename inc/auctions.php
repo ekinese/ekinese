@@ -23,6 +23,56 @@ function ekinese_auction_eur( $v ) {
 }
 
 /* =====================================================================
+   DEMO-VEILINGEN — idempotent, zodat /veilingen/ niet leeg is om te testen.
+   Verwijderbaar zodra er echte veilingen zijn (titels hieronder).
+===================================================================== */
+function ekinese_seed_dummy_auctions() {
+	$now  = current_time( 'timestamp' );
+	$ends = function ( $days ) use ( $now ) {
+		return date( 'Y-m-d H:i:s', $now + (int) $days * DAY_IN_SECONDS ); // phpcs:ignore WordPress.DateTime
+	};
+	$items = array(
+		array( 'Gouden Krugerrand 1 oz (2024)', 1800, 1875, 6, 10, 'Stichting Leergeld', 2,
+			'Een prachtige gouden Krugerrand van 1 troy ounce, jaargang 2024. Geleverd met certificaat.' ),
+		array( 'Zilveren Maple Leaf — tube (25 stuks)', 600, 642, 4, 5, 'Het Vergeten Kind', 3,
+			'Volle tube van 25 zilveren Maple Leafs, 1 oz per munt, 999/1000.' ),
+		array( 'Antiek gouden zakhorloge (14k)', 950, 1010, 8, 15, 'KWF Kankerbestrijding', 1,
+			'Authentiek gouden zakhorloge, 14 karaat, begin 20e eeuw. Werkend uurwerk.' ),
+		array( 'Diamanten solitairring 0,75 ct', 1400, 1400, 0, 10, 'Stichting Leergeld', 5,
+			'Witgouden solitairring met een geslepen diamant van 0,75 ct, kleur G, helderheid VS1.' ),
+	);
+	$made = 0;
+	foreach ( $items as $it ) {
+		list( $title, $start, $cur, $bids, $pct, $proj, $days, $desc ) = $it;
+		$name = sanitize_title( $title );
+		$exist = get_posts( array( 'post_type' => 'xg_auction', 'name' => $name, 'post_status' => 'any', 'numberposts' => 1, 'fields' => 'ids' ) );
+		if ( ! empty( $exist ) ) {
+			continue; // al aanwezig — niet overschrijven (mogelijk handmatig aangepast).
+		}
+		$id = wp_insert_post( array(
+			'post_type'    => 'xg_auction',
+			'post_status'  => 'publish',
+			'post_title'   => $title,
+			'post_name'    => $name,
+			'post_content' => $desc,
+		) );
+		if ( is_wp_error( $id ) || ! $id ) {
+			continue;
+		}
+		update_post_meta( $id, 'start_price', $start );
+		update_post_meta( $id, 'current_bid', $cur );
+		update_post_meta( $id, 'bid_count', $bids );
+		update_post_meta( $id, 'ends', $ends( $days ) );
+		update_post_meta( $id, 'charity_pct', $pct );
+		update_post_meta( $id, 'charity_project', $proj );
+		update_post_meta( $id, 'status', 'live' );
+		update_post_meta( $id, '_xg_dummy', '1' );
+		$made++;
+	}
+	return $made;
+}
+
+/* =====================================================================
    BLOKKEN
 ===================================================================== */
 function ekinese_register_auction_blocks() {

@@ -36,6 +36,8 @@ function ekinese_install_pages() {
 		'afspraak'              => array( 'Afspraak maken', 'hero-calculator', null ),
 		'mijn-xgoud'            => array( 'Mijn XGOUD', '<!-- wp:ekinese/account /-->', null ),
 		'rit'                   => array( 'XGOUD Rit', '<!-- wp:ekinese/driver-app /-->', null ),
+		// Veilingen-overzicht: bewerkbare pagina (intro = native blokken) + dynamisch grid.
+		'veilingen'             => array( 'Veilingen', "<!-- wp:group {\"className\":\"xg-blueprint\"} -->\n<div class=\"wp-block-group xg-blueprint\"><!-- wp:group {\"tagName\":\"section\",\"className\":\"xg-container\"} -->\n<section class=\"wp-block-group xg-container\"><!-- wp:heading {\"className\":\"xg-section-title\"} -->\n<h2 class=\"xg-section-title\">Veilingen</h2>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>Bied mee op bijzondere edelmetalen, munten, sieraden en horloges. Een deel van elke opbrengst gaat naar onze goede doelen. Let op: een bod is bindend en kan niet worden ingetrokken.</p>\n<!-- /wp:paragraph --></section>\n<!-- /wp:group -->\n\n<!-- wp:ekinese/auctions /--></div>\n<!-- /wp:group -->", null ),
 		// Edelmetalen / Edelstenen / Horloges: zie ekinese_install_verkopen_tree()
 		// (hiërarchische /verkopen/-structuur, 5 niveaus). Bewust NIET hier.
 		// Dagprijzen.
@@ -375,6 +377,9 @@ function ekinese_run_install() {
 	if ( function_exists( 'ekinese_seed_gemstones' ) ) {
 		$report['gemstones'] = (int) ekinese_seed_gemstones();
 	}
+	if ( function_exists( 'ekinese_seed_dummy_auctions' ) ) {
+		$report['auctions'] = (int) ekinese_seed_dummy_auctions();
+	}
 	// Verkopen-boom (5 niveaus) NA de imports, zodat lege L4-categorieën
 	// kunnen worden overgeslagen. Telt extra pagina's mee in het rapport.
 	$report['pages'] += (int) ekinese_install_verkopen_tree();
@@ -407,7 +412,7 @@ add_action( 'admin_menu', function () {
 	add_submenu_page( 'tools.php', __( 'XGOUD installatie', 'ekinese' ), __( 'XGOUD setup', 'ekinese' ), 'manage_options', 'xg-install', function () {
 		if ( isset( $_POST['xg_install_nonce'] ) && wp_verify_nonce( sanitize_key( $_POST['xg_install_nonce'] ), 'xg_install' ) ) {
 			$r = ekinese_run_install();
-			echo '<div class="notice notice-success"><p>' . esc_html( sprintf( 'Klaar: %d pagina\'s, %d producten, %d locaties, %d horloges, %d edelstenen.', $r['pages'] ?? 0, $r['products'] ?? 0, $r['locations'] ?? 0, $r['watches'] ?? 0, $r['gemstones'] ?? 0 ) ) . '</p></div>';
+			echo '<div class="notice notice-success"><p>' . esc_html( sprintf( 'Klaar: %d pagina\'s, %d producten, %d locaties, %d horloges, %d edelstenen, %d veilingen.', $r['pages'] ?? 0, $r['products'] ?? 0, $r['locations'] ?? 0, $r['watches'] ?? 0, $r['gemstones'] ?? 0, $r['auctions'] ?? 0 ) ) . '</p></div>';
 		}
 		$done = get_option( 'xg_installed' );
 		echo '<div class="wrap"><h1>XGOUD installatie</h1>';

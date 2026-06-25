@@ -97,11 +97,11 @@ function ekinese_register_auction_cpt() {
 	register_post_type( 'xg_auction', array(
 		'labels'       => array( 'name' => __( 'Veilingen', 'ekinese' ), 'singular_name' => __( 'Veiling', 'ekinese' ), 'menu_name' => __( 'Veilingen', 'ekinese' ) ),
 		'public'       => true,
-		'has_archive'  => true,
+		'has_archive'  => false, // /veilingen/ is een bewerkbare WP-pagina (installer); singles op /veiling/.
 		'show_in_rest' => true,
 		'menu_icon'    => 'dashicons-hammer',
 		'supports'     => array( 'title', 'editor', 'thumbnail' ),
-		'rewrite'      => array( 'slug' => 'veilingen' ),
+		'rewrite'      => array( 'slug' => 'veiling' ),
 	) );
 	foreach ( array( 'start_price', 'current_bid', 'bid_count', 'ends', 'leader', 'charity_pct', 'charity_project', 'status' ) as $f ) {
 		register_post_meta( 'xg_auction', $f, array( 'type' => 'string', 'single' => true, 'show_in_rest' => true ) );

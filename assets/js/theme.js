@@ -31,12 +31,28 @@
 		var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 		return sysDark ? 'dark' : 'light';
 	}
+	function hasSaved() {
+		try { return !!localStorage.getItem(KEY); } catch (e) { return false; }
+	}
+
 	function init() {
 		// JS ist da → Reveal-Verstecken aktivieren (CSS gated auf html.xg-js).
 		root.classList.add('xg-js');
 		var saved = null;
 		try { saved = localStorage.getItem(KEY); } catch (e) {}
 		apply(saved || autoDefault(), false);
+
+		// Automatisch mee­wisselen met het systeem (dag/donker), zolang de
+		// bezoeker niet zelf heeft gekozen. Zodra hij de schakelaar gebruikt,
+		// wordt zijn keuze opgeslagen en stopt het automatisch wisselen.
+		if (window.matchMedia) {
+			var mq = window.matchMedia('(prefers-color-scheme: dark)');
+			var onChange = function (e) {
+				if (!hasSaved()) { apply(e.matches ? 'dark' : 'light', false); }
+			};
+			if (mq.addEventListener) { mq.addEventListener('change', onChange); }
+			else if (mq.addListener) { mq.addListener(onChange); }
+		}
 	}
 
 	// #7 Reveal-animaties: elementen met .xg-reveal faden in bij scroll.
