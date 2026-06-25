@@ -116,15 +116,36 @@ function ekinese_auction_is_live( $id ) {
 	return $ends ? ( strtotime( $ends ) > time() ) : false;
 }
 
-/** REST: bod uitbrengen. */
+/** REST: bod uitbrengen + live status opvragen. */
 function ekinese_auction_rest() {
 	register_rest_route( 'ekinese/v1', '/auction/(?P<id>\d+)/bid', array(
 		'methods'             => 'POST',
 		'permission_callback' => '__return_true',
 		'callback'            => 'ekinese_auction_bid',
 	) );
+	// Publieke, lichte status voor live-verversing (geen privé-gegevens).
+	register_rest_route( 'ekinese/v1', '/auction/(?P<id>\d+)', array(
+		'methods'             => 'GET',
+		'permission_callback' => '__return_true',
+		'callback'            => 'ekinese_auction_status',
+	) );
 }
 add_action( 'rest_api_init', 'ekinese_auction_rest' );
+
+function ekinese_auction_status( WP_REST_Request $req ) {
+	$id = (int) $req['id'];
+	if ( get_post_type( $id ) !== 'xg_auction' ) {
+		return new WP_Error( 'notfound', __( 'Veiling niet gevonden.', 'ekinese' ), array( 'status' => 404 ) );
+	}
+	$cur = (float) ( get_post_meta( $id, 'current_bid', true ) ?: get_post_meta( $id, 'start_price', true ) );
+	return rest_ensure_response( array(
+		'current_bid' => $cur,
+		'bid_count'   => (int) get_post_meta( $id, 'bid_count', true ),
+		'min_next'    => $cur + max( 1, round( $cur * 0.02, 2 ) ),
+		'ends'        => get_post_meta( $id, 'ends', true ),
+		'live'        => ekinese_auction_is_live( $id ),
+	) );
+}
 
 function ekinese_auction_bid( WP_REST_Request $req ) {
 	if ( function_exists( 'ekinese_recaptcha_verify' ) && ! ekinese_recaptcha_verify( $req->get_param( 'recaptcha' ), 'bid' ) ) {

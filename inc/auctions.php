@@ -59,14 +59,14 @@ function ekinese_render_auctions( $attr ) {
 		$count = (int) get_post_meta( $p->ID, 'bid_count', true );
 		$pct   = (float) get_post_meta( $p->ID, 'charity_pct', true );
 		$thumb = get_the_post_thumbnail( $p->ID, 'medium' );
-		echo '<a class="xg-c-card xg-auction-card" href="' . esc_url( get_permalink( $p->ID ) ) . '" style="text-decoration:none">';
+		echo '<a class="xg-c-card xg-auction-card" href="' . esc_url( get_permalink( $p->ID ) ) . '" style="text-decoration:none" data-auction-id="' . esc_attr( $p->ID ) . '">';
 		if ( $thumb ) {
 			echo '<div class="xg-auction-thumb">' . $thumb . '</div>'; // phpcs:ignore
 		}
 		echo '<span class="xg-auction-status ' . ( $live ? 'live' : 'closed' ) . '">' . ( $live ? 'Live' : 'Gesloten' ) . '</span>';
 		echo '<h3>' . esc_html( get_the_title( $p->ID ) ) . '</h3>';
-		echo '<p class="xg-auction-bid"><span>Huidig bod</span><strong>' . esc_html( ekinese_auction_eur( $cur ) ) . '</strong></p>';
-		echo '<div class="xg-auction-meta"><span>' . esc_html( $count ) . ' biedingen</span>';
+		echo '<p class="xg-auction-bid"><span>Huidig bod</span><strong class="xg-auction-bid-val">' . esc_html( ekinese_auction_eur( $cur ) ) . '</strong></p>';
+		echo '<div class="xg-auction-meta"><span><span class="xg-auction-count">' . esc_html( $count ) . '</span> biedingen</span>';
 		if ( $live && $ends ) {
 			echo '<span class="xg-auction-timer" data-ends="' . esc_attr( $ends ) . '"></span>';
 		}
@@ -109,8 +109,8 @@ function ekinese_render_auction_detail() {
 
 	echo '<div class="xg-auction-detail-bid">';
 	echo '<div class="hero-kicker">VEILING</div><h1>' . esc_html( get_the_title( $id ) ) . '</h1>';
-	echo '<div class="xg-auction-bidbox">';
-	echo '<p class="xg-auction-bid"><span>Huidig bod (' . esc_html( $count ) . ' biedingen)</span><strong>' . esc_html( ekinese_auction_eur( $cur ) ) . '</strong></p>';
+	echo '<div class="xg-auction-bidbox" data-auction-id="' . esc_attr( $id ) . '">';
+	echo '<p class="xg-auction-bid"><span>Huidig bod (<span class="xg-auction-count">' . esc_html( $count ) . '</span> biedingen)</span><strong class="xg-auction-bid-val">' . esc_html( ekinese_auction_eur( $cur ) ) . '</strong></p>';
 	if ( $live && $ends ) {
 		echo '<p class="xg-auction-timer-lg" data-ends="' . esc_attr( $ends ) . '">—</p>';
 	}
@@ -152,6 +152,9 @@ function ekinese_auction_assets() {
 	$js = get_theme_file_path( 'assets/js/auctions.js' );
 	if ( file_exists( $js ) ) {
 		wp_enqueue_script( 'ekinese-auctions', get_theme_file_uri( 'assets/js/auctions.js' ), array(), (string) filemtime( $js ), true );
+		wp_localize_script( 'ekinese-auctions', 'XGAuction', array(
+			'rest' => esc_url_raw( rest_url( 'ekinese/v1/auction/' ) ),
+		) );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'ekinese_auction_assets' );
@@ -255,6 +258,14 @@ function ekinese_auction_billing_box( $post ) {
 	$paid = get_post_meta( $post->ID, 'paid', true );
 	$ca   = (float) get_post_meta( $post->ID, 'charity_amount', true );
 	$rel  = get_post_meta( $post->ID, 'charity_released', true );
+	$status = get_post_meta( $post->ID, 'status', true );
+	$live   = ekinese_auction_is_live( $post->ID );
+	if ( 'closed' === $status ) {
+		echo '<p><strong>' . esc_html__( 'Veiling gesloten.', 'ekinese' ) . '</strong></p>';
+	} elseif ( $live ) {
+		echo '<p><label><input type="checkbox" name="xg_auction_close_now" value="1"> ' . esc_html__( 'Veiling nu sluiten', 'ekinese' ) . '</label></p>';
+		echo '<p class="description">' . esc_html__( 'Sluit de veiling direct, wijst de winnaar toe en stuurt de pro forma factuur (na “Bijwerken”).', 'ekinese' ) . '</p>';
+	}
 	echo '<p>Pro forma: <strong>' . esc_html( $pf ?: '—' ) . '</strong></p>';
 	echo '<p>Factuur: <strong>' . esc_html( $inv ?: '—' ) . '</strong></p>';
 	echo '<p><label><input type="checkbox" name="xg_auction_paid" value="1" ' . checked( $paid, '1', false ) . '> ' . esc_html__( 'Betaling ontvangen', 'ekinese' ) . '</label></p>';
@@ -264,6 +275,13 @@ function ekinese_auction_billing_box( $post ) {
 function ekinese_auction_billing_save( $post_id ) {
 	if ( ! isset( $_POST['xg_auction_billing_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['xg_auction_billing_nonce'] ), 'xg_auction_billing' ) ) {
 		return;
+	}
+	// Veiling direct sluiten (zet einde op nu en draai de sluit-routine).
+	if ( ! empty( $_POST['xg_auction_close_now'] ) && get_post_meta( $post_id, 'status', true ) !== 'closed' ) {
+		update_post_meta( $post_id, 'ends', date( 'Y-m-d H:i:s', current_time( 'timestamp' ) - 60 ) ); // phpcs:ignore WordPress.DateTime
+		if ( function_exists( 'ekinese_auctions_close_due' ) ) {
+			ekinese_auctions_close_due();
+		}
 	}
 	$paid = ! empty( $_POST['xg_auction_paid'] );
 	$was  = get_post_meta( $post_id, 'paid', true ) === '1';

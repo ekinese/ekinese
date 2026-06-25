@@ -24,6 +24,41 @@
 	}
 	setInterval(tick, 1000); tick();
 
+	// Live-verversing van het hoogste bod (poll, plugin-vrij).
+	function eur(v) {
+		try { return '€ ' + Number(v).toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+		catch (e) { return '€ ' + Number(v).toFixed(2); }
+	}
+	var restBase = (window.XGAuction && window.XGAuction.rest) || '';
+	function refreshAuctions() {
+		if (!restBase) return;
+		var nodes = document.querySelectorAll('[data-auction-id]');
+		nodes.forEach(function (node) {
+			var id = node.getAttribute('data-auction-id');
+			if (!id) return;
+			fetch(restBase + id, { headers: { 'Accept': 'application/json' } })
+				.then(function (r) { return r.ok ? r.json() : null; })
+				.then(function (d) {
+					if (!d) return;
+					var val = node.querySelector('.xg-auction-bid-val');
+					if (val) val.textContent = eur(d.current_bid);
+					var cnt = node.querySelector('.xg-auction-count');
+					if (cnt) cnt.textContent = d.bid_count;
+					// Op de detailpagina ook het minimumbod in het formulier bijwerken.
+					var form = node.querySelector('[data-xg-auction]');
+					if (form && d.min_next) {
+						form.setAttribute('data-min', d.min_next);
+						var inp = form.querySelector('input[name="amount"]');
+						if (inp && inp !== document.activeElement) { inp.min = d.min_next; }
+					}
+				})
+				.catch(function () {});
+		});
+	}
+	if (document.querySelector('[data-auction-id]')) {
+		setInterval(refreshAuctions, 15000);
+	}
+
 	function show(el, text, ok) {
 		if (!el) return;
 		el.textContent = text; el.hidden = false;
