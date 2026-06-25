@@ -38,6 +38,10 @@ function ekinese_install_pages() {
 		'rit'                   => array( 'XGOUD Rit', '<!-- wp:ekinese/driver-app /-->', null ),
 		// Veilingen-overzicht: bewerkbare pagina (intro = native blokken) + dynamisch grid.
 		'veilingen'             => array( 'Veilingen', "<!-- wp:group {\"className\":\"xg-blueprint\"} -->\n<div class=\"wp-block-group xg-blueprint\"><!-- wp:group {\"tagName\":\"section\",\"className\":\"xg-container\"} -->\n<section class=\"wp-block-group xg-container\"><!-- wp:heading {\"className\":\"xg-section-title\"} -->\n<h2 class=\"xg-section-title\">Veilingen</h2>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>Bied mee op bijzondere edelmetalen, munten, sieraden en horloges. Een deel van elke opbrengst gaat naar onze goede doelen. Let op: een bod is bindend en kan niet worden ingetrokken.</p>\n<!-- /wp:paragraph --></section>\n<!-- /wp:group -->\n\n<!-- wp:ekinese/auctions /--></div>\n<!-- /wp:group -->", null ),
+		// Marktplaats: overzicht + plaats-pagina + voorwaarden (bewerkbaar).
+		'marktplaats'           => array( 'Marktplaats', "<!-- wp:group {\"className\":\"xg-blueprint\"} -->\n<div class=\"wp-block-group xg-blueprint\"><!-- wp:ekinese/marketplace /--></div>\n<!-- /wp:group -->", null ),
+		'plaatsen'              => array( 'Advertentie plaatsen', "<!-- wp:group {\"className\":\"xg-blueprint\"} -->\n<div class=\"wp-block-group xg-blueprint\"><!-- wp:ekinese/market-submit /--></div>\n<!-- /wp:group -->", 'marktplaats' ),
+		'marktplaats-voorwaarden' => array( 'Marktplaats-voorwaarden', "<!-- wp:group {\"className\":\"xg-blueprint\"} -->\n<div class=\"wp-block-group xg-blueprint\"><!-- wp:group {\"tagName\":\"section\",\"className\":\"xg-container\"} -->\n<section class=\"wp-block-group xg-container\"><!-- wp:heading {\"className\":\"xg-section-title\"} -->\n<h2 class=\"xg-section-title\">Marktplaats-voorwaarden</h2>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>Op de XGOUD-Marktplaats verloopt alle communicatie en betaling via XGOUD. Het uitwisselen van contactgegevens tussen kopers en verkopers is niet toegestaan. Een product dat via een XGOUD-veiling wordt aangeboden, kan niet worden teruggetrokken.</p>\n<!-- /wp:paragraph --></section>\n<!-- /wp:group --></div>\n<!-- /wp:group -->", 'marktplaats' ),
 		// Edelmetalen / Edelstenen / Horloges: zie ekinese_install_verkopen_tree()
 		// (hiërarchische /verkopen/-structuur, 5 niveaus). Bewust NIET hier.
 		// Dagprijzen.
@@ -382,6 +386,9 @@ function ekinese_run_install() {
 	}
 	if ( function_exists( 'ekinese_seed_dummy_news' ) ) {
 		$report['news'] = (int) ekinese_seed_dummy_news();
+	}
+	if ( function_exists( 'ekinese_seed_dummy_market' ) ) {
+		$report['market'] = (int) ekinese_seed_dummy_market();
 	}
 	// Verkopen-boom (5 niveaus) NA de imports, zodat lege L4-categorieën
 	// kunnen worden overgeslagen. Telt extra pagina's mee in het rapport.

@@ -193,6 +193,21 @@
 			'<button type="submit">Alarm instellen</button><span class="xg-acc-form-msg" role="status"></span></form>';
 	}
 
+	// Marktplaats: eigen advertenties (verwijderbaar zolang ze actief zijn).
+	function listingsSection(d) {
+		var items = d.listings || [];
+		var place = '<p style="margin-top:10px"><a class="xg-home-more-link" href="/marktplaats/plaatsen/">+ Nieuwe advertentie plaatsen</a></p>';
+		if (!items.length) {
+			return '<section class="xg-acc-sec"><h3>Mijn advertenties</h3><p class="xg-acc-empty">U heeft nog geen advertenties.</p>' + place + '</section>';
+		}
+		var rows = items.map(function (it) {
+			var rm = it.removable ? '<button type="button" class="xg-mp-remove" data-id="' + esc(it.id) + '">Verwijderen</button>' : '—';
+			return '<tr><td>' + esc(it.title) + '</td><td>' + esc(it.price) + '</td><td>' + esc(it.status) + '</td><td>' + rm + '</td></tr>';
+		}).join('');
+		return '<section class="xg-acc-sec"><h3>Mijn advertenties</h3><div class="xg-table-scroll"><table class="xg-spec-table">' +
+			'<thead><tr><th>Titel</th><th>Prijs</th><th>Status</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>' + place + '</section>';
+	}
+
 	function eur0(n) {
 		try { return '€ ' + Number(n).toLocaleString('nl-NL', { maximumFractionDigits: 0 }); }
 		catch (e) { return '€ ' + n; }
@@ -287,7 +302,7 @@
 		var tabs = [
 			['overzicht', 'Overzicht'],
 			['portfolio', 'Portfolio'],
-			['veilingen', 'Veilingen'],
+			['veilingen', 'Verkoop & veilingen'],
 			['afspraken', 'Afspraken'],
 			['service', 'Service & meldingen']
 		];
@@ -312,6 +327,7 @@
 			) +
 			panel('portfolio', portfolioPanel(d) + txPanel(d)) +
 			panel('veilingen',
+				listingsSection(d) +
 				section('Mijn veilingen', d.auctions, [
 					{ key: 'title', label: 'Veiling' }, { key: 'amount', label: 'Eindbod' },
 					{ key: 'proforma', label: 'Pro forma' }, { key: 'invoice', label: 'Factuur' }, { key: 'paid', label: 'Betaald' }
@@ -368,6 +384,17 @@
 				if (!window.confirm('Dit bezit verwijderen?')) return;
 				fetch(apiBase + '/portfolio/' + b.getAttribute('data-id') + '?token=' + encodeURIComponent(token), { method: 'DELETE' })
 					.then(function () { reloadDash(); }).catch(function () {});
+			});
+		});
+		// Marktplaats-advertentie verwijderen (alleen actieve, alleen marktplaats).
+		dash.querySelectorAll('.xg-mp-remove').forEach(function (b) {
+			b.addEventListener('click', function () {
+				if (!window.confirm('Deze advertentie verwijderen?')) return;
+				b.disabled = true;
+				fetch(apiBase + '/market/remove', {
+					method: 'POST', headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ token: token, id: b.getAttribute('data-id') })
+				}).then(function () { reloadDash(); }).catch(function () { b.disabled = false; });
 			});
 		});
 		// Zelfbediening-formulieren (bezit/ticket/alarm) → POST naar REST.

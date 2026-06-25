@@ -2285,3 +2285,57 @@ html[data-theme="dark"] .xg-ptab-cell { background: #1d1b19; }
 html[data-theme="dark"] .xg-ptab-cell--buy { background: #221f1a; }
 html[data-theme="dark"] .xg-linkhub { background: #161412; }
 html[data-theme="dark"] .xg-linkhub-col a { color: #b3ad9f; }
+
+/* =========================
+   MARKTPLAATS
+========================= */
+.xg-mp { padding: 60px 0; }
+.xg-mp-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+.xg-mp-place { white-space: nowrap; }
+.xg-mp-filter { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 26px; }
+.xg-mp-fbtn { background: #fff; border: 1px solid #e2ddd2; padding: 8px 16px; font: inherit; font-weight: 600; font-size: 14px; cursor: pointer; }
+.xg-mp-fbtn:hover { border-color: #D0AC4B; }
+.xg-mp-fbtn.active { background: #161412; border-color: #161412; color: #fff; }
+.xg-mp-empty { color: #6b665c; font-style: italic; }
+.xg-mp-card { display: flex; flex-direction: column; min-height: 0 !important; padding: 0 !important; overflow: hidden; }
+.xg-mp-thumb { aspect-ratio: 4/3; background: #f3efe7; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.xg-mp-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.xg-mp-noimg { color: #b3ad9f; font-size: 13px; }
+.xg-mp-card h3 { font-size: 16px; margin: 14px 16px 4px; }
+.xg-mp-price { margin: 0 16px; font-size: 20px; font-weight: 800; color: #AE1E1E; }
+.xg-mp-charity { display: inline-block; margin: 8px 16px 16px; font-size: 12px; font-weight: 700; color: #1f7a44; background: #eaf6ee; padding: 3px 8px; }
+/* Detail */
+.xg-mp-main-img { width: 100%; height: auto; }
+.xg-mp-gallery { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.xg-mp-gthumb img { width: 78px; height: 78px; object-fit: cover; border: 1px solid #ececec; }
+.xg-mp-buybox { background: #fff; border: 1px solid #ececec; box-shadow: 0 12px 35px rgba(0,0,0,.05); padding: 28px; }
+.xg-mp-price-lg { font-size: 32px; font-weight: 800; color: #AE1E1E; margin: 0 0 14px; }
+.xg-mp-specs { list-style: none; margin: 0 0 14px; padding: 0; }
+.xg-mp-specs li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0ece3; }
+.xg-mp-specs span { color: #6b665c; }
+.xg-mp-note { font-size: 13px; color: #6b665c; margin: 6px 0 14px; }
+.xg-mp-closed { color: #b32d2e; font-weight: 700; }
+.xg-mp-interest label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+.xg-mp-interest input { width: 100%; margin-top: 5px; padding: 11px 13px; border: 1px solid #d8d2c6; background: #faf8f4; font: inherit; }
+/* Plaats-formulier */
+.xg-mp-submit { padding: 56px 0; }
+.xg-mp-form { max-width: 760px; background: #fff; border: 1px solid #ececec; padding: 30px; box-shadow: 0 12px 35px rgba(0,0,0,.05); }
+.xg-mp-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.xg-mp-form label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 16px; color: #2a2722; }
+.xg-mp-form input, .xg-mp-form select, .xg-mp-form textarea { width: 100%; margin-top: 5px; padding: 11px 13px; border: 1px solid #d8d2c6; background: #faf8f4; font: inherit; }
+.xg-mp-form input:focus, .xg-mp-form select:focus, .xg-mp-form textarea:focus { outline: none; border-color: #D0AC4B; }
+.xg-mp-file { font-weight: 600; }
+.xg-mp-mode { border: 1px solid #e2ddd2; padding: 16px 18px; margin: 4px 0 18px; }
+.xg-mp-mode legend { font-weight: 800; padding: 0 8px; }
+.xg-mp-radio { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; font-weight: 400; cursor: pointer; }
+.xg-mp-radio input { width: auto; margin-top: 4px; }
+.xg-mp-remove { background: none; border: 1px solid #d8d2c6; color: #b32d2e; font: inherit; font-size: 12px; font-weight: 700; padding: 4px 10px; cursor: pointer; }
+.xg-mp-remove:hover { border-color: #b32d2e; }
+@media (max-width: 600px) { .xg-mp-form-grid { grid-template-columns: 1fr; } }
+html[data-theme="dark"] .xg-mp-fbtn { background: #1d1b19; border-color: #34302b; color: #f3efe8; }
+html[data-theme="dark"] .xg-mp-fbtn.active { background: #f3efe8; color: #161412; border-color: #f3efe8; }
+html[data-theme="dark"] .xg-mp-thumb { background: #221f1a; }
+html[data-theme="dark"] .xg-mp-buybox, html[data-theme="dark"] .xg-mp-form { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-mp-interest input, html[data-theme="dark"] .xg-mp-form input, html[data-theme="dark"] .xg-mp-form select, html[data-theme="dark"] .xg-mp-form textarea { background: #211e1a; border-color: #34302b; color: #f3efe8; }
+html[data-theme="dark"] .xg-mp-charity { background: #18301f; color: #6fcf97; }
+html[data-theme="dark"] .xg-mp-mode { border-color: #34302b; }
