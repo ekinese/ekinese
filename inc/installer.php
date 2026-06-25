@@ -276,6 +276,36 @@ function ekinese_verkopen_cleanup_old_pages() {
 	}
 }
 
+/**
+ * Ruimt dubbele pagina's op die eerder ontstonden door de kapotte idempotentie
+ * (kind-pagina's werden bij elke run opnieuw aangemaakt; WP gaf hen slugs als
+ * "goudprijs-2"). Groepeert op (titel + parent) en verplaatst alle behalve het
+ * origineel (laagste ID) naar de prullenbak. Geeft het aantal opgeruimde terug.
+ *
+ * @return int
+ */
+function ekinese_dedupe_pages() {
+	global $wpdb;
+	$rows = $wpdb->get_results(
+		"SELECT post_title, post_parent, GROUP_CONCAT(ID ORDER BY ID ASC) AS ids, COUNT(*) AS c
+		 FROM {$wpdb->posts}
+		 WHERE post_type = 'page' AND post_status IN ('publish','draft','pending','private')
+		 GROUP BY post_title, post_parent
+		 HAVING c > 1"
+	); // phpcs:ignore WordPress.DB
+	$trashed = 0;
+	foreach ( (array) $rows as $r ) {
+		$ids = explode( ',', $r->ids );
+		array_shift( $ids ); // origineel (laagste ID) behouden.
+		foreach ( $ids as $id ) {
+			if ( wp_trash_post( (int) $id ) ) {
+				$trashed++;
+			}
+		}
+	}
+	return $trashed;
+}
+
 /** Voer de volledige installatie uit. */
 function ekinese_run_install() {
 	$ids   = array();
@@ -286,17 +316,30 @@ function ekinese_run_install() {
 		// Content: pattern of directe block-markup.
 		$content = ( 0 === strpos( $source, '<!--' ) ) ? $source : ekinese_pattern_content( $source );
 
-		$existing = get_page_by_path( $slug );
-		$postarr  = array(
+		// Idempotent op (post_name + parent). get_page_by_path($slug) faalt voor
+		// kind-pagina's (verwacht het volledige pad) → zou bij elke run duplicaten
+		// maken. Daarom hier zoeken op naam binnen de juiste parent.
+		$parent_id = ( $parent && isset( $ids[ $parent ] ) ) ? $ids[ $parent ] : 0;
+		$existing  = get_posts(
+			array(
+				'post_type'   => 'page',
+				'name'        => $slug,
+				'post_parent' => $parent_id,
+				'post_status' => 'any',
+				'numberposts' => 1,
+				'fields'      => 'ids',
+			)
+		);
+		$postarr = array(
 			'post_type'    => 'page',
 			'post_status'  => 'publish',
 			'post_title'   => $title,
 			'post_name'    => $slug,
 			'post_content' => $content,
-			'post_parent'  => ( $parent && isset( $ids[ $parent ] ) ) ? $ids[ $parent ] : 0,
+			'post_parent'  => $parent_id,
 		);
-		if ( $existing ) {
-			$postarr['ID'] = $existing->ID;
+		if ( ! empty( $existing ) ) {
+			$postarr['ID'] = (int) $existing[0];
 		}
 		$pid = wp_insert_post( $postarr );
 		if ( ! is_wp_error( $pid ) ) {
@@ -330,6 +373,8 @@ function ekinese_run_install() {
 	// Oude *-verkopen-pagina's opruimen, zodat de nieuwe /verkopen/-structuur de
 	// URL's bezit en de 301-redirects (inc/verkopen.php) kunnen werken.
 	ekinese_verkopen_cleanup_old_pages();
+	// Eerder ontstane dubbele pagina's opruimen (naar prullenbak).
+	$report['dedupe'] = ekinese_dedupe_pages();
 	if ( function_exists( 'ekinese_import_locations' ) ) {
 		$report['locations'] = (int) ekinese_import_locations();
 	}
