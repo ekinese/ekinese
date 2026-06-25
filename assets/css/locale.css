@@ -38,6 +38,27 @@
 html[data-theme="dark"] .xg-social-btn { border-color: #34302b; color: #f3efe8; }
 html[data-theme="dark"] .xg-social-apple { color: #f3efe8; }
 
+/* Account-dashboard layout (Mijn XGOUD) */
+.xg-account { max-width: 1180px; margin: 0 auto; padding: 56px 24px 80px; }
+.xg-account-login { max-width: 460px; margin: 30px auto; text-align: center; }
+.xg-account-login h2 { font-size: 30px; font-weight: 800; margin: 0 0 8px; }
+.xg-account-login p { color: var(--ink-soft,#6b665c); margin: 0 0 18px; }
+.xg-account-form { display: flex; gap: 10px; margin: 0 0 14px; }
+.xg-account-form input { flex: 1; padding: 12px 14px; border: 1px solid var(--line,#d8d2c6); background: #fff; font: inherit; }
+.xg-account-form input:focus { outline: none; border-color: var(--gold,#D0AC4B); }
+.xg-account-msg { font-size: 13px; color: var(--ink-soft,#6b665c); min-height: 18px; }
+.xg-account-dash > h2 { font-size: 30px; font-weight: 800; margin: 0 0 4px; }
+.xg-acc-email { color: var(--ink-soft,#6b665c); margin: 0 0 6px; font-size: 15px; }
+/* Stat-kaarten in het account zijn compact — niet de 520px product-kaart. */
+.xg-acc-stats .xg-c-card { min-height: 0; height: auto; box-shadow: 0 6px 18px rgba(0,0,0,.04); }
+.xg-acc-sec { margin: 30px 0; }
+.xg-acc-sec h3 { font-size: 20px; font-weight: 800; margin: 0 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--line,#ece7dd); }
+.xg-acc-empty { color: var(--ink-soft,#6b665c); font-style: italic; }
+@media (max-width: 600px) { .xg-acc-stats { grid-template-columns: 1fr !important; } .xg-account-form { flex-direction: column; } }
+html[data-theme="dark"] .xg-acc-email, html[data-theme="dark"] .xg-account-login p { color: #b3ad9f; }
+html[data-theme="dark"] .xg-account-form input { background: #211e1a; border-color: #34302b; color: #f3efe8; }
+html[data-theme="dark"] .xg-acc-sec h3 { border-color: #34302b; }
+
 /* Loyaliteit-voortgang (account) */
 .xg-loyalty { margin: 16px 0; padding: 16px; border: 1px solid var(--line,#e3ddd0); }
 .xg-loyalty-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
