@@ -14,6 +14,7 @@
 	var restLogin = root.getAttribute('data-rest-login');
 	var restData = root.getAttribute('data-rest-data');
 	var apiBase = (restData || '').replace('/account/data', '');
+	var activeTab = 'overzicht';
 
 	function esc(s) {
 		return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
@@ -192,46 +193,154 @@
 			'<button type="submit">Alarm instellen</button><span class="xg-acc-form-msg" role="status"></span></form>';
 	}
 
+	function eur0(n) {
+		try { return '€ ' + Number(n).toLocaleString('nl-NL', { maximumFractionDigits: 0 }); }
+		catch (e) { return '€ ' + n; }
+	}
+
+	var METAL_META = {
+		goud: ['Goud', '#D0AC4B'], zilver: ['Zilver', '#bfc3c7'],
+		platina: ['Platina', '#8fa3b0'], palladium: ['Palladium', '#9bb39b'], overig: ['Overig', '#cfc6b4']
+	};
+
+	// Donut (allocatie per metaal) als zelfstandige SVG.
+	function donutSVG(segs, total) {
+		var r = 54, c = 2 * Math.PI * r, off = 0, ring = '';
+		segs.forEach(function (s) {
+			var frac = total > 0 ? s.value / total : 0, len = frac * c;
+			ring += '<circle cx="70" cy="70" r="' + r + '" fill="none" stroke="' + s.color + '" stroke-width="20" stroke-dasharray="' + len + ' ' + (c - len) + '" stroke-dashoffset="' + (-off) + '" transform="rotate(-90 70 70)"></circle>';
+			off += len;
+		});
+		return '<svg class="xg-pf-donut" viewBox="0 0 140 140" width="170" height="170" aria-hidden="true">' + ring +
+			'<text x="70" y="66" text-anchor="middle" class="xg-pf-donut-val">' + eur0(total) + '</text>' +
+			'<text x="70" y="84" text-anchor="middle" class="xg-pf-donut-lbl">Totaal</text></svg>';
+	}
+
+	function portfolioPanel(d) {
+		var pf = d.portfolio || {}, items = pf.items || [];
+		if (!items.length) {
+			return '<div class="xg-pf-empty"><h3>Mijn portfolio</h3><p>U heeft nog geen bezit toegevoegd. Voeg uw eerste edelmetaal toe om de actuele waarde en het rendement te volgen.</p></div>' + holdingForm();
+		}
+		var total = Number(pf.total) || 0, gain = Number(pf.gain) || 0, cost = total - gain, gp = pf.gain_pct || 0;
+		var gc = gain >= 0 ? 'xg-pos' : 'xg-neg';
+
+		var byMetal = {};
+		items.forEach(function (it) { var m = it.metal || 'overig'; byMetal[m] = (byMetal[m] || 0) + (Number(it.value) || 0); });
+		var segs = Object.keys(byMetal).map(function (m) { var meta = METAL_META[m] || [m, '#cfc6b4']; return { label: meta[0], color: meta[1], value: byMetal[m] }; })
+			.sort(function (a, b) { return b.value - a.value; });
+
+		var summary = '<div class="xg-pf-summary">' +
+			'<div class="xg-pf-total"><span class="xg-pf-total-label">Totale portfoliowaarde</span>' +
+			'<div class="xg-pf-total-val">' + eur0(total) + '</div>' +
+			'<div class="xg-pf-total-sub ' + gc + '">' + (gain >= 0 ? '▲ ' : '▼ ') + eur0(Math.abs(gain)) + ' (' + gp + '%)</div></div>' +
+			'<div class="xg-pf-meta">' +
+			'<div><span>Geïnvesteerd</span><strong>' + eur0(cost) + '</strong></div>' +
+			'<div><span>Winst/verlies</span><strong class="' + gc + '">' + eur0(gain) + '</strong></div>' +
+			'<div><span>Rendement</span><strong class="' + gc + '">' + gp + '%</strong></div>' +
+			'<div><span>Posities</span><strong>' + items.length + '</strong></div></div></div>';
+
+		var legend = segs.map(function (s) {
+			var pct = total > 0 ? Math.round(s.value / total * 100) : 0;
+			return '<div class="xg-pf-leg"><span class="xg-pf-dot" style="background:' + s.color + '"></span>' +
+				'<span class="xg-pf-leg-name">' + esc(s.label) + '</span><span class="xg-pf-leg-pct">' + pct + '%</span>' +
+				'<span class="xg-pf-leg-val">' + eur0(s.value) + '</span></div>';
+		}).join('');
+		var alloc = '<div class="xg-pf-alloc">' + donutSVG(segs, total) + '<div class="xg-pf-legend">' + legend + '</div></div>';
+
+		var cards = '<div class="xg-pf-holdings">' + items.map(function (it) {
+			var g = Number(it.gain) || 0, cls = g >= 0 ? 'xg-pos' : 'xg-neg', meta = METAL_META[it.metal] || [it.metal || '—', '#cfc6b4'];
+			return '<div class="xg-pf-card">' +
+				'<div class="xg-pf-card-top"><span class="xg-pf-dot" style="background:' + meta[1] + '"></span><strong>' + esc(it.name) + '</strong>' +
+				'<button class="xg-pf-del" data-id="' + it.id + '" title="Verwijderen" aria-label="Verwijderen">×</button></div>' +
+				'<div class="xg-pf-card-metal">' + esc(meta[0]) + ' · ' + esc(it.qty || 1) + '× · ' + esc(it.fine || 0) + ' g fijn</div>' +
+				'<div class="xg-pf-card-val">' + eur0(it.value) + '</div>' +
+				'<div class="xg-pf-card-gain ' + cls + '">' + (g >= 0 ? '▲ ' : '▼ ') + eur0(Math.abs(g)) + ' (' + esc(it.gain_pct) + '%)</div>' +
+				'</div>';
+		}).join('') + '</div>';
+
+		return summary + alloc + '<h3 class="xg-pf-h">Mijn posities</h3>' + cards + holdingForm();
+	}
+
+	// "Transacties": afgeronde afspraken (verkoop) + gewonnen veilingen (aankoop).
+	function txPanel(d) {
+		var rows = [];
+		(d.appointments || []).forEach(function (a) {
+			rows.push({ date: a.date, type: 'Verkoop', item: a.service || 'Taxatie/verkoop', amount: a.proforma ? '' : '', status: a.status || '' });
+		});
+		(d.auctions || []).forEach(function (a) {
+			rows.push({ date: '', type: 'Aankoop (veiling)', item: a.title, amount: a.amount, status: a.paid === 'Ja' ? 'Betaald' : 'Open' });
+		});
+		if (!rows.length) return '';
+		var body = rows.map(function (r) {
+			var tcls = r.type.indexOf('Aankoop') === 0 ? 'buy' : 'sell';
+			return '<tr><td>' + esc(r.date) + '</td><td><span class="xg-tx-type ' + tcls + '">' + esc(r.type) + '</span></td>' +
+				'<td>' + esc(r.item) + '</td><td>' + esc(r.amount) + '</td><td>' + esc(r.status) + '</td></tr>';
+		}).join('');
+		return '<section class="xg-acc-sec"><h3>Transacties</h3><div class="xg-table-scroll"><table class="xg-spec-table">' +
+			'<thead><tr><th>Datum</th><th>Type</th><th>Item</th><th>Bedrag</th><th>Status</th></tr></thead><tbody>' + body + '</tbody></table></div></section>';
+	}
+
 	function renderDash(d) {
 		if (loginBox) loginBox.hidden = true;
 		dash.hidden = false;
-		dash.innerHTML =
-			'<h2>Mijn XGOUD</h2><p class="xg-acc-email">' + esc(d.email) + '</p>' +
-			notifyCard(d) +
-			statCards(d) +
-			savingsCard(d) +
-			yearReviewCard(d) +
-			referralCard(d) +
-			section('Mijn portfolio', (d.portfolio || {}).items, [
-				{ key: 'name', label: 'Product' }, { key: 'qty', label: 'Aantal' },
-				{ key: 'value', label: 'Waarde (€)' }, { key: 'gain', label: 'Winst/verlies (€)' },
-				{ key: 'gain_pct', label: '%' }
-			]) +
-			holdingForm() +
-			section('Lopende loterijen', d.lotteries, [
-				{ key: 'title', label: 'Loterij' }, { key: 'prize', label: 'Prijs' },
-				{ key: 'cost', label: 'Inzet (punten)' }, { key: 'tickets', label: 'Loten' }
-			]) +
-			section('Afspraken', d.appointments, [
-				{ key: 'date', label: 'Datum' }, { key: 'time', label: 'Tijd' },
-				{ key: 'service', label: 'Service' }, { key: 'status', label: 'Status' }
-			]) +
-			section('Mijn veilingen', d.auctions, [
-				{ key: 'title', label: 'Veiling' }, { key: 'amount', label: 'Eindbod' },
-				{ key: 'proforma', label: 'Pro forma' }, { key: 'invoice', label: 'Factuur' }, { key: 'paid', label: 'Betaald' }
-			]) +
-			section('Tickets', d.tickets, [
-				{ key: 'reference', label: 'Referentie' }, { key: 'subject', label: 'Onderwerp' }, { key: 'status', label: 'Status' }
-			]) +
-			ticketForm(d) +
-			section('Zendingen', d.pickups, [
-				{ key: 'reference', label: 'Referentie' }, { key: 'status', label: 'Status' }
-			]) +
-			section('Prijsalarmen', d.alerts, [
-				{ key: 'metal', label: 'Metaal' }, { key: 'direction', label: 'Richting' },
-				{ key: 'target', label: 'Doelprijs' }, { key: 'active', label: 'Actief' }
-			]) +
-			alertForm(d);
+
+		var tabs = [
+			['overzicht', 'Overzicht'],
+			['portfolio', 'Portfolio'],
+			['veilingen', 'Veilingen'],
+			['afspraken', 'Afspraken'],
+			['service', 'Service & meldingen']
+		];
+		var unread = d.notifications_unread || 0;
+		var nav = '<div class="xg-acc-tabs" role="tablist">' + tabs.map(function (t) {
+			var badge = (t[0] === 'service' && unread) ? ' <span class="xg-acc-tab-badge">' + unread + '</span>' : '';
+			return '<button type="button" class="xg-acc-tab' + (t[0] === activeTab ? ' active' : '') + '" data-tab="' + t[0] + '">' + esc(t[1]) + badge + '</button>';
+		}).join('') + '</div>';
+
+		function panel(id, html) {
+			return '<div class="xg-acc-panel' + (id === activeTab ? ' active' : '') + '" data-panel="' + id + '">' + html + '</div>';
+		}
+
+		var pts = d.points != null ? d.points : 0;
+		var head = '<div class="xg-acc-head"><div class="xg-acc-head-id"><h2>Mijn XGOUD</h2>' +
+			'<p class="xg-acc-email">' + esc(d.email) + '</p></div>' +
+			'<div class="xg-acc-head-pts"><strong>' + esc(pts) + '</strong><span>spaarpunten</span></div></div>';
+
+		dash.innerHTML = head + nav + '<div class="xg-acc-panels">' +
+			panel('overzicht',
+				statCards(d) + notifyCard(d) + savingsCard(d) + yearReviewCard(d) + referralCard(d)
+			) +
+			panel('portfolio', portfolioPanel(d) + txPanel(d)) +
+			panel('veilingen',
+				section('Mijn veilingen', d.auctions, [
+					{ key: 'title', label: 'Veiling' }, { key: 'amount', label: 'Eindbod' },
+					{ key: 'proforma', label: 'Pro forma' }, { key: 'invoice', label: 'Factuur' }, { key: 'paid', label: 'Betaald' }
+				]) +
+				section('Lopende loterijen', d.lotteries, [
+					{ key: 'title', label: 'Loterij' }, { key: 'prize', label: 'Prijs' },
+					{ key: 'cost', label: 'Inzet (punten)' }, { key: 'tickets', label: 'Loten' }
+				])
+			) +
+			panel('afspraken',
+				section('Afspraken', d.appointments, [
+					{ key: 'date', label: 'Datum' }, { key: 'time', label: 'Tijd' },
+					{ key: 'service', label: 'Service' }, { key: 'status', label: 'Status' }
+				]) +
+				section('Zendingen', d.pickups, [
+					{ key: 'reference', label: 'Referentie' }, { key: 'status', label: 'Status' }
+				])
+			) +
+			panel('service',
+				notifyCard(d) +
+				section('Tickets', d.tickets, [
+					{ key: 'reference', label: 'Referentie' }, { key: 'subject', label: 'Onderwerp' }, { key: 'status', label: 'Status' }
+				]) + ticketForm(d) +
+				section('Prijsalarmen', d.alerts, [
+					{ key: 'metal', label: 'Metaal' }, { key: 'direction', label: 'Richting' },
+					{ key: 'target', label: 'Doelprijs' }, { key: 'active', label: 'Actief' }
+				]) + alertForm(d)
+			) +
+			'</div>';
 		bindDashEvents(d);
 	}
 
@@ -245,6 +354,22 @@
 
 	// Interacties in het dashboard (referral kopiëren, spaardoel opslaan).
 	function bindDashEvents(d) {
+		// Tab-navigatie tussen de panelen.
+		dash.querySelectorAll('.xg-acc-tab').forEach(function (btn) {
+			btn.addEventListener('click', function () {
+				activeTab = btn.getAttribute('data-tab');
+				dash.querySelectorAll('.xg-acc-tab').forEach(function (b) { b.classList.toggle('active', b === btn); });
+				dash.querySelectorAll('.xg-acc-panel').forEach(function (p) { p.classList.toggle('active', p.getAttribute('data-panel') === activeTab); });
+			});
+		});
+		// Bezit verwijderen (DELETE met token).
+		dash.querySelectorAll('.xg-pf-del').forEach(function (b) {
+			b.addEventListener('click', function () {
+				if (!window.confirm('Dit bezit verwijderen?')) return;
+				fetch(apiBase + '/portfolio/' + b.getAttribute('data-id') + '?token=' + encodeURIComponent(token), { method: 'DELETE' })
+					.then(function () { reloadDash(); }).catch(function () {});
+			});
+		});
 		// Zelfbediening-formulieren (bezit/ticket/alarm) → POST naar REST.
 		dash.querySelectorAll('[data-acc-form]').forEach(function (f) {
 			f.addEventListener('submit', function (e) {
