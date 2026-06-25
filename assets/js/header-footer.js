@@ -385,6 +385,7 @@
     dagprijzen:`<div class="xg-std-grid">
       <div class="xg-std-col"><h3>Dagprijzen</h3><a href="/dagprijzen/goudprijs/">Goudprijs vandaag</a><a href="/dagprijzen/zilverprijs/">Zilverprijs vandaag</a><a href="/dagprijzen/platinaprijs/">Platinaprijs vandaag</a><a href="/dagprijzen/palladiumprijs/">Palladiumprijs</a></div>
       <div class="xg-std-col"><h3>Overzicht</h3><a href="/dagprijzen/">Alle dagprijzen</a><a href="/inkoopprijzen/">Inkoopprijzen</a><a href="/verkopen/edelmetalen/">Edelmetaal verkopen</a></div>
+      <div class="xg-std-col"><h3>Ratio's</h3><a href="/dagprijzen/ratio/">Alle ratio's</a><a href="/dagprijzen/ratio/goud-zilver/">Goud/Zilver</a><a href="/dagprijzen/ratio/goud-platina/">Goud/Platina</a><a href="/dagprijzen/ratio/platina-palladium/">Platina/Palladium</a></div>
       <div class="xg-std-col"><h3>Markt</h3><a href="/lexicon/spotprijs/">Wat is de spotprijs?</a><a href="/lexicon/troy-ounce/">Troy ounce</a><a href="/lexicon/fineness-zuiverheid/">Zuiverheid</a></div>
     </div>
     <div class="xg-std-quick"><span class="xg-ql-label">Snel:</span><a class="xg-ql" href="/dagprijzen/goudprijs/">Goudprijs</a><a class="xg-ql" href="/dagprijzen/zilverprijs/">Zilverprijs</a><a class="xg-ql" href="/dagprijzen/">Alle prijzen</a></div>`,

@@ -36,6 +36,10 @@ a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
 img { display: block; max-width: 100%; }
 body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
+/* Geen extra witruimte tussen (vaste) header en de eerste sectie/hero. */
+.wp-site-blocks > main:first-child, main.wp-block-group { margin-top: 0; }
+main .wp-block-post-content > :first-child,
+main > .xg-blueprint:first-child { margin-top: 0; }
 
 /* ==========================================================
    BLUR OVERLAY — covers nav + content when ticker dropdown open
@@ -554,7 +558,7 @@ body { padding-top: calc(var(--topbar-h) + var(--header-h)); }
 /* ==========================================================
    STANDARD MENUS
    ========================================================== */
-.xg-std-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; }
+.xg-std-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 40px; }
 .xg-std-col h3 {
   margin: 0 0 14px;
   font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px;

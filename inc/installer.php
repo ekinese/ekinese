@@ -380,6 +380,9 @@ function ekinese_run_install() {
 	if ( function_exists( 'ekinese_seed_dummy_auctions' ) ) {
 		$report['auctions'] = (int) ekinese_seed_dummy_auctions();
 	}
+	if ( function_exists( 'ekinese_seed_dummy_news' ) ) {
+		$report['news'] = (int) ekinese_seed_dummy_news();
+	}
 	// Verkopen-boom (5 niveaus) NA de imports, zodat lege L4-categorieën
 	// kunnen worden overgeslagen. Telt extra pagina's mee in het rapport.
 	$report['pages'] += (int) ekinese_install_verkopen_tree();

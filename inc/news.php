@@ -86,6 +86,44 @@ function ekinese_news_items( $topic = '' ) {
 	return $cache;
 }
 
+/**
+ * Seed enkele eigen XGOUD-nieuwsberichten (idempotent), zodat de nieuwspagina
+ * niet leeg is — ook als externe RSS-feeds geblokkeerd zijn op de server.
+ *
+ * @return int aantal aangemaakt.
+ */
+function ekinese_seed_dummy_news() {
+	$items = array(
+		array( 'XGOUD opent nieuwe vestiging in Utrecht', 'Vanaf deze maand kunt u ook in het centrum van Utrecht terecht voor een gratis taxatie van uw goud, zilver en sieraden. Onze experts staan klaar voor een eerlijke dagprijs en directe uitbetaling.' ),
+		array( 'Goudprijs bereikt recordhoogte', 'De goudprijs noteerde deze week een nieuw record. Wij leggen uit wat dit betekent voor uw oude sieraden en waarom dit een goed moment kan zijn om te verkopen.' ),
+		array( 'XGOUD doneert €25.000 aan goede doelen', 'Dankzij onze klanten konden wij dit kwartaal €25.000 doneren aan Stichting Leergeld en KWF Kankerbestrijding. Een deel van elke transactie gaat naar een goed doel.' ),
+		array( '14 vs 18 karaat: wat is het verschil?', 'In onze kennisbank leggen wij uit hoe u de zuiverheid van uw goud herkent aan het stempel, en wat het verschil in waarde is tussen 14 en 18 karaat.' ),
+	);
+	$made = 0;
+	foreach ( $items as $it ) {
+		$name  = sanitize_title( $it[0] );
+		$exist = get_posts( array( 'post_type' => 'post', 'name' => $name, 'post_status' => 'any', 'numberposts' => 1, 'fields' => 'ids' ) );
+		if ( ! empty( $exist ) ) {
+			continue;
+		}
+		$id = wp_insert_post( array(
+			'post_type'    => 'post',
+			'post_status'  => 'publish',
+			'post_title'   => $it[0],
+			'post_name'    => $name,
+			'post_content' => $it[1],
+		) );
+		if ( ! is_wp_error( $id ) && $id ) {
+			update_post_meta( $id, '_xg_dummy', '1' );
+			$made++;
+		}
+	}
+	if ( $made ) {
+		delete_transient( 'xg_news_items' );
+	}
+	return $made;
+}
+
 /* =====================================================================
    BLOK  ekinese/news  – portaal (eigen + web, gecategoriseerd)
 ===================================================================== */
