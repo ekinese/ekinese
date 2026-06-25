@@ -133,12 +133,44 @@ function ekinese_import_lexicon_listings() {
 	return $count;
 }
 
+/**
+ * Verwijdert de stad-/locatie-entries uit het lexicon (alles in de term
+ * "Locaties"). De 12 echte vakbegrippen blijven staan. Steden horen alleen
+ * onder Kantoren thuis, niet dubbel in het lexicon. Naar prullenbak.
+ *
+ * @return int Aantal verplaatst.
+ */
+function ekinese_lexicon_remove_locations() {
+	$term = get_term_by( 'name', 'Locaties', 'xg_term_cat' );
+	if ( ! $term ) {
+		return 0;
+	}
+	$ids = get_posts(
+		array(
+			'post_type'   => 'xg_term',
+			'post_status' => 'any',
+			'numberposts' => -1,
+			'fields'      => 'ids',
+			'tax_query'   => array( // phpcs:ignore WordPress.DB.SlowDBQuery
+				array( 'taxonomy' => 'xg_term_cat', 'field' => 'term_id', 'terms' => $term->term_id ),
+			),
+		)
+	);
+	$n = 0;
+	foreach ( $ids as $id ) {
+		if ( wp_trash_post( (int) $id ) ) {
+			$n++;
+		}
+	}
+	return $n;
+}
+
 function ekinese_lexicon_seed_menu() {
 	add_submenu_page( 'edit.php?post_type=xg_term', __( 'Seed', 'ekinese' ), __( 'Basis-seed', 'ekinese' ), 'manage_options', 'xg-lexicon-seed', function () {
 		if ( isset( $_POST['xg_lx_nonce'] ) && wp_verify_nonce( sanitize_key( $_POST['xg_lx_nonce'] ), 'xg_lx' ) ) {
-			if ( isset( $_POST['xg_lx_listings'] ) ) {
-				$n = ekinese_import_lexicon_listings();
-				echo '<div class="notice notice-success"><p>' . esc_html( sprintf( '%d locatie-entries geïmporteerd in het lexicon.', $n ) ) . '</p></div>';
+			if ( isset( $_POST['xg_lx_remove'] ) ) {
+				$n = ekinese_lexicon_remove_locations();
+				echo '<div class="notice notice-success"><p>' . esc_html( sprintf( '%d locatie-entries uit het lexicon verwijderd (naar prullenbak).', $n ) ) . '</p></div>';
 			} else {
 				ekinese_seed_lexicon();
 				echo '<div class="notice notice-success"><p>Basisbegrippen toegevoegd.</p></div>';
@@ -149,10 +181,10 @@ function ekinese_lexicon_seed_menu() {
 		wp_nonce_field( 'xg_lx', 'xg_lx_nonce' );
 		submit_button( 'Basisbegrippen toevoegen' );
 		echo '</form>';
-		echo '<form method="post"><h2>Locaties importeren</h2><p>Bron: <code>data/listings.csv</code>. Maakt lexicon-entries per stad, gegroepeerd op provincie.</p>';
+		echo '<form method="post"><h2>Locaties uit lexicon verwijderen</h2><p>Steden horen alleen onder <strong>Kantoren</strong>, niet dubbel in het lexicon. Hiermee verwijder je alle stad-entries (term "Locaties") uit het lexicon — de vakbegrippen blijven staan.</p>';
 		wp_nonce_field( 'xg_lx', 'xg_lx_nonce' );
-		echo '<input type="hidden" name="xg_lx_listings" value="1">';
-		submit_button( 'Locaties importeren' );
+		echo '<input type="hidden" name="xg_lx_remove" value="1">';
+		submit_button( 'Locaties uit lexicon verwijderen', 'delete' );
 		echo '</form></div>';
 	} );
 }

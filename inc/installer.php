@@ -384,6 +384,10 @@ function ekinese_run_install() {
 	if ( function_exists( 'ekinese_seed_lexicon' ) ) {
 		ekinese_seed_lexicon();
 	}
+	// Steden horen alleen onder Kantoren, niet dubbel in het lexicon.
+	if ( function_exists( 'ekinese_lexicon_remove_locations' ) ) {
+		ekinese_lexicon_remove_locations();
+	}
 	// (horloges + edelstenen worden hierboven, vóór de verkopen-boom, geseed.)
 	flush_rewrite_rules( false );
 	update_option( 'xg_installed', gmdate( 'c' ) );

@@ -2156,3 +2156,27 @@ html[data-theme="dark"] .xg-booking-slot { background: #211e1a; border-color: #3
 @media (max-width: 600px) { .xg-biz-fields { grid-template-columns: 1fr; } }
 html[data-theme="dark"] .xg-biz-form h2 { color: #f3efe8; }
 html[data-theme="dark"] .xg-biz-form input, html[data-theme="dark"] .xg-biz-form textarea { background: #211e1a; border-color: #34302b; color: #f3efe8; }
+
+/* =========================
+   FORMULIER  (ekinese/form, plugin-vrij)
+========================= */
+.xg-form-wrap { max-width: 640px; margin: 0 auto; padding: 40px; }
+.xg-form { background: #fff; border: 1px solid #ececec; padding: 34px; box-shadow: 0 12px 35px rgba(0,0,0,.05); }
+.xg-form-title { margin: 0 0 8px; font-size: 22px; font-weight: 800; }
+.xg-form-intro { margin: 0 0 22px; color: #57534b; font-size: 14px; }
+.xg-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.xg-form label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 14px; color: #2a2722; }
+.xg-form input, .xg-form textarea { width: 100%; margin-top: 5px; padding: 12px 14px; border: 1px solid #d8d2c6; background: #faf8f4; font: inherit; }
+.xg-form input:focus, .xg-form textarea:focus { outline: none; border-color: #D0AC4B; }
+.xg-form-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.xg-form-btn { background: #D0AC4B; color: #161412; font-weight: 800; border: none; padding: 14px 28px; cursor: pointer; font: inherit; }
+.xg-form-btn:hover { filter: brightness(1.05); }
+.xg-form-btn:disabled { opacity: .6; cursor: default; }
+.xg-form-msg { margin-top: 14px; font-size: 14px; font-weight: 600; }
+.xg-form-msg.is-ok { color: #1f9d55; }
+.xg-form-msg.is-err { color: #d93636; }
+@media (max-width: 600px) { .xg-form-wrap { padding: 24px 16px; } .xg-form-row { grid-template-columns: 1fr; } }
+html[data-theme="dark"] .xg-form { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-form-title { color: #f3efe8; }
+html[data-theme="dark"] .xg-form label { color: #d7d2c8; }
+html[data-theme="dark"] .xg-form input, html[data-theme="dark"] .xg-form textarea { background: #211e1a; border-color: #34302b; color: #f3efe8; }
