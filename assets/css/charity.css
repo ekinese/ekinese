@@ -83,3 +83,19 @@
 .xg-charity-pin span { display: block; }
 html[data-theme="dark"] .xg-charity-map { border-color: #34302b; }
 @media (max-width: 600px) { .xg-charity-map { height: 360px; } .xg-charity-counter { font-size: 34px; } }
+
+/* Volgende uitkering & verdeling */
+.xg-charity-next { font-size: 16px; margin: 0 0 28px; color: #2a2722; }
+.xg-charity-cat { font-size: 18px; margin: 28px 0 14px; }
+.xg-charity-city { font-size: 13px; color: #6b665c; margin: 4px 0 0; }
+.xg-charity-accrued { margin: 12px 0 2px; font-size: 14px; }
+.xg-charity-accrued strong { color: #1f9d55; font-size: 18px; }
+.xg-charity-paid { margin: 0; font-size: 13px; color: #6b665c; }
+/* Supporters / na uitkering */
+.xg-supporters-list { margin-top: 28px; border-top: 1px solid #ececec; }
+.xg-supporter-row { display: grid; grid-template-columns: 120px 1fr auto; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid #ececec; font-size: 14px; }
+.xg-supporter-date { color: #6b665c; }
+.xg-supporter-amt { font-weight: 800; color: #1f9d55; }
+@media (max-width: 600px) { .xg-supporter-row { grid-template-columns: 1fr auto; } .xg-supporter-date { display: none; } }
+html[data-theme="dark"] .xg-charity-next, html[data-theme="dark"] .xg-charity-cat { color: #f3efe8; }
+html[data-theme="dark"] .xg-supporters-list, html[data-theme="dark"] .xg-supporter-row { border-color: #34302b; }

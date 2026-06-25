@@ -398,8 +398,130 @@ function ekinese_charity_map_points() {
 
 function ekinese_register_charity_map() {
 	register_block_type( 'ekinese/charity-map', array( 'render_callback' => 'ekinese_render_charity_map' ) );
+	register_block_type( 'ekinese/charity-payouts', array( 'render_callback' => 'ekinese_render_charity_payouts' ) );
+	register_block_type( 'ekinese/charity-supporters', array( 'render_callback' => 'ekinese_render_charity_supporters' ) );
 }
 add_action( 'init', 'ekinese_register_charity_map' );
+
+/** Simpele EUR-weergave (NL-notatie). */
+function ekinese_eur( $v ) {
+	return '€ ' . number_format( (float) $v, 2, ',', '.' );
+}
+
+/**
+ * Blok ekinese/charity-payouts: toont de eerstvolgende uitkering + per project
+ * hoeveel klaarstaat ("accrued") en hoeveel al is uitgekeerd. Datum komt uit de
+ * optie xg_charity_next_payout (in te stellen onder Goede doelen → Volgende uitkering).
+ */
+function ekinese_render_charity_payouts() {
+	$next    = get_option( 'xg_charity_next_payout', '' );
+	$grouped = ekinese_charity_projects_grouped();
+	ob_start();
+	echo '<section><div class="xg-container">';
+	echo '<div class="xg-eyebrow">GOEDE DOELEN</div><h2 class="xg-section-title">Volgende uitkering &amp; verdeling</h2>';
+	if ( $next && strtotime( $next ) ) {
+		echo '<p class="xg-charity-next">Eerstvolgende uitkering: <strong>' . esc_html( date_i18n( 'j F Y', strtotime( $next ) ) ) . '</strong></p>';
+	} else {
+		echo '<p class="xg-charity-next">De datum van de eerstvolgende uitkering wordt binnenkort bekendgemaakt.</p>';
+	}
+	$any = false;
+	foreach ( $grouped as $g ) {
+		if ( empty( $g['projects'] ) ) {
+			continue;
+		}
+		$any = true;
+		echo '<h3 class="xg-charity-cat">' . esc_html( $g['label'] ) . '</h3>';
+		echo '<div class="xg-grid-3">';
+		foreach ( $g['projects'] as $pr ) {
+			echo '<div class="xg-c-card">';
+			echo '<h3>' . esc_html( $pr['name'] ) . '</h3>';
+			if ( ! empty( $pr['city'] ) ) {
+				echo '<p class="xg-charity-city">' . esc_html( $pr['city'] ) . '</p>';
+			}
+			echo '<p class="xg-charity-accrued">Staat klaar: <strong>' . esc_html( ekinese_eur( $pr['accrued'] ) ) . '</strong></p>';
+			echo '<p class="xg-charity-paid">Al uitgekeerd: ' . esc_html( ekinese_eur( $pr['paid'] ) ) . '</p>';
+			echo '</div>';
+		}
+		echo '</div>';
+	}
+	if ( ! $any ) {
+		echo '<p>Er zijn nog geen projecten gepubliceerd.</p>';
+	}
+	echo '</div></section>';
+	return ob_get_clean();
+}
+
+/**
+ * Blok ekinese/charity-supporters: dankt de klanten en toont het totaal dat al
+ * is uitgekeerd + de meest recente uitkeringen.
+ */
+function ekinese_render_charity_supporters() {
+	$grouped    = ekinese_charity_projects_grouped();
+	$total_paid = 0;
+	$payouts    = array();
+	foreach ( $grouped as $g ) {
+		foreach ( $g['projects'] as $pr ) {
+			$total_paid += (float) $pr['paid'];
+			foreach ( (array) $pr['payouts'] as $po ) {
+				if ( ! empty( $po['date'] ) ) {
+					$payouts[] = array(
+						'date'    => $po['date'],
+						'amount'  => (float) ( $po['amount'] ?? 0 ),
+						'project' => $pr['name'],
+						'city'    => $pr['city'] ?? '',
+					);
+				}
+			}
+		}
+	}
+	usort( $payouts, function ( $a, $b ) { return strtotime( $b['date'] ) <=> strtotime( $a['date'] ); } );
+	$recent = array_slice( $payouts, 0, 12 );
+
+	ob_start();
+	echo '<section><div class="xg-container">';
+	echo '<div class="xg-eyebrow">SAMEN MOGELIJK GEMAAKT</div><h2 class="xg-section-title">Dankzij onze klanten</h2>';
+	echo '<p class="xg-intro">Iedere verkoop draagt bij. Samen hebben wij al uitgekeerd aan goede doelen:</p>';
+	echo '<div class="xg-charity-counter" data-to="' . esc_attr( round( $total_paid, 2 ) ) . '">' . esc_html( ekinese_eur( $total_paid ) ) . '</div>';
+	if ( $recent ) {
+		echo '<div class="xg-supporters-list">';
+		foreach ( $recent as $po ) {
+			echo '<div class="xg-supporter-row"><span class="xg-supporter-date">' . esc_html( date_i18n( 'j M Y', strtotime( $po['date'] ) ) ) . '</span>';
+			echo '<span class="xg-supporter-proj">' . esc_html( $po['project'] ) . ( $po['city'] ? ' · ' . esc_html( $po['city'] ) : '' ) . '</span>';
+			echo '<span class="xg-supporter-amt">' . esc_html( ekinese_eur( $po['amount'] ) ) . '</span></div>';
+		}
+		echo '</div>';
+	}
+	echo '</div></section>';
+	return ob_get_clean();
+}
+
+/** Admin: datum van de eerstvolgende uitkering instellen. */
+function ekinese_charity_payout_admin_menu() {
+	add_submenu_page(
+		'edit.php?post_type=xg_charity_project',
+		__( 'Volgende uitkering', 'ekinese' ),
+		__( 'Volgende uitkering', 'ekinese' ),
+		'manage_options',
+		'xg-charity-payout',
+		'ekinese_charity_payout_admin_page'
+	);
+}
+add_action( 'admin_menu', 'ekinese_charity_payout_admin_menu' );
+
+function ekinese_charity_payout_admin_page() {
+	if ( isset( $_POST['xg_cp_nonce'] ) && wp_verify_nonce( sanitize_key( $_POST['xg_cp_nonce'] ), 'xg_cp' ) ) {
+		update_option( 'xg_charity_next_payout', sanitize_text_field( wp_unslash( $_POST['xg_next'] ?? '' ) ) );
+		echo '<div class="notice notice-success"><p>Opgeslagen.</p></div>';
+	}
+	$v = esc_attr( get_option( 'xg_charity_next_payout', '' ) );
+	echo '<div class="wrap"><h1>Volgende uitkering</h1>';
+	echo '<p>Deze datum verschijnt op de pagina met het blok <code>ekinese/charity-payouts</code>.</p>';
+	echo '<form method="post"><table class="form-table"><tr><th>Datum eerstvolgende uitkering</th><td>';
+	wp_nonce_field( 'xg_cp', 'xg_cp_nonce' );
+	echo '<input type="date" name="xg_next" value="' . $v . '"></td></tr></table>';
+	submit_button( 'Opslaan' );
+	echo '</form></div>';
+}
 
 function ekinese_render_charity_map() {
 	$total = function_exists( 'ekinese_charity_total_since' ) ? ekinese_charity_total_since() : 0;
