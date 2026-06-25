@@ -3,19 +3,21 @@
 <div class="xg-footer-wrap" id="xgFooterWrap">
   <div class="footer-blur-overlay" id="ftBlurOv"></div>
 
-  <!-- Footer ticker -->
+  <!-- Footer ticker — identiek aan de header-ticker (zelfde markup/CSS, eigen ID's) -->
   <div class="ft-wrap">
-    <div class="ft-ticker">
-      <div class="ft-live">
-        <div class="ft-live-row"><span class="ft-live-sq"></span>LIVE</div>
-        <div><span class="ft-live-time-label">Marktupdate </span><span class="ft-live-time" id="ftTime">--:--:--</span></div>
-      </div>
-      <div class="ft-vp">
-        <div class="ft-track" id="ftTrack"></div>
-      </div>
-      <div class="ft-lbma">
-        <strong>LBMA</strong>
-        <span id="ftDate">--</span>
+    <div class="xg-topbar xg-topbar--footer">
+      <div class="xg-topbar-inner">
+        <div class="xg-live">
+          <div class="xg-live-row"><span class="xg-live-dot"></span>LIVE PRIJZEN</div>
+          <div class="xg-live-time">Bijgewerkt: <strong id="xgTimeFt">--:--</strong></div>
+        </div>
+        <div class="xg-ticker-vp">
+          <div class="xg-ticker-track" id="xgTrackFt"></div>
+        </div>
+        <div class="xg-topbar-lbma">
+          <strong>LBMA</strong>
+          <span id="xgDateFt">--</span>
+        </div>
       </div>
     </div>
   </div>

@@ -28,8 +28,8 @@
   function updateClocks(){
     const t=document.getElementById('xgTime'); if(t) t.textContent=nowStr();
     const d=document.getElementById('xgDate'); if(d) d.textContent=dateStr();
-    const ft=document.getElementById('ftTime'); if(ft) ft.textContent=nowStrSec();
-    const fd=document.getElementById('ftDate'); if(fd) fd.textContent=dateStr();
+    const ft=document.getElementById('xgTimeFt'); if(ft) ft.textContent=nowStr();
+    const fd=document.getElementById('xgDateFt'); if(fd) fd.textContent=dateStr();
   }
   updateClocks(); setInterval(updateClocks, 1000);
 
@@ -101,6 +101,8 @@
       });
     }
     track.innerHTML=html;
+    // Footer-ticker met exact dezelfde inhoud vullen (alleen weergave, geen dropdown).
+    const ftTrack=document.getElementById('xgTrackFt'); if(ftTrack) ftTrack.innerHTML=html;
     track.querySelectorAll('.xg-ti').forEach(el=>{
       el.addEventListener('click', e=>{
         e.stopPropagation();
