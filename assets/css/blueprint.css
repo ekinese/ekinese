@@ -2180,3 +2180,10 @@ html[data-theme="dark"] .xg-form { background: #1d1b19; border-color: #34302b; }
 html[data-theme="dark"] .xg-form-title { color: #f3efe8; }
 html[data-theme="dark"] .xg-form label { color: #d7d2c8; }
 html[data-theme="dark"] .xg-form input, html[data-theme="dark"] .xg-form textarea { background: #211e1a; border-color: #34302b; color: #f3efe8; }
+
+/* =========================
+   NIEUWS (ekinese/news)
+========================= */
+.xg-news-card { display: block; }
+.xg-news-meta { display: block; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; color: #8a847a; margin-bottom: 8px; }
+.xg-news-card h3 { font-size: 17px; line-height: 1.35; }
