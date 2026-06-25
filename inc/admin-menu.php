@@ -40,7 +40,10 @@ function ekinese_admin_hub_page() {
 	$groups = array(
 		'Klanten & verkoop' => array(
 			'xg_appointment' => 'Afspraken', 'xg_kyc' => 'KYC / Opkopersregister', 'xg_ticket' => 'Tickets',
-			'xg_pickup' => 'Zendingen', 'xg_route' => 'Routes', 'xg_chat' => 'Chats',
+			'xg_question' => 'Productvragen', 'xg_pickup' => 'Zendingen', 'xg_route' => 'Routes', 'xg_chat' => 'Chats',
+		),
+		'AI & meldingen' => array(
+			'xg_agent' => 'AI-agents', 'xg_notification' => 'Meldingen',
 		),
 		'Catalogus' => array(
 			'xg_product' => 'Producten', 'xg_watch' => 'Horloges', 'xg_office' => 'Kantoren', 'xg_term' => 'Lexicon',
@@ -49,7 +52,7 @@ function ekinese_admin_hub_page() {
 			'xg_inventory' => 'Voorraad', 'xg_partner' => 'Zakenpartners', 'xg_invoice' => 'Boekhouding',
 		),
 		'Loyaliteit & community' => array(
-			'xg_reward' => 'Punten', 'xg_lottery' => 'Loterijen', 'xg_holding' => 'Portfolio', 'xg_deal' => 'Marktplaats', 'xg_charity_project' => 'Goede doelen',
+			'xg_reward' => 'Punten', 'xg_lottery' => 'Loterijen', 'xg_holding' => 'Portfolio', 'xg_market' => 'Marktplaats', 'xg_deal' => 'Deals (matching)', 'xg_charity_project' => 'Goede doelen',
 		),
 		'Marketing' => array(
 			'xg_social_post' => 'Social media', 'xg_ad' => 'Ads', 'xg_subscriber' => 'Nieuwsbrief', 'xg_maillog' => 'Mail-log',
@@ -59,10 +62,16 @@ function ekinese_admin_hub_page() {
 		),
 	);
 	echo '<div class="wrap"><h1>XGOUD – Overzicht</h1>';
+	// Operationeel dashboard (prijzen, KPI's, dagelijkse taken, AI & agents).
+	if ( function_exists( 'ekinese_dashboard_panels' ) ) {
+		ekinese_dashboard_panels();
+	}
+	echo '<h2 style="margin-top:24px">Statistieken</h2>';
 	if ( function_exists( 'ekinese_stats_cards' ) ) {
 		ekinese_stats_cards( false );
 	}
-	echo '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:24px">';
+	echo '<h2 style="margin-top:24px">Beheer per onderdeel</h2>';
+	echo '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:12px">';
 	foreach ( $groups as $title => $items ) {
 		echo '<div style="background:#fff;border:1px solid #dcdcde;padding:16px"><h2 style="margin-top:0;font-size:14px">' . esc_html( $title ) . '</h2><ul style="margin:0">';
 		foreach ( $items as $pt => $label ) {
