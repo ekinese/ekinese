@@ -1,0 +1,37 @@
+/* XGOUD Veilingen (eBay-stijl in XGOUD-design) */
+.xg-auction-grid { margin-top: 8px; }
+.xg-auction-card { position: relative; display: flex; flex-direction: column; }
+.xg-auction-thumb { margin: -1px -1px 16px; aspect-ratio: 4 / 3; overflow: hidden; background: #f2efe9; }
+.xg-auction-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.xg-auction-thumb--empty { aspect-ratio: 4 / 3; background: #f2efe9; }
+.xg-auction-status {
+	position: absolute; top: 14px; left: 14px; z-index: 2;
+	font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase;
+	padding: 4px 10px; color: #fff;
+}
+.xg-auction-status.live { background: #1f9d55; }
+.xg-auction-status.closed { background: #8a847a; }
+.xg-auction-bid { display: flex; flex-direction: column; gap: 2px; margin: 10px 0 0; }
+.xg-auction-bid span { font-size: 12px; color: #6b665c; }
+.xg-auction-bid strong { font-size: 24px; font-weight: 800; color: #1c1a16; }
+.xg-auction-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 13px; color: #6b665c; }
+.xg-auction-timer, .xg-auction-timer-lg { font-variant-numeric: tabular-nums; font-weight: 700; color: #1c1a16; }
+.xg-auction-timer.is-ending, .xg-auction-timer-lg.is-ending { color: #AE1E1E; }
+.xg-auction-charity { margin: 12px 0 0; font-size: 12px; color: #1f9d55; font-weight: 700; }
+
+/* Detail */
+.xg-auction-detail-media img { width: 100%; height: auto; display: block; }
+.xg-auction-bidbox { border: 1px solid #ececec; padding: 26px; box-shadow: 0 12px 35px rgba(0,0,0,.05); }
+.xg-auction-timer-lg { display: block; font-size: 20px; margin: 4px 0 14px; }
+.xg-auction-form { margin-top: 18px; }
+.xg-auction-form label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 12px; color: #2a2722; }
+.xg-auction-form input { width: 100%; margin-top: 5px; padding: 12px 14px; border: 1px solid #d8d2c6; background: #faf8f4; font: inherit; }
+.xg-auction-form input:focus { outline: none; border-color: #D0AC4B; }
+.xg-auction-warn { font-size: 12px; color: #AE1E1E; margin: 6px 0 14px; }
+.xg-auction-closed-note { font-weight: 700; color: #8a847a; }
+.xg-form-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+@media (max-width: 768px) { .xg-auction-detail { grid-template-columns: 1fr !important; } }
+html[data-theme="dark"] .xg-auction-bidbox { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-auction-bid strong, html[data-theme="dark"] .xg-auction-timer-lg, html[data-theme="dark"] .xg-auction-form label { color: #f3efe8; }
+html[data-theme="dark"] .xg-auction-form input { background: #211e1a; border-color: #34302b; color: #f3efe8; }

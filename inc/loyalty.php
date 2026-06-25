@@ -103,9 +103,10 @@ function ekinese_register_auction_cpt() {
 		'supports'     => array( 'title', 'editor', 'thumbnail' ),
 		'rewrite'      => array( 'slug' => 'veilingen' ),
 	) );
-	foreach ( array( 'start_price', 'current_bid', 'bid_count', 'ends', 'leader' ) as $f ) {
+	foreach ( array( 'start_price', 'current_bid', 'bid_count', 'ends', 'leader', 'charity_pct', 'charity_project', 'status' ) as $f ) {
 		register_post_meta( 'xg_auction', $f, array( 'type' => 'string', 'single' => true, 'show_in_rest' => true ) );
 	}
+	// winner_email/winner_name bewust NIET in REST (privacy).
 }
 add_action( 'init', 'ekinese_register_auction_cpt' );
 
@@ -136,7 +137,11 @@ function ekinese_auction_bid( WP_REST_Request $req ) {
 	if ( ! ekinese_auction_is_live( $id ) ) {
 		return new WP_Error( 'closed', __( 'Deze veiling is gesloten.', 'ekinese' ), array( 'status' => 409 ) );
 	}
-	$email = sanitize_email( (string) $req->get_param( 'email' ) );
+	if ( ! empty( $req->get_param( 'website' ) ) ) { // honeypot
+		return rest_ensure_response( array( 'ok' => true ) );
+	}
+	$email  = sanitize_email( (string) $req->get_param( 'email' ) );
+	$name   = sanitize_text_field( (string) $req->get_param( 'name' ) );
 	$amount = (float) $req->get_param( 'amount' );
 	if ( ! $email || ! is_email( $email ) || $amount <= 0 ) {
 		return new WP_Error( 'invalid', __( 'Controleer uw e-mail en bod.', 'ekinese' ), array( 'status' => 400 ) );
@@ -147,24 +152,33 @@ function ekinese_auction_bid( WP_REST_Request $req ) {
 		return new WP_Error( 'too_low', sprintf( __( 'Minimaal bod is € %.2f.', 'ekinese' ), $min ), array( 'status' => 400 ) );
 	}
 	update_post_meta( $id, 'current_bid', $amount );
-	update_post_meta( $id, 'leader', md5( $email ) ); // pseudoniem, geen adres opslaan in klare tekst
+	update_post_meta( $id, 'leader', md5( $email ) ); // pseudoniem voor publieke weergave
+	update_post_meta( $id, 'winner_email', $email );  // privé: voor winnaarsmelding (bod is bindend)
+	update_post_meta( $id, 'winner_name', $name );
 	update_post_meta( $id, 'bid_count', (int) get_post_meta( $id, 'bid_count', true ) + 1 );
-	// Bevestiging.
-	wp_mail( $email, __( 'Uw bod is geregistreerd', 'ekinese' ), sprintf( "Bedankt! Uw bod van € %.2f op '%s' is geregistreerd.\n\nXGOUD", $amount, get_the_title( $id ) ) );
+	// Bevestiging — bod is bindend, geen herroeping.
+	wp_mail( $email, __( 'Uw bod is geregistreerd', 'ekinese' ), sprintf( "Bedankt! Uw bod van € %.2f op '%s' is geregistreerd. Let op: een bod is bindend.\n\nXGOUD", $amount, get_the_title( $id ) ) );
 
-	return rest_ensure_response( array( 'ok' => true, 'current_bid' => $amount, 'min_next' => $amount + max( 1, round( $amount * 0.02, 2 ) ) ) );
+	return rest_ensure_response( array( 'ok' => true, 'current_bid' => $amount, 'bid_count' => (int) get_post_meta( $id, 'bid_count', true ), 'min_next' => $amount + max( 1, round( $amount * 0.02, 2 ) ) ) );
 }
 
 /** Admin-metabox voor veilingvelden. */
 function ekinese_auction_metabox() {
 	add_meta_box( 'xg_auction_meta', __( 'Veilinggegevens', 'ekinese' ), function ( $post ) {
 		wp_nonce_field( 'xg_auction_save', 'xg_auction_nonce' );
-		$fields = array( 'start_price' => 'Startprijs (€)', 'current_bid' => 'Huidig bod (€)', 'ends' => 'Sluit op (Y-m-d H:i)' );
+		$fields = array(
+			'start_price'     => 'Startprijs (€)',
+			'current_bid'     => 'Huidig bod (€)',
+			'ends'            => 'Sluit op (Y-m-d H:i)',
+			'charity_pct'     => 'Goede doel (% van de opbrengst)',
+			'charity_project' => 'Goede-doel project',
+		);
 		echo '<table class="form-table">';
 		foreach ( $fields as $k => $lbl ) {
 			echo '<tr><th>' . esc_html( $lbl ) . '</th><td><input type="text" name="xga_' . esc_attr( $k ) . '" value="' . esc_attr( get_post_meta( $post->ID, $k, true ) ) . '" class="regular-text"></td></tr>';
 		}
 		echo '<tr><th>Aantal biedingen</th><td>' . esc_html( (string) ( get_post_meta( $post->ID, 'bid_count', true ) ?: 0 ) ) . '</td></tr>';
+		echo '<tr><th>Hoogste bieder</th><td>' . esc_html( get_post_meta( $post->ID, 'winner_name', true ) ?: '—' ) . ' &lt;' . esc_html( get_post_meta( $post->ID, 'winner_email', true ) ?: '—' ) . '&gt;</td></tr>';
 		echo '</table>';
 	}, 'xg_auction', 'normal', 'high' );
 }
@@ -174,7 +188,7 @@ function ekinese_auction_save( $post_id ) {
 	if ( ! isset( $_POST['xg_auction_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['xg_auction_nonce'] ), 'xg_auction_save' ) ) {
 		return;
 	}
-	foreach ( array( 'start_price', 'current_bid', 'ends' ) as $k ) {
+	foreach ( array( 'start_price', 'current_bid', 'ends', 'charity_pct', 'charity_project' ) as $k ) {
 		if ( isset( $_POST[ 'xga_' . $k ] ) ) {
 			update_post_meta( $post_id, $k, sanitize_text_field( wp_unslash( $_POST[ 'xga_' . $k ] ) ) );
 		}
