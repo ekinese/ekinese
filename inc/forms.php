@@ -95,7 +95,7 @@ function ekinese_render_form( $attr ) {
 
 /** Assets alleen laden waar het blok staat. */
 function ekinese_form_assets() {
-	if ( is_singular() && has_block( 'ekinese/form', get_post() ) ) {
+	if ( is_singular() && ( has_block( 'ekinese/form', get_post() ) || is_singular( 'xg_product' ) ) ) {
 		wp_enqueue_script( 'ekinese-forms', get_theme_file_uri( 'assets/js/forms.js' ), array(), filemtime( get_theme_file_path( 'assets/js/forms.js' ) ), true );
 	}
 }

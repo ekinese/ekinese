@@ -2182,6 +2182,27 @@ html[data-theme="dark"] .xg-form label { color: #d7d2c8; }
 html[data-theme="dark"] .xg-form input, html[data-theme="dark"] .xg-form textarea { background: #211e1a; border-color: #34302b; color: #f3efe8; }
 
 /* =========================
+   PRODUCT-VRAGEN  (Q&A op productpagina)
+========================= */
+.xg-qa-list { display: grid; gap: 16px; margin: 8px 0 32px; }
+.xg-qa { border: 1px solid #ececec; border-left: 3px solid #D0AC4B; background: #fff; padding: 18px 20px; }
+.xg-qa-q { margin: 0 0 8px; font-size: 15px; color: #2a2722; }
+.xg-qa-a { margin: 0; font-size: 15px; color: #57534b; }
+.xg-qa-q strong, .xg-qa-a strong { color: #AE1E1E; margin-right: 4px; }
+.xg-qa-form { max-width: 640px; background: #faf8f4; border: 1px solid #ececec; padding: 26px 28px; }
+.xg-qa-form h3 { margin: 0 0 16px; font-size: 18px; font-weight: 800; }
+.xg-qa-form label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 14px; color: #2a2722; }
+.xg-qa-form input, .xg-qa-form textarea { width: 100%; margin-top: 5px; padding: 12px 14px; border: 1px solid #d8d2c6; background: #fff; font: inherit; }
+.xg-qa-form input:focus, .xg-qa-form textarea:focus { outline: none; border-color: #D0AC4B; }
+@media (max-width: 600px) { .xg-qa-form .xg-form-row { grid-template-columns: 1fr; } }
+html[data-theme="dark"] .xg-qa { background: #1d1b19; border-color: #34302b; border-left-color: #D0AC4B; }
+html[data-theme="dark"] .xg-qa-q { color: #f3efe8; }
+html[data-theme="dark"] .xg-qa-a { color: #b3ad9f; }
+html[data-theme="dark"] .xg-qa-form { background: #1d1b19; border-color: #34302b; }
+html[data-theme="dark"] .xg-qa-form h3, html[data-theme="dark"] .xg-qa-form label { color: #f3efe8; }
+html[data-theme="dark"] .xg-qa-form input, html[data-theme="dark"] .xg-qa-form textarea { background: #211e1a; border-color: #34302b; color: #f3efe8; }
+
+/* =========================
    NIEUWS (ekinese/news)
 ========================= */
 .xg-news-card { display: block; }

@@ -410,6 +410,13 @@ function ekinese_render_product_detail() {
 		?>
 
 		<?php
+		// Product-vragen (Q&A) – beantwoorde vragen + vraagformulier.
+		if ( function_exists( 'ekinese_render_product_questions' ) ) {
+			echo ekinese_render_product_questions( $id ); // phpcs:ignore WordPress.Security.EscapeOutput
+		}
+		?>
+
+		<?php
 		$related = ekinese_related_products( $id, 4 );
 		if ( $related ) :
 		?>
