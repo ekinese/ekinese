@@ -245,6 +245,14 @@ function ekinese_rest_assistant( WP_REST_Request $req ) {
 
 	list( $reply, $cards, $status ) = ekinese_assistant_chat( $history, $lang );
 
+	// Interne analytics: wat vragen bezoekers? (geen antwoord apart geteld).
+	if ( function_exists( 'ekinese_track' ) ) {
+		ekinese_track( 'assistant', $msg, (string) ( $p['url'] ?? '' ) );
+		if ( 'ok' !== $status || '' === trim( (string) $reply ) ) {
+			ekinese_track( 'noanswer', $msg );
+		}
+	}
+
 	if ( 'nokey' === $status ) {
 		// Nette fallback zonder key: regel-bot (indien aanwezig).
 		$reply = function_exists( 'ekinese_bot_reply' ) ? ( ekinese_bot_reply( $msg, 'search', $lang )['reply'] ?? '' ) : '';

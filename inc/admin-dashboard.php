@@ -135,6 +135,9 @@ function ekinese_daily_tasks() {
 	// KYC te controleren.
 	$add( 'kyc', 'KYC / opkopersregister controleren', ekinese_dashboard_count( 'xg_kyc', array( array( 'key' => 'status', 'value' => 'open' ) ) ), admin_url( 'edit.php?post_type=xg_kyc' ) );
 
+	// Analytics-gedreven taken (interne zoekdata + gekoppelde bronnen).
+	$tasks = apply_filters( 'ekinese_daily_tasks_extra', $tasks );
+
 	return $tasks;
 }
 
@@ -384,6 +387,11 @@ function ekinese_dashboard_panels() {
 	echo '</div>';
 
 	echo '</div>'; // grid
+
+	/* --- Bezoekers-inzichten (interne analytics) --- */
+	if ( function_exists( 'ekinese_analytics_panel' ) ) {
+		ekinese_analytics_panel();
+	}
 
 	/* --- AI & Agents --- */
 	echo '<div style="background:#fff;border:1px solid #dcdcde;padding:16px;margin-top:18px">';
