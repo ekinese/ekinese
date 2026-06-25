@@ -21,6 +21,7 @@ function ekinese_reward_rules() {
 	return apply_filters( 'ekinese_reward_rules', array(
 		'deal'            => 100, // afgeronde verkoop
 		'deal_per_100eur' => 5,   // + per €100 uitbetaling
+		'auction'         => 100, // gewonnen veiling (+ deal_per_100eur per €100)
 		'share'           => 10,  // per share (max 1×/platform/dag)
 		'referral'        => 50,  // referrer bij aanmelding referral
 		'welcome'         => 25,  // nieuwe referral zelf

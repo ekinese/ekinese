@@ -192,13 +192,21 @@ function ekinese_auctions_close_due() {
 		$wname  = get_post_meta( $id, 'winner_name', true );
 		$title  = get_the_title( $id );
 		if ( $winner && is_email( $winner ) ) {
+			// Spaarpunten voor de aankoop via de veiling.
+			$pts = 0;
+			if ( function_exists( 'ekinese_award_points' ) && function_exists( 'ekinese_reward_rules' ) && $final > 0 ) {
+				$rules = ekinese_reward_rules();
+				$pts   = (int) ( $rules['auction'] ?? $rules['deal'] ?? 0 ) + (int) floor( $final / 100 ) * (int) ( $rules['deal_per_100eur'] ?? 0 );
+				ekinese_award_points( $winner, $pts, 'auction', 'auction#' . $id );
+			}
+			$pts_txt = $pts > 0 ? sprintf( ' U ontving hiervoor %d spaarpunten.', $pts ) : '';
 			wp_mail(
 				$winner,
 				sprintf( __( 'Gefeliciteerd — u heeft de veiling gewonnen: %s', 'ekinese' ), $title ),
-				sprintf( "Beste %s,\n\nU heeft de veiling '%s' gewonnen met een bod van %s. U ontvangt zo spoedig mogelijk een pro forma factuur. Na betaling volgt de definitieve factuur.\n\nMet vriendelijke groet,\nXGOUD", $wname ?: '', $title, ekinese_auction_eur( $final ) )
+				sprintf( "Beste %s,\n\nU heeft de veiling '%s' gewonnen met een bod van %s.%s U ontvangt zo spoedig mogelijk een pro forma factuur. Na betaling volgt de definitieve factuur.\n\nMet vriendelijke groet,\nXGOUD", $wname ?: '', $title, ekinese_auction_eur( $final ), $pts_txt )
 			);
 			if ( function_exists( 'ekinese_notify' ) ) {
-				ekinese_notify( $winner, 'U heeft de veiling gewonnen!', sprintf( "Gefeliciteerd — u won '%s' met %s. U ontvangt een pro forma factuur.", $title, ekinese_auction_eur( $final ) ), get_permalink( $id ), 'won' );
+				ekinese_notify( $winner, 'U heeft de veiling gewonnen!', sprintf( "Gefeliciteerd — u won '%s' met %s.%s U ontvangt een pro forma factuur.", $title, ekinese_auction_eur( $final ), $pts_txt ), get_permalink( $id ), 'won' );
 			}
 		}
 		$admin = function_exists( 'ekinese_business' ) ? ekinese_business()['email'] : get_option( 'admin_email' );
