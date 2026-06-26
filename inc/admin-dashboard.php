@@ -376,7 +376,15 @@ function ekinese_dashboard_panels() {
 		array( 'Verkopen (afgerond/betaald)', $new_sales, admin_url( 'edit.php?post_type=xg_appointment' ) ),
 		array( 'Nieuwe marktplaats-producten (7d)', $new_market, admin_url( 'edit.php?post_type=xg_market' ) ),
 	);
-	echo '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px">';
+	if ( post_type_exists( 'xg_moment' ) ) {
+		$mc = wp_count_posts( 'xg_moment' );
+		$kpis[] = array(
+			'Momenten (online · ' . (int) $mc->pending . ' wachtend)',
+			(int) $mc->publish,
+			admin_url( 'edit.php?post_type=xg_moment' ),
+		);
+	}
+	echo '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px">';
 	foreach ( $kpis as $k ) {
 		echo '<a href="' . esc_url( $k[2] ) . '" style="text-decoration:none;background:#fff;border:1px solid #dcdcde;padding:16px"><div style="font-size:28px;font-weight:800;color:#AE1E1E">' . esc_html( $k[1] ) . '</div><div style="font-size:13px;color:#646970">' . esc_html( $k[0] ) . '</div></a>';
 	}

@@ -96,6 +96,11 @@
 <div class="wp-block-group xg-blueprint"><!-- wp:ekinese/trust-wall /--></div>
 <!-- /wp:group -->
 
+<!-- Momenten van klanten (UGC-wall) -->
+<!-- wp:group {"className":"xg-blueprint"} -->
+<div class="wp-block-group xg-blueprint"><!-- wp:ekinese/moments {"title":"Gedeeld door onze klanten","limit":8} /--></div>
+<!-- /wp:group -->
+
 <!-- Nieuws-cards -->
 <!-- wp:group {"className":"xg-blueprint"} -->
 <div class="wp-block-group xg-blueprint"><!-- wp:html -->

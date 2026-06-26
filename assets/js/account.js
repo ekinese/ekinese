@@ -450,13 +450,23 @@
 			if (!d.referral_url) return '';
 			var b = '<p class="xg-wg-muted">Nodig vrienden uit en spaar samen.</p><div class="xg-ref-link"><input type="text" readonly value="' + esc(d.referral_url) + '"><button type="button" class="xg-ref-copy" data-link="' + esc(d.referral_url) + '">Kopieer</button></div>';
 			return widgetCard('referral', 'Uitnodigen', '🎁', b);
+		},
+		momenten: function (d) {
+			var items = d.moments || [];
+			var thumbs = items.slice(0, 4).map(function (m) {
+				return m.photo ? '<span class="xg-wg-mthumb" style="background-image:url(' + esc(m.photo) + ')" title="' + esc(m.status) + '"></span>' : '';
+			}).join('');
+			var b = '<div class="xg-wg-num xg-wg-num-sm">' + items.length + '</div><div class="xg-wg-muted">gedeelde momenten</div>' +
+				(thumbs ? '<div class="xg-wg-mthumbs">' + thumbs + '</div>' : '') +
+				'<a class="xg-wg-link" href="/momenten/">Deel een moment →</a>';
+			return widgetCard('momenten', 'Mijn momenten', '📸', b);
 		}
 	};
-	var WIDGET_ORDER = ['portfolio', 'market', 'niveau', 'timeline', 'afspraak', 'spaardoel', 'punten', 'charity', 'veilingen', 'alerts', 'inbox', 'referral'];
+	var WIDGET_ORDER = ['portfolio', 'market', 'niveau', 'timeline', 'afspraak', 'spaardoel', 'momenten', 'punten', 'charity', 'veilingen', 'alerts', 'inbox', 'referral'];
 	var WIDGET_TITLES = {
 		portfolio: 'Portfolio', market: 'Markt vandaag', niveau: 'Mijn niveau', timeline: 'Verkoopstatus',
-		afspraak: 'Volgende afspraak', spaardoel: 'Spaardoel', punten: 'Spaarpunten', charity: 'Charity',
-		veilingen: 'Veilingen', alerts: 'Prijsalarmen', inbox: 'Berichten', referral: 'Uitnodigen'
+		afspraak: 'Volgende afspraak', spaardoel: 'Spaardoel', momenten: 'Mijn momenten', punten: 'Spaarpunten',
+		charity: 'Charity', veilingen: 'Veilingen', alerts: 'Prijsalarmen', inbox: 'Berichten', referral: 'Uitnodigen'
 	};
 	function widgetOrder() {
 		var saved = null; try { saved = JSON.parse(localStorage.getItem('xg_wgorder') || 'null'); } catch (e) {}

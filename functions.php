@@ -104,3 +104,4 @@ require_once get_theme_file_path( 'inc/appraisal-cert.php' );
 require_once get_theme_file_path( 'inc/business-portal.php' );
 require_once get_theme_file_path( 'inc/perf.php' );
 require_once get_theme_file_path( 'inc/perf-images.php' );
+require_once get_theme_file_path( 'inc/moments.php' );
