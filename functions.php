@@ -121,3 +121,4 @@ require_once get_theme_file_path( 'inc/dossier.php' );
 require_once get_theme_file_path( 'inc/accounting-nl.php' );
 require_once get_theme_file_path( 'inc/inventory-plus.php' );
 require_once get_theme_file_path( 'inc/depot.php' );
+require_once get_theme_file_path( 'inc/phone.php' );
