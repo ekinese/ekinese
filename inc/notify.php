@@ -57,6 +57,8 @@ function ekinese_notify( $email, $title, $message, $url = '', $type = 'info' ) {
 	update_post_meta( $id, 'url', esc_url_raw( $url ) );
 	update_post_meta( $id, 'type', sanitize_key( $type ) );
 	update_post_meta( $id, 'is_read', '0' );
+	/** Web-push (inc/push.php) en andere kanalen kunnen meeluisteren. */
+	do_action( 'ekinese_notified', $email, $title, $message, $url, $type, $id );
 	return $id;
 }
 

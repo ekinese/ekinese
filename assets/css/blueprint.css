@@ -2232,6 +2232,7 @@ html[data-theme="dark"] .xg-notif { border-color: #34302b; }
 .xg-pwa-install span { flex: 1; font-size: 13px; line-height: 1.45; }
 .xg-pwa-install .xg-pwa-yes { background: #D0AC4B; color: #161412; border: none; font-weight: 800; padding: 9px 16px; cursor: pointer; font: inherit; }
 .xg-pwa-install .xg-pwa-no { background: none; border: none; color: #b3ad9f; font-size: 20px; cursor: pointer; line-height: 1; }
+.xg-push-ask { bottom: 76px; }
 
 /* Metaal-ratio */
 .xg-ratio-now { margin: 4px 0 18px; font-size: 16px; }

@@ -52,10 +52,29 @@ add_action( 'template_redirect', function () {
 	}
 } );
 
-/** De service-worker-broncode (network-first voor statische assets). */
+/** De service-worker-broncode (network-first voor statische assets + push). */
 function ekinese_pwa_sw_js() {
+	$icon = ekinese_pwa_icon();
+	$push = <<<JS
+
+self.addEventListener('push', e => {
+  let d = {};
+  try { d = e.data.json(); } catch (_) { d = { body: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(d.title || 'XGOUD', {
+    body: d.body || '', icon: '$icon', badge: '$icon', data: { url: d.url || '/app/' }
+  }));
+});
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.url) || '/app/';
+  e.waitUntil(self.clients.matchAll({ type: 'window' }).then(ws => {
+    for (const w of ws) { if (w.url.indexOf(url) !== -1 && 'focus' in w) return w.focus(); }
+    return self.clients.openWindow(url);
+  }));
+});
+JS;
 	return <<<JS
-const CACHE = 'xg-shell-v3';
+const CACHE = 'xg-shell-v4';
 self.addEventListener('install', e => { self.skipWaiting(); });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
@@ -75,7 +94,7 @@ self.addEventListener('fetch', e => {
       .catch(() => caches.match(req))
   );
 });
-JS;
+JS . $push;
 }
 
 /* Manifest-link + theme-color + apple-meta in de head. */
