@@ -1,0 +1,47 @@
+/* XGOUD fahrer-app (mobiel-first). */
+.xg-fleet-app { max-width: 560px; margin: 0 auto; min-height: 70vh; }
+.xg-fa-login { padding: 60px 24px; text-align: center; }
+.xg-fa-login input { width: 100%; max-width: 280px; padding: 14px; font-size: 18px; border: 1px solid #d8d2c6; text-align: center; margin: 14px 0; }
+.xg-fa-login button, .xg-fa-btn { background: #161412; color: #fff; border: none; padding: 14px 22px; font: inherit; font-weight: 700; font-size: 16px; cursor: pointer; width: 100%; }
+.xg-fa-btn { margin: 8px 0; display: inline-block; text-align: center; text-decoration: none; }
+.xg-fa-btn.green { background: #1f9d55; }
+.xg-fa-btn.red { background: #AE1E1E; }
+.xg-fa-btn.gold { background: #D0AC4B; color: #161412; }
+.xg-fa { padding-bottom: 70px; }
+.xg-fa-head { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: #161412; color: #fff; position: sticky; top: 0; z-index: 5; }
+.xg-fa-head span { display: block; font-size: 12px; color: #b3ad9f; }
+.xg-fa-badge { font-size: 12px; font-weight: 700; padding: 4px 10px; background: #44403a; }
+.xg-fa-badge.on { background: #1f9d55; }
+.xg-fa-body { padding: 16px; }
+.xg-fa-body h3 { font-size: 16px; margin: 18px 0 10px; }
+.xg-fa-shift { background: #faf6ec; border: 1px solid #ecd9a8; padding: 14px; margin-bottom: 8px; }
+.xg-fa-stop { background: #fff; border: 1px solid #ececec; border-left: 4px solid #D0AC4B; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; }
+.xg-fa-stop.done { opacity: .55; border-left-color: #1f9d55; }
+.xg-fa-stop-h { display: flex; gap: 10px; align-items: baseline; }
+.xg-fa-eta { font-weight: 800; color: #AE1E1E; }
+.xg-fa-stop-a { font-size: 14px; color: #57534b; margin-top: 2px; }
+.xg-fa-stop-s { font-size: 12px; color: #8a847a; margin-top: 4px; }
+.xg-fa-empty { color: #8a847a; font-style: italic; }
+.xg-fa-week { font-size: 15px; margin: 12px 0; }
+.xg-fa-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px; }
+.xg-fa-table th, .xg-fa-table td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #eee; }
+.xg-fa-expform { background: #fff; border: 1px solid #ececec; padding: 14px; margin: 8px 0; display: flex; flex-direction: column; gap: 8px; }
+.xg-fa-expform input, .xg-fa-expform select { padding: 12px; font-size: 16px; border: 1px solid #d8d2c6; }
+.xg-fa-file { display: block; background: #faf8f4; border: 1px dashed #d8d2c6; padding: 14px; text-align: center; font-weight: 600; cursor: pointer; }
+.xg-fa-file input { display: none; }
+.xg-fa-note { font-size: 13px; color: #8a847a; }
+.xg-fa-tabs { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: #fff; border-top: 1px solid #e2ddd2; max-width: 560px; margin: 0 auto; }
+.xg-fa-tabs button { flex: 1; background: none; border: none; padding: 14px 0; font: inherit; font-weight: 700; font-size: 13px; color: #8a847a; cursor: pointer; }
+.xg-fa-tabs button.active { color: #AE1E1E; box-shadow: inset 0 2px 0 #AE1E1E; }
+/* Stop-overlay */
+.xg-fa-ov { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 100; display: flex; align-items: flex-end; justify-content: center; }
+.xg-fa-ov-box { background: #fff; width: 100%; max-width: 560px; max-height: 92vh; overflow: auto; padding: 20px; position: relative; }
+.xg-fa-ov-x { position: absolute; top: 10px; right: 14px; background: none; border: none; font-size: 26px; cursor: pointer; }
+.xg-fa-ov-box input, .xg-fa-ov-box textarea { width: 100%; padding: 11px; font-size: 16px; border: 1px solid #d8d2c6; margin: 6px 0; }
+.xg-fa-statusbtns { display: flex; gap: 6px; margin: 10px 0; }
+.xg-fa-statusbtns button { flex: 1; padding: 12px 4px; border: 1px solid #d8d2c6; background: #faf8f4; font: inherit; font-weight: 700; cursor: pointer; }
+.xg-fa-statusbtns button.done { background: #1f9d55; color: #fff; border-color: #1f9d55; }
+.xg-fa-sig { margin: 10px 0; }
+.xg-fa-sig canvas { border: 1px solid #d8d2c6; width: 100%; touch-action: none; background: #fff; }
+.xg-fa-sig .sig-clear { background: none; border: 1px solid #d8d2c6; padding: 6px 12px; font: inherit; cursor: pointer; margin-top: 4px; }
+html[data-theme="dark"] .xg-fa-stop, html[data-theme="dark"] .xg-fa-expform, html[data-theme="dark"] .xg-fa-ov-box { background: #1d1b19; border-color: #34302b; color: #f3efe8; }

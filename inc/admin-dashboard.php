@@ -388,6 +388,11 @@ function ekinese_dashboard_panels() {
 
 	echo '</div>'; // grid
 
+	/* --- Chauffeurs: live positie + ETA + onkosten --- */
+	if ( function_exists( 'ekinese_fleet_panel' ) ) {
+		ekinese_fleet_panel();
+	}
+
 	/* --- Bezoekers-inzichten (interne analytics) --- */
 	if ( function_exists( 'ekinese_analytics_panel' ) ) {
 		ekinese_analytics_panel();

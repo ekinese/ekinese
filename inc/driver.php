@@ -223,19 +223,14 @@ function ekinese_register_driver_block() {
 add_action( 'init', 'ekinese_register_driver_block' );
 
 function ekinese_render_driver_app() {
-	return '<div class="xg-driver" data-rest="' . esc_attr( esc_url_raw( rest_url( 'ekinese/v1/driver' ) ) ) . '">'
-		. '<div class="xg-driver-login"><h2>XGOUD Rit</h2><p>Voer uw routecode in.</p><form class="xg-driver-form"><input type="text" name="token" placeholder="Routecode" required><button class="xg-final-btn" type="submit">Start route</button></form></div>'
-		. '<div class="xg-driver-route" hidden></div></div>';
+	// De volwaardige fahrer-app (inc/fleet.php) mount op .xg-fleet-app.
+	return '<div class="xg-fleet-app"></div>';
 }
 
-/** Driver-assets + (optioneel) PWA-manifest op de driverpagina. */
+/** PWA-meta op de driverpagina (de app-assets laadt inc/fleet.php). */
 function ekinese_driver_assets() {
 	if ( ! is_singular() || ! has_block( 'ekinese/driver-app' ) ) {
 		return;
-	}
-	$js = get_theme_file_path( 'assets/js/driver.js' );
-	if ( file_exists( $js ) ) {
-		wp_enqueue_script( 'ekinese-driver', get_theme_file_uri( 'assets/js/driver.js' ), array(), (string) filemtime( $js ), true );
 	}
 	add_action( 'wp_head', function () {
 		echo '<meta name="apple-mobile-web-app-capable" content="yes">' . "\n";
