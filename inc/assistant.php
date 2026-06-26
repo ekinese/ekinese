@@ -230,6 +230,14 @@ function ekinese_rest_assistant( WP_REST_Request $req ) {
 	if ( '' === $msg ) {
 		return new WP_Error( 'empty', 'Lege vraag.', array( 'status' => 400 ) );
 	}
+	// Misbruik/kosten beperken: per IP en een globaal dagplafond.
+	if ( function_exists( 'ekinese_rate_limit' ) && ! ekinese_rate_limit( 'assistant', 20, 300 ) ) {
+		return rest_ensure_response( array( 'reply' => 'U stelt erg snel veel vragen. Probeer het zo opnieuw.', 'cards' => array(), 'lang' => $lang ) );
+	}
+	if ( function_exists( 'ekinese_quota_day' ) && ! ekinese_quota_day( 'assistant', (int) get_option( 'xg_ai_daily_cap', 1000 ) ) ) {
+		$fb = function_exists( 'ekinese_bot_reply' ) ? ( ekinese_bot_reply( $msg, 'search', $lang )['reply'] ?? '' ) : '';
+		return rest_ensure_response( array( 'reply' => $fb ?: 'De assistent is vandaag veel gebruikt. Plan gerust een gratis taxatie via /afspraak/.', 'cards' => array(), 'lang' => $lang ) );
+	}
 	// Korte geschiedenis (max 6 beurten), tekst-only, om de context te behouden.
 	$history = array();
 	if ( ! empty( $p['history'] ) && is_array( $p['history'] ) ) {

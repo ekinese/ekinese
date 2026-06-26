@@ -144,15 +144,8 @@ add_action( 'wp_head', function () {
 	if ( $fbd ) {
 		echo '<meta name="facebook-domain-verification" content="' . esc_attr( $fbd ) . '">' . "\n";
 	}
-	if ( $ga4 && ! is_admin() ) {
-		$id = esc_js( $ga4 );
-		echo "<script async src=\"https://www.googletagmanager.com/gtag/js?id={$id}\"></script>\n";
-		echo "<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{$id}');</script>\n";
-	}
-	if ( $px && ! is_admin() ) {
-		$id = esc_js( $px );
-		echo "<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','{$id}');fbq('track','PageView');</script>\n";
-	}
+	// GA4 + Facebook-pixel worden NIET hier geladen: dat gebeurt pas na
+	// cookie-toestemming (inc/consent.php). Verificatie-meta's mogen wel altijd.
 }, 5 );
 
 /** YouTube-kanaalstatistiek (via API-key), gecachet. */

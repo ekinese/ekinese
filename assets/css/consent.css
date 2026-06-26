@@ -1,0 +1,20 @@
+/* XGOUD cookie-consent banner */
+.xg-consent {
+	position: fixed; left: 0; right: 0; bottom: 0; z-index: 100000;
+	background: #161412; color: #f3efe8; box-shadow: 0 -8px 30px rgba(0,0,0,.25);
+}
+.xg-consent-inner {
+	max-width: 1200px; margin: 0 auto; padding: 16px 24px;
+	display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+}
+.xg-consent-text { flex: 1; min-width: 240px; font-size: 14px; line-height: 1.55; margin: 0; }
+.xg-consent-text a { color: #D0AC4B; text-decoration: underline; }
+.xg-consent-btns { display: flex; gap: 10px; flex-shrink: 0; }
+.xg-consent-reject, .xg-consent-accept {
+	font: inherit; font-weight: 700; font-size: 14px; padding: 11px 20px; cursor: pointer; border: 1px solid transparent;
+}
+.xg-consent-reject { background: none; color: #cfc6b4; border-color: #44403a; }
+.xg-consent-reject:hover { color: #fff; border-color: #6b6357; }
+.xg-consent-accept { background: #D0AC4B; color: #161412; }
+.xg-consent-accept:hover { filter: brightness(1.06); }
+@media (max-width: 600px) { .xg-consent-inner { padding: 14px 16px; } .xg-consent-btns { width: 100%; } .xg-consent-btns button { flex: 1; } }
