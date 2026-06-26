@@ -263,6 +263,21 @@
 			'<text x="70" y="84" text-anchor="middle" class="xg-pf-donut-lbl">Totaal</text></svg>';
 	}
 
+	// Mini-sparkline (trend) als compacte SVG voor het markt-widget.
+	function sparkSVG(series, cls) {
+		if (!series || series.length < 2) return '<span class="xg-wg-spark"></span>';
+		var w = 56, h = 18, n = series.length, min = Math.min.apply(null, series), max = Math.max.apply(null, series);
+		var span = (max - min) || 1;
+		var pts = series.map(function (v, i) {
+			var x = (i / (n - 1)) * w;
+			var y = h - ((v - min) / span) * (h - 2) - 1;
+			return x.toFixed(1) + ',' + y.toFixed(1);
+		}).join(' ');
+		var stroke = cls === 'up' ? '#1a8a3c' : (cls === 'down' ? '#c0392b' : '#9b958a');
+		return '<svg class="xg-wg-spark" viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '" aria-hidden="true">' +
+			'<polyline points="' + pts + '" fill="none" stroke="' + stroke + '" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+	}
+
 	function portfolioPanel(d) {
 		var pf = d.portfolio || {}, items = pf.items || [];
 		if (!items.length) {
@@ -355,10 +370,29 @@
 			if (!marketPrices) { b = '<p class="xg-wg-muted">Koersen laden…</p>'; }
 			else {
 				b = '<div class="xg-wg-market">' + Object.keys(marketPrices).map(function (k) {
-					return '<div class="xg-wg-mrow"><span>' + esc(marketPrices[k].label) + '</span><strong>€ ' + esc(marketPrices[k].gram) + '<small>/g</small></strong></div>';
+					var p = marketPrices[k], ch = Number(p.change) || 0, cls = ch > 0 ? 'up' : (ch < 0 ? 'down' : 'flat');
+					var trend = ch !== 0 ? '<span class="xg-wg-mch ' + cls + '">' + (ch > 0 ? '▲' : '▼') + ' ' + Math.abs(ch) + '%</span>' : '';
+					return '<div class="xg-wg-mrow"><span class="xg-wg-mname">' + esc(p.label) + '</span>' +
+						sparkSVG(p.spark, cls) +
+						'<strong>€ ' + esc(p.gram) + '<small>/g</small></strong>' + trend + '</div>';
 				}).join('') + '</div>';
 			}
 			return widgetCard('market', 'Markt vandaag', '〽', b, { live: true });
+		},
+		spaardoel: function (d) {
+			if (!d.savings) return '';
+			var s = d.savings, goal = s.goal || {}, target = Number(goal.target) || 0, cur = Number(s.current) || 0;
+			var pct = target > 0 ? Math.min(100, Math.round(cur / target * 100)) : 0;
+			var b;
+			if (target > 0) {
+				b = '<div class="xg-wg-num xg-wg-num-sm">' + pct + '%</div>' +
+					'<div class="xg-loyalty-bar"><span style="width:' + pct + '%"></span></div>' +
+					'<div class="xg-wg-muted">' + eur0(cur) + ' van ' + eur0(target) + (goal.label ? ' · ' + esc(goal.label) : '') + '</div>';
+			} else {
+				b = '<p class="xg-wg-muted">Nog geen doel ingesteld.</p>';
+			}
+			b += '<a class="xg-wg-link" data-tab="portfolio" href="#">Doel instellen →</a>';
+			return widgetCard('spaardoel', 'Spaardoel', '◎', b);
 		},
 		niveau: function (d) {
 			var lo = d.loyalty || {}, ladder = lo.ladder || [];
@@ -418,7 +452,12 @@
 			return widgetCard('referral', 'Uitnodigen', '🎁', b);
 		}
 	};
-	var WIDGET_ORDER = ['portfolio', 'market', 'niveau', 'timeline', 'afspraak', 'punten', 'charity', 'veilingen', 'alerts', 'inbox', 'referral'];
+	var WIDGET_ORDER = ['portfolio', 'market', 'niveau', 'timeline', 'afspraak', 'spaardoel', 'punten', 'charity', 'veilingen', 'alerts', 'inbox', 'referral'];
+	var WIDGET_TITLES = {
+		portfolio: 'Portfolio', market: 'Markt vandaag', niveau: 'Mijn niveau', timeline: 'Verkoopstatus',
+		afspraak: 'Volgende afspraak', spaardoel: 'Spaardoel', punten: 'Spaarpunten', charity: 'Charity',
+		veilingen: 'Veilingen', alerts: 'Prijsalarmen', inbox: 'Berichten', referral: 'Uitnodigen'
+	};
 	function widgetOrder() {
 		var saved = null; try { saved = JSON.parse(localStorage.getItem('xg_wgorder') || 'null'); } catch (e) {}
 		if (!saved || !saved.length) return WIDGET_ORDER.slice();
@@ -426,10 +465,26 @@
 		var extra = WIDGET_ORDER.filter(function (x) { return known.indexOf(x) < 0; });
 		return known.concat(extra);
 	}
+	// Verborgen widgets (door de gebruiker uitgezet) – onthouden in localStorage.
+	function hiddenWidgets() {
+		try { var h = JSON.parse(localStorage.getItem('xg_wghidden') || '[]'); return Array.isArray(h) ? h : []; }
+		catch (e) { return []; }
+	}
+	function setHidden(arr) { try { localStorage.setItem('xg_wghidden', JSON.stringify(arr)); } catch (e) {} }
 	function overviewGrid(d) {
-		var greet = '<div class="xg-acc-greet"><div><h2>Welkom terug 👋</h2><p>' + esc(d.email) + '</p></div><span class="xg-acc-greet-hint">Sleep de widgets in uw eigen volgorde</span></div>';
-		var cards = widgetOrder().map(function (id) { return WIDGETS[id] ? WIDGETS[id](d) : ''; }).filter(Boolean).join('');
-		return greet + notifyCard(d) + '<div class="xg-wgrid">' + cards + '</div>';
+		var greet = '<div class="xg-acc-greet"><div><h2>Welkom terug 👋</h2><p>' + esc(d.email) + '</p></div>' +
+			'<button type="button" class="xg-wg-customize" aria-expanded="false">⚙ Aanpassen</button></div>';
+		var hidden = hiddenWidgets();
+		// Customizer-paneel: per widget aan/uit.
+		var picker = '<div class="xg-wg-picker" hidden><p class="xg-wg-picker-h">Kies welke widgets u ziet — sleep ze daarna in uw eigen volgorde.</p><div class="xg-wg-picker-grid">' +
+			widgetOrder().map(function (id) {
+				if (!WIDGETS[id]) return '';
+				var on = hidden.indexOf(id) < 0;
+				return '<label class="xg-wg-pick"><input type="checkbox" data-wid="' + id + '"' + (on ? ' checked' : '') + '><span>' + esc(WIDGET_TITLES[id] || id) + '</span></label>';
+			}).filter(Boolean).join('') + '</div></div>';
+		var cards = widgetOrder().filter(function (id) { return hidden.indexOf(id) < 0; })
+			.map(function (id) { return WIDGETS[id] ? WIDGETS[id](d) : ''; }).filter(Boolean).join('');
+		return greet + picker + notifyCard(d) + '<div class="xg-wgrid">' + cards + '</div>';
 	}
 
 	function renderDash(d) {
@@ -461,7 +516,7 @@
 
 		dash.innerHTML = head + nav + '<div class="xg-acc-panels">' +
 			panel('overzicht', overviewGrid(d)) +
-			panel('portfolio', portfolioPanel(d) + txPanel(d)) +
+			panel('portfolio', portfolioPanel(d) + savingsCard(d) + txPanel(d)) +
 			panel('veilingen',
 				listingsSection(d) +
 				auctionsSection(d) +
@@ -514,27 +569,72 @@
 			if (el.classList.contains('xg-acc-tab')) return;
 			el.addEventListener('click', function (e) { e.preventDefault(); switchTab(el.getAttribute('data-tab')); window.scrollTo(0, 0); });
 		});
-		// Widgets verslepen (volgorde onthouden).
+		// Widgets aanpassen (zichtbaarheid) – customizer-paneel.
+		var customBtn = dash.querySelector('.xg-wg-customize');
+		var picker = dash.querySelector('.xg-wg-picker');
+		if (customBtn && picker) {
+			customBtn.addEventListener('click', function () {
+				var open = picker.hasAttribute('hidden');
+				if (open) { picker.removeAttribute('hidden'); } else { picker.setAttribute('hidden', ''); }
+				customBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+				customBtn.classList.toggle('active', open);
+			});
+			picker.querySelectorAll('input[data-wid]').forEach(function (cb) {
+				cb.addEventListener('change', function () {
+					var hid = hiddenWidgets(), id = cb.getAttribute('data-wid'), i = hid.indexOf(id);
+					if (cb.checked) { if (i >= 0) hid.splice(i, 1); }
+					else { if (i < 0) hid.push(id); }
+					setHidden(hid);
+					renderDash(d); // herteken het overzicht; customizer blijft open via class
+					var p = dash.querySelector('.xg-wg-picker'), b = dash.querySelector('.xg-wg-customize');
+					if (p && b) { p.removeAttribute('hidden'); b.classList.add('active'); b.setAttribute('aria-expanded', 'true'); }
+				});
+			});
+		}
+
+		// Widgets verslepen (volgorde onthouden) – desktop (HTML5) + touch (pointer).
 		var grid = dash.querySelector('.xg-wgrid');
+		function persistOrder() {
+			try { localStorage.setItem('xg_wgorder', JSON.stringify([].slice.call(grid.querySelectorAll('.xg-wg')).map(function (c) { return c.getAttribute('data-wid'); }))); } catch (e) {}
+		}
+		function placeAfter(grid, dragging, y) {
+			var els = [].slice.call(grid.querySelectorAll('.xg-wg:not(.xg-wg-drag)'));
+			var after = null, min = Infinity;
+			els.forEach(function (c) {
+				var box = c.getBoundingClientRect();
+				var off = y - box.top - box.height / 2;
+				if (off < 0 && -off < min) { min = -off; after = c; }
+			});
+			if (after) grid.insertBefore(dragging, after); else grid.appendChild(dragging);
+		}
 		if (grid) {
 			grid.querySelectorAll('.xg-wg').forEach(function (card) {
 				card.addEventListener('dragstart', function () { card.classList.add('xg-wg-drag'); });
-				card.addEventListener('dragend', function () {
-					card.classList.remove('xg-wg-drag');
-					try { localStorage.setItem('xg_wgorder', JSON.stringify([].slice.call(grid.querySelectorAll('.xg-wg')).map(function (c) { return c.getAttribute('data-wid'); }))); } catch (e) {}
-				});
+				card.addEventListener('dragend', function () { card.classList.remove('xg-wg-drag'); persistOrder(); });
+
+				// Touch/pointer-drag via de grip (mobiel; HTML5-drag werkt daar niet).
+				var grip = card.querySelector('.xg-wg-grip');
+				if (grip && window.PointerEvent) {
+					grip.addEventListener('pointerdown', function (e) {
+						if (e.pointerType === 'mouse') return; // muis gebruikt native drag
+						e.preventDefault();
+						card.classList.add('xg-wg-drag');
+						function move(ev) { placeAfter(grid, card, ev.clientY); }
+						function up() {
+							card.classList.remove('xg-wg-drag');
+							document.removeEventListener('pointermove', move);
+							document.removeEventListener('pointerup', up);
+							persistOrder();
+						}
+						document.addEventListener('pointermove', move);
+						document.addEventListener('pointerup', up);
+					});
+				}
 			});
 			grid.addEventListener('dragover', function (e) {
 				e.preventDefault();
 				var dragging = grid.querySelector('.xg-wg-drag'); if (!dragging) return;
-				var els = [].slice.call(grid.querySelectorAll('.xg-wg:not(.xg-wg-drag)'));
-				var after = null, min = Infinity;
-				els.forEach(function (c) {
-					var box = c.getBoundingClientRect();
-					var off = e.clientY - box.top - box.height / 2;
-					if (off < 0 && -off < min) { min = -off; after = c; }
-				});
-				if (after) grid.insertBefore(dragging, after); else grid.appendChild(dragging);
+				placeAfter(grid, dragging, e.clientY);
 			});
 		}
 		// Bezit verwijderen (DELETE met token).

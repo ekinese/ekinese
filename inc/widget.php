@@ -19,8 +19,22 @@ add_action( 'rest_api_init', function () {
 		'callback'            => function () {
 			$out = array();
 			foreach ( array( 'goud' => 'Goud', 'zilver' => 'Zilver', 'platina' => 'Platina', 'palladium' => 'Palladium' ) as $code => $label ) {
-				$spot         = function_exists( 'ekinese_metal_spot' ) ? (float) ekinese_metal_spot( $code ) : 0;
-				$out[ $code ] = array( 'label' => $label, 'gram' => round( $spot, 2 ) );
+				$spot   = function_exists( 'ekinese_metal_spot' ) ? (float) ekinese_metal_spot( $code ) : 0;
+				$spark  = array();
+				$change = 0;
+				if ( function_exists( 'ekinese_price_history' ) ) {
+					// Laatste ~8 dagen als sparkline + 7-daagse verandering (%).
+					$hist = array_values( ekinese_price_history( $code, 7 ) );
+					if ( count( $hist ) >= 2 ) {
+						$spark = array_map( function ( $v ) { return round( (float) $v, 4 ); }, $hist );
+						$first = (float) $hist[0];
+						$last  = (float) end( $hist );
+						if ( $first > 0 ) {
+							$change = round( ( $last - $first ) / $first * 100, 1 );
+						}
+					}
+				}
+				$out[ $code ] = array( 'label' => $label, 'gram' => round( $spot, 2 ), 'change' => $change, 'spark' => $spark );
 			}
 			return rest_ensure_response( array( 'prices' => $out, 'updated' => get_option( 'xg_spot_updated', '' ) ) );
 		},

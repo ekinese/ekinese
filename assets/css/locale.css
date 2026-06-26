@@ -115,6 +115,26 @@ html[data-theme="dark"] .xg-acc-sec h3 { border-color: #34302b; }
 .xg-wg-inbox { display: flex; gap: 18px; }
 .xg-wg-inbox strong { display: block; font-size: 24px; font-weight: 800; color: #AE1E1E; }
 .xg-wg-inbox span { font-size: 12px; color: #6b665c; }
+/* Markt-widget: naam, sparkline, koers, trend */
+.xg-wg-mname { flex: 0 0 auto; }
+.xg-wg-spark { flex: 1 1 auto; margin: 0 8px; opacity: .9; }
+.xg-wg-mrow strong { white-space: nowrap; }
+.xg-wg-mch { flex: 0 0 auto; margin-left: 8px; font-size: 11px; font-weight: 800; }
+.xg-wg-mch.up { color: #1a8a3c; }
+.xg-wg-mch.down { color: #c0392b; }
+.xg-wg-mch.flat { color: #9b958a; }
+/* Widget-customizer (zichtbaarheid) */
+.xg-wg-customize { font-size: 12px; font-weight: 700; color: #6b665c; background: #f5f1e8; border: 1px solid #e6e0d4; padding: 7px 12px; cursor: pointer; }
+.xg-wg-customize.active { background: #161412; color: #fff; border-color: #161412; }
+.xg-wg-picker { background: #faf7f0; border: 1px solid #e6e0d4; padding: 14px 16px; margin: 0 0 16px; }
+.xg-wg-picker-h { margin: 0 0 10px; font-size: 13px; color: #6b665c; }
+.xg-wg-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px 14px; }
+.xg-wg-pick { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+.xg-wg-pick input { width: 16px; height: 16px; accent-color: #AE1E1E; }
+.xg-wg-grip { touch-action: none; }
+html[data-theme="dark"] .xg-wg-customize { background: #221f1a; color: #b3ad9f; border-color: #34302b; }
+html[data-theme="dark"] .xg-wg-customize.active { background: #D0AC4B; color: #161412; }
+html[data-theme="dark"] .xg-wg-picker { background: #1d1b19; border-color: #34302b; }
 /* Gamification-ladder */
 .xg-tier-now { font-weight: 800; font-size: 15px; color: var(--gold,#c8a24a); margin-bottom: 8px; }
 .xg-tier-ladder { display: flex; flex-direction: column; gap: 2px; margin-top: 12px; }
