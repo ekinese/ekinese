@@ -249,8 +249,21 @@ function ekinese_fleet_me( WP_REST_Request $r ) {
 		}
 		$exp_rows[] = array( 'date' => get_the_date( 'd-m', $e ), 'amount' => number_format_i18n( $amt, 2 ), 'category' => get_post_meta( $e->ID, 'category', true ), 'status' => get_post_meta( $e->ID, 'status', true ) ?: 'ingediend' );
 	}
+	$biz   = function_exists( 'ekinese_business' ) ? ekinese_business() : array();
+	$phone = $biz['telephone'] ?? '';
+	$d_email = get_post_meta( $did, 'email', true );
+	$tickets = array();
+	if ( $d_email ) {
+		foreach ( get_posts( array( 'post_type' => 'xg_ticket', 'numberposts' => 10, 'post_status' => 'publish', 'orderby' => 'date', 'order' => 'DESC', 'meta_query' => array( array( 'key' => 'email', 'value' => $d_email ) ) ) ) as $t ) {
+			$tickets[] = array( 'reference' => get_post_meta( $t->ID, 'reference', true ), 'subject' => get_post_meta( $t->ID, 'subject', true ), 'status' => get_post_meta( $t->ID, 'status', true ) ?: 'open' );
+		}
+	}
 	return rest_ensure_response( array(
 		'driver'      => get_the_title( $did ),
+		'email'       => $d_email,
+		'phone'       => $phone,
+		'whatsapp'    => preg_replace( '/\D/', '', (string) $phone ),
+		'tickets'     => $tickets,
 		'date'        => $rid ? get_post_meta( $rid, 'date', true ) : date( 'Y-m-d', current_time( 'timestamp' ) ), // phpcs:ignore WordPress.DateTime
 		'route_token' => $rid ? get_post_meta( $rid, 'token', true ) : '',
 		'stops'       => ekinese_fleet_compute_eta( $stops ),
@@ -455,7 +468,10 @@ add_action( 'wp_enqueue_scripts', function () {
 	$js = get_theme_file_path( 'assets/js/driver-app.js' );
 	if ( file_exists( $js ) ) {
 		wp_enqueue_script( 'ekinese-driver-app', get_theme_file_uri( 'assets/js/driver-app.js' ), array(), (string) filemtime( $js ), true );
-		wp_localize_script( 'ekinese-driver-app', 'XGFleet', array( 'rest' => esc_url_raw( rest_url( 'ekinese/v1/fleet' ) ) ) );
+		wp_localize_script( 'ekinese-driver-app', 'XGFleet', array(
+			'rest'   => esc_url_raw( rest_url( 'ekinese/v1/fleet' ) ),
+			'ticket' => esc_url_raw( rest_url( 'ekinese/v1/ticket' ) ),
+		) );
 	}
 }, 20 );
 

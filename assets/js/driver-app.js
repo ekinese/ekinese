@@ -57,9 +57,9 @@
 		var s = data.shift || {};
 		var head = '<div class="xg-fa-head"><div><strong>' + esc(data.driver) + '</strong><span>' + esc(data.date) + '</span></div>' +
 			(s.open ? '<span class="xg-fa-badge on">In dienst</span>' : '<span class="xg-fa-badge">Offline</span>') + '</div>';
-		var body = tab === 'route' ? routeView() : tab === 'kosten' ? kostenView() : profielView();
+		var body = tab === 'route' ? routeView() : tab === 'kosten' ? kostenView() : tab === 'contact' ? contactView() : profielView();
 		var tabs = '<nav class="xg-fa-tabs">' +
-			['route|Route', 'kosten|Onkosten', 'profiel|Profiel'].map(function (t) {
+			['route|Route', 'kosten|Onkosten', 'contact|Contact', 'profiel|Profiel'].map(function (t) {
 				var k = t.split('|');
 				return '<button data-tab="' + k[0] + '"' + (tab === k[0] ? ' class="active"' : '') + '>' + k[1] + '</button>';
 			}).join('') + '</nav>';
@@ -93,6 +93,20 @@
 			(rows ? '<table class="xg-fa-table"><thead><tr><th>Datum</th><th>Bedrag</th><th>Categorie</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table>' : '<p class="xg-fa-empty">Nog geen onkosten.</p>');
 	}
 
+	function contactView() {
+		var wa = data.whatsapp ? '<a class="xg-fa-btn green" href="https://wa.me/' + esc(data.whatsapp) + '" target="_blank">💬 WhatsApp kantoor</a>' : '';
+		var call = data.phone ? '<a class="xg-fa-btn" href="tel:' + esc(data.phone) + '">📞 Bel kantoor</a>' : '';
+		var tickets = (data.tickets || []).map(function (t) {
+			return '<div class="xg-fa-tk"><strong>' + esc(t.reference || '') + '</strong> ' + esc(t.subject || '') + ' <em>' + esc(t.status || '') + '</em></div>';
+		}).join('') || '<p class="xg-fa-empty">Nog geen tickets.</p>';
+		return '<h3>Contact kantoor</h3>' + wa + call +
+			'<h3>Nieuw ticket</h3><div class="xg-fa-tkform">' +
+			'<input class="t-subject" type="text" placeholder="Onderwerp">' +
+			'<textarea class="t-message" rows="3" placeholder="Omschrijf het probleem of de vraag"></textarea>' +
+			'<button class="xg-fa-btn gold" data-act="ticket">Ticket versturen</button><span class="t-msg"></span></div>' +
+			'<h3>Mijn tickets</h3>' + tickets;
+	}
+
 	function profielView() {
 		return '<h3>Profiel</h3><p>Chauffeur: <strong>' + esc(data.driver) + '</strong></p>' +
 			'<p>Datum: ' + esc(data.date) + '</p>' +
@@ -118,6 +132,21 @@
 		else if (a === 'endshift') { var km2 = prompt('Kilometerstand bij einde?'); if (km2 === null) return; api('/shift', { action: 'end', km: parseInt(km2) || 0 }).then(load); }
 		else if (a === 'logout') { localStorage.removeItem('xg_fleet_code'); code = ''; login(); }
 		else if (a === 'scan') { expenseForm(); }
+		else if (a === 'ticket') { submitTicket(); }
+	}
+
+	function submitTicket() {
+		var subj = (root.querySelector('.t-subject') || {}).value || '';
+		var msg = (root.querySelector('.t-message') || {}).value || '';
+		var out = root.querySelector('.t-msg');
+		if (!msg.trim()) { out.textContent = 'Vul een bericht in.'; return; }
+		out.textContent = 'Versturen…';
+		fetch((window.XGFleet || {}).ticket, {
+			method: 'POST', headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ name: data.driver, email: data.email, subject: subj || 'Melding chauffeur', message: msg })
+		}).then(function (r) { return r.json(); })
+			.then(function (j) { if (j && j.ok) { out.textContent = 'Verstuurd (' + (j.reference || '') + ')'; load(); } else { out.textContent = 'Mislukt.'; } })
+			.catch(function () { out.textContent = 'Netwerkfout.'; });
 	}
 
 	/* ---------- Onkosten met OCR ---------- */

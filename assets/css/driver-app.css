@@ -30,6 +30,12 @@
 .xg-fa-file { display: block; background: #faf8f4; border: 1px dashed #d8d2c6; padding: 14px; text-align: center; font-weight: 600; cursor: pointer; }
 .xg-fa-file input { display: none; }
 .xg-fa-note { font-size: 13px; color: #8a847a; }
+.xg-fa-tkform { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.xg-fa-tkform input, .xg-fa-tkform textarea { padding: 12px; font-size: 16px; border: 1px solid #d8d2c6; }
+.t-msg { font-size: 13px; color: #57534b; }
+.xg-fa-tk { background: #fff; border: 1px solid #ececec; padding: 10px 12px; margin-bottom: 6px; font-size: 14px; }
+.xg-fa-tk em { color: #8a847a; font-style: normal; font-size: 12px; }
+html[data-theme="dark"] .xg-fa-tkform input, html[data-theme="dark"] .xg-fa-tkform textarea, html[data-theme="dark"] .xg-fa-tk { background: #211e1a; border-color: #34302b; color: #f3efe8; }
 .xg-fa-tabs { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: #fff; border-top: 1px solid #e2ddd2; max-width: 560px; margin: 0 auto; }
 .xg-fa-tabs button { flex: 1; background: none; border: none; padding: 14px 0; font: inherit; font-weight: 700; font-size: 13px; color: #8a847a; cursor: pointer; }
 .xg-fa-tabs button.active { color: #AE1E1E; box-shadow: inset 0 2px 0 #AE1E1E; }
