@@ -249,6 +249,13 @@ function ekinese_fleet_me( WP_REST_Request $r ) {
 		}
 		$exp_rows[] = array( 'date' => get_the_date( 'd-m', $e ), 'amount' => number_format_i18n( $amt, 2 ), 'category' => get_post_meta( $e->ID, 'category', true ), 'status' => get_post_meta( $e->ID, 'status', true ) ?: 'ingediend' );
 	}
+	$stops = ekinese_fleet_compute_eta( $stops );
+	foreach ( $stops as &$st ) {
+		if ( ! empty( $st['appointment'] ) && function_exists( 'ekinese_visit_code' ) ) {
+			$st['vcode'] = ekinese_visit_code( (int) $st['appointment'] );
+		}
+	}
+	unset( $st );
 	$biz   = function_exists( 'ekinese_business' ) ? ekinese_business() : array();
 	$phone = $biz['telephone'] ?? '';
 	$d_email = get_post_meta( $did, 'email', true );
@@ -266,7 +273,7 @@ function ekinese_fleet_me( WP_REST_Request $r ) {
 		'tickets'     => $tickets,
 		'date'        => $rid ? get_post_meta( $rid, 'date', true ) : date( 'Y-m-d', current_time( 'timestamp' ) ), // phpcs:ignore WordPress.DateTime
 		'route_token' => $rid ? get_post_meta( $rid, 'token', true ) : '',
-		'stops'       => ekinese_fleet_compute_eta( $stops ),
+		'stops'       => $stops,
 		'shift'       => $shift ? array( 'open' => true, 'start' => get_post_meta( $shift, 'start', true ), 'km_start' => get_post_meta( $shift, 'km_start', true ) ) : array( 'open' => false ),
 		'expenses'    => $exp_rows,
 		'week_total'  => number_format_i18n( $week_total, 2 ),

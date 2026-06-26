@@ -21,6 +21,28 @@
 		return new Promise(function (res) { var fr = new FileReader(); fr.onload = function () { res(fr.result); }; fr.readAsDataURL(file); });
 	}
 
+	// Native barcode/QR-scanner (geen library). Roept onCode(text) eenmalig aan.
+	function startScan(onCode) {
+		if (!('BarcodeDetector' in window) || !navigator.mediaDevices) return;
+		var det = new window.BarcodeDetector({ formats: ['qr_code', 'code_128', 'ean_13', 'code_39'] });
+		navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(function (stream) {
+			var ov = document.createElement('div');
+			ov.className = 'xg-fa-scan';
+			var v = document.createElement('video');
+			v.setAttribute('playsinline', ''); v.muted = true; v.srcObject = stream;
+			ov.appendChild(v);
+			var hint = document.createElement('p'); hint.textContent = 'Richt op de code · tik om te sluiten'; ov.appendChild(hint);
+			document.body.appendChild(ov);
+			v.play();
+			var done = false;
+			function stop() { if (done) return; done = true; clearInterval(iv); stream.getTracks().forEach(function (t) { t.stop(); }); ov.remove(); }
+			ov.addEventListener('click', stop);
+			var iv = setInterval(function () {
+				det.detect(v).then(function (codes) { if (codes && codes[0]) { var val = codes[0].rawValue; stop(); onCode(val); } }).catch(function () {});
+			}, 500);
+		}).catch(function () {});
+	}
+
 	function login() {
 		root.innerHTML = '<div class="xg-fa-login"><h2>XGOUD Rit</h2><p>Voer uw persoonlijke code in.</p>' +
 			'<input id="xg-fa-code" type="text" placeholder="Code" value="' + esc(code) + '"><button id="xg-fa-go">Inloggen</button><p class="xg-fa-msg"></p></div>';
@@ -200,6 +222,12 @@
 			'</div>' +
 			'<div class="xg-fa-statusbtns"><button data-ev="arrived">Aangekomen</button><button data-ev="start">Begin</button><button data-ev="end">Klaar</button><button data-ev="failed">Niet gelukt</button></div>' +
 			'<textarea class="s-note" rows="2" placeholder="Notitie (waar/opmerkingen)"></textarea>' +
+			'<h4>Verificatie (anti-fraude)</h4>' +
+			'<p class="xg-fa-vtext">Toon de klant deze code — hij ziet dezelfde in zijn bevestiging. Zo bewijst u dat u van XGOUD komt.</p>' +
+			'<div class="xg-fa-code">' + esc(st.vcode || '—') + '</div>' +
+			'<button class="xg-fa-btn green v-ok">Klant geverifieerd ✓</button>' +
+			(('BarcodeDetector' in window) ? '<button class="xg-fa-btn v-scan">📷 Scan klantcode</button>' : '') +
+			'<span class="v-msg"></span>' +
 			'<h4>KYC vastleggen</h4>' +
 			'<label class="xg-fa-file">📷 ID-scan<input type="file" accept="image/*" capture="environment" class="id-file"></label>' +
 			'<input class="k-name" type="text" placeholder="Naam (van ID)"><input class="k-idnum" type="text" placeholder="Documentnr."><input class="k-dob" type="text" placeholder="Geboortedatum">' +
@@ -219,6 +247,22 @@
 					.then(function () { b.classList.add('done'); load(); });
 			});
 		});
+
+		// Verificatie: klant bevestigen (+ optioneel code scannen) → check-in.
+		var vmsg = ov.querySelector('.v-msg');
+		function doVerify(scanned) {
+			fetch((window.XGFleet || {}).rest + '/verify', {
+				method: 'POST', headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ token: (data.route_token || ''), index: i, code: scanned || '' })
+			}).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+				.then(function (o) {
+					if (o.ok && o.j && o.j.ok) { vmsg.textContent = 'Geverifieerd ✓ ' + (o.j.name || ''); load(); }
+					else { vmsg.textContent = (o.j && o.j.message) || 'Niet gelukt.'; }
+				}).catch(function () { vmsg.textContent = 'Netwerkfout.'; });
+		}
+		ov.querySelector('.v-ok').addEventListener('click', function () { doVerify(''); });
+		var vscan = ov.querySelector('.v-scan');
+		if (vscan) vscan.addEventListener('click', function () { startScan(function (text) { vmsg.textContent = 'Code gescand…'; doVerify(text); }); });
 
 		var idImg = '';
 		ov.querySelector('.id-file').addEventListener('change', function (e) {

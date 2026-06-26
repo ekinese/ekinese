@@ -2227,6 +2227,17 @@ html[data-theme="dark"] .xg-notif.is-new { background: #221f1a; }
 html[data-theme="dark"] .xg-notif-body strong { color: #f3efe8; }
 html[data-theme="dark"] .xg-notif { border-color: #34302b; }
 
+/* Bezoek-verificatie (klant) */
+.xg-verify { padding: 60px 0; }
+.xg-verify-box { max-width: 540px; margin: 0 auto; text-align: center; background: #fff; border: 1px solid #ececec; padding: 36px 28px; box-shadow: 0 12px 35px rgba(0,0,0,.05); }
+.xg-verify-check { width: 64px; height: 64px; line-height: 64px; margin: 0 auto 12px; border-radius: 50%; background: #1f9d55; color: #fff; font-size: 34px; font-weight: 800; }
+.xg-verify-ok h1 { color: #1f9d55; }
+.xg-verify-bad h1 { color: #AE1E1E; }
+.xg-verify-codelabel { margin-top: 18px; font-size: 14px; color: #57534b; }
+.xg-verify-code { font-size: 40px; font-weight: 800; letter-spacing: 6px; background: #161412; color: #D0AC4B; padding: 16px; margin: 10px 0; }
+.xg-verify-warn { font-size: 13px; color: #8a847a; }
+html[data-theme="dark"] .xg-verify-box { background: #1d1b19; border-color: #34302b; }
+
 /* PWA install-balk */
 .xg-pwa-install { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 99998; background: #161412; color: #f3efe8; display: flex; align-items: center; gap: 12px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(0,0,0,.25); max-width: 560px; margin: 0 auto; }
 .xg-pwa-install span { flex: 1; font-size: 13px; line-height: 1.45; }

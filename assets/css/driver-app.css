@@ -49,7 +49,14 @@ html[data-theme="dark"] .xg-fa-tkform input, html[data-theme="dark"] .xg-fa-tkfo
 .xg-fa-statusbtns { display: flex; gap: 6px; margin: 10px 0; flex-wrap: wrap; }
 .xg-fa-statusbtns button { flex: 1; padding: 12px 4px; border: 1px solid #d8d2c6; background: #faf8f4; font: inherit; font-weight: 700; cursor: pointer; }
 .xg-fa-statusbtns button.done { background: #1f9d55; color: #fff; border-color: #1f9d55; }
+.xg-fa-vtext { font-size: 13px; color: #57534b; margin: 4px 0; }
+.xg-fa-code { font-size: 34px; font-weight: 800; letter-spacing: 4px; text-align: center; background: #161412; color: #D0AC4B; padding: 14px; margin: 8px 0; }
+.v-msg { font-size: 13px; color: #1f7a44; display: block; margin: 6px 0; }
+.xg-fa-scan { position: fixed; inset: 0; z-index: 200; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.xg-fa-scan video { max-width: 100%; max-height: 80vh; }
+.xg-fa-scan p { color: #fff; margin-top: 14px; font-size: 14px; }
 .xg-fa-sig { margin: 10px 0; }
+html[data-theme="dark"] .xg-fa-vtext { color: #b3ad9f; }
 .xg-fa-sig canvas { border: 1px solid #d8d2c6; width: 100%; touch-action: none; background: #fff; }
 .xg-fa-sig .sig-clear { background: none; border: 1px solid #d8d2c6; padding: 6px 12px; font: inherit; cursor: pointer; margin-top: 4px; }
 html[data-theme="dark"] .xg-fa-stop, html[data-theme="dark"] .xg-fa-expform, html[data-theme="dark"] .xg-fa-ov-box { background: #1d1b19; border-color: #34302b; color: #f3efe8; }

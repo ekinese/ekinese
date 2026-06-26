@@ -209,6 +209,20 @@
 			'<thead><tr><th>Veiling</th><th>Eindbod</th><th>Pro forma</th><th>Factuur</th><th>Betaling</th></tr></thead><tbody>' + rows + '</tbody></table></div></section>';
 	}
 
+	// Afspraken + "Verifieer chauffeur" (anti-fraude).
+	function appointmentsSection(d) {
+		var items = d.appointments || [];
+		if (!items.length) {
+			return '<section class="xg-acc-sec"><h3>Afspraken</h3><p class="xg-acc-empty">Geen items.</p></section>';
+		}
+		var rows = items.map(function (a) {
+			var v = a.verify_url ? '<a class="xg-home-more-link" href="' + esc(a.verify_url) + '">Verifieer chauffeur</a>' : '—';
+			return '<tr><td>' + esc(a.date || '') + '</td><td>' + esc(a.time || '') + '</td><td>' + esc(a.service || '') + '</td><td>' + esc(a.status || '') + '</td><td>' + v + '</td></tr>';
+		}).join('');
+		return '<section class="xg-acc-sec"><h3>Afspraken</h3><div class="xg-table-scroll"><table class="xg-spec-table">' +
+			'<thead><tr><th>Datum</th><th>Tijd</th><th>Service</th><th>Status</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></section>';
+	}
+
 	// Marktplaats: eigen advertenties (verwijderbaar zolang ze actief zijn).
 	function listingsSection(d) {
 		var items = d.listings || [];
@@ -351,10 +365,7 @@
 				])
 			) +
 			panel('afspraken',
-				section('Afspraken', d.appointments, [
-					{ key: 'date', label: 'Datum' }, { key: 'time', label: 'Tijd' },
-					{ key: 'service', label: 'Service' }, { key: 'status', label: 'Status' }
-				]) +
+				appointmentsSection(d) +
 				section('Zendingen', d.pickups, [
 					{ key: 'reference', label: 'Referentie' }, { key: 'status', label: 'Status' }
 				])

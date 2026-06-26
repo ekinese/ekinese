@@ -36,6 +36,7 @@ function ekinese_install_pages() {
 		'afspraak'              => array( 'Afspraak maken', 'hero-calculator', null ),
 		'mijn-xgoud'            => array( 'Mijn XGOUD', '<!-- wp:ekinese/account /-->', null ),
 		'app'                   => array( 'XGOUD App', "<!-- wp:group {\"className\":\"xg-blueprint\"} -->\n<div class=\"wp-block-group xg-blueprint\"><!-- wp:ekinese/widget /--></div>\n<!-- /wp:group -->", null ),
+		'verify'                => array( 'Bezoek verifiëren', "<!-- wp:group {\"className\":\"xg-blueprint\"} -->\n<div class=\"wp-block-group xg-blueprint\"><!-- wp:ekinese/verify /--></div>\n<!-- /wp:group -->", null ),
 		'rit'                   => array( 'XGOUD Rit', '<!-- wp:ekinese/driver-app /-->', null ),
 		// Veilingen-overzicht: bewerkbare pagina (intro = native blokken) + dynamisch grid.
 		'veilingen'             => array( 'Veilingen', "<!-- wp:group {\"className\":\"xg-blueprint\"} -->\n<div class=\"wp-block-group xg-blueprint\"><!-- wp:group {\"tagName\":\"section\",\"className\":\"xg-container\"} -->\n<section class=\"wp-block-group xg-container\"><!-- wp:heading {\"className\":\"xg-section-title\"} -->\n<h2 class=\"xg-section-title\">Veilingen</h2>\n<!-- /wp:heading -->\n\n<!-- wp:paragraph -->\n<p>Bied mee op bijzondere edelmetalen, munten, sieraden en horloges. Een deel van elke opbrengst gaat naar onze goede doelen. Let op: een bod is bindend en kan niet worden ingetrokken.</p>\n<!-- /wp:paragraph --></section>\n<!-- /wp:group -->\n\n<!-- wp:ekinese/auctions /--></div>\n<!-- /wp:group -->", null ),
