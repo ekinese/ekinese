@@ -436,10 +436,36 @@
 			.catch(function () {});
 	}
 	function liveDot() { return '<span class="xg-w-live"><span class="xg-w-live-dot"></span>LIVE</span>'; }
+	// Strakke lijn-iconen (vervangen de emoji in de widget-koppen).
+	var ICONS = {
+		portfolio: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>',
+		market: '<polyline points="3,16 9,10 13,14 21,5"/><polyline points="16,5 21,5 21,10"/>',
+		streak: '<path d="M12 3c3 4 5 6 5 9a5 5 0 0 1-10 0c0-1 .5-2 1.5-3C9 10 11 8 12 3z"/>',
+		niveau: '<path d="M3 8l4 4 5-7 5 7 4-4v9H3z"/>',
+		badges: '<circle cx="12" cy="9" r="5"/><path d="M9 13l-2 8 5-3 5 3-2-8"/>',
+		timeline: '<circle cx="5" cy="6" r="1.3"/><circle cx="5" cy="12" r="1.3"/><circle cx="5" cy="18" r="1.3"/><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/>',
+		afspraak: '<rect x="3" y="4" width="18" height="17" rx="1"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/>',
+		survey: '<rect x="5" y="4" width="14" height="17" rx="1"/><path d="M9 4V2h6v2"/><polyline points="9,13 11,15 15,11"/>',
+		profiel: '<circle cx="12" cy="8" r="4"/><path d="M5 21c0-4 3-6 7-6s7 2 7 6"/>',
+		deelkaart: '<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><line x1="8" y1="11" x2="16" y2="7"/><line x1="8" y1="13" x2="16" y2="17"/>',
+		spaardoel: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.6"/>',
+		momenten: '<rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 7l1.5-3h5L16 7"/>',
+		punten: '<polygon points="12,3 14.7,8.6 21,9.3 16.5,13.6 17.8,20 12,16.8 6.2,20 7.5,13.6 3,9.3 9.3,8.6"/>',
+		charity: '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10z"/>',
+		veilingen: '<path d="M14 6l4 4-8 8-4-4z"/><line x1="14" y1="6" x2="18" y2="2"/><line x1="3" y1="21" x2="11" y2="13"/>',
+		treuhand: '<line x1="12" y1="3" x2="12" y2="21"/><line x1="6" y1="6" x2="18" y2="6"/><path d="M6 6l-3 6h6z"/><path d="M18 6l-3 6h6z"/><line x1="8" y1="21" x2="16" y2="21"/>',
+		alerts: '<path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+		inbox: '<rect x="3" y="5" width="18" height="14" rx="1"/><polyline points="3,6 12,13 21,6"/>',
+		referral: '<rect x="3" y="9" width="18" height="12" rx="1"/><line x1="3" y1="13" x2="21" y2="13"/><line x1="12" y1="9" x2="12" y2="21"/><path d="M12 9C12 6 9 5 8 7s2 2 4 2zM12 9c0-3 3-4 4-2s-2 2-4 2z"/>'
+	};
+	function wgIcon(id, fallback) {
+		if (!ICONS[id]) return fallback;
+		return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + ICONS[id] + '</svg>';
+	}
 	function widgetCard(id, title, icon, body, opts) {
 		opts = opts || {};
 		return '<div class="xg-wg' + (opts.big ? ' xg-wg-big' : '') + '" draggable="true" data-wid="' + id + '">' +
-			'<div class="xg-wg-h"><span class="xg-wg-ic">' + icon + '</span><h3>' + esc(title) + '</h3>' + (opts.live ? liveDot() : '') + '<span class="xg-wg-grip" title="Versleep">⠿</span></div>' +
+			'<div class="xg-wg-h"><span class="xg-wg-ic">' + wgIcon(id, icon) + '</span><h3>' + esc(title) + '</h3>' + (opts.live ? liveDot() : '') + '<span class="xg-wg-grip" title="Versleep">⠿</span></div>' +
 			'<div class="xg-wg-b">' + body + '</div></div>';
 	}
 

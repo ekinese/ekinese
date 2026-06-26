@@ -90,6 +90,7 @@ html[data-theme="dark"] .xg-acc-sec h3 { border-color: #34302b; }
 .xg-wg-drag { opacity: .5; outline: 2px dashed var(--gold,#D0AC4B); }
 .xg-wg-h { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
 .xg-wg-ic { width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; background: #161412; color: #D0AC4B; font-size: 14px; }
+.xg-wg-ic svg { width: 16px; height: 16px; }
 .xg-wg-h h3 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; margin: 0; color: #57534b; flex: 1; }
 .xg-wg-grip { color: #cfc6b4; cursor: grab; font-size: 15px; }
 .xg-wg-grip:active { cursor: grabbing; }
