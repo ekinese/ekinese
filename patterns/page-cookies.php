@@ -21,14 +21,15 @@
 
 	<h2>2. Welke cookies gebruiken wij</h2>
 	<h3>Functionele cookies (noodzakelijk)</h3>
-	<p>Onthouden bijvoorbeeld uw taal, valuta en thema (licht/donker). Deze zijn nodig voor een goede werking en worden zonder toestemming geplaatst.</p>
-	<h3>Analytische cookies</h3>
-	<p>Helpen ons het gebruik van de website te begrijpen, zodat wij deze kunnen verbeteren. Waar vereist plaatsen wij deze pas na uw toestemming.</p>
-	<h3>Marketingcookies</h3>
-	<p>Worden uitsluitend met uw toestemming geplaatst, bijvoorbeeld voor relevante advertenties.</p>
+	<p>Nodig voor een goede werking; deze worden zonder toestemming geplaatst. Bijvoorbeeld <code>xg_consent</code> (uw cookiekeuze), <code>xg-theme</code> (licht/donker) en <code>xg-locale</code> (taal). Bewaartermijn: tot 6 maanden.</p>
+	<h3>Analytische cookies — alleen na toestemming</h3>
+	<p>Wij gebruiken <strong>Google Analytics 4</strong> (Google) om geanonimiseerd het gebruik van de site te meten en te verbeteren. Cookies zoals <code>_ga</code>/<code>_ga_*</code> worden <strong>pas geplaatst nadat u toestemming geeft</strong>. Bewaartermijn: tot 24 maanden. Google kan gegevens buiten de EER verwerken.</p>
+	<h3>Marketingcookies — alleen na toestemming</h3>
+	<p>Wij gebruiken de <strong>Facebook-pixel</strong> (Meta), bijvoorbeeld voor relevante advertenties en metingen. Cookies zoals <code>_fbp</code> worden <strong>uitsluitend met uw toestemming</strong> geplaatst.</p>
+	<p>Daarnaast meten wij intern, zonder externe cookies, anonieme zoekopdrachten en kliks om de site te verbeteren.</p>
 
 	<h2>3. Cookies beheren</h2>
-	<p>U kunt uw toestemming op elk moment aanpassen via de cookie-instellingen, of cookies verwijderen via uw browserinstellingen.</p>
+	<p>Bij uw eerste bezoek vraagt onze cookiebanner om uw keuze. U kunt deze op elk moment wijzigen via <a href="#" class="xg-cookie-settings">Cookie-instellingen</a> (ook onderaan elke pagina), of cookies verwijderen via uw browserinstellingen. Zonder toestemming plaatsen wij geen analyse- of marketingcookies.</p>
 
 	<h2>4. Wijzigingen</h2>
 	<p>Wij kunnen dit cookiebeleid aanpassen. De actuele versie staat altijd op deze pagina.</p>
