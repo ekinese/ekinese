@@ -284,6 +284,18 @@
 			'<thead><tr><th>Veiling</th><th>Eindbod</th><th>Pro forma</th><th>Factuur</th><th>Betaling</th></tr></thead><tbody>' + rows + '</tbody></table></div></section>';
 	}
 
+	// Treuhand-transacties (escrow) met "Betalen →" voor de koper.
+	function escrowSection(d) {
+		var items = d.escrow || [];
+		if (!items.length) return '';
+		var rows = items.map(function (e) {
+			var act = e.pay ? '<a class="xg-mp-place-link" href="' + esc(e.pay) + '&token=' + encodeURIComponent(token) + '">Betalen →</a>' : '—';
+			return '<tr><td>' + esc(e.item) + '</td><td>' + esc(e.role) + '</td><td>€ ' + esc(e.amount) + '</td><td>' + esc(e.status) + '</td><td>' + act + '</td></tr>';
+		}).join('');
+		return '<section class="xg-acc-sec"><h3>Treuhandservice</h3><div class="xg-table-scroll"><table class="xg-spec-table">' +
+			'<thead><tr><th>Item</th><th>Rol</th><th>Bedrag</th><th>Status</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></section>';
+	}
+
 	// Afspraken + "Verifieer chauffeur" (anti-fraude).
 	function appointmentsSection(d) {
 		var items = d.appointments || [];
@@ -510,6 +522,15 @@
 			var n = (d.auctions || []).length;
 			return widgetCard('veilingen', 'Veilingen', '⚒', '<div class="xg-wg-num">' + n + '</div><div class="xg-wg-muted">mijn veilingen</div><a class="xg-wg-link" href="/veilingen/">Naar veilingen →</a>');
 		},
+		treuhand: function (d) {
+			var items = d.escrow || [];
+			if (!items.length) return '';
+			var open = items.filter(function (e) { return e.pay; }).length;
+			var b = '<div class="xg-wg-num">' + items.length + '</div><div class="xg-wg-muted">treuhand-transacties</div>' +
+				(open ? '<div class="xg-wg-delta down">' + open + ' te betalen</div>' : '') +
+				'<a class="xg-wg-link" data-tab="veilingen" href="#">Bekijken →</a>';
+			return widgetCard('treuhand', 'Treuhand', '⚖', b, { live: open > 0 });
+		},
 		alerts: function (d) {
 			var n = (d.alerts || []).length;
 			return widgetCard('alerts', 'Prijsalarmen', '◔', '<div class="xg-wg-num">' + n + '</div><div class="xg-wg-muted">actief</div><a class="xg-wg-link" data-tab="service" href="#">Beheren →</a>');
@@ -544,11 +565,11 @@
 			return widgetCard('momenten', 'Mijn momenten', '📸', b);
 		}
 	};
-	var WIDGET_ORDER = ['portfolio', 'market', 'niveau', 'timeline', 'afspraak', 'survey', 'spaardoel', 'momenten', 'punten', 'charity', 'veilingen', 'alerts', 'inbox', 'referral'];
+	var WIDGET_ORDER = ['portfolio', 'market', 'niveau', 'timeline', 'afspraak', 'survey', 'spaardoel', 'momenten', 'punten', 'charity', 'veilingen', 'treuhand', 'alerts', 'inbox', 'referral'];
 	var WIDGET_TITLES = {
 		portfolio: 'Portfolio', market: 'Markt vandaag', niveau: 'Mijn niveau', timeline: 'Verkoopstatus',
 		afspraak: 'Volgende afspraak', survey: 'Vragenlijst', spaardoel: 'Spaardoel', momenten: 'Mijn momenten', punten: 'Spaarpunten',
-		charity: 'Charity', veilingen: 'Veilingen', alerts: 'Prijsalarmen', inbox: 'Berichten', referral: 'Uitnodigen'
+		charity: 'Charity', veilingen: 'Veilingen', treuhand: 'Treuhand', alerts: 'Prijsalarmen', inbox: 'Berichten', referral: 'Uitnodigen'
 	};
 	function widgetOrder() {
 		var saved = null; try { saved = JSON.parse(localStorage.getItem('xg_wgorder') || 'null'); } catch (e) {}
@@ -612,6 +633,7 @@
 			panel('veilingen',
 				listingsSection(d) +
 				auctionsSection(d) +
+				escrowSection(d) +
 				section('Lopende loterijen', d.lotteries, [
 					{ key: 'title', label: 'Loterij' }, { key: 'prize', label: 'Prijs' },
 					{ key: 'cost', label: 'Inzet (punten)' }, { key: 'tickets', label: 'Loten' }

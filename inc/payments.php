@@ -93,6 +93,14 @@ function ekinese_pay_start( WP_REST_Request $req ) {
 	} elseif ( 'market' === $type && get_post_type( $id ) === 'xg_market' ) {
 		$amount = (float) get_post_meta( $id, 'price', true );
 		$desc   = 'XGOUD marktplaats: ' . get_the_title( $id );
+	} elseif ( 'escrow' === $type && get_post_type( $id ) === 'xg_escrow' ) {
+		// Alleen de koper kan betalen, alleen zodra de factuur is verstuurd.
+		if ( get_post_meta( $id, 'buyer_email', true ) !== $email || get_post_meta( $id, 'status', true ) !== 'factuur' ) {
+			wp_safe_redirect( $back . '&pay=error' );
+			exit;
+		}
+		$amount = (float) get_post_meta( $id, 'amount', true );
+		$desc   = 'XGOUD Treuhandservice: ' . get_the_title( $id );
 	} else {
 		wp_safe_redirect( $back . '&pay=error' );
 		exit;
@@ -126,6 +134,8 @@ function ekinese_pay_webhook( WP_REST_Request $req ) {
 		ekinese_pay_mark_auction_paid( $id );
 	} elseif ( 'market' === $type ) {
 		ekinese_pay_mark_market_paid( $id );
+	} elseif ( 'escrow' === $type && function_exists( 'ekinese_escrow_mark_paid' ) ) {
+		ekinese_escrow_mark_paid( $id );
 	}
 	return rest_ensure_response( array( 'ok' => true ) );
 }

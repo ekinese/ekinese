@@ -386,6 +386,14 @@ function ekinese_dashboard_panels() {
 			admin_url( 'edit.php?post_type=xg_moment' ),
 		);
 	}
+	if ( function_exists( 'ekinese_escrow_in_bewaring' ) ) {
+		$esc = ekinese_escrow_in_bewaring();
+		$kpis[] = array(
+			'Treuhand in bewaring (' . (int) $esc['count'] . ' transacties)',
+			'€ ' . number_format_i18n( (float) $esc['sum'], 0 ),
+			admin_url( 'edit.php?post_type=xg_escrow' ),
+		);
+	}
 	echo '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:12px">';
 	foreach ( $kpis as $k ) {
 		echo '<a href="' . esc_url( $k[2] ) . '" style="text-decoration:none;background:#fff;border:1px solid #dcdcde;padding:16px"><div style="font-size:28px;font-weight:800;color:#AE1E1E">' . esc_html( $k[1] ) . '</div><div style="font-size:13px;color:#646970">' . esc_html( $k[0] ) . '</div></a>';

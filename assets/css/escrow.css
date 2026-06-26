@@ -1,0 +1,25 @@
+/* XGOUD Treuhandservice. Blueprint: rood #AE1E1E, goud #D0AC4B, radius 0. */
+.xg-escrow { padding: 48px 0; }
+.xg-escrow h2 { font-size: 26px; font-weight: 800; margin: 0 0 8px; }
+.xg-escrow-intro { color: #4a463f; max-width: 640px; margin: 0 0 22px; }
+.xg-escrow-steps { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 14px; }
+.xg-escrow-step { flex: 1 1 150px; background: #161412; color: #fff; padding: 14px 16px; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+.xg-escrow-step span { display: inline-flex; width: 26px; height: 26px; align-items: center; justify-content: center; background: #D0AC4B; color: #161412; font-weight: 800; flex: 0 0 auto; }
+.xg-escrow-fee { color: #6b665c; font-size: 14px; margin: 0 0 18px; }
+.xg-escrow-form { max-width: 560px; display: flex; flex-direction: column; gap: 12px; }
+.xg-escrow-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.xg-escrow-row > * { flex: 1 1 160px; }
+.xg-escrow-row label { display: flex; flex-direction: column; font-size: 13px; font-weight: 600; gap: 4px; }
+.xg-escrow input, .xg-escrow select, .xg-escrow textarea { padding: 12px 14px; border: 1px solid #d8d2c6; font-size: 15px; font-family: inherit; width: 100%; }
+.xg-escrow textarea { resize: vertical; }
+.xg-escrow button[type=submit] { align-self: flex-start; background: #AE1E1E; color: #fff; border: 0; padding: 13px 30px; font-weight: 700; font-size: 15px; cursor: pointer; }
+.xg-escrow button[type=submit]:hover { background: #8a1818; }
+.xg-escrow button[disabled] { opacity: .6; cursor: default; }
+.xg-escrow-msg { font-size: 14px; }
+.xg-escrow-msg.is-ok { color: #1a8a3c; }
+.xg-escrow-msg.is-err { color: #c0392b; }
+.xg-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+/* Dark mode */
+html[data-theme="dark"] .xg-escrow h2 { color: #f3efe8; }
+html[data-theme="dark"] .xg-escrow input, html[data-theme="dark"] .xg-escrow select, html[data-theme="dark"] .xg-escrow textarea { background: #221f1a; border-color: #34302b; color: #f3efe8; }
+html[data-theme="dark"] .xg-escrow-step { background: #1d1b19; }
