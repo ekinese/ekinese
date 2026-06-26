@@ -91,7 +91,7 @@ function ekinese_render_price_chart( $attr ) {
 
 	ob_start();
 	echo '<section><div class="xg-container"><div class="xg-chart" data-metal="' . esc_attr( $metal ) . '">';
-	echo '<div class="xg-chart-head"><h2>' . esc_html( $label ) . 'prijs – koersverloop</h2><div class="xg-chart-tabs"><button data-d="7">7d</button><button data-d="30" class="active">30d</button><button data-d="90">90d</button></div></div>';
+	echo '<div class="xg-chart-head"><h2>' . esc_html( $label ) . 'prijs – koersverloop <span class="xg-chart-live"><span class="xg-chart-live-dot"></span>LIVE</span></h2><div class="xg-chart-tabs"><button data-d="7">7d</button><button data-d="30" class="active">30d</button><button data-d="90">90d</button></div></div>';
 	echo '<div class="xg-chart-canvas">' . ekinese_price_chart_svg( $metal, (int) ( $attr['days'] ?? 30 ) ) . '</div>';
 	echo '</div></div></section>';
 	return ob_get_clean();
@@ -129,8 +129,11 @@ function ekinese_price_chart_svg( $metal, $days ) {
 	$svg  = '<svg viewBox="0 0 ' . $w . ' ' . $h . '" preserveAspectRatio="none" class="xg-chart-svg" role="img" aria-label="Koersverloop ' . esc_attr( $metal ) . '">';
 	$svg .= '<defs><linearGradient id="xgc_' . esc_attr( $metal ) . '" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="' . $color . '" stop-opacity=".18"/><stop offset="100%" stop-color="' . $color . '" stop-opacity="0"/></linearGradient></defs>';
 	$svg .= '<polygon points="' . esc_attr( $area ) . '" fill="url(#xgc_' . esc_attr( $metal ) . ')"/>';
-	$svg .= '<polyline points="' . esc_attr( $line ) . '" fill="none" stroke="' . $color . '" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>';
+	$svg .= '<polyline class="xg-chart-line" points="' . esc_attr( $line ) . '" fill="none" stroke="' . $color . '" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>';
 	$svg .= '</svg>';
+	// HTML-overlay (live-punt, fadenkreuz, tooltip) – binnen .xg-chart-canvas.
+	$svg .= '<span class="xg-chart-dot" style="background:' . $color . '"></span>';
+	$svg .= '<span class="xg-chart-cross"></span><span class="xg-chart-tip"></span>';
 
 	$meta = '<div class="xg-chart-meta"><span class="xg-chart-now">€ ' . esc_html( number_format_i18n( $last, 2 ) ) . '/g</span> '
 		. '<span class="xg-chart-delta" style="color:' . $color . '">' . ( $up ? '▲' : '▼' ) . ' ' . esc_html( abs( $pct ) ) . '% (' . esc_html( $days ) . 'd)</span> '
