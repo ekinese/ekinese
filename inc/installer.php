@@ -35,6 +35,7 @@ function ekinese_install_pages() {
 		'home'                  => array( 'XGOUD – Goud verkopen', 'page-home', null, 'front' ),
 		'afspraak'              => array( 'Afspraak maken', 'hero-calculator', null ),
 		'mijn-xgoud'            => array( 'Mijn XGOUD', '<!-- wp:ekinese/account /-->', null ),
+		'registreren'           => array( 'Registreren', '<!-- wp:ekinese/account /-->', null ),
 		'app'                   => array( 'XGOUD App', "<!-- wp:group {\"className\":\"xg-blueprint\"} -->\n<div class=\"wp-block-group xg-blueprint\"><!-- wp:ekinese/widget /--></div>\n<!-- /wp:group -->", null ),
 		'verify'                => array( 'Bezoek verifiëren', "<!-- wp:group {\"className\":\"xg-blueprint\"} -->\n<div class=\"wp-block-group xg-blueprint\"><!-- wp:ekinese/verify /--></div>\n<!-- /wp:group -->", null ),
 		'rit'                   => array( 'XGOUD Rit', '<!-- wp:ekinese/driver-app /-->', null ),

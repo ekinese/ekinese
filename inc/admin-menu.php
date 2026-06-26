@@ -45,13 +45,13 @@ add_action( 'admin_menu', function () {
 		return;
 	}
 	$groups = array(
-		'Operatie & klant'      => array( 'xgoud', 'xg_appointment', 'xg_lead', 'xg_ticket', 'xg_chat', 'xg_question', 'xg_pickup', 'xg_kyc' ),
+		'Operatie & klant'      => array( 'xgoud', 'xg_appointment', 'xg_lead', 'xg_ticket', 'xg_chat', 'xg_question', 'xg_pickup', 'xg_kyc', 'xg_account' ),
 		'Fleet'                 => array( 'xg_driver', 'xg_shift', 'xg_expense', 'xg_route', 'xg-fleet-stats', 'xg-plan-route', 'xg-ors' ),
 		'Catalogus'             => array( 'xg_product', 'xg_watch', 'xg_gemstone', 'xg_office', 'xg_term', 'xg_inventory' ),
 		'Veilingen & community' => array( 'xg_auction', 'xg_market', 'xg_moment', 'xg_deal', 'xg_reward', 'xg_lottery', 'xg_holding', 'xg_wishlist', 'xg_charity', 'xg_notification', 'xg_agent', 'xg_batch' ),
 		'Marketing & content'   => array( 'xg_social', 'xg_ad', 'xg_subscriber', 'xg_maillog', 'reviews', 'stad', 'ticker', 'contact', 'vergelijk', 'news', 'xg_survey', 'xg-survey' ),
 		'B2B & HR'              => array( 'xg_partner', 'xg_employee', 'xg_timeentry', 'xg_invoice' ),
-		'Instellingen'          => array( 'xg-analytics', 'xg-spot', 'xg-legal', 'xg-smtp', 'xg-pay', 'xg-ai', 'xg-integrations', 'xg-perf', 'xg-install' ),
+		'Instellingen'          => array( 'xg-analytics', 'xg-spot', 'xg-legal', 'xg-smtp', 'xg-pay', 'xg-ai', 'xg-integrations', 'xg-perf', 'xg-login', 'xg-install' ),
 	);
 	$buckets = array(); foreach ( $groups as $g => $f ) { $buckets[ $g ] = array(); }
 	$buckets['Overig'] = array();

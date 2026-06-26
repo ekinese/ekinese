@@ -117,6 +117,19 @@ html[data-theme="dark"] .xg-acc-sec h3 { border-color: #34302b; }
 .xg-wg-inbox span { font-size: 12px; color: #6b665c; }
 .xg-wg-mthumbs { display: flex; gap: 5px; margin: 8px 0; }
 .xg-wg-mthumb { width: 38px; height: 38px; background-size: cover; background-position: center; border: 1px solid #ece7dd; flex: 0 0 auto; }
+/* Login/registratie (account-block) */
+.xg-acc-toggle { display: flex; gap: 0; margin: 4px 0 16px; border: 1px solid #d8d2c6; }
+.xg-acc-tgl { flex: 1; background: #f5f1e8; border: 0; padding: 10px; font-weight: 700; cursor: pointer; color: #6b665c; }
+.xg-acc-tgl.active { background: #161412; color: #fff; }
+.xg-acc-mtabs { display: flex; gap: 8px; margin: 0 0 12px; flex-wrap: wrap; }
+.xg-acc-mtab { background: none; border: 1px solid #d8d2c6; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; color: #6b665c; }
+.xg-acc-mtab.active { border-color: #AE1E1E; color: #AE1E1E; }
+.xg-account-login form { display: flex; flex-direction: column; gap: 10px; margin: 0 0 12px; }
+.xg-account-login form input { padding: 12px 14px; border: 1px solid #d8d2c6; font-size: 15px; font-family: inherit; width: 100%; }
+.xg-otp-step1, .xg-otp-step2 { display: flex; flex-direction: column; gap: 10px; }
+html[data-theme="dark"] .xg-acc-tgl { background: #221f1a; color: #b3ad9f; }
+html[data-theme="dark"] .xg-acc-tgl.active { background: #D0AC4B; color: #161412; }
+html[data-theme="dark"] .xg-account-login form input { background: #221f1a; border-color: #34302b; color: #f3efe8; }
 /* Markt-widget: naam, sparkline, koers, trend */
 .xg-wg-mname { flex: 0 0 auto; }
 .xg-wg-spark { flex: 1 1 auto; margin: 0 8px; opacity: .9; }

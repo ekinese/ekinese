@@ -41,6 +41,79 @@
 		});
 	}
 
+	// 1b) Login/registratie-uitbreiding (wachtwoord, telefoon-OTP, registreren).
+	function postJSON(url, data) {
+		return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+			.then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); });
+	}
+	function setMsg(t, cls) { if (msg) { msg.textContent = t || ''; msg.className = 'xg-account-msg' + (cls ? ' ' + cls : ''); } }
+	function go(o) {
+		if (o.ok && o.j && o.j.ok && o.j.redirect) { location.href = o.j.redirect; return true; }
+		setMsg((o.j && o.j.message) || 'Mislukt.', 'is-err');
+		return false;
+	}
+	// Login ↔ registreren.
+	root.querySelectorAll('.xg-acc-tgl').forEach(function (b) {
+		b.addEventListener('click', function () {
+			var v = b.getAttribute('data-v');
+			root.querySelectorAll('.xg-acc-tgl').forEach(function (x) { x.classList.toggle('active', x === b); });
+			var lp = root.querySelector('.xg-acc-login-pane'), rp = root.querySelector('.xg-acc-reg-pane');
+			if (lp) lp.hidden = v !== 'login';
+			if (rp) rp.hidden = v !== 'register';
+			setMsg('');
+		});
+	});
+	// Methode-tabs (inloglink/wachtwoord/telefoon).
+	root.querySelectorAll('.xg-acc-mtab').forEach(function (b) {
+		b.addEventListener('click', function () {
+			var m = b.getAttribute('data-m');
+			root.querySelectorAll('.xg-acc-mtab').forEach(function (x) { x.classList.toggle('active', x === b); });
+			root.querySelectorAll('.xg-acc-method').forEach(function (f) { f.hidden = f.getAttribute('data-m') !== m; });
+			setMsg('');
+		});
+	});
+	// Wachtwoord-login.
+	var pwForm = root.querySelector('.xg-acc-pw-form');
+	if (pwForm) {
+		pwForm.addEventListener('submit', function (e) {
+			e.preventDefault(); setMsg('Bezig…');
+			postJSON(root.getAttribute('data-rest-pw'), { email: pwForm.email.value, password: pwForm.password.value }).then(go).catch(function () { setMsg('Netwerkfout.', 'is-err'); });
+		});
+	}
+	// Registratie.
+	var regForm = root.querySelector('.xg-acc-reg-form');
+	if (regForm) {
+		regForm.addEventListener('submit', function (e) {
+			e.preventDefault();
+			if (regForm.website && regForm.website.value) return;
+			setMsg('Bezig…');
+			postJSON(root.getAttribute('data-rest-register'), {
+				name: regForm.name.value, email: regForm.email.value, phone: regForm.phone.value, password: regForm.password.value
+			}).then(go).catch(function () { setMsg('Netwerkfout.', 'is-err'); });
+		});
+	}
+	// Telefoon-OTP (2 stappen).
+	var otpForm = root.querySelector('.xg-acc-otp-form');
+	if (otpForm) {
+		otpForm.addEventListener('submit', function (e) {
+			e.preventDefault(); setMsg('Code versturen…');
+			postJSON(root.getAttribute('data-rest-otp-start'), { phone: otpForm.phone.value }).then(function (o) {
+				if (o.ok && o.j && o.j.ok) {
+					otpForm.querySelector('.xg-otp-step1').hidden = true;
+					otpForm.querySelector('.xg-otp-step2').hidden = false;
+					setMsg(o.j.message || 'Code verstuurd.', 'is-ok');
+				} else { setMsg((o.j && o.j.message) || 'Mislukt.', 'is-err'); }
+			}).catch(function () { setMsg('Netwerkfout.', 'is-err'); });
+		});
+		var verifyBtn = otpForm.querySelector('.xg-otp-verify');
+		if (verifyBtn) {
+			verifyBtn.addEventListener('click', function () {
+				setMsg('Controleren…');
+				postJSON(root.getAttribute('data-rest-otp-verify'), { phone: otpForm.phone.value, code: otpForm.querySelector('[name=code]').value }).then(go).catch(function () { setMsg('Netwerkfout.', 'is-err'); });
+			});
+		}
+	}
+
 	// 2) Token uit de URL → overzicht laden.
 	var token = new URLSearchParams(location.search).get('token');
 	if (!token) return;

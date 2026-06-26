@@ -140,8 +140,53 @@ function ekinese_register_account_block() {
 add_action( 'init', 'ekinese_register_account_block' );
 
 function ekinese_render_account() {
-	$social = function_exists( 'ekinese_oauth_buttons' ) ? ekinese_oauth_buttons() : '';
-	return '<div class="xg-account" data-rest-login="' . esc_attr( esc_url_raw( rest_url( 'ekinese/v1/account/login' ) ) ) . '" data-rest-data="' . esc_attr( esc_url_raw( rest_url( 'ekinese/v1/account/data' ) ) ) . '"><div class="xg-account-login"><h2>Mijn XGOUD</h2><p>Vul uw e-mailadres in en ontvang een inloglink.</p><form class="xg-account-form"><input type="email" name="email" placeholder="uw@email.nl" required><button type="submit" class="xg-final-btn">Stuur inloglink</button></form>' . $social . '<div class="xg-account-msg" role="status"></div></div><div class="xg-account-dash" hidden></div></div>';
+	$social   = function_exists( 'ekinese_oauth_buttons' ) ? ekinese_oauth_buttons() : '';
+	$has_sms  = (bool) get_option( 'xg_sms_provider', '' );
+	$rest     = function ( $p ) { return esc_attr( esc_url_raw( rest_url( 'ekinese/v1/' . $p ) ) ); };
+
+	// Methode-tabs (login): magic-link, wachtwoord, telefoon (indien SMS aan).
+	$methods = '<div class="xg-acc-mtabs">'
+		. '<button type="button" class="xg-acc-mtab active" data-m="magic">Inloglink</button>'
+		. '<button type="button" class="xg-acc-mtab" data-m="pw">Wachtwoord</button>'
+		. ( $has_sms ? '<button type="button" class="xg-acc-mtab" data-m="phone">Telefoon</button>' : '' )
+		. '</div>';
+
+	// Magic-link (bestaand; account.js bindt .xg-account-form).
+	$magic = '<form class="xg-account-form xg-acc-method" data-m="magic"><input type="email" name="email" placeholder="uw@email.nl" required><button type="submit" class="xg-final-btn">Stuur inloglink</button></form>';
+
+	// Wachtwoord.
+	$pw = '<form class="xg-acc-pw-form xg-acc-method" data-m="pw" hidden>'
+		. '<input type="email" name="email" placeholder="uw@email.nl" required>'
+		. '<input type="password" name="password" placeholder="Wachtwoord" required>'
+		. '<button type="submit" class="xg-final-btn">Inloggen</button></form>';
+
+	// Telefoon-OTP.
+	$phone = $has_sms ? '<form class="xg-acc-otp-form xg-acc-method" data-m="phone" hidden>'
+		. '<div class="xg-otp-step1"><input type="tel" name="phone" placeholder="+31 6 …" required><button type="submit" class="xg-final-btn">Stuur code</button></div>'
+		. '<div class="xg-otp-step2" hidden><input type="text" name="code" inputmode="numeric" maxlength="6" placeholder="6-cijferige code"><button type="button" class="xg-final-btn xg-otp-verify">Bevestig</button></div></form>' : '';
+
+	// Registratie.
+	$reg = '<form class="xg-acc-reg-form" hidden>'
+		. '<input type="text" name="website" class="xg-hp" tabindex="-1" autocomplete="off" aria-hidden="true">'
+		. '<input type="text" name="name" placeholder="Naam" required>'
+		. '<input type="email" name="email" placeholder="uw@email.nl" required>'
+		. '<input type="tel" name="phone" placeholder="Telefoon (+31 6 …)">'
+		. '<input type="password" name="password" placeholder="Wachtwoord (min. 8 tekens)" required>'
+		. '<button type="submit" class="xg-final-btn">Account aanmaken</button></form>';
+
+	return '<div class="xg-account"'
+		. ' data-rest-login="' . $rest( 'account/login' ) . '"'
+		. ' data-rest-data="' . $rest( 'account/data' ) . '"'
+		. ' data-rest-register="' . $rest( 'account/register' ) . '"'
+		. ' data-rest-pw="' . $rest( 'account/login-password' ) . '"'
+		. ' data-rest-otp-start="' . $rest( 'account/phone/start' ) . '"'
+		. ' data-rest-otp-verify="' . $rest( 'account/phone/verify' ) . '">'
+		. '<div class="xg-account-login"><h2>Mijn XGOUD</h2>'
+		. '<div class="xg-acc-toggle"><button type="button" class="xg-acc-tgl active" data-v="login">Inloggen</button><button type="button" class="xg-acc-tgl" data-v="register">Registreren</button></div>'
+		. '<div class="xg-acc-login-pane">' . $methods . $magic . $pw . $phone . $social . '</div>'
+		. '<div class="xg-acc-reg-pane" hidden>' . $reg . '</div>'
+		. '<div class="xg-account-msg" role="status"></div></div>'
+		. '<div class="xg-account-dash" hidden></div></div>';
 }
 
 /** account.js laden waar het blok staat. */
