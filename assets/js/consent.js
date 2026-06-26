@@ -34,6 +34,21 @@
 	}
 	function loadAll() { loadGA4(cfg.ga4); loadPixel(cfg.pixel); }
 
+	// "Cookie-instellingen" (footer) → keuze wissen en banner opnieuw tonen.
+	document.addEventListener('click', function (e) {
+		var t = e.target.closest('.xg-cookie-settings');
+		if (!t) return;
+		e.preventDefault();
+		setCookie(KEY, '', -1);
+		var box = document.getElementById('xgConsent');
+		if (box) {
+			box.hidden = false;
+			var a = document.getElementById('xgConsentAccept'), r = document.getElementById('xgConsentReject');
+			if (a) a.onclick = function () { setCookie(KEY, 'granted', 180); box.hidden = true; loadAll(); };
+			if (r) r.onclick = function () { setCookie(KEY, 'denied', 180); box.hidden = true; };
+		}
+	});
+
 	var choice = getCookie(KEY);
 	if (choice === 'granted') { loadAll(); return; }
 	if (choice === 'denied') { return; }
