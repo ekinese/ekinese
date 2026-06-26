@@ -117,3 +117,4 @@ require_once get_theme_file_path( 'inc/breadcrumbs.php' );
 require_once get_theme_file_path( 'inc/roles.php' );
 require_once get_theme_file_path( 'inc/funnel.php' );
 require_once get_theme_file_path( 'inc/marketing-plan.php' );
+require_once get_theme_file_path( 'inc/dossier.php' );
