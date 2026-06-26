@@ -142,6 +142,52 @@ function ekinese_daily_tasks() {
 }
 
 /* =====================================================================
+   INBOX — chats, tickets, productvragen op het dashboard
+===================================================================== */
+function ekinese_dashboard_inbox() {
+	echo '<h2 style="margin-top:24px">Inbox</h2><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px">';
+
+	// Open chats (laatste bericht als snippet).
+	echo '<div style="background:#fff;border:1px solid #dcdcde;padding:16px"><h3 style="margin-top:0;font-size:14px">Chats <a style="float:right;font-weight:400" href="' . esc_url( admin_url( 'edit.php?post_type=xg_chat' ) ) . '">alle</a></h3>';
+	$chats = post_type_exists( 'xg_chat' ) ? get_posts( array( 'post_type' => 'xg_chat', 'numberposts' => 5, 'post_status' => 'publish', 'meta_query' => array( array( 'key' => 'status', 'value' => 'closed', 'compare' => '!=' ) ) ) ) : array();
+	if ( ! $chats ) {
+		echo '<p style="color:#8c8f94;margin:0">Geen open chats.</p>';
+	} else {
+		foreach ( $chats as $c ) {
+			$msgs = json_decode( (string) get_post_meta( $c->ID, 'messages', true ), true ) ?: array();
+			$last = end( $msgs );
+			$snip = $last ? wp_trim_words( (string) ( $last['text'] ?? '' ), 12 ) : '—';
+			echo '<div style="padding:6px 0;border-bottom:1px solid #f0f0f1"><a href="' . esc_url( get_edit_post_link( $c->ID ) ) . '"><strong>' . esc_html( get_post_meta( $c->ID, 'visitor_email', true ) ?: get_the_title( $c->ID ) ) . '</strong></a><br><span style="color:#646970;font-size:12px">' . esc_html( $snip ) . '</span></div>';
+		}
+	}
+	echo '</div>';
+
+	// Open tickets.
+	echo '<div style="background:#fff;border:1px solid #dcdcde;padding:16px"><h3 style="margin-top:0;font-size:14px">Open tickets <a style="float:right;font-weight:400" href="' . esc_url( admin_url( 'edit.php?post_type=xg_ticket' ) ) . '">alle</a></h3>';
+	$tickets = post_type_exists( 'xg_ticket' ) ? get_posts( array( 'post_type' => 'xg_ticket', 'numberposts' => 6, 'post_status' => 'publish', 'meta_query' => array( array( 'key' => 'status', 'value' => 'open' ) ) ) ) : array();
+	if ( ! $tickets ) {
+		echo '<p style="color:#8c8f94;margin:0">Geen open tickets.</p>';
+	} else {
+		foreach ( $tickets as $t ) {
+			echo '<div style="padding:6px 0;border-bottom:1px solid #f0f0f1"><a href="' . esc_url( get_edit_post_link( $t->ID ) ) . '"><strong>' . esc_html( get_post_meta( $t->ID, 'reference', true ) ) . '</strong> ' . esc_html( get_post_meta( $t->ID, 'subject', true ) ) . '</a><br><span style="color:#646970;font-size:12px">' . esc_html( get_post_meta( $t->ID, 'email', true ) ) . '</span></div>';
+		}
+	}
+	echo '</div>';
+
+	// Onbeantwoorde productvragen.
+	echo '<div style="background:#fff;border:1px solid #dcdcde;padding:16px"><h3 style="margin-top:0;font-size:14px">Productvragen <a style="float:right;font-weight:400" href="' . esc_url( admin_url( 'edit.php?post_type=xg_question' ) ) . '">alle</a></h3>';
+	$qs = post_type_exists( 'xg_question' ) ? get_posts( array( 'post_type' => 'xg_question', 'numberposts' => 6, 'post_status' => 'publish', 'meta_query' => array( array( 'key' => 'status', 'value' => 'pending' ) ) ) ) : array();
+	if ( ! $qs ) {
+		echo '<p style="color:#8c8f94;margin:0">Niets openstaand.</p>';
+	} else {
+		foreach ( $qs as $q ) {
+			echo '<div style="padding:6px 0;border-bottom:1px solid #f0f0f1"><a href="' . esc_url( get_edit_post_link( $q->ID ) ) . '">' . esc_html( wp_trim_words( $q->post_content, 12 ) ) . '</a></div>';
+		}
+	}
+	echo '</div></div>';
+}
+
+/* =====================================================================
    CLAUDE-AI — vraag stellen + agents draaien
 ===================================================================== */
 
@@ -388,6 +434,9 @@ function ekinese_dashboard_panels() {
 
 	echo '</div>'; // grid
 
+	/* --- Inbox: chats, tickets, productvragen op één plek --- */
+	ekinese_dashboard_inbox();
+
 	/* --- Chauffeurs: live positie + ETA + onkosten --- */
 	if ( function_exists( 'ekinese_fleet_panel' ) ) {
 		ekinese_fleet_panel();
@@ -433,8 +482,11 @@ add_action( 'admin_enqueue_scripts', function ( $hook ) {
 	if ( 'toplevel_page_xgoud' !== $hook ) {
 		return;
 	}
+	// Leaflet voor de live chauffeurskaart.
+	wp_enqueue_style( 'leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', array(), '1.9.4' );
+	wp_enqueue_script( 'leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', array(), '1.9.4', true );
 	$js = get_theme_file_path( 'assets/js/admin-dashboard.js' );
 	if ( file_exists( $js ) ) {
-		wp_enqueue_script( 'xg-admin-dashboard', get_theme_file_uri( 'assets/js/admin-dashboard.js' ), array(), (string) filemtime( $js ), true );
+		wp_enqueue_script( 'xg-admin-dashboard', get_theme_file_uri( 'assets/js/admin-dashboard.js' ), array( 'leaflet' ), (string) filemtime( $js ), true );
 	}
 } );

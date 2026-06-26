@@ -35,6 +35,49 @@ function ekinese_admin_hub() {
 }
 add_action( 'admin_menu', 'ekinese_admin_hub', 9 );
 
+/**
+ * Groepeer het (lange) XGOUD-submenu met sectiekoppen, zodat het overzichtelijk
+ * blijft. Draait laat zodat alle submenu-items al geregistreerd zijn.
+ */
+add_action( 'admin_menu', function () {
+	global $submenu;
+	if ( empty( $submenu['xgoud'] ) ) {
+		return;
+	}
+	$groups = array(
+		'Operatie & klant'      => array( 'xgoud', 'xg_appointment', 'xg_lead', 'xg_ticket', 'xg_chat', 'xg_question', 'xg_pickup', 'xg_kyc' ),
+		'Fleet'                 => array( 'xg_driver', 'xg_shift', 'xg_expense', 'xg_route', 'xg-fleet-stats', 'xg-plan-route', 'xg-ors' ),
+		'Catalogus'             => array( 'xg_product', 'xg_watch', 'xg_gemstone', 'xg_office', 'xg_term', 'xg_inventory' ),
+		'Veilingen & community' => array( 'xg_auction', 'xg_market', 'xg_deal', 'xg_reward', 'xg_lottery', 'xg_holding', 'xg_wishlist', 'xg_charity', 'xg_notification', 'xg_agent', 'xg_batch' ),
+		'Marketing & content'   => array( 'xg_social', 'xg_ad', 'xg_subscriber', 'xg_maillog', 'reviews', 'stad', 'ticker', 'contact', 'vergelijk', 'news' ),
+		'B2B & HR'              => array( 'xg_partner', 'xg_employee', 'xg_timeentry', 'xg_invoice' ),
+		'Instellingen'          => array( 'xg-analytics', 'xg-spot', 'xg-legal', 'xg-smtp', 'xg-pay', 'xg-ai', 'xg-integrations', 'xg-install' ),
+	);
+	$buckets = array(); foreach ( $groups as $g => $f ) { $buckets[ $g ] = array(); }
+	$buckets['Overig'] = array();
+	foreach ( $submenu['xgoud'] as $item ) {
+		$slug = isset( $item[2] ) ? (string) $item[2] : '';
+		$placed = false;
+		foreach ( $groups as $g => $frags ) {
+			foreach ( $frags as $fr ) {
+				if ( '' !== $fr && false !== strpos( $slug, $fr ) ) { $buckets[ $g ][] = $item; $placed = true; break 2; }
+			}
+		}
+		if ( ! $placed ) { $buckets['Overig'][] = $item; }
+	}
+	$new = array();
+	foreach ( $buckets as $g => $list ) {
+		if ( ! $list ) { continue; }
+		$new[] = array( '<span class="xg-msep">' . esc_html( $g ) . '</span>', 'read', 'xgoud' );
+		foreach ( $list as $it ) { $new[] = $it; }
+	}
+	$submenu['xgoud'] = array_values( $new );
+}, 9999 );
+
+add_action( 'admin_head', function () {
+	echo '<style>#adminmenu .wp-submenu a:has(.xg-msep){pointer-events:none;cursor:default;padding-top:12px}#adminmenu .xg-msep{display:block;font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#9aa0a6;border-top:1px solid #3a3f44;padding-top:6px;margin-top:2px}</style>';
+} );
+
 /** Dashboard met snelkoppelingen, gegroepeerd per domein. */
 function ekinese_admin_hub_page() {
 	$groups = array(

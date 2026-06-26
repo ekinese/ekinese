@@ -98,7 +98,30 @@ function ekinese_stats_cards( $compact = false ) {
 ===================================================================== */
 function ekinese_stats_widget() {
 	wp_add_dashboard_widget( 'xg_stats_widget', __( 'XGOUD – overzicht', 'ekinese' ), function () {
+		$cnt = function ( $type, $meta = array() ) {
+			if ( ! post_type_exists( $type ) ) { return 0; }
+			$q = new WP_Query( array( 'post_type' => $type, 'post_status' => 'publish', 'posts_per_page' => 1, 'fields' => 'ids', 'meta_query' => $meta ) );
+			return (int) $q->found_posts;
+		};
+		$drivers_on = 0;
+		if ( post_type_exists( 'xg_driver' ) && function_exists( 'ekinese_fleet_open_shift' ) ) {
+			foreach ( get_posts( array( 'post_type' => 'xg_driver', 'numberposts' => -1, 'fields' => 'ids', 'post_status' => 'publish' ) ) as $did ) {
+				if ( ekinese_fleet_open_shift( $did ) ) { $drivers_on++; }
+			}
+		}
+		$kpis = array(
+			array( 'Open tickets', $cnt( 'xg_ticket', array( array( 'key' => 'status', 'value' => 'open' ) ) ), 'edit.php?post_type=xg_ticket' ),
+			array( 'Open chats', $cnt( 'xg_chat', array( array( 'key' => 'status', 'value' => 'closed', 'compare' => '!=' ) ) ), 'edit.php?post_type=xg_chat' ),
+			array( 'Productvragen', $cnt( 'xg_question', array( array( 'key' => 'status', 'value' => 'pending' ) ) ), 'edit.php?post_type=xg_question' ),
+			array( 'Chauffeurs in dienst', $drivers_on, 'admin.php?page=xgoud' ),
+		);
+		echo '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px">';
+		foreach ( $kpis as $k ) {
+			echo '<a href="' . esc_url( admin_url( $k[2] ) ) . '" style="text-decoration:none;background:#f6f7f7;border:1px solid #dcdcde;padding:10px"><div style="font-size:20px;font-weight:800;color:#AE1E1E">' . esc_html( $k[1] ) . '</div><div style="font-size:12px;color:#646970">' . esc_html( $k[0] ) . '</div></a>';
+		}
+		echo '</div>';
 		ekinese_stats_cards( true );
+		echo '<p style="margin-top:10px"><a class="button button-primary" href="' . esc_url( admin_url( 'admin.php?page=xgoud' ) ) . '">Naar het XGOUD-dashboard →</a></p>';
 	} );
 }
 add_action( 'wp_dashboard_setup', 'ekinese_stats_widget' );

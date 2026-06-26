@@ -462,6 +462,21 @@ function ekinese_fleet_panel() {
 	$stops = $rid ? ( json_decode( (string) get_post_meta( $rid, 'stops', true ), true ) ?: array() ) : array();
 	$stops = ekinese_fleet_compute_eta( $stops );
 
+	// Live-kaart: chauffeurs (laatste GPS) + de stops van vandaag.
+	$markers = array();
+	foreach ( $drivers as $d ) {
+		$g = get_post_meta( $d->ID, 'last_gps', true );
+		if ( is_array( $g ) && ! empty( $g['lat'] ) ) {
+			$markers[] = array( 't' => 'driver', 'name' => $d->post_title, 'lat' => (float) $g['lat'], 'lng' => (float) $g['lng'], 'time' => $g['time'] ?? '' );
+		}
+	}
+	foreach ( $stops as $s ) {
+		if ( ! empty( $s['lat'] ) && ! empty( $s['lng'] ) ) {
+			$markers[] = array( 't' => 'stop', 'name' => trim( ( $s['eta'] ?? '' ) . ' ' . ( $s['name'] ?? '' ) ), 'lat' => (float) $s['lat'], 'lng' => (float) $s['lng'] );
+		}
+	}
+	echo '<div id="xg-fleet-map" data-markers="' . esc_attr( wp_json_encode( $markers ) ) . '" style="height:340px;background:#eef0f2;border:1px solid #dcdcde;margin:12px 0"></div>';
+
 	echo '<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">';
 	echo '<div style="background:#fff;border:1px solid #dcdcde;padding:16px"><h3 style="margin-top:0;font-size:14px">Posities &amp; dienst</h3>';
 	foreach ( $drivers as $d ) {

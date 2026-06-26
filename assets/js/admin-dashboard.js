@@ -2,6 +2,27 @@
  * XGOUD admin-dashboard — Claude AI vraag + agent runs (admin-ajax).
  */
 (function () {
+	// Live chauffeurskaart (Leaflet).
+	var mapEl = document.getElementById('xg-fleet-map');
+	if (mapEl && window.L) {
+		var markers = [];
+		try { markers = JSON.parse(mapEl.getAttribute('data-markers') || '[]'); } catch (e) {}
+		var map = L.map(mapEl).setView([52.13, 5.29], 7); // NL
+		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+		var pts = [];
+		markers.forEach(function (m) {
+			if (!m.lat) return;
+			var driver = m.t === 'driver';
+			var mk = L.circleMarker([m.lat, m.lng], {
+				radius: driver ? 9 : 6, color: driver ? '#AE1E1E' : '#646970',
+				fillColor: driver ? '#AE1E1E' : '#bdbdbd', fillOpacity: driver ? 0.9 : 0.7, weight: 2
+			}).addTo(map);
+			mk.bindPopup('<strong>' + (m.name || '') + '</strong>' + (m.time ? '<br>' + m.time : ''));
+			pts.push([m.lat, m.lng]);
+		});
+		if (pts.length) { map.fitBounds(pts, { padding: [30, 30], maxZoom: 13 }); }
+	}
+
 	var root = document.getElementById('xg-ai');
 	if (!root) return;
 	var nonce = root.getAttribute('data-nonce');
