@@ -113,3 +113,5 @@ require_once get_theme_file_path( 'inc/optimizer.php' );
 require_once get_theme_file_path( 'inc/escrow.php' );
 require_once get_theme_file_path( 'inc/achievements.php' );
 require_once get_theme_file_path( 'inc/streak.php' );
+require_once get_theme_file_path( 'inc/breadcrumbs.php' );
+require_once get_theme_file_path( 'inc/roles.php' );

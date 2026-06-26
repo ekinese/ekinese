@@ -113,12 +113,27 @@ function ekinese_jsonld() {
 		);
 	}
 
-	// Breadcrumbs.
+	// Breadcrumbs (gedeelde trail uit inc/breadcrumbs.php; fallback 2 niveaus).
 	if ( is_singular() && ! is_front_page() ) {
-		$items = array(
-			array( '@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => $b['url'] ),
-			array( '@type' => 'ListItem', 'position' => 2, 'name' => get_the_title(), 'item' => get_permalink() ),
-		);
+		$items = array();
+		if ( function_exists( 'ekinese_breadcrumb_trail' ) ) {
+			$pos = 1;
+			foreach ( ekinese_breadcrumb_trail() as $c ) {
+				$item = array( '@type' => 'ListItem', 'position' => $pos, 'name' => $c['name'] );
+				if ( ! empty( $c['url'] ) ) {
+					$item['item'] = $c['url'];
+				} else {
+					$item['item'] = get_permalink();
+				}
+				$items[] = $item;
+				$pos++;
+			}
+		} else {
+			$items = array(
+				array( '@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => $b['url'] ),
+				array( '@type' => 'ListItem', 'position' => 2, 'name' => get_the_title(), 'item' => get_permalink() ),
+			);
+		}
 		$graph[] = array( '@type' => 'BreadcrumbList', 'itemListElement' => $items );
 	}
 

@@ -406,16 +406,33 @@ function ekinese_dashboard_panels() {
 	/* Dagelijkse takenlijst */
 	$tasks = ekinese_daily_tasks();
 	echo '<div style="background:#fff;border:1px solid #dcdcde;padding:16px">';
+	$my_area = function_exists( 'ekinese_current_area' ) ? ekinese_current_area() : '';
+	$area_lbl = function_exists( 'ekinese_role_areas' ) && $my_area ? ekinese_role_areas()[ $my_area ]['label'] : '';
 	echo '<h2 style="margin-top:0;font-size:15px">Dagelijkse taken <span style="color:#646970;font-weight:400">(' . esc_html( date_i18n( 'd-m-Y' ) ) . ')</span></h2>';
+	if ( $area_lbl ) {
+		echo '<p style="margin:0 0 8px;font-size:12px;color:#646970">Jouw werkgebied: <strong>' . esc_html( $area_lbl ) . '</strong> — jouw taken staan bovenaan.</p>';
+	}
 	if ( ! $tasks ) {
 		echo '<p>🎉 Geen openstaande taken. Alles is bij.</p>';
 	} else {
+		// Sorteer: taken van het eigen werkgebied eerst.
+		if ( $my_area && function_exists( 'ekinese_task_area' ) ) {
+			usort( $tasks, function ( $a, $b ) use ( $my_area ) {
+				$am = ekinese_task_area( $a['key'] ) === $my_area ? 0 : 1;
+				$bm = ekinese_task_area( $b['key'] ) === $my_area ? 0 : 1;
+				return $am - $bm;
+			} );
+		}
 		echo '<form method="post"><ul style="margin:0;list-style:none">';
 		foreach ( $tasks as $t ) {
 			$checked = in_array( $t['key'], $done, true );
-			echo '<li style="padding:6px 0;border-bottom:1px solid #f0f0f1;display:flex;align-items:center;gap:8px">';
+			$area    = function_exists( 'ekinese_task_area' ) ? ekinese_task_area( $t['key'] ) : '';
+			$mine    = ( $area === $my_area );
+			$badge   = function_exists( 'ekinese_area_badge' ) ? ekinese_area_badge( $area ) : '';
+			echo '<li style="padding:6px 0;border-bottom:1px solid #f0f0f1;display:flex;align-items:center;gap:8px' . ( $mine ? ';background:#fff9ec' : '' ) . '">';
 			echo '<input type="checkbox" name="xg_task[]" value="' . esc_attr( $t['key'] ) . '" ' . checked( $checked, true, false ) . '>';
 			echo '<span style="flex:1' . ( $checked ? ';text-decoration:line-through;color:#8c8f94' : '' ) . '">' . esc_html( $t['label'] ) . ' <strong>(' . esc_html( $t['count'] ) . ')</strong></span>';
+			echo $badge;
 			echo '<a href="' . esc_url( $t['link'] ) . '" class="button button-small">Open</a></li>';
 		}
 		echo '</ul>';
