@@ -27,17 +27,19 @@ function ekinese_task_area( $key ) {
 	$key = (string) $key;
 	$map = array(
 		'operatie'  => array( 'appt', 'tickets', 'questions', 'kyc', 'pickup', 'mp_', 'fleet', 'escrow_inv', 'verify', 'depot' ),
-		'marketing' => array( 'moments', 'survey', 'si_', 'news', 'seo', 'marketing' ),
+		'marketing' => array( 'moments', 'survey', 'si_', 'news', 'seo', 'marketing', 'mkt_' ),
 		'beheer'    => array( 'auctions', 'escrow_rel', 'dossier', 'depot_renew' ),
 	);
+	$result = 'beheer';
 	foreach ( $map as $area => $frags ) {
 		foreach ( $frags as $f ) {
 			if ( false !== strpos( $key, $f ) ) {
-				return $area;
+				$result = $area;
+				break 2;
 			}
 		}
 	}
-	return 'beheer';
+	return apply_filters( 'ekinese_task_area_override', $result, $key );
 }
 
 /** Het werkgebied van de huidige gebruiker (default beheer voor admins). */
