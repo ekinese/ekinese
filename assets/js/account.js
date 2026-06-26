@@ -296,6 +296,20 @@
 			'<thead><tr><th>Item</th><th>Rol</th><th>Bedrag</th><th>Status</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></section>';
 	}
 
+	// Virtueel depot: opgeslagen items + transport aanvragen + verzekerstatus.
+	function depotSection(d) {
+		var items = d.depot || [];
+		if (!items.length) return '';
+		var rows = items.map(function (e) {
+			var ins = e.insurer ? esc(e.insurer) : '<span style="color:#c0392b">niet verzekerd</span>';
+			var act = '<button type="button" class="xg-depot-move xg-mp-place-link" style="border:0;cursor:pointer" data-id="' + e.id + '" data-move="' + esc(e.move) + '">Laten leveren →</button>';
+			return '<tr><td>' + esc(e.item) + '</td><td>€ ' + esc(e.value) + '</td><td>' + esc(e.status) + '</td><td>' + ins + '</td><td>' + act + '</td></tr>';
+		}).join('');
+		var head = '<p style="margin:0 0 8px">' + (d.depot_active ? 'Depot actief t/m <strong>' + esc(d.depot_until) + '</strong>.' : '<a class="xg-home-more-link" href="/depot/">Open je depot →</a>') + '</p>';
+		return '<section class="xg-acc-sec"><h3>Mijn depot</h3>' + head + '<div class="xg-table-scroll"><table class="xg-spec-table">' +
+			'<thead><tr><th>Item</th><th>Waarde</th><th>Status</th><th>Verzekering</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></section>';
+	}
+
 	// Afspraken + "Verifieer chauffeur" (anti-fraude).
 	function appointmentsSection(d) {
 		var items = d.appointments || [];
@@ -456,7 +470,8 @@
 		treuhand: '<line x1="12" y1="3" x2="12" y2="21"/><line x1="6" y1="6" x2="18" y2="6"/><path d="M6 6l-3 6h6z"/><path d="M18 6l-3 6h6z"/><line x1="8" y1="21" x2="16" y2="21"/>',
 		alerts: '<path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
 		inbox: '<rect x="3" y="5" width="18" height="14" rx="1"/><polyline points="3,6 12,13 21,6"/>',
-		referral: '<rect x="3" y="9" width="18" height="12" rx="1"/><line x1="3" y1="13" x2="21" y2="13"/><line x1="12" y1="9" x2="12" y2="21"/><path d="M12 9C12 6 9 5 8 7s2 2 4 2zM12 9c0-3 3-4 4-2s-2 2-4 2z"/>'
+		referral: '<rect x="3" y="9" width="18" height="12" rx="1"/><line x1="3" y1="13" x2="21" y2="13"/><line x1="12" y1="9" x2="12" y2="21"/><path d="M12 9C12 6 9 5 8 7s2 2 4 2zM12 9c0-3 3-4 4-2s-2 2-4 2z"/>',
+		depot: '<rect x="4" y="6" width="16" height="14" rx="1"/><circle cx="12" cy="13" r="3"/><line x1="12" y1="13" x2="12" y2="11"/><path d="M7 6V4h10v2"/>'
 	};
 	function wgIcon(id, fallback) {
 		if (!ICONS[id]) return fallback;
@@ -580,6 +595,14 @@
 				'<a class="xg-wg-link" href="' + esc(s.url) + '">Invullen →</a>';
 			return widgetCard('survey', 'Vragenlijst', '🗳', b, { live: true });
 		},
+		depot: function (d) {
+			var items = d.depot || [];
+			if (!items.length && !d.depot_active) return '';
+			var b = '<div class="xg-wg-num xg-wg-num-sm">' + items.length + '</div><div class="xg-wg-muted">items in depot</div>' +
+				(d.depot_active ? '<div class="xg-wg-delta up">actief t/m ' + esc(d.depot_until) + '</div>' : '<a class="xg-wg-link" href="/depot/">Depot openen →</a>') +
+				'<a class="xg-wg-link" data-tab="afspraken" href="#">Beheren →</a>';
+			return widgetCard('depot', 'Mijn depot', '🏦', b);
+		},
 		deelkaart: function (d) {
 			return widgetCard('deelkaart', 'Deel je XGOUD', '🎉',
 				'<p class="xg-wg-muted">Maak een deelbare kaart van jouw mijlpalen, niveau en badges.</p>' +
@@ -628,11 +651,11 @@
 			return widgetCard('momenten', 'Mijn momenten', '📸', b);
 		}
 	};
-	var WIDGET_ORDER = ['portfolio', 'market', 'streak', 'niveau', 'badges', 'timeline', 'afspraak', 'survey', 'profiel', 'spaardoel', 'momenten', 'punten', 'charity', 'veilingen', 'treuhand', 'deelkaart', 'alerts', 'inbox', 'referral'];
+	var WIDGET_ORDER = ['portfolio', 'market', 'streak', 'niveau', 'badges', 'timeline', 'afspraak', 'survey', 'profiel', 'spaardoel', 'momenten', 'punten', 'charity', 'veilingen', 'treuhand', 'depot', 'deelkaart', 'alerts', 'inbox', 'referral'];
 	var WIDGET_TITLES = {
 		portfolio: 'Portfolio', market: 'Markt vandaag', niveau: 'Mijn niveau', timeline: 'Verkoopstatus',
 		afspraak: 'Volgende afspraak', survey: 'Vragenlijst', streak: 'Streak', badges: 'Mijn badges', profiel: 'Profiel', deelkaart: 'Deel je XGOUD', spaardoel: 'Spaardoel', momenten: 'Mijn momenten', punten: 'Spaarpunten',
-		charity: 'Charity', veilingen: 'Veilingen', treuhand: 'Treuhand', alerts: 'Prijsalarmen', inbox: 'Berichten', referral: 'Uitnodigen'
+		charity: 'Charity', veilingen: 'Veilingen', treuhand: 'Treuhand', depot: 'Mijn depot', alerts: 'Prijsalarmen', inbox: 'Berichten', referral: 'Uitnodigen'
 	};
 	function widgetOrder() {
 		var saved = null; try { saved = JSON.parse(localStorage.getItem('xg_wgorder') || 'null'); } catch (e) {}
@@ -773,6 +796,7 @@
 			) +
 			panel('afspraken',
 				appointmentsSection(d) +
+				depotSection(d) +
 				section('Zendingen', d.pickups, [
 					{ key: 'reference', label: 'Referentie' }, { key: 'status', label: 'Status' }
 				])
@@ -819,6 +843,19 @@
 				try { shareCard(currentData || d, m); } catch (e) { if (m) m.textContent = ' Mislukt.'; }
 			});
 		}
+		// Depot: transport (levering) aanvragen → betaling.
+		dash.querySelectorAll('.xg-depot-move').forEach(function (b) {
+			b.addEventListener('click', function () {
+				if (!window.confirm('Dit item laten leveren tegen transportkosten?')) return;
+				b.disabled = true;
+				fetch(b.getAttribute('data-move'), {
+					method: 'POST', headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ token: token, id: b.getAttribute('data-id'), kind: 'delivery' })
+				}).then(function (r) { return r.json(); })
+					.then(function (j) { if (j && j.pay) { location.href = j.pay + '&token=' + encodeURIComponent(token); } else { b.disabled = false; } })
+					.catch(function () { b.disabled = false; });
+			});
+		});
 		// Widget-links die naar een tab springen.
 		dash.querySelectorAll('.xg-wg-link[data-tab], [data-tab]').forEach(function (el) {
 			if (el.classList.contains('xg-acc-tab')) return;

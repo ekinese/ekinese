@@ -101,6 +101,13 @@ function ekinese_pay_start( WP_REST_Request $req ) {
 		}
 		$amount = (float) get_post_meta( $id, 'amount', true );
 		$desc   = 'XGOUD Treuhandservice: ' . get_the_title( $id );
+	} elseif ( 'depot' === $type && function_exists( 'ekinese_depot_fee' ) ) {
+		$amount = ekinese_depot_fee( 'year' );
+		$desc   = 'XGOUD Depot — jaargeld';
+	} elseif ( 'depot_move' === $type && get_post_type( $id ) === 'xg_depot_item' && function_exists( 'ekinese_depot_fee' ) ) {
+		$mv     = get_post_meta( $id, 'move_type', true ) === 'delivery' ? 'delivery' : 'pickup';
+		$amount = ekinese_depot_fee( $mv );
+		$desc   = 'XGOUD Depot — ' . ( 'delivery' === $mv ? 'levering' : 'ophaling' );
 	} else {
 		wp_safe_redirect( $back . '&pay=error' );
 		exit;
@@ -109,7 +116,7 @@ function ekinese_pay_start( WP_REST_Request $req ) {
 		wp_safe_redirect( $back . '&pay=error' );
 		exit;
 	}
-	$pay = ekinese_mollie_create_payment( $amount, $desc, $back . '&pay=done', array( 'type' => $type, 'id' => (string) $id ) );
+	$pay = ekinese_mollie_create_payment( $amount, $desc, $back . '&pay=done', array( 'type' => $type, 'id' => (string) $id, 'email' => $email ) );
 	if ( ! $pay ) {
 		wp_safe_redirect( $back . '&pay=error' );
 		exit;
@@ -136,6 +143,10 @@ function ekinese_pay_webhook( WP_REST_Request $req ) {
 		ekinese_pay_mark_market_paid( $id );
 	} elseif ( 'escrow' === $type && function_exists( 'ekinese_escrow_mark_paid' ) ) {
 		ekinese_escrow_mark_paid( $id );
+	} elseif ( 'depot' === $type && function_exists( 'ekinese_depot_mark_paid' ) ) {
+		ekinese_depot_mark_paid( (string) ( $pay['metadata']['email'] ?? '' ) );
+	} elseif ( 'depot_move' === $type && function_exists( 'ekinese_depot_move_paid' ) ) {
+		ekinese_depot_move_paid( $id );
 	}
 	return rest_ensure_response( array( 'ok' => true ) );
 }

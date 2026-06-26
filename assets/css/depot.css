@@ -1,0 +1,21 @@
+/* XGOUD Virtueel Depot. Blueprint: rood #AE1E1E, goud #D0AC4B, radius 0. */
+.xg-depot { padding: 48px 0; }
+.xg-depot h2 { font-size: 26px; font-weight: 800; margin: 0 0 8px; }
+.xg-depot h3 { font-size: 18px; font-weight: 700; margin: 22px 0 8px; }
+.xg-depot-intro { color: #4a463f; max-width: 640px; margin: 0 0 18px; }
+.xg-depot-cta { margin: 0 0 10px; }
+.xg-depot-pay { display: inline-block; background: #AE1E1E; color: #fff; padding: 13px 26px; font-weight: 700; text-decoration: none; }
+.xg-depot-pay:hover { background: #8a1818; }
+.xg-depot-insure { background: #faf6ec; border-left: 3px solid #D0AC4B; padding: 14px 18px; margin: 18px 0; }
+.xg-depot-insurers { margin: 8px 0 0; padding-left: 18px; }
+.xg-depot-insurers a { color: #AE1E1E; }
+.xg-depot-form { max-width: 560px; display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.xg-depot-form input { padding: 12px 14px; border: 1px solid #d8d2c6; font-size: 15px; font-family: inherit; }
+.xg-depot-form button { align-self: flex-start; background: #161412; color: #fff; border: 0; padding: 12px 26px; font-weight: 700; cursor: pointer; }
+.xg-depot-form button:hover { background: #AE1E1E; }
+.xg-depot-note { color: #6b665c; font-size: 13px; }
+.xg-depot-msg.is-ok { color: #1a8a3c; }
+.xg-depot-msg.is-err { color: #c0392b; }
+html[data-theme="dark"] .xg-depot h2, html[data-theme="dark"] .xg-depot h3 { color: #f3efe8; }
+html[data-theme="dark"] .xg-depot-insure { background: #221f1a; }
+html[data-theme="dark"] .xg-depot-form input { background: #221f1a; border-color: #34302b; color: #f3efe8; }
