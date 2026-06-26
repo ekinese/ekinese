@@ -451,6 +451,15 @@
 			var b = '<p class="xg-wg-muted">Nodig vrienden uit en spaar samen.</p><div class="xg-ref-link"><input type="text" readonly value="' + esc(d.referral_url) + '"><button type="button" class="xg-ref-copy" data-link="' + esc(d.referral_url) + '">Kopieer</button></div>';
 			return widgetCard('referral', 'Uitnodigen', '🎁', b);
 		},
+		survey: function (d) {
+			var items = d.surveys || [];
+			if (!items.length) return '';
+			var s = items[0];
+			var b = '<p class="xg-wg-muted">' + esc(s.title) + '</p>' +
+				'<div class="xg-wg-delta up">+' + esc(s.points) + ' punten</div>' +
+				'<a class="xg-wg-link" href="' + esc(s.url) + '">Invullen →</a>';
+			return widgetCard('survey', 'Vragenlijst', '🗳', b, { live: true });
+		},
 		momenten: function (d) {
 			var items = d.moments || [];
 			var thumbs = items.slice(0, 4).map(function (m) {
@@ -462,10 +471,10 @@
 			return widgetCard('momenten', 'Mijn momenten', '📸', b);
 		}
 	};
-	var WIDGET_ORDER = ['portfolio', 'market', 'niveau', 'timeline', 'afspraak', 'spaardoel', 'momenten', 'punten', 'charity', 'veilingen', 'alerts', 'inbox', 'referral'];
+	var WIDGET_ORDER = ['portfolio', 'market', 'niveau', 'timeline', 'afspraak', 'survey', 'spaardoel', 'momenten', 'punten', 'charity', 'veilingen', 'alerts', 'inbox', 'referral'];
 	var WIDGET_TITLES = {
 		portfolio: 'Portfolio', market: 'Markt vandaag', niveau: 'Mijn niveau', timeline: 'Verkoopstatus',
-		afspraak: 'Volgende afspraak', spaardoel: 'Spaardoel', momenten: 'Mijn momenten', punten: 'Spaarpunten',
+		afspraak: 'Volgende afspraak', survey: 'Vragenlijst', spaardoel: 'Spaardoel', momenten: 'Mijn momenten', punten: 'Spaarpunten',
 		charity: 'Charity', veilingen: 'Veilingen', alerts: 'Prijsalarmen', inbox: 'Berichten', referral: 'Uitnodigen'
 	};
 	function widgetOrder() {

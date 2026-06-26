@@ -1,0 +1,34 @@
+/* XGOUD Surveys — front-end vragenlijst. Blueprint: rood #AE1E1E, goud #D0AC4B,
+   border-radius 0. */
+.xg-survey { padding: 48px 0; }
+.xg-survey-box { max-width: 640px; }
+.xg-sv-head h2 { font-size: 26px; font-weight: 800; margin: 0 0 6px; }
+.xg-sv-head p { color: #6b665c; margin: 0 0 6px; }
+.xg-sv-points { color: #2a2620 !important; }
+.xg-sv-points strong { color: #AE1E1E; }
+.xg-sv-form { margin-top: 18px; display: flex; flex-direction: column; gap: 18px; }
+.xg-sv-q h3 { font-size: 16px; font-weight: 700; margin: 0 0 10px; }
+.xg-sv-req { color: #AE1E1E; }
+.xg-sv-opt { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid #e0dacf; margin: 0 0 7px; cursor: pointer; }
+.xg-sv-opt:hover { border-color: #AE1E1E; }
+.xg-sv-opt input { width: 17px; height: 17px; accent-color: #AE1E1E; }
+.xg-survey textarea, .xg-survey input[type=email] { width: 100%; padding: 12px 14px; border: 1px solid #d8d2c6; font-family: inherit; font-size: 15px; }
+.xg-sv-rating { display: flex; gap: 4px; }
+.xg-sv-star { background: none; border: 0; font-size: 30px; line-height: 1; color: #d8d2c6; cursor: pointer; padding: 0 2px; }
+.xg-sv-star.on { color: #D0AC4B; }
+.xg-sv-submit { align-self: flex-start; background: #AE1E1E; color: #fff; border: 0; padding: 13px 30px; font-weight: 700; font-size: 15px; cursor: pointer; }
+.xg-sv-submit:hover { background: #8a1818; }
+.xg-sv-submit[disabled] { opacity: .6; cursor: default; }
+.xg-sv-msg { font-size: 14px; }
+.xg-sv-msg.is-err { color: #c0392b; }
+.xg-sv-done, .xg-sv-closed { max-width: 560px; }
+.xg-sv-done h2 { font-size: 28px; font-weight: 800; }
+.xg-sv-share { margin-top: 18px; }
+.xg-sv-share p { font-weight: 700; margin: 0 0 8px; }
+.xg-sv-sh { display: inline-block; margin: 0 8px 8px 0; padding: 9px 16px; background: #161412; color: #fff; text-decoration: none; font-weight: 700; font-size: 14px; }
+.xg-sv-sh:hover { background: #AE1E1E; }
+.xg-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+/* Dark mode */
+html[data-theme="dark"] .xg-sv-head h2, html[data-theme="dark"] .xg-sv-done h2 { color: #f3efe8; }
+html[data-theme="dark"] .xg-sv-opt { border-color: #34302b; }
+html[data-theme="dark"] .xg-survey textarea, html[data-theme="dark"] .xg-survey input[type=email] { background: #221f1a; border-color: #34302b; color: #f3efe8; }

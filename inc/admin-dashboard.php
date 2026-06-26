@@ -206,7 +206,9 @@ function ekinese_dashboard_ai_context() {
 	if ( $tasks ) {
 		$lines[] = 'Openstaande taken: ' . implode( '; ', array_map( function ( $t ) { return $t['label'] . ' (' . $t['count'] . ')'; }, $tasks ) );
 	}
-	return implode( "\n", $lines );
+	/** Andere modules (surveys, social-insights, …) kunnen context-regels toevoegen. */
+	$lines = apply_filters( 'ekinese_dashboard_ai_context_lines', $lines );
+	return implode( "\n", (array) $lines );
 }
 
 /** Directe call naar de Anthropic Messages-API (hergebruikt key + model). */
