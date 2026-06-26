@@ -15,6 +15,8 @@
 	var restData = root.getAttribute('data-rest-data');
 	var apiBase = (restData || '').replace('/account/data', '');
 	var activeTab = 'overzicht';
+	var currentData = null;
+	var marketPrices = null;
 
 	function esc(s) {
 		return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
@@ -48,7 +50,7 @@
 			if (!r.ok) throw new Error('unauthorized');
 			return r.json();
 		})
-		.then(function (d) { renderDash(d); })
+		.then(function (d) { renderDash(d); loadMarketPrices(); })
 		.catch(function () {
 			if (msg) msg.textContent = 'Uw inloglink is ongeldig of verlopen. Vraag een nieuwe aan.';
 		});
@@ -325,7 +327,113 @@
 			'<thead><tr><th>Datum</th><th>Type</th><th>Item</th><th>Bedrag</th><th>Status</th></tr></thead><tbody>' + body + '</tbody></table></div></section>';
 	}
 
+	/* =========================================================
+	   PREMIUM WIDGET-DASHBOARD (Overzicht) — verschuifbaar, live
+	   ========================================================= */
+	function loadMarketPrices() {
+		fetch((apiBase || '') + '/prices').then(function (r) { return r.json(); })
+			.then(function (d) { marketPrices = (d && d.prices) || {}; if (currentData && activeTab === 'overzicht') { renderDash(currentData); } })
+			.catch(function () {});
+	}
+	function liveDot() { return '<span class="xg-w-live"><span class="xg-w-live-dot"></span>LIVE</span>'; }
+	function widgetCard(id, title, icon, body, opts) {
+		opts = opts || {};
+		return '<div class="xg-wg' + (opts.big ? ' xg-wg-big' : '') + '" draggable="true" data-wid="' + id + '">' +
+			'<div class="xg-wg-h"><span class="xg-wg-ic">' + icon + '</span><h3>' + esc(title) + '</h3>' + (opts.live ? liveDot() : '') + '<span class="xg-wg-grip" title="Versleep">⠿</span></div>' +
+			'<div class="xg-wg-b">' + body + '</div></div>';
+	}
+
+	var WIDGETS = {
+		portfolio: function (d) {
+			var pf = d.portfolio || {}, total = Number(pf.total) || 0, gain = Number(pf.gain) || 0, gp = pf.gain_pct || 0, cls = gain >= 0 ? 'up' : 'down';
+			var b = '<div class="xg-wg-num">' + eur0(total) + '</div><div class="xg-wg-delta ' + cls + '">' + (gain >= 0 ? '▲' : '▼') + ' ' + eur0(Math.abs(gain)) + ' (' + esc(gp) + '%)</div>' +
+				'<a class="xg-wg-link" data-tab="portfolio" href="#">Portfolio openen →</a>';
+			return widgetCard('portfolio', 'Portfolio', '◆', b, { live: true, big: true });
+		},
+		market: function () {
+			var b;
+			if (!marketPrices) { b = '<p class="xg-wg-muted">Koersen laden…</p>'; }
+			else {
+				b = '<div class="xg-wg-market">' + Object.keys(marketPrices).map(function (k) {
+					return '<div class="xg-wg-mrow"><span>' + esc(marketPrices[k].label) + '</span><strong>€ ' + esc(marketPrices[k].gram) + '<small>/g</small></strong></div>';
+				}).join('') + '</div>';
+			}
+			return widgetCard('market', 'Markt vandaag', '〽', b, { live: true });
+		},
+		niveau: function (d) {
+			var lo = d.loyalty || {}, ladder = lo.ladder || [];
+			var steps = ladder.map(function (t) {
+				return '<div class="xg-tier' + (t.reached ? ' reached' : '') + (t.label === lo.tier ? ' current' : '') + '">' +
+					'<span class="xg-tier-dot"></span><span class="xg-tier-lbl">' + esc(t.label) + '</span><span class="xg-tier-perk">' + esc(t.perk) + '</span></div>';
+			}).join('');
+			var prog = lo.next_tier
+				? '<div class="xg-loyalty-bar"><span style="width:' + esc(lo.progress) + '%"></span></div><div class="xg-wg-muted">Nog ' + esc(lo.to_next) + ' verkoop(en) tot ' + esc(lo.next_tier) + '</div>'
+				: '<div class="xg-wg-muted">Hoogste niveau bereikt 🏆</div>';
+			var b = '<div class="xg-tier-now">' + esc(lo.tier || 'Brons') + ' · +' + esc(lo.bonus || 0) + '% bonus</div>' + prog + '<div class="xg-tier-ladder">' + steps + '</div>';
+			return widgetCard('niveau', 'Mijn niveau', '♛', b, { big: true });
+		},
+		timeline: function (d) {
+			var a = (d.appointments || [])[0];
+			if (!a) return '';
+			var st = (a.status || '').toLowerCase(), paid = ['completed', 'paid', 'afgerond', 'uitbetaald'].indexOf(st) >= 0;
+			var steps = [['Aanvraag', true], ['Afspraak ingepland', !!a.date], ['Chauffeur onderweg', a.driver_eta_min != null || paid],
+				['Aangekomen', !!a.verified || paid], ['Echtheidscontrole', !!a.verified || paid], ['Uitbetaling', paid],
+				['Charity overgemaakt', paid], ['Punten bijgeschreven', paid]];
+			var b = '<div class="xg-timeline">' + steps.map(function (s) {
+				return '<div class="xg-tl-step' + (s[1] ? ' done' : '') + '"><span class="xg-tl-dot">' + (s[1] ? '✓' : '') + '</span><span>' + esc(s[0]) + '</span></div>';
+			}).join('') + '</div>';
+			return widgetCard('timeline', 'Verkoopstatus', '⛓', b, { big: true });
+		},
+		afspraak: function (d) {
+			var a = (d.appointments || [])[0], b;
+			if (!a) { b = '<p class="xg-wg-muted">Geen afspraak. <a data-tab="afspraken" href="#">Plan er een →</a></p>'; return widgetCard('afspraak', 'Volgende afspraak', '✦', b); }
+			var eta = a.driver_eta_min != null ? '<div class="xg-wg-eta">🚗 Chauffeur komt over ~' + esc(a.driver_eta_min) + ' min</div>' : '';
+			b = '<div class="xg-wg-num xg-wg-num-sm">' + esc(a.date || '') + ' ' + esc(a.time || '') + '</div><div class="xg-wg-muted">' + esc(a.service || '') + ' · ' + esc(a.status || '') + '</div>' + eta +
+				(a.verify_url ? '<a class="xg-wg-link" href="' + esc(a.verify_url) + '">Verifieer chauffeur →</a>' : '');
+			return widgetCard('afspraak', 'Volgende afspraak', '✦', b, { live: a.driver_eta_min != null });
+		},
+		punten: function (d) {
+			return widgetCard('punten', 'Spaarpunten', '★', '<div class="xg-wg-num">' + esc(d.points != null ? d.points : 0) + '</div><div class="xg-wg-muted">punten</div>');
+		},
+		charity: function (d) {
+			var yr = d.year_review || {}, c = 0; Object.keys(yr).forEach(function (y) { c += Number(yr[y].charity) || 0; });
+			return widgetCard('charity', 'Charity', '♥', '<div class="xg-wg-num">€ ' + esc(c.toFixed ? c.toFixed(2) : c) + '</div><div class="xg-wg-muted">door u bijgedragen</div>');
+		},
+		veilingen: function (d) {
+			var n = (d.auctions || []).length;
+			return widgetCard('veilingen', 'Veilingen', '⚒', '<div class="xg-wg-num">' + n + '</div><div class="xg-wg-muted">mijn veilingen</div><a class="xg-wg-link" href="/veilingen/">Naar veilingen →</a>');
+		},
+		alerts: function (d) {
+			var n = (d.alerts || []).length;
+			return widgetCard('alerts', 'Prijsalarmen', '◔', '<div class="xg-wg-num">' + n + '</div><div class="xg-wg-muted">actief</div><a class="xg-wg-link" data-tab="service" href="#">Beheren →</a>');
+		},
+		inbox: function (d) {
+			var t = (d.tickets || []).length, n = d.notifications_unread || 0;
+			var b = '<div class="xg-wg-inbox"><div><strong>' + t + '</strong><span>tickets</span></div><div><strong>' + n + '</strong><span>nieuw</span></div></div><a class="xg-wg-link" data-tab="service" href="#">Openen →</a>';
+			return widgetCard('inbox', 'Berichten', '✉', b, { live: n > 0 });
+		},
+		referral: function (d) {
+			if (!d.referral_url) return '';
+			var b = '<p class="xg-wg-muted">Nodig vrienden uit en spaar samen.</p><div class="xg-ref-link"><input type="text" readonly value="' + esc(d.referral_url) + '"><button type="button" class="xg-ref-copy" data-link="' + esc(d.referral_url) + '">Kopieer</button></div>';
+			return widgetCard('referral', 'Uitnodigen', '🎁', b);
+		}
+	};
+	var WIDGET_ORDER = ['portfolio', 'market', 'niveau', 'timeline', 'afspraak', 'punten', 'charity', 'veilingen', 'alerts', 'inbox', 'referral'];
+	function widgetOrder() {
+		var saved = null; try { saved = JSON.parse(localStorage.getItem('xg_wgorder') || 'null'); } catch (e) {}
+		if (!saved || !saved.length) return WIDGET_ORDER.slice();
+		var known = saved.filter(function (x) { return WIDGET_ORDER.indexOf(x) >= 0; });
+		var extra = WIDGET_ORDER.filter(function (x) { return known.indexOf(x) < 0; });
+		return known.concat(extra);
+	}
+	function overviewGrid(d) {
+		var greet = '<div class="xg-acc-greet"><div><h2>Welkom terug 👋</h2><p>' + esc(d.email) + '</p></div><span class="xg-acc-greet-hint">Sleep de widgets in uw eigen volgorde</span></div>';
+		var cards = widgetOrder().map(function (id) { return WIDGETS[id] ? WIDGETS[id](d) : ''; }).filter(Boolean).join('');
+		return greet + notifyCard(d) + '<div class="xg-wgrid">' + cards + '</div>';
+	}
+
 	function renderDash(d) {
+		currentData = d;
 		if (loginBox) loginBox.hidden = true;
 		dash.hidden = false;
 
@@ -352,9 +460,7 @@
 			'<div class="xg-acc-head-pts"><strong>' + esc(pts) + '</strong><span>spaarpunten</span></div></div>';
 
 		dash.innerHTML = head + nav + '<div class="xg-acc-panels">' +
-			panel('overzicht',
-				statCards(d) + notifyCard(d) + savingsCard(d) + yearReviewCard(d) + referralCard(d)
-			) +
+			panel('overzicht', overviewGrid(d)) +
 			panel('portfolio', portfolioPanel(d) + txPanel(d)) +
 			panel('veilingen',
 				listingsSection(d) +
@@ -395,13 +501,42 @@
 	// Interacties in het dashboard (referral kopiëren, spaardoel opslaan).
 	function bindDashEvents(d) {
 		// Tab-navigatie tussen de panelen.
+		function switchTab(id) {
+			activeTab = id;
+			dash.querySelectorAll('.xg-acc-tab').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-tab') === id); });
+			dash.querySelectorAll('.xg-acc-panel').forEach(function (p) { p.classList.toggle('active', p.getAttribute('data-panel') === id); });
+		}
 		dash.querySelectorAll('.xg-acc-tab').forEach(function (btn) {
-			btn.addEventListener('click', function () {
-				activeTab = btn.getAttribute('data-tab');
-				dash.querySelectorAll('.xg-acc-tab').forEach(function (b) { b.classList.toggle('active', b === btn); });
-				dash.querySelectorAll('.xg-acc-panel').forEach(function (p) { p.classList.toggle('active', p.getAttribute('data-panel') === activeTab); });
-			});
+			btn.addEventListener('click', function () { switchTab(btn.getAttribute('data-tab')); });
 		});
+		// Widget-links die naar een tab springen.
+		dash.querySelectorAll('.xg-wg-link[data-tab], [data-tab]').forEach(function (el) {
+			if (el.classList.contains('xg-acc-tab')) return;
+			el.addEventListener('click', function (e) { e.preventDefault(); switchTab(el.getAttribute('data-tab')); window.scrollTo(0, 0); });
+		});
+		// Widgets verslepen (volgorde onthouden).
+		var grid = dash.querySelector('.xg-wgrid');
+		if (grid) {
+			grid.querySelectorAll('.xg-wg').forEach(function (card) {
+				card.addEventListener('dragstart', function () { card.classList.add('xg-wg-drag'); });
+				card.addEventListener('dragend', function () {
+					card.classList.remove('xg-wg-drag');
+					try { localStorage.setItem('xg_wgorder', JSON.stringify([].slice.call(grid.querySelectorAll('.xg-wg')).map(function (c) { return c.getAttribute('data-wid'); }))); } catch (e) {}
+				});
+			});
+			grid.addEventListener('dragover', function (e) {
+				e.preventDefault();
+				var dragging = grid.querySelector('.xg-wg-drag'); if (!dragging) return;
+				var els = [].slice.call(grid.querySelectorAll('.xg-wg:not(.xg-wg-drag)'));
+				var after = null, min = Infinity;
+				els.forEach(function (c) {
+					var box = c.getBoundingClientRect();
+					var off = e.clientY - box.top - box.height / 2;
+					if (off < 0 && -off < min) { min = -off; after = c; }
+				});
+				if (after) grid.insertBefore(dragging, after); else grid.appendChild(dragging);
+			});
+		}
 		// Bezit verwijderen (DELETE met token).
 		dash.querySelectorAll('.xg-pf-del').forEach(function (b) {
 			b.addEventListener('click', function () {

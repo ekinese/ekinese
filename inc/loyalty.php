@@ -20,10 +20,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /** Tiers: drempel (aantal afgeronde verkopen) → [label, bonus%]. */
 function ekinese_loyalty_tiers() {
 	return array(
-		0 => array( 'label' => 'Brons',   'bonus' => 0.00 ),
-		2 => array( 'label' => 'Zilver',  'bonus' => 0.01 ),
-		5 => array( 'label' => 'Goud',    'bonus' => 0.02 ),
-		10 => array( 'label' => 'Platina', 'bonus' => 0.03 ),
+		0   => array( 'label' => 'Brons',   'bonus' => 0.00, 'perk' => 'Welkom bij XGOUD' ),
+		2   => array( 'label' => 'Zilver',  'bonus' => 0.01, 'perk' => '+1% trouwbonus' ),
+		5   => array( 'label' => 'Goud',    'bonus' => 0.02, 'perk' => '+2% bonus · voorrang afspraak' ),
+		10  => array( 'label' => 'Platina', 'bonus' => 0.03, 'perk' => '+3% bonus · gratis ophaalservice' ),
+		20  => array( 'label' => 'Diamond', 'bonus' => 0.04, 'perk' => '+4% bonus · persoonlijke taxateur' ),
+		35  => array( 'label' => 'Elite',   'bonus' => 0.05, 'perk' => '+5% bonus · exclusieve veilingen' ),
+		60  => array( 'label' => 'Founder', 'bonus' => 0.06, 'perk' => '+6% bonus · VIP-events' ),
+		100 => array( 'label' => 'Legacy',  'bonus' => 0.07, 'perk' => '+7% bonus · levenslange topcondities' ),
 	);
 }
 
@@ -257,6 +261,11 @@ add_filter( 'ekinese_account_data', function ( $data, $email ) {
 	if ( null !== $next_thr && isset( $tiers[ $next_thr ] ) ) {
 		$next_label = $tiers[ $next_thr ]['label'];
 	}
+	// Volledige ladder voor de gamification-weergave.
+	$ladder = array();
+	foreach ( $tiers as $thr => $t ) {
+		$ladder[] = array( 'at' => $thr, 'label' => $t['label'], 'bonus' => round( $t['bonus'] * 100, 1 ), 'perk' => $t['perk'] ?? '', 'reached' => $s['count'] >= $thr );
+	}
 	$data['loyalty'] = array(
 		'tier'       => $s['label'],
 		'bonus'      => round( $s['bonus'] * 100, 1 ),
@@ -264,6 +273,7 @@ add_filter( 'ekinese_account_data', function ( $data, $email ) {
 		'to_next'    => $s['to_next'],
 		'next_tier'  => $next_label,
 		'progress'   => max( 0, min( 100, $progress ) ),
+		'ladder'     => $ladder,
 	);
 	return $data;
 }, 13, 2 );

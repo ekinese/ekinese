@@ -137,6 +137,7 @@ add_filter( 'ekinese_account_data', function ( $data, $email ) {
 			if ( ! empty( $a['_id'] ) ) {
 				$a['vcode']      = ekinese_visit_code( (int) $a['_id'] );
 				$a['verify_url'] = home_url( '/verify/?a=' . (int) $a['_id'] . '&c=' . $a['vcode'] );
+				$a['verified']   = get_post_meta( (int) $a['_id'], 'verified_at', true ) ? 1 : 0;
 			}
 		}
 		unset( $a );

@@ -517,6 +517,37 @@ function ekinese_fleet_panel() {
 	echo '<p style="font-size:22px;font-weight:800;color:#AE1E1E;margin:0">€ ' . esc_html( number_format_i18n( $total, 2 ) ) . ' <span style="font-size:13px;font-weight:400;color:#646970">over ' . count( $exp ) . ' posten</span> · <a href="' . esc_url( admin_url( 'edit.php?post_type=xg_expense' ) ) . '">bekijken/afvinken</a></p></div>';
 }
 
+/* Live ETA van de chauffeur bij de afspraak van de klant (vandaag). */
+add_filter( 'ekinese_account_data', function ( $data, $email ) {
+	if ( empty( $data['appointments'] ) || ! is_array( $data['appointments'] ) ) {
+		return $data;
+	}
+	$rid = ekinese_fleet_today_route();
+	if ( ! $rid ) {
+		return $data;
+	}
+	$stops = ekinese_fleet_compute_eta( json_decode( (string) get_post_meta( $rid, 'stops', true ), true ) ?: array() );
+	$by_appt = array();
+	foreach ( $stops as $s ) {
+		if ( ! empty( $s['appointment'] ) && ! empty( $s['eta'] ) && empty( $s['arrived_at'] ) ) {
+			$by_appt[ (int) $s['appointment'] ] = $s['eta'];
+		}
+	}
+	$now = current_time( 'timestamp' );
+	foreach ( $data['appointments'] as &$a ) {
+		$id = (int) ( $a['_id'] ?? 0 );
+		if ( $id && isset( $by_appt[ $id ] ) ) {
+			$eta = strtotime( date( 'Y-m-d', $now ) . ' ' . $by_appt[ $id ] ); // phpcs:ignore WordPress.DateTime
+			$min = (int) round( ( $eta - $now ) / 60 );
+			if ( $min >= 0 && $min < 600 ) {
+				$a['driver_eta_min'] = $min;
+			}
+		}
+	}
+	unset( $a );
+	return $data;
+}, 15, 2 );
+
 /* =====================================================================
    STATISTIEK — voor latere optimalisatie van de routes/chauffeurs
 ===================================================================== */
