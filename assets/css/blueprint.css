@@ -2339,3 +2339,26 @@ html[data-theme="dark"] .xg-mp-buybox, html[data-theme="dark"] .xg-mp-form { bac
 html[data-theme="dark"] .xg-mp-interest input, html[data-theme="dark"] .xg-mp-form input, html[data-theme="dark"] .xg-mp-form select, html[data-theme="dark"] .xg-mp-form textarea { background: #211e1a; border-color: #34302b; color: #f3efe8; }
 html[data-theme="dark"] .xg-mp-charity { background: #18301f; color: #6fcf97; }
 html[data-theme="dark"] .xg-mp-mode { border-color: #34302b; }
+
+/* =========================
+   ZAKELIJK PORTAAL (pro)
+========================= */
+.xg-bizpro { padding: 56px 0; }
+.xg-bizpro-login { max-width: 520px; }
+.xg-bizpro-loginform { display: flex; gap: 10px; margin: 16px 0 8px; }
+.xg-bizpro-loginform input { flex: 1; padding: 12px 14px; border: 1px solid #d8d2c6; background: #fff; font: inherit; }
+.xg-bizpro-msg { font-size: 13px; color: #57534b; min-height: 18px; }
+.xg-bizpro-apply { font-size: 14px; }
+.xg-bizpro-terms { color: #57534b; margin: 0 0 22px; }
+.xg-bizpro-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 26px; }
+.xg-batch-row { display: grid; grid-template-columns: 1.1fr 1fr 1.2fr .8fr auto auto; gap: 8px; align-items: center; margin-bottom: 8px; }
+.xg-batch-row select, .xg-batch-row input { padding: 9px 10px; border: 1px solid #d8d2c6; background: #fff; font: inherit; width: 100%; }
+.xg-batch-row .b-val { font-weight: 700; white-space: nowrap; }
+.xg-batch-row .b-del { background: none; border: none; color: #b32d2e; font-size: 18px; cursor: pointer; }
+.xg-batch-add { background: none; border: 1px dashed #d8d2c6; padding: 8px 14px; font: inherit; cursor: pointer; margin: 4px 0 14px; }
+.xg-batch-total { font-size: 16px; margin: 8px 0 16px; }
+.xg-batch-total strong { font-size: 22px; color: #AE1E1E; }
+.xg-batch-msg { font-size: 13px; margin-top: 10px; color: #57534b; }
+@media (max-width: 860px) { .xg-bizpro-grid { grid-template-columns: 1fr; } .xg-batch-row { grid-template-columns: 1fr 1fr; } }
+html[data-theme="dark"] .xg-bizpro-loginform input, html[data-theme="dark"] .xg-batch-row select, html[data-theme="dark"] .xg-batch-row input { background: #211e1a; border-color: #34302b; color: #f3efe8; }
+html[data-theme="dark"] .xg-bizpro-terms, html[data-theme="dark"] .xg-bizpro-msg { color: #b3ad9f; }

@@ -64,6 +64,7 @@ function ekinese_install_pages() {
 		'vergelijken'           => array( 'Vergelijken', 'page-vergelijken', null ),
 		'kennisbank'            => array( 'Kennisbank', 'kennisbank-hub', null ),
 		'zakelijk'              => array( 'Zakelijk verkopen', 'page-zakelijk', null ),
+		'portaal'               => array( 'Zakelijk portaal', "<!-- wp:group {\"className\":\"xg-blueprint\"} -->\n<div class=\"wp-block-group xg-blueprint\"><!-- wp:ekinese/business-dashboard /--></div>\n<!-- /wp:group -->", 'zakelijk' ),
 
 		'service'               => array( 'Service', 'page-services', null ),
 		'gratis-taxatie'        => array( 'Gratis taxatie', 'services-taxatie', 'service' ),
