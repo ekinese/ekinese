@@ -554,6 +554,16 @@
 				'<a class="xg-wg-link" href="' + esc(s.url) + '">Invullen →</a>';
 			return widgetCard('survey', 'Vragenlijst', '🗳', b, { live: true });
 		},
+		streak: function (d) {
+			var s = parseInt(d.streak || 0, 10);
+			if (!s) return '';
+			var best = parseInt(d.streak_best || 0, 10);
+			var bonus = parseInt(d.streak_awarded || 0, 10);
+			var body = '<div class="xg-streak-flame">🔥 <span class="xg-wg-num xg-wg-num-sm">' + s + '</span></div>' +
+				'<div class="xg-wg-muted">dag' + (s === 1 ? '' : 'en') + ' op rij' + (best > s ? ' · record ' + best : '') + '</div>' +
+				(bonus ? '<div class="xg-wg-delta up">+' + bonus + ' punten vandaag</div>' : '<div class="xg-wg-muted">Kom morgen terug voor meer</div>');
+			return widgetCard('streak', 'Streak', '🔥', body, { live: true });
+		},
 		badges: function (d) {
 			var list = d.badges || [];
 			if (!list.length) return '';
@@ -586,10 +596,10 @@
 			return widgetCard('momenten', 'Mijn momenten', '📸', b);
 		}
 	};
-	var WIDGET_ORDER = ['portfolio', 'market', 'niveau', 'badges', 'timeline', 'afspraak', 'survey', 'profiel', 'spaardoel', 'momenten', 'punten', 'charity', 'veilingen', 'treuhand', 'alerts', 'inbox', 'referral'];
+	var WIDGET_ORDER = ['portfolio', 'market', 'streak', 'niveau', 'badges', 'timeline', 'afspraak', 'survey', 'profiel', 'spaardoel', 'momenten', 'punten', 'charity', 'veilingen', 'treuhand', 'alerts', 'inbox', 'referral'];
 	var WIDGET_TITLES = {
 		portfolio: 'Portfolio', market: 'Markt vandaag', niveau: 'Mijn niveau', timeline: 'Verkoopstatus',
-		afspraak: 'Volgende afspraak', survey: 'Vragenlijst', badges: 'Mijn badges', profiel: 'Profiel', spaardoel: 'Spaardoel', momenten: 'Mijn momenten', punten: 'Spaarpunten',
+		afspraak: 'Volgende afspraak', survey: 'Vragenlijst', streak: 'Streak', badges: 'Mijn badges', profiel: 'Profiel', spaardoel: 'Spaardoel', momenten: 'Mijn momenten', punten: 'Spaarpunten',
 		charity: 'Charity', veilingen: 'Veilingen', treuhand: 'Treuhand', alerts: 'Prijsalarmen', inbox: 'Berichten', referral: 'Uitnodigen'
 	};
 	function widgetOrder() {

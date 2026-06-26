@@ -51,6 +51,7 @@ add_filter( 'ekinese_account_data', function ( $data, $email ) {
 		array( 'connector', 'Ambassadeur',     '📣', $referrals >= 1,     'Een vriend uitgenodigd' ),
 		array( 'trusted',   'Treuhand-gebruiker','⚖️', $escrow >= 1,      'Treuhandservice gebruikt' ),
 		array( 'collector', 'Puntenspaarder',  '⭐', $points >= 500,      '500+ spaarpunten' ),
+		array( 'streaker',  'Op dreef',        '🔥', (int) ( $data['streak_best'] ?? 0 ) >= 7, '7 dagen op rij ingelogd' ),
 	);
 
 	$badges = array();
