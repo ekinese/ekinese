@@ -111,3 +111,4 @@ require_once get_theme_file_path( 'inc/registration.php' );
 require_once get_theme_file_path( 'inc/social-insights.php' );
 require_once get_theme_file_path( 'inc/optimizer.php' );
 require_once get_theme_file_path( 'inc/escrow.php' );
+require_once get_theme_file_path( 'inc/achievements.php' );

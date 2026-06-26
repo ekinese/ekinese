@@ -1,0 +1,57 @@
+/* XGOUD polish — micro-interactions & visuele afwerking. Subtiel, geen
+   border-radius, brand-kleuren. */
+
+/* Zachte hover-lift op kaarten */
+.xg-wg, .xg-c-card, .xg-moment, .xg-yr-card {
+	transition: transform .18s ease, box-shadow .18s ease;
+}
+.xg-wg:hover, .xg-c-card:hover, .xg-moment:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 12px 30px rgba(0,0,0,.10);
+}
+
+/* Button-press feedback */
+button, .xg-final-btn, .xg-home-more-link, .xg-wg-link {
+	transition: transform .1s ease, background .15s ease, color .15s ease;
+}
+button:active, .xg-final-btn:active { transform: scale(.97); }
+
+/* Count-up nummers iets strakker */
+.xg-wg-num, .xg-pf-total-val { font-variant-numeric: tabular-nums; }
+
+/* Confetti-canvas */
+#xg-confetti {
+	position: fixed; inset: 0; width: 100%; height: 100%;
+	pointer-events: none; z-index: 99999;
+}
+
+/* Badges */
+.xg-badges { display: grid; grid-template-columns: repeat(auto-fill, minmax(74px, 1fr)); gap: 10px; }
+.xg-badge { text-align: center; opacity: .35; filter: grayscale(1); transition: transform .15s, opacity .15s, filter .15s; }
+.xg-badge.earned { opacity: 1; filter: none; }
+.xg-badge.earned:hover { transform: scale(1.08); }
+.xg-badge-ic { font-size: 26px; line-height: 1.1; }
+.xg-badge-lbl { font-size: 10px; color: #6b665c; margin-top: 2px; line-height: 1.2; }
+.xg-badge.earned .xg-badge-lbl { color: #2a2620; font-weight: 600; }
+.xg-badges-head { display: flex; justify-content: space-between; align-items: baseline; }
+.xg-badges-count { font-size: 12px; color: #9a9486; }
+
+/* Profiel-volledigheid */
+.xg-prof-bar { height: 8px; background: #ece8df; margin: 8px 0 6px; overflow: hidden; }
+.xg-prof-bar span { display: block; height: 100%; background: linear-gradient(90deg,#AE1E1E,#D0AC4B); transition: width .9s ease; }
+
+/* Mooiere lege staten */
+.xg-empty-rich { text-align: center; padding: 26px 16px; color: #6b665c; }
+.xg-empty-rich .xg-empty-ic { font-size: 34px; display: block; margin-bottom: 8px; opacity: .8; }
+.xg-empty-rich .xg-empty-cta { display: inline-block; margin-top: 10px; background: #AE1E1E; color: #fff; padding: 9px 18px; font-weight: 700; text-decoration: none; }
+.xg-empty-rich .xg-empty-cta:hover { background: #8a1818; }
+
+/* Reduced motion respecteren */
+@media (prefers-reduced-motion: reduce) {
+	.xg-wg, .xg-c-card, .xg-moment, button, .xg-final-btn { transition: none; }
+	.xg-wg:hover, .xg-c-card:hover, .xg-moment:hover { transform: none; }
+}
+
+/* Dark mode */
+html[data-theme="dark"] .xg-prof-bar { background: #34302b; }
+html[data-theme="dark"] .xg-badge.earned .xg-badge-lbl { color: #e9e4da; }

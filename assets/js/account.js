@@ -554,6 +554,27 @@
 				'<a class="xg-wg-link" href="' + esc(s.url) + '">Invullen →</a>';
 			return widgetCard('survey', 'Vragenlijst', '🗳', b, { live: true });
 		},
+		badges: function (d) {
+			var list = d.badges || [];
+			if (!list.length) return '';
+			var grid = list.map(function (b) {
+				return '<div class="xg-badge' + (b.earned ? ' earned' : '') + '" title="' + esc(b.desc) + '">' +
+					'<div class="xg-badge-ic">' + b.icon + '</div><div class="xg-badge-lbl">' + esc(b.label) + '</div></div>';
+			}).join('');
+			var body = '<div class="xg-badges-head"><span class="xg-wg-muted">Verzameld</span>' +
+				'<span class="xg-badges-count">' + (d.badges_earned || 0) + '/' + (d.badges_total || 0) + '</span></div>' +
+				'<div class="xg-badges">' + grid + '</div>';
+			return widgetCard('badges', 'Mijn badges', '🏅', body, { big: true });
+		},
+		profiel: function (d) {
+			if (d.profile_completeness == null) return '';
+			var p = d.profile_completeness;
+			var body = '<div class="xg-wg-num xg-wg-num-sm">' + p + '%</div>' +
+				'<div class="xg-prof-bar"><span style="width:' + p + '%"></span></div>' +
+				'<div class="xg-wg-muted">profiel compleet</div>' +
+				(p < 100 ? '<a class="xg-wg-link" data-tab="portfolio" href="#">Vul aan →</a>' : '<div class="xg-wg-delta up">✓ compleet</div>');
+			return widgetCard('profiel', 'Profiel', '👤', body);
+		},
 		momenten: function (d) {
 			var items = d.moments || [];
 			var thumbs = items.slice(0, 4).map(function (m) {
@@ -565,10 +586,10 @@
 			return widgetCard('momenten', 'Mijn momenten', '📸', b);
 		}
 	};
-	var WIDGET_ORDER = ['portfolio', 'market', 'niveau', 'timeline', 'afspraak', 'survey', 'spaardoel', 'momenten', 'punten', 'charity', 'veilingen', 'treuhand', 'alerts', 'inbox', 'referral'];
+	var WIDGET_ORDER = ['portfolio', 'market', 'niveau', 'badges', 'timeline', 'afspraak', 'survey', 'profiel', 'spaardoel', 'momenten', 'punten', 'charity', 'veilingen', 'treuhand', 'alerts', 'inbox', 'referral'];
 	var WIDGET_TITLES = {
 		portfolio: 'Portfolio', market: 'Markt vandaag', niveau: 'Mijn niveau', timeline: 'Verkoopstatus',
-		afspraak: 'Volgende afspraak', survey: 'Vragenlijst', spaardoel: 'Spaardoel', momenten: 'Mijn momenten', punten: 'Spaarpunten',
+		afspraak: 'Volgende afspraak', survey: 'Vragenlijst', badges: 'Mijn badges', profiel: 'Profiel', spaardoel: 'Spaardoel', momenten: 'Mijn momenten', punten: 'Spaarpunten',
 		charity: 'Charity', veilingen: 'Veilingen', treuhand: 'Treuhand', alerts: 'Prijsalarmen', inbox: 'Berichten', referral: 'Uitnodigen'
 	};
 	function widgetOrder() {
@@ -602,6 +623,13 @@
 
 	function renderDash(d) {
 		currentData = d;
+		// Confetti bij een nieuw behaalde badge (vergeleken met vorige bezoek).
+		try {
+			var prev = parseInt(localStorage.getItem('xg_badges_earned') || '0', 10);
+			var now = parseInt(d.badges_earned || 0, 10);
+			if (now > prev && window.xgCelebrate) { setTimeout(window.xgCelebrate, 400); }
+			if (now !== prev) localStorage.setItem('xg_badges_earned', String(now));
+		} catch (e) {}
 		if (loginBox) loginBox.hidden = true;
 		dash.hidden = false;
 

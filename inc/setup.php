@@ -143,6 +143,16 @@ function ekinese_enqueue_assets() {
 		);
 	}
 
+	// Polish: micro-interacties (count-up, confetti, hover). Globaal, licht.
+	$polish_css = get_theme_file_path( 'assets/css/polish.css' );
+	if ( file_exists( $polish_css ) ) {
+		wp_enqueue_style( 'ekinese-polish', get_theme_file_uri( 'assets/css/polish.css' ), array(), (string) filemtime( $polish_css ) );
+	}
+	$polish_js = get_theme_file_path( 'assets/js/polish.js' );
+	if ( file_exists( $polish_js ) ) {
+		wp_enqueue_script( 'ekinese-polish', get_theme_file_uri( 'assets/js/polish.js' ), array(), (string) filemtime( $polish_js ), true );
+	}
+
 	$bp_js = get_theme_file_path( 'assets/js/blueprint.js' );
 	if ( file_exists( $bp_js ) ) {
 		wp_enqueue_script(

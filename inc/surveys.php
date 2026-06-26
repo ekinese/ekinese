@@ -493,6 +493,7 @@ add_filter( 'ekinese_account_data', function ( $data, $email ) {
 			$todo[] = array( 'id' => $s->ID, 'title' => get_the_title( $s ), 'url' => get_permalink( $s ), 'points' => ekinese_survey_points( $s->ID ) );
 		}
 	}
-	$data['surveys'] = $todo;
+	$data['surveys']      = $todo;
+	$data['surveys_done'] = count( $done );
 	return $data;
 }, 17, 2 );
