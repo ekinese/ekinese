@@ -106,3 +106,4 @@ require_once get_theme_file_path( 'inc/perf.php' );
 require_once get_theme_file_path( 'inc/perf-images.php' );
 require_once get_theme_file_path( 'inc/moments.php' );
 require_once get_theme_file_path( 'inc/surveys.php' );
+require_once get_theme_file_path( 'inc/google-news.php' );
