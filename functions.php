@@ -63,6 +63,8 @@ require_once get_theme_file_path( 'inc/fleet.php' );
 require_once get_theme_file_path( 'inc/pwa.php' );
 require_once get_theme_file_path( 'inc/widget.php' );
 require_once get_theme_file_path( 'inc/push.php' );
+require_once get_theme_file_path( 'inc/smtp.php' );
+require_once get_theme_file_path( 'inc/payments.php' );
 require_once get_theme_file_path( 'inc/trust.php' );
 require_once get_theme_file_path( 'inc/rewards.php' );
 require_once get_theme_file_path( 'inc/lottery.php' );

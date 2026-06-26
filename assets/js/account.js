@@ -193,6 +193,22 @@
 			'<button type="submit">Alarm instellen</button><span class="xg-acc-form-msg" role="status"></span></form>';
 	}
 
+	// Mijn veilingen + "Betalen" (Mollie) voor gewonnen, onbetaalde veilingen.
+	function auctionsSection(d) {
+		var items = d.auctions || [];
+		if (!items.length) {
+			return '<section class="xg-acc-sec"><h3>Mijn veilingen</h3><p class="xg-acc-empty">Geen items.</p></section>';
+		}
+		var rows = items.map(function (a) {
+			var pay = (!a.paid_bool)
+				? '<a class="xg-mp-place-link" href="' + esc(apiBase) + '/pay/start?type=auction&id=' + esc(a.id) + '&token=' + encodeURIComponent(token) + '">Betalen →</a>'
+				: '✓';
+			return '<tr><td>' + esc(a.title) + '</td><td>' + esc(a.amount) + '</td><td>' + esc(a.proforma) + '</td><td>' + esc(a.invoice) + '</td><td>' + pay + '</td></tr>';
+		}).join('');
+		return '<section class="xg-acc-sec"><h3>Mijn veilingen</h3><div class="xg-table-scroll"><table class="xg-spec-table">' +
+			'<thead><tr><th>Veiling</th><th>Eindbod</th><th>Pro forma</th><th>Factuur</th><th>Betaling</th></tr></thead><tbody>' + rows + '</tbody></table></div></section>';
+	}
+
 	// Marktplaats: eigen advertenties (verwijderbaar zolang ze actief zijn).
 	function listingsSection(d) {
 		var items = d.listings || [];
@@ -328,10 +344,7 @@
 			panel('portfolio', portfolioPanel(d) + txPanel(d)) +
 			panel('veilingen',
 				listingsSection(d) +
-				section('Mijn veilingen', d.auctions, [
-					{ key: 'title', label: 'Veiling' }, { key: 'amount', label: 'Eindbod' },
-					{ key: 'proforma', label: 'Pro forma' }, { key: 'invoice', label: 'Factuur' }, { key: 'paid', label: 'Betaald' }
-				]) +
+				auctionsSection(d) +
 				section('Lopende loterijen', d.lotteries, [
 					{ key: 'title', label: 'Loterij' }, { key: 'prize', label: 'Prijs' },
 					{ key: 'cost', label: 'Inzet (punten)' }, { key: 'tickets', label: 'Loten' }

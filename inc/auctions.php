@@ -398,11 +398,13 @@ add_filter( 'ekinese_account_data', function ( $data, $email ) {
 			continue;
 		}
 		$rows[] = array(
-			'title'    => get_the_title( $id ),
-			'amount'   => ekinese_auction_eur( get_post_meta( $id, 'current_bid', true ) ),
-			'proforma' => get_post_meta( $id, 'proforma_number', true ) ?: '—',
-			'invoice'  => get_post_meta( $id, 'invoice_number', true ) ?: '—',
-			'paid'     => get_post_meta( $id, 'paid', true ) === '1' ? 'Ja' : 'Nee',
+			'id'        => $id,
+			'title'     => get_the_title( $id ),
+			'amount'    => ekinese_auction_eur( get_post_meta( $id, 'current_bid', true ) ),
+			'proforma'  => get_post_meta( $id, 'proforma_number', true ) ?: '—',
+			'invoice'   => get_post_meta( $id, 'invoice_number', true ) ?: '—',
+			'paid'      => get_post_meta( $id, 'paid', true ) === '1' ? 'Ja' : 'Nee',
+			'paid_bool' => get_post_meta( $id, 'paid', true ) === '1' ? 1 : 0,
 		);
 	}
 	if ( $rows ) {
