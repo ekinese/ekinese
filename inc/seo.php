@@ -230,6 +230,10 @@ function ekinese_seo_html( $post ) {
 
 	echo '<style>.xg-seo-f{margin:0 0 14px}.xg-seo-f label{display:block;font-weight:600;margin-bottom:4px}.xg-seo-f input[type=text]{width:100%}.xg-seo-c{color:#646970;font-size:12px;margin-top:3px}</style>';
 
+	$focus = get_post_meta( $post->ID, '_xg_focus_keyword', true );
+	echo '<div class="xg-seo-f"><label>Focus-keyword <span class="xg-seo-c">(de term waarop deze pagina moet scoren — bv. "goud verkopen Utrecht")</span></label>';
+	echo '<input type="text" name="xg_focus_keyword" value="' . esc_attr( $focus ) . '" placeholder="één hoofdzoekterm"></div>';
+
 	echo '<div class="xg-seo-f"><label>SEO-titel <span class="xg-seo-c">(leeg = automatisch: "' . esc_html( $auto_t ) . '")</span></label>';
 	echo '<input type="text" name="xg_seo_title" value="' . esc_attr( $title ) . '" maxlength="70" placeholder="Titel zoals in Google (max ±60 tekens)"></div>';
 
@@ -253,8 +257,9 @@ function ekinese_seo_save( $post_id ) {
 		return;
 	}
 	$text = array(
-		'xg_seo_title' => '_xg_seo_title',
-		'xg_meta_desc' => '_xg_meta_desc',
+		'xg_seo_title'      => '_xg_seo_title',
+		'xg_meta_desc'      => '_xg_meta_desc',
+		'xg_focus_keyword'  => '_xg_focus_keyword',
 	);
 	foreach ( $text as $field => $key ) {
 		if ( isset( $_POST[ $field ] ) ) {
