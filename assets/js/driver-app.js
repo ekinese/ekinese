@@ -193,7 +193,12 @@
 		ov.innerHTML = '<div class="xg-fa-ov-box"><button class="xg-fa-ov-x">×</button>' +
 			'<h3>' + esc(st.name || '') + '</h3><p>' + esc(st.address || '') + '</p>' +
 			'<a class="xg-fa-btn" href="' + nav + '" target="_blank">Navigeer</a>' +
-			'<div class="xg-fa-statusbtns"><button data-st="arrived">Aangekomen</button><button data-st="picked_up">Opgehaald</button><button data-st="failed">Niet gelukt</button></div>' +
+			'<div class="xg-fa-times">' +
+			(st.arrived_at ? '<span>Aangekomen: ' + esc(st.arrived_at.slice(11, 16)) + '</span>' : '') +
+			(st.started_at ? '<span>Start: ' + esc(st.started_at.slice(11, 16)) + '</span>' : '') +
+			(st.ended_at ? '<span>Klaar: ' + esc(st.ended_at.slice(11, 16)) + '</span>' : '') +
+			'</div>' +
+			'<div class="xg-fa-statusbtns"><button data-ev="arrived">Aangekomen</button><button data-ev="start">Begin</button><button data-ev="end">Klaar</button><button data-ev="failed">Niet gelukt</button></div>' +
 			'<textarea class="s-note" rows="2" placeholder="Notitie (waar/opmerkingen)"></textarea>' +
 			'<h4>KYC vastleggen</h4>' +
 			'<label class="xg-fa-file">📷 ID-scan<input type="file" accept="image/*" capture="environment" class="id-file"></label>' +
@@ -206,8 +211,12 @@
 
 		ov.querySelectorAll('.xg-fa-statusbtns button').forEach(function (b) {
 			b.addEventListener('click', function () {
-				fetch((window.XGFleet || {}).rest.replace('/fleet', '/driver') + '/stop', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: (data.route_token || ''), index: i, status: b.getAttribute('data-st'), note: ov.querySelector('.s-note').value }) })
-					.then(function () { b.classList.add('done'); });
+				var ev = b.getAttribute('data-ev');
+				var body = { token: (data.route_token || ''), index: i, event: ev, note: ov.querySelector('.s-note').value };
+				if (ev === 'end') body.status = 'picked_up';
+				if (ev === 'failed') { var rs = prompt('Reden (waarom niet gelukt)?'); if (rs === null) return; body.reason = rs; }
+				fetch((window.XGFleet || {}).rest.replace('/fleet', '/driver') + '/stop', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+					.then(function () { b.classList.add('done'); load(); });
 			});
 		});
 

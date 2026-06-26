@@ -44,7 +44,9 @@ html[data-theme="dark"] .xg-fa-tkform input, html[data-theme="dark"] .xg-fa-tkfo
 .xg-fa-ov-box { background: #fff; width: 100%; max-width: 560px; max-height: 92vh; overflow: auto; padding: 20px; position: relative; }
 .xg-fa-ov-x { position: absolute; top: 10px; right: 14px; background: none; border: none; font-size: 26px; cursor: pointer; }
 .xg-fa-ov-box input, .xg-fa-ov-box textarea { width: 100%; padding: 11px; font-size: 16px; border: 1px solid #d8d2c6; margin: 6px 0; }
-.xg-fa-statusbtns { display: flex; gap: 6px; margin: 10px 0; }
+.xg-fa-times { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
+.xg-fa-times span { background: #eef6f0; color: #1f7a44; font-size: 12px; font-weight: 700; padding: 4px 8px; }
+.xg-fa-statusbtns { display: flex; gap: 6px; margin: 10px 0; flex-wrap: wrap; }
 .xg-fa-statusbtns button { flex: 1; padding: 12px 4px; border: 1px solid #d8d2c6; background: #faf8f4; font: inherit; font-weight: 700; cursor: pointer; }
 .xg-fa-statusbtns button.done { background: #1f9d55; color: #fff; border-color: #1f9d55; }
 .xg-fa-sig { margin: 10px 0; }

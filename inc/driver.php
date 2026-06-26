@@ -187,19 +187,38 @@ function ekinese_driver_update_stop( WP_REST_Request $r ) {
 	$rid    = (int) $q[0];
 	$idx    = (int) $r->get_param( 'index' );
 	$status = sanitize_key( (string) $r->get_param( 'status' ) ); // arrived|picked_up|delivered|failed
+	$event  = sanitize_key( (string) $r->get_param( 'event' ) );  // arrived|start|end|failed (tijdstempels)
 	$note   = sanitize_textarea_field( (string) $r->get_param( 'note' ) );
+	$reason = sanitize_text_field( (string) $r->get_param( 'reason' ) );
 	$stops  = json_decode( (string) get_post_meta( $rid, 'stops', true ), true ) ?: array();
 	if ( ! isset( $stops[ $idx ] ) ) {
 		return new WP_Error( 'badindex', 'stop', array( 'status' => 400 ) );
 	}
-	if ( $status ) {
+	$now = current_time( 'mysql' );
+	// Check-in/out: tijdstempels per gebeurtenis (eenmalig wegschrijven).
+	if ( 'arrived' === $event && empty( $stops[ $idx ]['arrived_at'] ) ) {
+		$stops[ $idx ]['arrived_at'] = $now;
+		$stops[ $idx ]['status']     = 'arrived';
+	} elseif ( 'start' === $event && empty( $stops[ $idx ]['started_at'] ) ) {
+		$stops[ $idx ]['started_at'] = $now;
+		$stops[ $idx ]['status']     = 'busy';
+	} elseif ( 'end' === $event ) {
+		$stops[ $idx ]['ended_at'] = $now;
+		$stops[ $idx ]['status']   = $status ?: 'picked_up';
+	} elseif ( 'failed' === $event ) {
+		$stops[ $idx ]['ended_at'] = $now;
+		$stops[ $idx ]['status']   = 'failed';
+		if ( $reason ) {
+			$stops[ $idx ]['reason'] = $reason;
+		}
+	} elseif ( $status ) {
 		$stops[ $idx ]['status'] = $status;
 	}
 	if ( $note ) {
 		$field = ( in_array( $status, array( 'delivered' ), true ) ) ? 'delivery_note' : 'pickup_note';
 		$stops[ $idx ][ $field ] = $note;
 	}
-	$stops[ $idx ]['updated'] = current_time( 'mysql' );
+	$stops[ $idx ]['updated'] = $now;
 	update_post_meta( $rid, 'stops', wp_json_encode( $stops ) );
 
 	// Koppel terug naar de afspraak/zending (statusspiegeling).

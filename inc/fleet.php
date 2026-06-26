@@ -313,7 +313,9 @@ function ekinese_fleet_gps( WP_REST_Request $r ) {
 		return $did;
 	}
 	$p   = $r->get_json_params();
-	$gps = array( 'lat' => (float) ( $p['lat'] ?? 0 ), 'lng' => (float) ( $p['lng'] ?? 0 ), 'time' => current_time( 'mysql' ) );
+	$lat = (float) ( $p['lat'] ?? 0 );
+	$lng = (float) ( $p['lng'] ?? 0 );
+	$gps = array( 'lat' => $lat, 'lng' => $lng, 'time' => current_time( 'mysql' ) );
 	update_post_meta( $did, 'last_gps', $gps );
 	$shift = ekinese_fleet_open_shift( $did );
 	if ( $shift ) {
@@ -321,7 +323,46 @@ function ekinese_fleet_gps( WP_REST_Request $r ) {
 		$track[] = $gps;
 		update_post_meta( $shift, 'gps_track', wp_json_encode( array_slice( $track, -500 ) ) );
 	}
-	return rest_ensure_response( array( 'ok' => true ) );
+	// Geofence: automatisch inchecken bij aankomst nabij een nog niet-bezochte stop.
+	$arrived = ekinese_fleet_geofence_checkin( $lat, $lng );
+	return rest_ensure_response( array( 'ok' => true, 'arrived' => $arrived ) );
+}
+
+/** Geofence-straal (meter) voor auto-check-in. */
+function ekinese_fleet_geofence_m() {
+	return (int) apply_filters( 'ekinese_fleet_geofence_m', 150 );
+}
+
+/**
+ * Stempelt automatisch "aangekomen" bij de eerste nog niet-bezochte stop binnen
+ * de geofence van de huidige positie. Geeft de stop-index of -1.
+ */
+function ekinese_fleet_geofence_checkin( $lat, $lng ) {
+	if ( ! $lat || ! $lng || ! function_exists( 'ekinese_distance_km' ) ) {
+		return -1;
+	}
+	$rid = ekinese_fleet_today_route();
+	if ( ! $rid ) {
+		return -1;
+	}
+	$stops = json_decode( (string) get_post_meta( $rid, 'stops', true ), true ) ?: array();
+	$radius = ekinese_fleet_geofence_m() / 1000;
+	$hit    = -1;
+	foreach ( $stops as $i => $s ) {
+		if ( ! empty( $s['arrived_at'] ) || empty( $s['lat'] ) || empty( $s['lng'] ) ) {
+			continue;
+		}
+		if ( ekinese_distance_km( $lat, $lng, (float) $s['lat'], (float) $s['lng'] ) <= $radius ) {
+			$stops[ $i ]['arrived_at'] = current_time( 'mysql' );
+			$stops[ $i ]['status']     = empty( $s['status'] ) || 'pending' === $s['status'] ? 'arrived' : $s['status'];
+			$hit = $i;
+			break;
+		}
+	}
+	if ( $hit >= 0 ) {
+		update_post_meta( $rid, 'stops', wp_json_encode( $stops ) );
+	}
+	return $hit;
 }
 
 /** Hybride OCR: bon of ID → voorstel (geen opslag). */
@@ -453,6 +494,87 @@ function ekinese_fleet_panel() {
 	echo '<div style="background:#fff;border:1px solid #dcdcde;padding:16px;margin-top:18px"><h3 style="margin-top:0;font-size:14px">Onkosten deze week (' . esc_html( $week ) . ') — uit te betalen</h3>';
 	echo '<p style="font-size:22px;font-weight:800;color:#AE1E1E;margin:0">€ ' . esc_html( number_format_i18n( $total, 2 ) ) . ' <span style="font-size:13px;font-weight:400;color:#646970">over ' . count( $exp ) . ' posten</span> · <a href="' . esc_url( admin_url( 'edit.php?post_type=xg_expense' ) ) . '">bekijken/afvinken</a></p></div>';
 }
+
+/* =====================================================================
+   STATISTIEK — voor latere optimalisatie van de routes/chauffeurs
+===================================================================== */
+function ekinese_fleet_stats( $days = 30 ) {
+	$since  = date( 'Y-m-d', current_time( 'timestamp' ) - $days * DAY_IN_SECONDS ); // phpcs:ignore WordPress.DateTime
+	$routes = get_posts( array(
+		'post_type'   => 'xg_route', 'numberposts' => -1, 'post_status' => 'publish',
+		'meta_query'  => array( array( 'key' => 'date', 'value' => $since, 'compare' => '>=', 'type' => 'DATE' ) ),
+	) );
+	$svc = array( 'sum' => 0, 'n' => 0 ); $wait = array( 'sum' => 0, 'n' => 0 ); $trav = array( 'sum' => 0, 'n' => 0 );
+	$total = 0; $done = 0; $failed = 0; $reasons = array(); $byservice = array();
+	foreach ( $routes as $rt ) {
+		$stops = json_decode( (string) get_post_meta( $rt->ID, 'stops', true ), true ) ?: array();
+		$prev_end = null;
+		foreach ( $stops as $s ) {
+			$total++;
+			$type = $s['service'] ?? 'overig';
+			if ( ! isset( $byservice[ $type ] ) ) {
+				$byservice[ $type ] = array( 'n' => 0, 'svc' => 0, 'svc_n' => 0 );
+			}
+			$byservice[ $type ]['n']++;
+			$a  = ! empty( $s['arrived_at'] ) ? strtotime( $s['arrived_at'] ) : null;
+			$st = ! empty( $s['started_at'] ) ? strtotime( $s['started_at'] ) : null;
+			$e  = ! empty( $s['ended_at'] ) ? strtotime( $s['ended_at'] ) : null;
+			if ( $a && $e ) {
+				$m = ( $e - ( $st ?: $a ) ) / 60;
+				if ( $m >= 0 && $m < 600 ) { $svc['sum'] += $m; $svc['n']++; $byservice[ $type ]['svc'] += $m; $byservice[ $type ]['svc_n']++; }
+			}
+			if ( $a && $st ) { $w = ( $st - $a ) / 60; if ( $w >= 0 && $w < 300 ) { $wait['sum'] += $w; $wait['n']++; } }
+			if ( $prev_end && $a ) { $tv = ( $a - $prev_end ) / 60; if ( $tv >= 0 && $tv < 600 ) { $trav['sum'] += $tv; $trav['n']++; } }
+			if ( $e ) { $prev_end = $e; }
+			$status = $s['status'] ?? '';
+			if ( 'failed' === $status ) { $failed++; $rk = $s['reason'] ?? 'onbekend'; $reasons[ $rk ] = ( $reasons[ $rk ] ?? 0 ) + 1; }
+			elseif ( in_array( $status, array( 'picked_up', 'delivered' ), true ) ) { $done++; }
+		}
+	}
+	$avg = function ( $x ) { return $x['n'] ? round( $x['sum'] / $x['n'] ) : 0; };
+	arsort( $reasons );
+	return array(
+		'routes'      => count( $routes ), 'stops' => $total, 'done' => $done, 'failed' => $failed,
+		'completion'  => $total ? round( $done / $total * 100 ) : 0,
+		'avg_service' => $avg( $svc ), 'avg_wait' => $avg( $wait ), 'avg_travel' => $avg( $trav ),
+		'reasons'     => $reasons, 'byservice' => $byservice,
+	);
+}
+
+add_action( 'admin_menu', function () {
+	add_submenu_page( 'xgoud', __( 'Fleet-statistieken', 'ekinese' ), __( 'Fleet-statistieken', 'ekinese' ), 'manage_options', 'xg-fleet-stats', function () {
+		$days = isset( $_GET['days'] ) ? max( 1, (int) $_GET['days'] ) : 30; // phpcs:ignore WordPress.Security.NonceVerification
+		$s    = ekinese_fleet_stats( $days );
+		echo '<div class="wrap"><h1>Fleet-statistieken <span style="font-weight:400;color:#646970">(laatste ' . esc_html( $days ) . ' dagen)</span></h1>';
+		echo '<p>' . implode( ' · ', array( '<a href="?page=xg-fleet-stats&days=7">7d</a>', '<a href="?page=xg-fleet-stats&days=30">30d</a>', '<a href="?page=xg-fleet-stats&days=90">90d</a>' ) ) . '</p>';
+		$cards = array(
+			array( 'Routes', $s['routes'] ), array( 'Stops', $s['stops'] ),
+			array( 'Afgerond', $s['done'] . ' (' . $s['completion'] . '%)' ), array( 'Niet gelukt', $s['failed'] ),
+			array( 'Gem. bezoektijd', $s['avg_service'] . ' min' ), array( 'Gem. wachttijd', $s['avg_wait'] . ' min' ),
+			array( 'Gem. reistijd', $s['avg_travel'] . ' min' ),
+		);
+		echo '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:12px 0">';
+		foreach ( $cards as $c ) {
+			echo '<div style="background:#fff;border:1px solid #dcdcde;padding:14px"><div style="font-size:22px;font-weight:800;color:#AE1E1E">' . esc_html( $c[1] ) . '</div><div style="font-size:12px;color:#646970">' . esc_html( $c[0] ) . '</div></div>';
+		}
+		echo '</div>';
+		if ( $s['byservice'] ) {
+			echo '<h2>Per servicetype</h2><table class="widefat striped" style="max-width:560px"><thead><tr><th>Type</th><th>Stops</th><th>Gem. bezoektijd</th></tr></thead><tbody>';
+			foreach ( $s['byservice'] as $type => $b ) {
+				echo '<tr><td>' . esc_html( $type ) . '</td><td>' . esc_html( $b['n'] ) . '</td><td>' . esc_html( $b['svc_n'] ? round( $b['svc'] / $b['svc_n'] ) . ' min' : '—' ) . '</td></tr>';
+			}
+			echo '</tbody></table>';
+		}
+		if ( $s['reasons'] ) {
+			echo '<h2>Redenen "niet gelukt"</h2><ul>';
+			foreach ( $s['reasons'] as $r => $n ) {
+				echo '<li>' . esc_html( $r ) . ' — ' . esc_html( $n ) . '×</li>';
+			}
+			echo '</ul>';
+		}
+		echo '</div>';
+	} );
+} );
 
 /* =====================================================================
    APP-PAGINA — block ekinese/driver-app gebruikt nu de fleet-app
