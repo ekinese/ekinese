@@ -102,3 +102,5 @@ require_once get_theme_file_path( 'inc/photo-appraisal.php' );
 require_once get_theme_file_path( 'inc/booking-slots.php' );
 require_once get_theme_file_path( 'inc/appraisal-cert.php' );
 require_once get_theme_file_path( 'inc/business-portal.php' );
+require_once get_theme_file_path( 'inc/perf.php' );
+require_once get_theme_file_path( 'inc/perf-images.php' );

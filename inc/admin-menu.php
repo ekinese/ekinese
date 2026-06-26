@@ -51,7 +51,7 @@ add_action( 'admin_menu', function () {
 		'Veilingen & community' => array( 'xg_auction', 'xg_market', 'xg_deal', 'xg_reward', 'xg_lottery', 'xg_holding', 'xg_wishlist', 'xg_charity', 'xg_notification', 'xg_agent', 'xg_batch' ),
 		'Marketing & content'   => array( 'xg_social', 'xg_ad', 'xg_subscriber', 'xg_maillog', 'reviews', 'stad', 'ticker', 'contact', 'vergelijk', 'news' ),
 		'B2B & HR'              => array( 'xg_partner', 'xg_employee', 'xg_timeentry', 'xg_invoice' ),
-		'Instellingen'          => array( 'xg-analytics', 'xg-spot', 'xg-legal', 'xg-smtp', 'xg-pay', 'xg-ai', 'xg-integrations', 'xg-install' ),
+		'Instellingen'          => array( 'xg-analytics', 'xg-spot', 'xg-legal', 'xg-smtp', 'xg-pay', 'xg-ai', 'xg-integrations', 'xg-perf', 'xg-install' ),
 	);
 	$buckets = array(); foreach ( $groups as $g => $f ) { $buckets[ $g ] = array(); }
 	$buckets['Overig'] = array();
