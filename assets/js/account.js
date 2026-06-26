@@ -554,6 +554,12 @@
 				'<a class="xg-wg-link" href="' + esc(s.url) + '">Invullen →</a>';
 			return widgetCard('survey', 'Vragenlijst', '🗳', b, { live: true });
 		},
+		deelkaart: function (d) {
+			return widgetCard('deelkaart', 'Deel je XGOUD', '🎉',
+				'<p class="xg-wg-muted">Maak een deelbare kaart van jouw mijlpalen, niveau en badges.</p>' +
+				'<button type="button" class="xg-share-card-btn xg-wg-link" style="border:0;background:none;cursor:pointer;padding:0">Kaart maken &amp; delen →</button>' +
+				'<span class="xg-share-card-msg xg-wg-muted"></span>');
+		},
 		streak: function (d) {
 			var s = parseInt(d.streak || 0, 10);
 			if (!s) return '';
@@ -596,10 +602,10 @@
 			return widgetCard('momenten', 'Mijn momenten', '📸', b);
 		}
 	};
-	var WIDGET_ORDER = ['portfolio', 'market', 'streak', 'niveau', 'badges', 'timeline', 'afspraak', 'survey', 'profiel', 'spaardoel', 'momenten', 'punten', 'charity', 'veilingen', 'treuhand', 'alerts', 'inbox', 'referral'];
+	var WIDGET_ORDER = ['portfolio', 'market', 'streak', 'niveau', 'badges', 'timeline', 'afspraak', 'survey', 'profiel', 'spaardoel', 'momenten', 'punten', 'charity', 'veilingen', 'treuhand', 'deelkaart', 'alerts', 'inbox', 'referral'];
 	var WIDGET_TITLES = {
 		portfolio: 'Portfolio', market: 'Markt vandaag', niveau: 'Mijn niveau', timeline: 'Verkoopstatus',
-		afspraak: 'Volgende afspraak', survey: 'Vragenlijst', streak: 'Streak', badges: 'Mijn badges', profiel: 'Profiel', spaardoel: 'Spaardoel', momenten: 'Mijn momenten', punten: 'Spaarpunten',
+		afspraak: 'Volgende afspraak', survey: 'Vragenlijst', streak: 'Streak', badges: 'Mijn badges', profiel: 'Profiel', deelkaart: 'Deel je XGOUD', spaardoel: 'Spaardoel', momenten: 'Mijn momenten', punten: 'Spaarpunten',
 		charity: 'Charity', veilingen: 'Veilingen', treuhand: 'Treuhand', alerts: 'Prijsalarmen', inbox: 'Berichten', referral: 'Uitnodigen'
 	};
 	function widgetOrder() {
@@ -629,6 +635,68 @@
 		var cards = widgetOrder().filter(function (id) { return hidden.indexOf(id) < 0; })
 			.map(function (id) { return WIDGETS[id] ? WIDGETS[id](d) : ''; }).filter(Boolean).join('');
 		return greet + picker + notifyCard(d) + '<div class="xg-wgrid">' + cards + '</div>';
+	}
+
+	// Teilbare "Mijn XGOUD"-kaart (canvas, system-fonts → geen serverafhankelijkheid).
+	function drawShareCard(d) {
+		var W = 1080, H = 1080, cv = document.createElement('canvas');
+		cv.width = W; cv.height = H;
+		var c = cv.getContext('2d');
+		// Achtergrond + gouden accent.
+		c.fillStyle = '#161412'; c.fillRect(0, 0, W, H);
+		c.fillStyle = '#D0AC4B'; c.fillRect(0, 0, W, 14); c.fillRect(0, H - 14, W, 14);
+		c.fillStyle = '#AE1E1E'; c.fillRect(80, 150, 90, 10);
+		// Wordmark.
+		c.fillStyle = '#D0AC4B'; c.font = '700 64px Arial, sans-serif'; c.textBaseline = 'top';
+		c.fillText('XGOUD', 80, 96);
+		c.fillStyle = '#b3ad9f'; c.font = '400 30px Arial, sans-serif';
+		c.fillText('Mijn jaar bij XGOUD', 80, 184);
+		// Niveau groot.
+		var lo = d.loyalty || {};
+		c.fillStyle = '#ffffff'; c.font = '800 84px Arial, sans-serif';
+		c.fillText(String(lo.tier || 'Brons') + '-niveau', 80, 250);
+		// Stat-regels.
+		var yr = d.year_review || {}, verkopen = 0, charity = 0;
+		Object.keys(yr).forEach(function (y) { verkopen += Number(yr[y].count) || 0; charity += Number(yr[y].charity) || 0; });
+		var stats = [
+			['Spaarpunten', String(d.points != null ? d.points : 0)],
+			['Badges', (d.badges_earned || 0) + ' / ' + (d.badges_total || 0)],
+			['Streak', (d.streak || 0) + ' dagen'],
+			['Verkopen', String(verkopen)],
+			['Naar goede doelen', '€ ' + (charity ? charity.toFixed(0) : '0')]
+		];
+		var y = 410;
+		stats.forEach(function (s) {
+			c.fillStyle = '#8a847a'; c.font = '400 30px Arial, sans-serif';
+			c.fillText(s[0], 80, y);
+			c.fillStyle = '#f3efe8'; c.font = '700 48px Arial, sans-serif'; c.textAlign = 'right';
+			c.fillText(s[1], W - 80, y - 8); c.textAlign = 'left';
+			y += 104;
+			c.strokeStyle = '#2a2620'; c.beginPath(); c.moveTo(80, y - 18); c.lineTo(W - 80, y - 18); c.stroke();
+		});
+		// Footer.
+		c.fillStyle = '#D0AC4B'; c.font = '700 34px Arial, sans-serif';
+		c.fillText('xgoud.nl', 80, H - 90);
+		c.fillStyle = '#8a847a'; c.font = '400 26px Arial, sans-serif'; c.textAlign = 'right';
+		c.fillText('Goud · zilver · diamant · horloges', W - 80, H - 84); c.textAlign = 'left';
+		return cv;
+	}
+	function shareCard(d, msgEl) {
+		var cv = drawShareCard(d);
+		cv.toBlob(function (blob) {
+			if (!blob) { if (msgEl) msgEl.textContent = ' Niet ondersteund.'; return; }
+			var file = new File([blob], 'mijn-xgoud.png', { type: 'image/png' });
+			if (navigator.canShare && navigator.canShare({ files: [file] })) {
+				navigator.share({ files: [file], title: 'Mijn XGOUD', text: 'Mijn mijlpalen bij XGOUD' })
+					.then(function () { if (msgEl) msgEl.textContent = ''; })
+					.catch(function () {});
+			} else {
+				var url = URL.createObjectURL(blob), a = document.createElement('a');
+				a.href = url; a.download = 'mijn-xgoud.png'; document.body.appendChild(a); a.click(); a.remove();
+				setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+				if (msgEl) msgEl.textContent = ' Gedownload.';
+			}
+		}, 'image/png');
 	}
 
 	function renderDash(d) {
@@ -716,6 +784,15 @@
 		dash.querySelectorAll('.xg-acc-tab').forEach(function (btn) {
 			btn.addEventListener('click', function () { switchTab(btn.getAttribute('data-tab')); });
 		});
+		// Deelbare XGOUD-kaart genereren.
+		var shareBtn = dash.querySelector('.xg-share-card-btn');
+		if (shareBtn) {
+			shareBtn.addEventListener('click', function () {
+				var m = dash.querySelector('.xg-share-card-msg');
+				if (m) m.textContent = ' Bezig…';
+				try { shareCard(currentData || d, m); } catch (e) { if (m) m.textContent = ' Mislukt.'; }
+			});
+		}
 		// Widget-links die naar een tab springen.
 		dash.querySelectorAll('.xg-wg-link[data-tab], [data-tab]').forEach(function (el) {
 			if (el.classList.contains('xg-acc-tab')) return;
