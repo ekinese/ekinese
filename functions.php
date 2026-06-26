@@ -60,6 +60,8 @@ require_once get_theme_file_path( 'inc/consent.php' );
 require_once get_theme_file_path( 'inc/spot-prices.php' );
 require_once get_theme_file_path( 'inc/legal.php' );
 require_once get_theme_file_path( 'inc/fleet.php' );
+require_once get_theme_file_path( 'inc/pwa.php' );
+require_once get_theme_file_path( 'inc/widget.php' );
 require_once get_theme_file_path( 'inc/trust.php' );
 require_once get_theme_file_path( 'inc/rewards.php' );
 require_once get_theme_file_path( 'inc/lottery.php' );

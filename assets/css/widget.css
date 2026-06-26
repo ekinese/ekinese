@@ -1,0 +1,36 @@
+/* XGOUD app-widget (/app/) — mobiel startscherm. */
+.xg-widget { max-width: 560px; margin: 0 auto; padding: 16px; }
+.xg-w-loading { padding: 60px 0; text-align: center; color: #8a847a; }
+.xg-w-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.xg-w-logo { font-weight: 800; font-size: 22px; color: #161412; }
+.xg-w-logo span { color: #AE1E1E; }
+.xg-w-full { font-size: 13px; font-weight: 700; color: #AE1E1E; }
+.xg-w-prices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+.xg-w-price { background: #161412; color: #fff; padding: 10px 8px; text-align: center; }
+.xg-w-price span { display: block; font-size: 10px; color: #b3ad9f; text-transform: uppercase; letter-spacing: .4px; }
+.xg-w-price strong { font-size: 15px; }
+.xg-w-price small { font-size: 10px; color: #cfc6b4; }
+.xg-w-card { background: #fff; border: 1px solid #ececec; padding: 16px; margin-bottom: 12px; }
+.xg-w-card h3 { margin: 0 0 10px; font-size: 14px; font-weight: 800; }
+.xg-w-profile { display: flex; align-items: center; gap: 16px; }
+.xg-w-pts { text-align: center; }
+.xg-w-pts strong { display: block; font-size: 28px; font-weight: 800; color: #AE1E1E; line-height: 1; }
+.xg-w-pts span { font-size: 11px; color: #8a847a; }
+.xg-w-meta { font-size: 14px; }
+.xg-w-tier { color: #c8a24a; font-weight: 700; font-size: 13px; margin-top: 4px; }
+.xg-w-pf { display: flex; align-items: baseline; gap: 12px; }
+.xg-w-pf-val { font-size: 26px; font-weight: 800; }
+.xg-w-pf-gain { font-weight: 700; font-size: 14px; }
+.xg-w-pf-gain.up { color: #1f9d55; }
+.xg-w-pf-gain.down { color: #d63638; }
+.xg-w-appt { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0ece3; font-size: 14px; }
+.xg-w-appt:last-child { border-bottom: 0; }
+.xg-w-appt-d { font-weight: 700; white-space: nowrap; }
+.xg-w-appt em { margin-left: auto; color: #8a847a; font-style: normal; font-size: 12px; }
+.xg-w-empty { color: #8a847a; font-size: 14px; margin: 0; }
+.xg-w-login input { width: 100%; padding: 12px; border: 1px solid #d8d2c6; font: inherit; margin: 8px 0; }
+.xg-w-login button { width: 100%; background: #161412; color: #fff; border: none; padding: 13px; font: inherit; font-weight: 700; cursor: pointer; }
+.xg-w-msg { font-size: 13px; color: #57534b; min-height: 16px; }
+html[data-theme="dark"] .xg-w-card { background: #1d1b19; border-color: #34302b; color: #f3efe8; }
+html[data-theme="dark"] .xg-w-logo { color: #f3efe8; }
+html[data-theme="dark"] .xg-w-login input { background: #211e1a; border-color: #34302b; color: #f3efe8; }

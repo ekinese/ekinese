@@ -73,7 +73,13 @@ function ekinese_account_request_link( WP_REST_Request $req ) {
 	if ( ! $email || ! is_email( $email ) ) {
 		return new WP_Error( 'invalid', __( 'Vul een geldig e-mailadres in.', 'ekinese' ), array( 'status' => 400 ) );
 	}
-	$link = home_url( '/mijn-xgoud/?token=' . ekinese_account_make_token( $email ) );
+	// Optionele bestemming (bv. /app/ voor het PWA-widget); alleen veilige paden.
+	$redirect = '/mijn-xgoud/';
+	$rin      = (string) $req->get_param( 'redirect' );
+	if ( $rin && '/' === $rin[0] && false === strpos( $rin, '//' ) && false === strpos( $rin, ' ' ) ) {
+		$redirect = '/' . trim( $rin, '/' ) . '/';
+	}
+	$link = home_url( $redirect . '?token=' . ekinese_account_make_token( $email ) );
 	wp_mail(
 		$email,
 		__( 'Uw inloglink voor Mijn XGOUD', 'ekinese' ),
